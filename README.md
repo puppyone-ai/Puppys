@@ -1,8 +1,7 @@
-# PuppyAgent
+# PuppyAgents
 
 
-
-An open-source **Human-AI Agents Co-Working** framwork
+An open-source framwork for **Agents-and-Humans Co-Working**
 
 forks， star，version
 
