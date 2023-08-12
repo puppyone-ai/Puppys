@@ -1,10 +1,10 @@
-![Alt text](image.png)
+<img width = 30% height = 30% div align=center>![Alt text](image.png)
 
+*An open-source **AI Agents-and-Humans Co-Working** framework*
 
-An open-source **Agents-and-Humans Co-Working** framework
+version, stars, website, document
 
-
-Five reasons that you should use PuppyAgent to create your AI agents:
+### Five reasons that you should use PuppyAgent to create your AI agents:
 
 1. **Human-Agent Interacts**: PuppyAgent allows you to interact with agents anytime, even when the agent is running.
 2. **Multi-pipeline**: PuppyAgent supports multi-agents running in parallel, therefore, making it possible to create a multi-agent system.
