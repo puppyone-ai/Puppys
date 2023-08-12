@@ -2,7 +2,12 @@
 
 *An open-source **AI Agents-and-Humans Co-Working** framework*
 
-version, stars, website, document
+<center>version, stars, website, document</center>
+
+<center>discord，twitter，zhihu，email</center>
+
+video：https://www.bilibili.com/video/BV1yq4y117Rn/?vd_source=0e9e1f6034a3969c2c2168bd102cc697
+
 
 ### Five reasons that you should use PuppyAgent to create your AI agents:
 
