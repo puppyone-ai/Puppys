@@ -1,13 +1,10 @@
-![Alt text](image.png)
+<img width = 30% height = 30% div align=center>![Alt text](image.png)
 
+*An open-source **AI Agents-and-Humans Co-Working** framework*
 
-An open-source **Agents-and-Humans Co-Working** framework
+version, stars, website, document
 
-forks， star，version
-
-video：
-
-document，website，github，language EN，language CN
+video：https://www.bilibili.com/video/BV1QK4y1C7ZU
 
 discord，twitter，zhihu，email
 
