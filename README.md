@@ -12,7 +12,7 @@ discord，twitter，zhihu，email
 
 Features:
 
-Five reasons that you should use PuppyAgent to create your own AI agents:
+Five reasons that you should use PuppyAgent to create your AI agents:
 
 1. **Human-Agent Interacts**: PuppyAgent allows you to interact with agents anytime, even when the agent is running.
 2. **Multi-pipeline**: PuppyAgent supports multi-agents running in parallel, therefore, making it possible to create a multi-agent system.
