@@ -1,10 +1,17 @@
 <img width = 30% height = 30% div align=center>![Alt text](image.png)
 
-*An open-source **AI Agents-and-Humans Co-Working** framework*
+An open-source **AI Agents-and-Humans Co-Working** framework
 
 <center>version, stars, website, document</center>
 
-<center>discord，twitter，zhihu，email</center>
+<p align="center">
+<a href="https://twitter.com/PuppyAgentTech" target="blank">
+<img src="https://img.shields.io/twitter/follow/PuppyAgentTech?label= PuppyAgent&style=social" alt="Follow PuppyAgent"/>
+</a>
+<a>discord</a>
+<a>zhihu</a>
+<a>email</a>
+</p>
 
 video：https://www.bilibili.com/video/BV1yq4y117Rn/?vd_source=0e9e1f6034a3969c2c2168bd102cc697
 
@@ -16,5 +23,4 @@ video：https://www.bilibili.com/video/BV1yq4y117Rn/?vd_source=0e9e1f6034a3969c2
 3. **Scalable**: PuppyAgent is scalable, you can add as many agents, tools, and notes as you want.
 4. **Modular**: PuppyAgent allows you to modify any prompts and add your own functions.
 5. **Open-source**: PuppyAgent is open-source, you can run it locally and don't need to worry about your information being leaked.
-
 
