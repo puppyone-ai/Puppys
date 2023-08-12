@@ -3,15 +3,6 @@
 
 An open-source **Agents-and-Humans Co-Working** framework
 
-forks， star，version
-
-video：
-
-document，website，github，language EN，language CN
-
-discord，twitter，zhihu，email
-
-Features:
 
 Five reasons that you should use PuppyAgent to create your AI agents:
 
