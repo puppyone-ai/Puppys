@@ -1,4 +1,4 @@
-<img width = 30% height = 30% div align=center>![Alt text](image.png)
+<img width = 30% height = 30% div align=center>![Alt text](PuppyAgentLogo.png)
 
 An open-source **AI Agents-and-Humans Co-Working** framework
 
