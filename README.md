@@ -4,11 +4,6 @@
 
 version, stars, website, document
 
-video：https://www.bilibili.com/video/BV1yq4y117Rn/?vd_source=0e9e1f6034a3969c2c2168bd102cc697
-
-discord，twitter，zhihu，email
-
-
 ### Five reasons that you should use PuppyAgent to create your AI agents:
 
 1. **Human-Agent Interacts**: PuppyAgent allows you to interact with agents anytime, even when the agent is running.
