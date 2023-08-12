@@ -8,9 +8,6 @@ An open-source **AI Agents-and-Humans Co-Working** framework
 <a href="https://twitter.com/PuppyAgentTech" target="blank">
 <img src="https://img.shields.io/twitter/follow/PuppyAgentTech?label= PuppyAgent&style=social" alt="Follow PuppyAgent"/>
 </a>
-<a>discord</a>
-<a>zhihu</a>
-<a>email</a>
 </p>
 
 video：https://www.bilibili.com/video/BV1yq4y117Rn/?vd_source=0e9e1f6034a3969c2c2168bd102cc697
