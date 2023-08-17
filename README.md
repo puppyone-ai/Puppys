@@ -1,4 +1,4 @@
-![Alt text](logo/PuppyAgent(blue&black).png)
+![Alt text](assets/PuppyAgent(blue&black).png)
 
 An open-source **AI Agents-and-Humans Co-Working** framework
 
@@ -20,4 +20,10 @@ video：https://www.bilibili.com/video/BV1yq4y117Rn/?vd_source=0e9e1f6034a3969c2
 3. **Scalable**: PuppyAgent is scalable, you can add as many agents, tools, and notes as you want.
 4. **Modular**: PuppyAgent allows you to modify any prompts and add your own functions.
 5. **Open-source**: PuppyAgent is open-source, you can run it locally and don't need to worry about your information being leaked.
+
+
+
+
+
+
 

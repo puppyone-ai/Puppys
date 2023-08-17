@@ -10,8 +10,8 @@ class Experiment:
     """
      experience = {
         "title": "title",
-        "discription": "discription",
         "author": "author",
+        "discription": "discription",
         "content": "content",
         "time": "time",
         "tag": "tag"
@@ -37,5 +37,15 @@ class Experiment:
     # clear all experiments
     def clearExperiment(self):
         self._experimentList = []
+
+    # get the experiment list as a prompt
+    # NOTE: need to specify that every index should be involbed in the prompt, while the user can decide which one in True or False
+    @property
+    def experimentListPrompt(self):
+        prompt = ""
+        for i in range(len(self._experimentList)):
+            prompt += str(i) + ". " + self._experimentList[i]["discription"] + "\n" + self._experimentList[i]["content"] + "\n"
+        return prompt
+
 
         
