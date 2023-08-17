@@ -9,8 +9,8 @@ class Notes:
     """
     note = {
         "title": "title",
-        "discription": "discription",
         "author": "author",
+        "discription": "discription",
         "content": "content",
         "time": "time",
         "tag": "tag"
@@ -41,7 +41,30 @@ class Notes:
     def update(self, newNoteList:list):
         self.noteList = newNoteList
 
-    
+    # get the experiment list as a prompt (default mode)
+    @property
+    def noteListPrompt(self):
+        elements = ["title", "author", "discription", "content", "time", "tag"]
+        
+        prompt = ""
+        for i in range(len(self._noteList)):
+            prompt += str(i) + ". "
+            for elem in elements:
+                prompt += self._noteList[i][elem] + "\n"
+        return prompt
+
+    # get the experiment list as a prompt (user's mode)
+    def getNoteListPrompt(self, elements=None):
+        # if user does not specify the elements, then use the default elements
+        if elements == None:
+            elements = ["title", "author", "discription", "content", "time", "tag"]
+        
+        prompt = ""
+        for i in range(len(self._noteList)):
+            prompt += str(i) + ". "
+            for elem in elements:
+                prompt += self._noteList[i][elem] + "\n"
+        return prompt
 
     
 
