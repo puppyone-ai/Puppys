@@ -1,4 +1,4 @@
-![Alt text](assets/PuppyAgent(blue&black).png)
+![Alt text](assets/PuppyAgent(blue&orange)horizon.png)
 
 An open-source **AI Agents-and-Humans Co-Working** framework
 
