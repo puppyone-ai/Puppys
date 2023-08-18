@@ -27,6 +27,7 @@ class Experiment:
         return self._experimentList
     
     # adding new experiment
+    # NOTE make sure the newExperiment is a dictionary, and the user filled all the elements
     def addExperiment(self, newExperiment:dict):
         self._experimentList.append(newExperiment)
 
@@ -38,13 +39,29 @@ class Experiment:
     def clearExperiment(self):
         self._experimentList = []
 
-    # get the experiment list as a prompt
-    # NOTE: need to specify that every index should be involbed in the prompt, while the user can decide which one in True or False
+    # get the experiment list as a prompt (default mode)
     @property
     def experimentListPrompt(self):
+        elements = ["title", "author", "discription", "content", "time", "tag"]
+        
         prompt = ""
         for i in range(len(self._experimentList)):
-            prompt += str(i) + ". " + self._experimentList[i]["discription"] + "\n" + self._experimentList[i]["content"] + "\n"
+            prompt += str(i) + ". "
+            for elem in elements:
+                prompt += self._experimentList[i][elem] + "\n"
+        return prompt
+
+    # get the experiment list as a prompt (user's mode)
+    def getExperimentListPrompt(self, elements=None):
+        # if user does not specify the elements, then use the default elements
+        if elements == None:
+            elements = ["title", "author", "discription", "content", "time", "tag"]
+        
+        prompt = ""
+        for i in range(len(self._experimentList)):
+            prompt += str(i) + ". "
+            for elem in elements:
+                prompt += self._experimentList[i][elem] + "\n"
         return prompt
 
 
