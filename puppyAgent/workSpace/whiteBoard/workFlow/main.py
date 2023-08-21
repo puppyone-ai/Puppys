@@ -27,21 +27,17 @@ class Workflow:
     def remainingstepNum(self):
         return self._remainingstepNum
 
-    @workFlow.setter
-    # set the workFlow
-    def workFlow(self, newWorkFlow):
-        self._workflow = newWorkFlow
-
-
 
     def addWork(self, workName, assignee, estimatedDuration, dependencies=[]):
         if workName not in self._workflow:
-            self._workflow[workName] = {'assignee': assignee, 'duration': estimatedDuration, 'dependencies': dependencies}
+            self._workflow[workName] = {'assignee': assignee, 'duration': estimatedDuration, 'dependencies': dependencies, 'status': 'planed'}
         else:
             self._workflow[workName]['assignee'] = assignee
             self._workflow[workName]['duration'] = estimatedDuration
             self._workflow[workName]['dependencies'] = dependencies
+            self._workflow[workName]['status'] = 'planed'
     
+
     # change the workflow's list representation to matrix representation
     def adjacencyListToMatrix(self):
         nodes = list(self._workflow.keys())
@@ -55,22 +51,6 @@ class Workflow:
             for neighbor in work['dependencies']:
                 matrix[nodes.index(node)][nodes.index(neighbor)] = 1
         return matrix
-    
-    # draw the workflow(rough mode)
-    def visualizeWorkflow(self):
-
-        G = nx.DiGraph()
-        
-        for work, details in self._workflow.items():
-            G.add_node(work)
-            for dependency in details['dependencies']:
-                G.add_edge(dependency, work)
-        
-        pos = nx.spring_layout(G)
-        plt.figure(figsize=(10,8))
-        nx.draw(G, pos, with_labels=True, node_size=3000, node_color='skyblue', font_size=15, width=2, edge_color='gray')
-        plt.title("Workflow Visualization")
-        plt.show()
     
 
     # draw the workflow with the assignee and duration
