@@ -100,7 +100,7 @@ class Workflow:
                         adjusted = True
         
         # Drawing pipelines
-        plt.figure(figsize=(14, 10))
+        plt.figure(figsize=(14, 4))
         for assignee, y_position in assignee_mapping.items():
             plt.plot([-1, max([x for x, _ in pos.values()]) + 5], [y_position* self._pipeline_spacing, y_position* self._pipeline_spacing], color='lightgray', linestyle='--')
             plt.text(-1.5, y_position* self._pipeline_spacing, assignee, verticalalignment='center', fontsize=self._font_size)
