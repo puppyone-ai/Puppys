@@ -7,9 +7,13 @@ class Todo:
     def __init__(self, todoList:dict = {}):
         self._todoList = todoList
 
+    # the todoList is a dictionary with:
     """
-    todo={
-        value: {"""
+    todoList={
+        value: {"name": "value",
+        discription: "discription"
+        status: "planed"/ "running"/ "finished"
+        }"""
 
     # get the todoList
     @property
@@ -39,7 +43,7 @@ class Todo:
         # start to run the todo item
         def run(self, func1):
             return func1(self)
-    
+
         # pulse the todo item
         def pulse(self):
             # 为简单起见，这里只是返回一个标记字符串，您可以根据需要定制此方法
