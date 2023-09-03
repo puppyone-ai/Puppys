@@ -1,11 +1,12 @@
 class Puppy:
     def __init__(self, name, authority={}, discription=""):
         self.name = name
-        self.authority = authority
         self.discription = discription
-        self.
+        self.authority = authority
     
     # authority is a dictionary with:
-    {tools:[],
+    '''
+    authority={tools:[],
      notes:[],
      }
+    '''
