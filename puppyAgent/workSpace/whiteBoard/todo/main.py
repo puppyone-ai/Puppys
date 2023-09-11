@@ -46,12 +46,12 @@ class Todo:
 
         # pulse the todo item
         def pulse(self):
-            # 为简单起见，这里只是返回一个标记字符串，您可以根据需要定制此方法
+            #  for simplicity, just return a string
             return f"Pulse for {self.value}"
 
         # end the todo item
         def end(self):
-            # 同样为了简单起见，这里只是返回一个标记字符串
+            #  for simplicity, just return a string
             return f"End of {self.value}"
 
 
