@@ -21,6 +21,8 @@ An open-source **AI Agents-and-Humans Co-Working** framework
 5. **Open-source**: PuppyAgent is open-source, you can run it locally and don't need to worry about your information being leaked.
 
 
+### Archietecture:
+![Alt text](assets/PuppyAgent Archietecture.png)
 
 
 
