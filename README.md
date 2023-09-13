@@ -23,7 +23,7 @@ An open-source **AI Agents-and-Humans Co-Working** framework
 
 ### Archietecture:
 
-![alt text](assets/puppyAgent Archietecture.png)
+![alt text](assets/PuppyAgentArchietecture.png)
 
 
 
