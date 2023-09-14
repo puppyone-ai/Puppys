@@ -25,6 +25,13 @@ An open-source **AI Agents-and-Humans Co-Working** framework
 
 ![alt text](assets/PuppyAgentArchietecture.png)
 
+### Everything is Agent:
+
+All operations for notes, tools, workflows, indexing are responsible from agents.
+
+
+
+
 
 
 
