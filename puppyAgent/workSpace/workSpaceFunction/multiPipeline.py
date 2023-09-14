@@ -20,6 +20,8 @@ thread2 = threading.Thread(target=normal_thread)
 
 thread1.start()
 thread2.start()
-
+print("Main thread is still alive.")
+time.sleep(5)
+print("Main thread is still alive.")
 thread1.join()
 thread2.join()
