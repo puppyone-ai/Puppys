@@ -80,14 +80,10 @@ class workSpace:
         print("All threads finished.")
         
 
-    
 if __name__=="__main__":
     workSpace = workSpace()
     workSpace.addPuppy("David", "an leader agent", ["tool1", "tool2"], ["message1", "message2"], ["note1", "note2"])
+    workSpace.addPuppy("Alice", "a COO", ["tool1", "tool2"], ["message1", "message2"], ["note1", "note2"])
     workSpace.run()
-
-
-
-
 
 
