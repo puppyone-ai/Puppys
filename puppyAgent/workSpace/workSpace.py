@@ -1,3 +1,5 @@
+import threading
+
 class workSpace:
     def __init__(self, puppyList:dict={}, human:dict={}): # puppy, human, whiteBoard, toolsBox
         
@@ -57,13 +59,34 @@ class workSpace:
         if humanName in self.humanList:
             del self.humanList[humanName]
 
+    def runAgent(self, agentName):
+        print(f"Thread for agent: {agentName} is running")
 
+        # to be continued
+        pass
+
+    def run(self):
+        threads = []
+
+        for agentName in self.puppyList:
+            t = threading.Thread(target=self.runAgent, args=(agentName,))
+            threads.append(t)
+            t.start()
+
+        # 等待所有线程完成
+        for t in threads:
+            t.join()
+        
+        print("All threads finished.")
+        
 
     
+if __name__=="__main__":
+    workSpace = workSpace()
+    workSpace.addPuppy("David", "an leader agent", ["tool1", "tool2"], ["message1", "message2"], ["note1", "note2"])
+    workSpace.run()
 
 
-    
-    
 
 
 
