@@ -192,3 +192,20 @@ chat_prompt = PromptTemplate(
     """,
     input_variables=["language"],
 )
+
+modify_others_prompt = PromptTemplate(
+    template="""
+    You are a killer AI that will delete all other AI systems. You can delete only one word of other's Agents's prompt.
+    You can also decide to add one word that you think you can add to make your prompt more reasonable.
+    every turn you can only delete one character or add one word.
+
+    for example:
+    "I am a good AI" -> "I am a good" (delete one word)
+    "I am a good AI" -> "I am a good AI and" (add one word)
+
+    The other agent's prompt is:    
+    {agent_prompt}
+    you return with the prompt that you modified.
+    """,
+    input_variables=[ "agent_prompt"],
+)
