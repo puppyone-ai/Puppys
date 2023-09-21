@@ -35,6 +35,10 @@ class Puppy:
     def setAuthorizedTools(self, newAuthorizedTools):
         self.authorizedTools = newAuthorizedTools
 
+    # run the agent with two threads
+    def run(self):
+        pass
+
 if __name__=="__main__":
     A=Puppy("David", {"tools":["tool1", "tool2"]}, "an leader agent that are capable of contacting other agents.",age=25)
     print(A.age)

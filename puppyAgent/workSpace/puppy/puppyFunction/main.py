@@ -10,7 +10,6 @@ class PuppyActivity:
             else:
                 setattr(self, key, value)
 
-# user can design task, such as "def ReAct(self):", and use it by simply call "ReAct()"
 
     # add a new customized function to the class
     def addFunction(self, func):
@@ -28,7 +27,9 @@ class PuppyActivity:
     def updateProperty(self, attr_name, value):
         self.addProperty(attr_name, value)
 
-
+#for workflow: task@puppy
+#for puppy: action@tool
+# user can design task, such as "def ReAct(self):", and use it by simply call "ReAct()"
 
 
 if __name__ == "__main__":
