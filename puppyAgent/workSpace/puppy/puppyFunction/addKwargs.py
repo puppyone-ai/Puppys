@@ -1,6 +1,6 @@
 from types import MethodType
 
-class PuppyActivity:
+class PuppyKwargs():
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             # 如果值是函数或方法，为它绑定当前实例
@@ -40,7 +40,7 @@ if __name__ == "__main__":
         print("Hello from external function 2!")
 
     # 创建类的实例
-    obj = PuppyActivity(value=5)
+    obj = PuppyKwargs(value=5)
     obj.addFunction(external_function)
 
     obj.external_function()
