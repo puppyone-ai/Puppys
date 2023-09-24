@@ -1,12 +1,13 @@
-class Inbox():
+class ActionLib():
     def __init__(self):
-        pass
+        self.actionList=[]
 
+    def addAction(self, action):
+        self.actionList.append(action)
 
-    # add a new customized function to the class
-    def runInbox(self):
+    
+
         
-    def 
 
     """for example:
     def ReAct(self):

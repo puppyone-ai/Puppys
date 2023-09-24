@@ -79,7 +79,7 @@ class Puppy:
 
     # run the main thread
     def runMainThread(self):
-        print("Main thread for agent is running")
+       checkInbox(self)
 
     # run the branch thread
     def runBranchThread(self):
@@ -94,9 +94,3 @@ if __name__=="__main__":
     A.country=9
     print(A.country)
     A.run()
-
-    
-    
-
-
-
