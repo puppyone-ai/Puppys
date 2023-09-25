@@ -7,7 +7,17 @@ class Action():
     def runAction(self):
         pass
 
+
+    """
+    support 3 types of actionFlows:
+    1. code mode
+    2. text mode
+    3. JSON mode
+    """
+
     """for example:
+    
+    #code mode:
     def ReAct(self):
         start()
         searchResult=""
@@ -16,7 +26,22 @@ class Action():
             searchResult = GoogleSearch(information))
         end()
         return searchResult
-        
+
+    #text mode:
+    actionFlow=["start",
+    "think if the answer is correct"-->["yes", "no"],
+    if "no":[
+    "rethink",
+    "search"],
+    else:[pass],
+    "end"]
+
+    #JSON mode:
+    {{action:"start"
+    }
+    
+    }
+
     """
     
     """for example:
