@@ -2,7 +2,6 @@ class Action():
     def __init__(self):
         pass
 
-
     # add a new customized function to the class
     def runAction(self):
         pass
@@ -18,15 +17,16 @@ class Action():
     """for example:
     
     #code mode:
+    @puppy1
     def ReAct(self):
-        start()
         searchResult=""
-        if answerQuestion(question,searchResult)==False:
+        while answerQuestion(question,searchResult)==False:
             information=Rethink(searchResult)
             searchResult = GoogleSearch(information))
-        end()
         return searchResult
-
+        puppyDecision()
+    puppy1.run()
+    
     #text mode:
     actionFlow=["start",
     "think if the answer is correct"-->["yes", "no"],
@@ -39,7 +39,7 @@ class Action():
     #JSON mode:
     {{action:"start"
     }
-    
+
     }
 
     """
