@@ -19,6 +19,7 @@ class Action():
     #code mode:
     @puppy1
     def ReAct(self):
+
         searchResult=""
         while answerQuestion(question,searchResult)==False:
             information=Rethink(searchResult)
