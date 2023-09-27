@@ -33,6 +33,7 @@ def inject_new_function(originalTest):
 
     return wrapper
 
+
 # 创建一个类，其方法 Test 是我们要修改的目标函数
 class MyClass:
     def Test(self):
