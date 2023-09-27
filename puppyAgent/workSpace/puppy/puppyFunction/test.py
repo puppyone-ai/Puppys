@@ -32,8 +32,8 @@ def proxyTest(originalTest):
     return wrapper
 
 # 定义原始 Test 函数
-def Test(self):
-    def ReAct(self, task="provide the answer to the input question"):
+def Test():
+    def ReAct( task="provide the answer to the input question"):
         #TODO search for the quesiton @google search @zhihu search
 
         #TODO search for the question @google search @zhihu search
@@ -51,3 +51,4 @@ def Test(self):
 
 # 创建代理 Test 函数
 proxyTest = proxyTest(Test)
+property(Test())
