@@ -51,8 +51,10 @@ class Action():
         def ReAct(self, task="provide the answer to the input question"):   
         
             #TODO search for the quesiton @google search @zhihu search
+            completeThis()
 
             #TODO search for the question @google search @zhihu search
+            completeThis()
 
             #DONE: for agent to design the action
             searchResult=""
