@@ -1,5 +1,3 @@
-
-
 class Authority:
     def __init__(self, authorizedTools=None):
 

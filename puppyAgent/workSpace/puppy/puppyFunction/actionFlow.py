@@ -1,147 +1,84 @@
+import inspect
+import re
+import copy
+
 class Action():
     def __init__(self):
-        import inspect
+        self.actionFlow = []
+        self.functions = []
+        self.currentStep = 0
+        self.task=None
 
     # add a new customized function to the class
-    def runAction(self):
-        pass
-
-    # to extract the comments from the function
-    def codeActionFlowInterpreter(self,func,mark="#TODO"):
-        import inspect
-
-        comments = []
-        
-        # 获取多行注释（docstring）
-        docstring = inspect.getdoc(func)
-        if docstring:
-            comments.append(docstring)
-        
-        # 获取源代码
-        source_code = inspect.getsource(func)
-        
-        # 提取单行注释
-        lines = source_code.split('\n')
-        for line in lines:
-            if mark in line:
-                comment = line.split(mark, 1)[1].strip()
-                comments.append(comment)
-        
-        print(comments)
-        return comments
+    def run(self):
+        for func in self.functions:
+            func()
     
-    # add a new customized function after each #TODO mark
-    def puppy(func):
+    # translate the code to action flow in JSON format
+    def action(self, func):
         def wrapper(*args, **kwargs):
-            # 获取原函数的源代码
-            source_lines = inspect.getsource(func).split('\n')
+            sourceCode = inspect.getsource(func)
+            lines = sourceCode.split('\n')
+            is_comment = False
+            comment = ""
+            for line in lines:
+                if is_comment:
+                    is_comment = False
+                    if '.act()' in line:
+                        self.actionFlow.append({"action":comment,"executor":"puppy"})
+                    else:
+                        self.actionFlow.append({"action":comment,"executor":"human"})
+                elif '##' in line:
+                    comment = line.split('##', 1)[1].strip()
+                    is_comment = True
+            print(self.actionFlow)
+            self.task= inspect.signature(func).parameters["task"]
 
-            # 在每个 #TODO 后动态运行新函数
-            for line in source_lines:
-                if '#TODO' in line:
-                    newFunction()
-
-            # 运行原函数
+            # run the function defined by user
+            self.currentStep = 0
             return func(*args, **kwargs)
-
+            
+        self.functions.append(wrapper)
         return wrapper
+    
+    # let puppy to run what was planned to be responsibled for puppy
+    def act(self):
+        if self.actionFlow[self.currentStep]["executor"] == "puppy":
+            print("action for puppy:",self.actionFlow[self.currentStep]["action"])
+        elif self.actionFlow[self.currentStep]["executor"] == "human":
+            print("action for human:",self.actionFlow[self.currentStep]["action"])
+        else:
+            print("error")
+        self.currentStep += 1
+
+    # filling out all the actions in the action flow
+    def taskToAction(self):
+        print(self.actionFlow)
+        print(self.task)
+        print(self.currentStep)
+
+    def actionToTools(self):
+        print(self.actionFlow(self.currentStep))
 
 
-    @puppy
-    def Test(self):
-        def ReAct(self, task="provide the answer to the input question"):   
-        
-            #TODO search for the quesiton @google search @zhihu search
-            completeThis()
+puppy1 = Action()
 
-            #TODO search for the question @google search @zhihu search
-            completeThis()
+@puppy1.action
+def ReAct(task="provide the answer to the input question"):   
+    ## search for the quesiton @google search @zhihu search
+    puppy1.act()
 
-            #DONE: for agent to design the action
-            searchResult=""
-            while answerQuestion(question,searchResult)==False:
-                information=Rethink(searchResult)
-                searchResult = GoogleSearch(information)
-            puppyDecision()
-            return searchResult
+    ## rethink about the answer @rethinker
+    puppy1.act()
 
-            #TODO
+    ## clarify I am still running
+    print("now i am here")
 
-            pass
+    ## do whatever you want to do 
+    puppy1.act()
 
-if __name__ == "__main__":
-    A=Action()
-    A.codeActionFlowInterpreter(A.Test)
-
-"""
-    support 3 types of actionFlows:
-    1. code mode
-    2. text mode
-    """
-
-"""
-    to determine which typing mode to use, following mode should be tested:
-    1. 
-    func(self,task)
-    ## for agent to design the action
-    # for human to design the action
+    print("end")
 
 
-    2. 
-    func(self,task)
-    ### for agent to design the action
-    ## for human to design the action
-
-
-    3. 
-    func(self,task)
-    ## for agent to know what the action should be
-    action(), for agent to design the action
-    ## for human to design the action
-
-
-    #code mode:
-    @puppy1
-    def ReAct(self, task="provide the answer to the input question"):   
-        
-        ### search for the quesiton @google search @google search
-        XX()
-        ### rethink @rethinking
-
-        ### search again @google search
-
-        ## search for the result 
-        searchResult=""
-        while answerQuestion(question,searchResult)==False:
-            information=Rethink(searchResult)
-            searchResult = GoogleSearch(information)
-        puppyDecision()
-        return searchResult
-
-        ##
-
-        ## end
-
-    puppy1.run()
-
-    """
-
-"""
-    #text mode:
-    []for the overall flow
-    ()for workflow defined by human
-    {}for if/else
-
-    actionFlow=
-
-    [("search for the question"@google search),"rethink","search again",[],"end"]
-
-    ["search for the "
-        "think if the answer is correct"-->["yes", "no"],
-    if "no":[
-    "rethink if ",
-    "search"],
-    else:[pass],
-    "end"]
-
-    """
+puppy1.run()
+puppy1.plan()
