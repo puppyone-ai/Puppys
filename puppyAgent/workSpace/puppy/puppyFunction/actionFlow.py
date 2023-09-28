@@ -52,7 +52,7 @@ class Action():
         self.currentStep += 1
 
     # filling out all the actions in the action flow
-    def taskToActionFlow(self):
+    def taskToAction(self):
         print(self.actionFlow)
         print(self.task)
         print(self.currentStep)
