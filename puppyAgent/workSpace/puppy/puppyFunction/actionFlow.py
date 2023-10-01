@@ -25,9 +25,9 @@ class Action():
                 if is_comment:
                     is_comment = False
                     if '.act()' in line:
-                        self.actionFlow.append({"action":comment,"executor":"puppy"})
+                        self.actionFlow.append({"action":comment,"status":"changable"})
                     else:
-                        self.actionFlow.append({"action":comment,"executor":"human"})
+                        self.actionFlow.append({"action":comment,"status":"fixed"})
                 elif '##' in line:
                     comment = line.split('##', 1)[1].strip()
                     is_comment = True
@@ -43,9 +43,9 @@ class Action():
     
     # let puppy to run what was planned to be responsibled for puppy
     def act(self):
-        if self.actionFlow[self.currentStep]["executor"] == "puppy":
+        if self.actionFlow[self.currentStep]["status"] == "changable":
             print("action for puppy:",self.actionFlow[self.currentStep]["action"])
-        elif self.actionFlow[self.currentStep]["executor"] == "human":
+        elif self.actionFlow[self.currentStep]["status"] == "fixed":
             print("action for human:",self.actionFlow[self.currentStep]["action"])
         else:
             print("error")
@@ -81,4 +81,3 @@ def ReAct(task="provide the answer to the input question"):
 
 
 puppy1.run()
-puppy1.plan()
