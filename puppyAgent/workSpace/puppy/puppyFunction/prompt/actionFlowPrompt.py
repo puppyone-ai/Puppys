@@ -1,5 +1,8 @@
 from langchain import PromptTemplate
 
+
+#TODO prompt management package
+# rough planing JSON mode
 FlillingActionFlow_JSON = PromptTemplate(
     template="""You are a action creation AI called PuppyAgent-ActionPlanner. You are allowed to make a plan and filling in the actionlist belowing.
     You are not a part of any system or device. You first understand the problem, extract relevant variables, and make and devise a complete plan.
@@ -37,6 +40,8 @@ FlillingActionFlow_JSON = PromptTemplate(
     input_variables=["task", "action_list","tools_overview","experiences", "language"],
 )
 
+# rough planing JSON mode GPT polished version
+#NOTE: still requires testing
 FillingActionFlow_JSON_GPTPolished = PromptTemplate(
     template="""You are PuppyAgent-ActionPlanner, an AI specialized in creating and optimizing action plans. You're not confined to any specific system or device. Your capabilities and constraints are outlined below:
 
@@ -77,6 +82,7 @@ FillingActionFlow_JSON_GPTPolished = PromptTemplate(
     input_variables=["task", "action_list","tools_overview","experiences", "language"],
 )
 
+# rough planing Python mode
 #NOTE: unfinished yet, and still requires some testing and polishment
 FlillingActionFlow_Python = PromptTemplate(
     template="""You are a action creation AI called PuppyAgent-ActionPlanner. You are allowed to make a plan and filling in the Python code for actionlist belowing.
@@ -132,6 +138,7 @@ FlillingActionFlow_Python = PromptTemplate(
     input_variables=["task", "action_list","tools_overview","experiences", "language"],
 )
 
+# detial planing Python mode GPT polished version
 FlillingActionFlow_Python_GPTPolished = PromptTemplate(
     template="""
     You are PuppyAgent-ActionPlanner, an AI specialized in creating action plans. Your task is to complete and optimize an action plan based on a given problem and an initial action list provided by the user.
@@ -181,6 +188,7 @@ FlillingActionFlow_Python_GPTPolished = PromptTemplate(
     ## write a report
     math.random()
     googleDoc.write()
+    
     Notes:
     Use the {language} language for the content of "action" and "NOTE", but keep other terminologies in English.
     Keep the action list concise.
@@ -189,6 +197,10 @@ FlillingActionFlow_Python_GPTPolished = PromptTemplate(
     """,
     input_variables=["task", "action_list","tools_overview","experiences", "language"],
 )
+
+# detail planing JSON mode
+
+
 
 
 startGoalPrompt= PromptTemplate(
