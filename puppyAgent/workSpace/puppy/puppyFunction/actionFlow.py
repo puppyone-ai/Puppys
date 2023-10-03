@@ -24,7 +24,7 @@ class Action():
             for line in lines:
                 if is_comment:
                     is_comment = False
-                    if '.act()' in line:
+                    if '.do()' in line:
                         self.actionFlow.append({"action":comment,"status":"changable"})
                     else:
                         self.actionFlow.append({"action":comment,"status":"fixed"})
@@ -42,7 +42,7 @@ class Action():
         return wrapper
     
     # let puppy to run what was planned to be responsibled for puppy
-    def act(self):
+    def do(self):
         if self.actionFlow[self.currentStep]["status"] == "changable":
             print("action for puppy:",self.actionFlow[self.currentStep]["action"])
         elif self.actionFlow[self.currentStep]["status"] == "fixed":
@@ -67,16 +67,16 @@ puppy1 = Action()
 def ReAct(task="provide the answer to the input question"):   
 
     ## search for the quesiton @google search @zhihu search
-    puppy1.act()
+    puppy1.do()
 
     ## rethink about the answer @rethinker
-    puppy1.act()
+    puppy1.do()
 
     ## clarify I am still running
     print("now i am here")
 
     ##TODO
-    puppy1.act()
+    puppy1.do()
 
     print("end")
 
