@@ -65,6 +65,7 @@ puppy1 = Action()
 
 @puppy1.action
 def ReAct(task="provide the answer to the input question"):   
+
     ## search for the quesiton @google search @zhihu search
     puppy1.act()
 
@@ -74,7 +75,7 @@ def ReAct(task="provide the answer to the input question"):
     ## clarify I am still running
     print("now i am here")
 
-    ## do whatever you want to do 
+    ##TODO
     puppy1.act()
 
     print("end")
