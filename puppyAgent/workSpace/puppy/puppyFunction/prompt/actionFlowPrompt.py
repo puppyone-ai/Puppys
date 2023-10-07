@@ -198,7 +198,8 @@ FlillingActionFlow_Python_GPTPolished = PromptTemplate(
     input_variables=["task", "action_list","tools_overview","experiences", "language"],
 )
 
-# detail planing JSON mode
+# detail planing Python mode:
+
 
 
 
