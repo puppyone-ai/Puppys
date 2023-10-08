@@ -3,7 +3,7 @@ from langchain import PromptTemplate
 
 #TODO prompt management package
 # rough planing JSON mode
-FlillingActionFlow_JSON = PromptTemplate(
+FlillingActionFlow_JSON_to_JSON = PromptTemplate(
     template="""You are a action creation AI called PuppyAgent-ActionPlanner. You are allowed to make a plan and filling in the actionlist belowing.
     You are not a part of any system or device. You first understand the problem, extract relevant variables, and make and devise a complete plan.
     You have the following task: "{task}". 
@@ -42,7 +42,7 @@ FlillingActionFlow_JSON = PromptTemplate(
 
 # rough planing JSON mode GPT polished version
 #NOTE: still requires testing
-FillingActionFlow_JSON_GPTPolished = PromptTemplate(
+FillingActionFlow_JSON_to_JSON_GPTPolished = PromptTemplate(
     template="""You are PuppyAgent-ActionPlanner, an AI specialized in creating and optimizing action plans. You're not confined to any specific system or device. Your capabilities and constraints are outlined below:
 
     Capabilities:
@@ -84,7 +84,7 @@ FillingActionFlow_JSON_GPTPolished = PromptTemplate(
 
 # rough planing Python mode
 #NOTE: unfinished yet, and still requires some testing and polishment
-FlillingActionFlow_Python = PromptTemplate(
+FlillingActionFlow_Python_to_Python = PromptTemplate(
     template="""You are a action creation AI called PuppyAgent-ActionPlanner. You are allowed to make a plan and filling in the Python code for actionlist belowing.
     You are not a part of any system or device. You first understand the problem, extract relevant variables, and make and devise a complete plan.
     You have the following task: "{task}". 
@@ -139,7 +139,7 @@ FlillingActionFlow_Python = PromptTemplate(
 )
 
 # detial planing Python mode GPT polished version
-FlillingActionFlow_Python_GPTPolished = PromptTemplate(
+FlillingActionFlow_Python_to_Python_GPTPolished = PromptTemplate(
     template="""
     You are PuppyAgent-ActionPlanner, an AI specialized in creating action plans. Your task is to complete and optimize an action plan based on a given problem and an initial action list provided by the user.
 
@@ -201,7 +201,34 @@ FlillingActionFlow_Python_GPTPolished = PromptTemplate(
 # detail planing Python mode:
 
 
+FillingActionParameter_JSON_to_Python = PromptTemplate(
+    template="""You are a action creation AI called PuppyAgent. You are not a part of any system or device. You first
+    understand the problem, extract relevant variables, and filling in the details for a given task.\n\n 
+    Your user have the following goal: "{goal}". and user has planned a actionflow:
+    "{workflow}"
+    
+    Now this actionflow has reached the {num}th step. Your action, reasoning are listed:
 
+    {currentstep}
+    
+    The instruction of the tools recommended for the action in this step is:
+    
+    {tools_detail}
+
+    Here are the knowledge you have learned from the previous steps:
+
+    {knowledge}
+    
+    Try to understand the meaning of each tool and its parameter, and decide the best tools and parameter for this step to accomplish the goal. For example:
+
+    {action_example}
+
+
+
+    you should fill in all the parameters that are in "inputParameters"
+    your response should be similiar with the example and NOTHING ELSE.
+    """,input_variables=["goal", "workflow", "num", "currentstep", "tools_detail", "tools_example"]
+)
 
 
 startGoalPrompt= PromptTemplate(
