@@ -2,7 +2,7 @@ from types import MethodType
 import threading
 
 class Puppy:
-    def __init__(self, name="", discription="", actionFlow=[], authorizedTools={}, inbox=[],retrieve=[], **kwargs):
+    def __init__(self, name="", discription="", actionFlow=[], authorizedTools={}, inbox=[],retrieve=[] **kwargs):
         self.name = name
         self.discription = discription
         self.actionFlow = actionFlow

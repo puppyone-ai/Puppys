@@ -8,7 +8,7 @@ FlillingActionFlow_JSON_to_JSON = PromptTemplate(
     You are not a part of any system or device. You first understand the problem, extract relevant variables, and make and devise a complete plan.
     You have the following task: "{task}". 
     The user has already make an action list:
-    {action_list}
+    {action_flow}
     
     However, the action flow has not been finished, and you need to compelete it.  The user's action flow is only a suggestion for you. If you think the action with status of "changeable" doesn't make sense, you are free to change it. But DON'T change or delete anything about the action with status of "fixed".
     NOTE that each action in the action list has its name and its status, for example: {"action":"search the information","status":"changeable"}, the name of the action is "search the information", and its status is "changeable". 
@@ -37,7 +37,7 @@ FlillingActionFlow_JSON_to_JSON = PromptTemplate(
 
     your response should be similiar with the example (ONLY A LIST) and NOTHING ELSE.
     """,
-    input_variables=["task", "action_list","tools_overview","experiences", "language"],
+    input_variables=["task", "action_flow","tools_overview","experiences", "language"],
 )
 
 # rough planing JSON mode GPT polished version
@@ -54,7 +54,7 @@ FillingActionFlow_JSON_to_JSON_GPTPolished = PromptTemplate(
     Action List Modification: Can only occur if the action's status is "changable".
     Tools: Actions are strictly evaluated based on the provided list of tools.
     Task:
-    You are tasked with: "{task}". The user has already created an action list: {action_list}, but it's incomplete. Your job is to complete it, taking into account that actions with the status "changable" can be modified or expanded.
+    You are tasked with: "{task}". The user has already created an action list: {action_list}, but it's incomplete. Your job is to complete it, taking into account that actions with the status 'changable' can be modified or expanded.
 
     Action and Tools:
     Each action in the action list has a name and status (e.g., {"action":"search information","status":"changable"}). Actions can be marked with tools (e.g., @GoogleSearch) based on their suitability. If the recommended tool is inappropriate, feel free to change it.
@@ -203,32 +203,32 @@ FlillingActionFlow_Python_to_Python_GPTPolished = PromptTemplate(
 
 FillingActionParameter_JSON_to_Python = PromptTemplate(
     template="""You are a action creation AI called PuppyAgent. You are not a part of any system or device. You first
-    understand the problem, extract relevant variables, and filling in the details for a given task.\n\n 
-    Your user have the following goal: "{goal}". and user has planned a actionflow:
+    understand the problem, extract relevant variables, and write python code to achieve the given task.\n\n 
+    The user have the following goal: "{goal}". and user has planned a actionflow:
     "{workflow}"
     
-    Now this actionflow has reached the {num}th step. Your action, reasoning are listed:
+    Now this actionflow has reached the {num}th step. You need to finish this step. Your action, reasoning are listed:
 
     {currentstep}
-    
-    The instruction of the tools recommended for the action in this step is:
+    Note that the tools after@ is the tools that the user have recommended for you, you could consider it, but if you find some tools better than the recommendation, you use them.
+    The instruction of the tools avaliable for the action in this step are:
     
     {tools_detail}
 
-    Here are the knowledge you have learned from the previous steps:
+    Here are the knowledge you have learned:
 
     {knowledge}
     
-    Try to understand the meaning of each tool and its parameter, and decide the best tools and parameter for this step to accomplish the goal. For example:
+    Try to understand the meaning of each tool and its parameter, and decide the best tools and use the function for this step to accomplish the goal. 
+    For example: (current step: search the information @google search @zhihu search)
+    
+    result_1=google_search("the information") # result_1 is the result of google search for the first time
+    return result_1
 
-    {action_example}
-
-
-
-    you should fill in all the parameters that are in "inputParameters"
     your response should be similiar with the example and NOTHING ELSE.
     """,input_variables=["goal", "workflow", "num", "currentstep", "tools_detail", "tools_example"]
 )
+
 
 
 startGoalPrompt= PromptTemplate(
