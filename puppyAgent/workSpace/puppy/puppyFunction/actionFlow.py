@@ -1,12 +1,11 @@
 import inspect
+import os
 import re
 import copy
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
 from langchain.chat_models import ChatOpenAI
-from prompt.actionFlowPrompt import FlillingActionFlow_JSON_to_JSON
-
-#, FillingActionFlow_JSON_to_JSON_GPTPolished
+from prompt.actionFlowPrompt import FlillingActionFlow_JSON_to_JSON, FillingActionFlow_JSON_to_JSON_GPTPolished
 
 #FlillingActionFlow_Python_to_Python, FlillingActionFlow_Python_to_Python_GPTPolished, FillingActionParameter_JSON_to_Python
 
@@ -54,10 +53,14 @@ class Action():
         return wrapper
     
     # make the overall plan for the agent
-    def plan(self):
+    def plan(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-0613",ApiKey="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"):
         # set up the AgentAction for planning action and filling parameter
-        llm=ChatOpenAI(temperature=0.1,max_tokens=2000,model_name="gpt-4-0613")
-        fillingActionFlow=LLMChain(llm=llm, prompt= FillingActionFlow_JSON_to_JSON_GPTPolished)
+
+        # only for testing
+        os.environ["OPENAI_API_KEY"]=ApiKey
+
+        llm=ChatOpenAI(temperature=temperature,max_tokens=max_tokens,model_name=model_name)
+        fillingActionFlow=LLMChain(llm=llm, prompt= FlillingActionFlow_JSON_to_JSON)
 
         # only for testing:
         toolsSimplified="google_search, zhihu_search, code, ChatGPT"
@@ -65,7 +68,7 @@ class Action():
 
 
         # predict the workflow
-        NewActionFlowStr=fillingActionFlow.predict(goal =self.task, action_flow=self.actionFlow,tools_overview=toolsSimplified, experiences=agentExperience,language="Chinese")
+        NewActionFlowStr=fillingActionFlow.predict(task =self.task, action_flow=self.actionFlow,tools_overview=toolsSimplified, experiences=agentExperience,language="Chinese")
         self.actionFlow=eval(NewActionFlowStr)
 
         print(self.actionFlow)
