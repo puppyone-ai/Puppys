@@ -5,9 +5,7 @@ import copy
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
 from langchain.chat_models import ChatOpenAI
-from prompt.actionFlowPrompt import FillingActionFlow_JSON_to_JSON, FillingActionFlow_JSON_to_JSON_GPTPolished
-
-#FlillingActionFlow_Python_to_Python, FlillingActionFlow_Python_to_Python_GPTPolished, FillingActionParameter_JSON_to_Python
+from prompt.actionFlowPrompt import fillingActionFlow_JSON_to_JSON, fillingActionFlow_JSON_to_JSON_GPTPolished,flillingActionFlow_Python_to_Python, flillingActionFlow_Python_to_Python_GPTPolished, fillingActionParameter_JSON_to_Python
 
 
 class Action():
@@ -33,7 +31,7 @@ class Action():
                 if is_comment:
                     is_comment = False
                     if '.do()' in line:
-                        self.actionFlow.append({"action":comment,"status":"changable"})
+                        self.actionFlow.append({"action":comment,"status":"changeable"})
                     else:
                         self.actionFlow.append({"action":comment,"status":"fixed"})
                 elif '##' in line:
@@ -54,35 +52,78 @@ class Action():
     
     # make the overall plan for the agent
     def plan(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-0613",ApiKey="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"):
-        # set up the AgentAction for planning action and filling parameter
+        # set up the Action planning
 
         # only for testing
         os.environ["OPENAI_API_KEY"]=ApiKey
 
         llm=ChatOpenAI(temperature=temperature,max_tokens=max_tokens,model_name=model_name)
-        fillingActionFlow=LLMChain(llm=llm, prompt= FlillingActionFlow_JSON_to_JSON_GPTPolished)
+        fillingActionFlow=LLMChain(llm=llm, prompt= fillingActionFlow_JSON_to_JSON)
 
         # only for testing:
-        toolsSimplified="google_search, zhihu_search, code, ChatGPT"
+        toolsSimplified="""
+        google_search: search for information via GoogleSearch, it's aviliable anytime you search
+        zhihu_search: search for knowledge via ZhihuSearch, recommended for Chinese knowledge
+        ChatGPT: ask ChatGPT for help, you can find information that is not timely
+        Nothing: just write python code
+        Message: send a message to the user
+        Save: save the result to the database
+        """
         agentExperience="none"
 
 
         # predict the workflow
-        NewActionFlowStr=fillingActionFlow.predict(task =self.task, action_flow=self.actionFlow,tools_overview=toolsSimplified, experiences=agentExperience,language="Chinese")
-        self.actionFlow=eval(NewActionFlowStr)
+        newActionFlowStr=fillingActionFlow.predict(task =self.task, action_flow=self.actionFlow,tools_overview=toolsSimplified, experiences=agentExperience,language="Chinese")
+        self.actionFlow=eval(newActionFlowStr)
 
         print(self.actionFlow)
 
+    def act(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-0613",ApiKey="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"):
+        # set up the action for filling the parameters
 
-    # let puppy to run what was planned to be responsibled for puppy
+        # only for testing
+        os.environ["OPENAI_API_KEY"]=ApiKey
+
+        llm=ChatOpenAI(temperature=temperature,max_tokens=max_tokens,model_name=model_name)
+        fillingActionParameter=LLMChain(llm=llm, prompt= fillingActionParameter_JSON_to_Python)
+
+        # only for testing:
+        toolsSimplified="""
+        google_search: search for information via GoogleSearch, it's aviliable anytime you search
+        zhihu_search: search for knowledge via ZhihuSearch, recommended for Chinese knowledge
+        ChatGPT: ask ChatGPT for help, you can find information that is not timely
+        Nothing: just write python code
+        Message: send a message to the user
+        Save: save the result to the database
+        """
+        agentExperience="none"
+
+        # predict the workflow
+        newAction=fillingActionParameter.predict(task=self.task, action_flow=self.actionFlow, num=self.currentStep, current_action=self.actionFlow[self.currentStep],tools_detail=toolsSimplified, experiences=agentExperience)
+        print(newAction)
+        
+        #self.newAction=eval(newAction)
+        #print(self.newAction)
+
     def do(self):
-        if self.actionFlow[self.currentStep]["status"] == "changable":
+        print("current step number:", self.currentStep)
+        print("action flow:", self.actionFlow)
+        if self.actionFlow[self.currentStep]["status"] == "changeable":
             print("action for puppy:",self.actionFlow[self.currentStep]["action"])
+            self.act()
+
+            self.actionFlow[self.currentStep]["status"] = "fixed"
+            self.currentStep += 1
+
         elif self.actionFlow[self.currentStep]["status"] == "fixed":
             print("action for human:",self.actionFlow[self.currentStep]["action"])
+            self.currentStep += 1
+            self.do()
+            
         else:
-            print("error")
-        self.currentStep += 1
+            print("pass")
+            print("action for human:",self.actionFlow[self.currentStep]["status"])
+            self.currentStep += 1
 
     # filling out all the actions in the action flow
     def taskToAction(self):
@@ -92,12 +133,12 @@ class Action():
 
     def actionToTools(self):
         print(self.actionFlow(self.currentStep))
-
+        
 
 puppy1 = Action()
 
 @puppy1.action
-def ReAct(task="provide the answer to the input question"): 
+def ReAct(task="provide the answer to the weather of Munich"): 
 
     ## search for the quesiton @google search @zhihu search
     puppy1.do()
@@ -108,10 +149,9 @@ def ReAct(task="provide the answer to the input question"):
     ## clarify I am still running
     print("now i am here")
 
-    ##TODO
+    ##
     puppy1.do()
 
     print("end")
-
 
 puppy1.run()
