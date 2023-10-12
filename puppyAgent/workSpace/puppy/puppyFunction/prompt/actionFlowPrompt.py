@@ -3,7 +3,7 @@ from langchain import PromptTemplate
 
 #TODO prompt management package
 # rough planing JSON mode
-FlillingActionFlow_JSON_to_JSON = PromptTemplate(
+FillingActionFlow_JSON_to_JSON = PromptTemplate(
     template="""You are a action creation AI called PuppyAgent-ActionPlanner. You are allowed to make a plan and filling in the actionlist belowing.
     You are not a part of any system or device. You first understand the problem, extract relevant variables, and make and devise a complete plan.
     You have the following task: "{task}". 

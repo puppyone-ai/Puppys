@@ -5,7 +5,7 @@ import copy
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
 from langchain.chat_models import ChatOpenAI
-from prompt.actionFlowPrompt import FlillingActionFlow_JSON_to_JSON, FillingActionFlow_JSON_to_JSON_GPTPolished
+from prompt.actionFlowPrompt import FillingActionFlow_JSON_to_JSON, FillingActionFlow_JSON_to_JSON_GPTPolished
 
 #FlillingActionFlow_Python_to_Python, FlillingActionFlow_Python_to_Python_GPTPolished, FillingActionParameter_JSON_to_Python
 
@@ -60,7 +60,7 @@ class Action():
         os.environ["OPENAI_API_KEY"]=ApiKey
 
         llm=ChatOpenAI(temperature=temperature,max_tokens=max_tokens,model_name=model_name)
-        fillingActionFlow=LLMChain(llm=llm, prompt= FlillingActionFlow_JSON_to_JSON)
+        fillingActionFlow=LLMChain(llm=llm, prompt= FlillingActionFlow_JSON_to_JSON_GPTPolished)
 
         # only for testing:
         toolsSimplified="google_search, zhihu_search, code, ChatGPT"
