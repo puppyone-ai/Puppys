@@ -5,7 +5,7 @@ import copy
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
 from langchain.chat_models import ChatOpenAI
-from prompt.actionFlowPrompt import fillingActionFlow_JSON_to_JSON, fillingActionFlow_JSON_to_JSON_GPTPolished,flillingActionFlow_Python_to_Python, flillingActionFlow_Python_to_Python_GPTPolished, fillingActionParameter_JSON_to_Python
+from prompt.actionFlowPrompt import fillingActionFlow_JSON_to_JSON, fillingActionFlow_JSON_to_JSON_RAW,flillingActionFlow_Python_to_Python, flillingActionFlow_Python_to_Python_RAW, fillingActionParameter_JSON_to_Python
 
 
 class Action():
@@ -39,7 +39,10 @@ class Action():
                 else:
                     if searchForDo==True:
                         if '.do()' in line:
-                            self.actionFlow.append({"action":comment,"status":"changeable"})
+                            if comment.strip() == "":
+                                self.actionFlow.append({"action":comment,"status":"free"})
+                            else:
+                                self.actionFlow.append({"action":comment,"status":"changeable"})
                             searchForDo = False
                         else:
 
@@ -160,7 +163,7 @@ def ReAct(task="provide the answer to the weather of Munich",
 
     ## search for the quesiton @google search @zhihu search
     puppy1.do()
-    
+
     ## rethink about the answer @rethinker
     puppy1.do()
 

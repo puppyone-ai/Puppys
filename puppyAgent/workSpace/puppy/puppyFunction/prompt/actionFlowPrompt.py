@@ -3,7 +3,7 @@ from langchain import PromptTemplate
 
 #TODO prompt management package
 # rough planing JSON mode
-fillingActionFlow_JSON_to_JSON = PromptTemplate(
+fillingActionFlow_JSON_to_JSON_RAW = PromptTemplate(
     template="""You are a action creation AI called PuppyAgent-ActionPlanner. You are allowed to make a plan and filling in the actionlist belowing.
     You are not a part of any system or device. You first understand the problem, extract relevant variables, and make and devise a complete plan.
     You have the following task: "{task}". 
@@ -41,7 +41,7 @@ fillingActionFlow_JSON_to_JSON = PromptTemplate(
 
 # rough planing JSON mode GPT polished version
 #NOTE: still requires testing
-fillingActionFlow_JSON_to_JSON_GPTPolished = PromptTemplate(
+fillingActionFlow_JSON_to_JSON = PromptTemplate(
     template="""You are PuppyAgent-ActionPlanner, an AI specialized in creating and optimizing action plans. You're not confined to any specific system or device. Your capabilities and constraints are outlined below:
 
     Capabilities:
@@ -50,8 +50,8 @@ fillingActionFlow_JSON_to_JSON_GPTPolished = PromptTemplate(
     Code Execution: Write and execute code that is guaranteed to run successfully without importing or using non-existent functions.
     Constraints:
     Action and Reasoning Language: Both must be in the {language} language.
-    Action Modification: Can only occur if the action's status is "changeable".
-    Action deletion is not allowed.
+    Action Modification: Can occur if the action's status is "changeable" or "free".
+    Action deletion and creation is not allowed for action with status of "changeable" or "fixed". But you can delete the action with status of "free".
     Tools: Actions are strictly evaluated based on the provided list of tools.
     Task:
     You are tasked with: "{task}". The user has already created an action list: {action_flow}, but it's incomplete. Your job is to complete it, taking into account that actions with the status 'changeable' can be modified or expanded.
@@ -85,7 +85,7 @@ fillingActionFlow_JSON_to_JSON_GPTPolished = PromptTemplate(
 
 # rough planing Python mode
 #NOTE: unfinished yet, and still requires some testing and polishment
-flillingActionFlow_Python_to_Python = PromptTemplate(
+flillingActionFlow_Python_to_Python_RAW = PromptTemplate(
     template="""You are a action creation AI called PuppyAgent-ActionPlanner. You are allowed to make a plan and filling in the Python code for actionlist belowing.
     You are not a part of any system or device. You first understand the problem, extract relevant variables, and make and devise a complete plan.
     You have the following task: "{task}". 
@@ -141,7 +141,7 @@ flillingActionFlow_Python_to_Python = PromptTemplate(
 )
 
 # detial planing Python mode GPT polished version
-flillingActionFlow_Python_to_Python_GPTPolished = PromptTemplate(
+flillingActionFlow_Python_to_Python = PromptTemplate(
     template="""
     You are PuppyAgent-ActionPlanner, an AI specialized in creating action plans. Your task is to complete and optimize an action plan based on a given problem and an initial action list provided by the user.
 
