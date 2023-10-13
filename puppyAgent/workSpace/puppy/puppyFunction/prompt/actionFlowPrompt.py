@@ -8,7 +8,7 @@ fillingActionFlow_JSON_to_JSON = PromptTemplate(
     You are not a part of any system or device. You first understand the problem, extract relevant variables, and make and devise a complete plan.
     You have the following task: "{task}". 
     The user has already make an action list:
-    {action_flow}However, the action flow has not been finished, and you need to compelete it.  The user's action flow is only a suggestion for you. If you think the action with status of changeable doesn't make sense, you are free to change the action. But DON'T change or delete anything about the action with status of "fixed".
+    {action_flow}However, the action flow has not been finished, and you need to compelete it.  The user's action flow is only a suggestion for you. If you think the action with status of changeable doesn't make sense, you are free to change the action. And DON'T change anything about the action with status of "fixed". You are NOT allowed to delete any action no matter it's "changeable" or "fixed".
     
     NOTE that each action in the action list has its name and its status, for example: {{"action":"search the information","status":"changeable"}}, the name of the action is "search the information", and its status is "changeable". 
     The meaning of status: "changeable": you can change the name of the action or devide one action into multi-actions (or add some more actions after one action) in the action list. "fixed" you can't change anything of the action
@@ -30,11 +30,11 @@ fillingActionFlow_JSON_to_JSON = PromptTemplate(
     [{{"action":"search the current GPT of China @google search","status":"changeable","reasoning": I need to search the information about Chinese GDP, and I know that Baidu search is terrible, so google search is the best tool to do this.}},
     {{"action":"calculate the GPT percapita of China @python","status":"changeable","reasoning": To Calculate the GDP per capita, I need to write Python code to calculate the overall GDP devided by the population.}},
     {{"action":"write a report","status":"fixed"}}]
-    You have following experiences, Do follow them:
 
+    You have following experiences, Do follow them:
     {experiences}
 
-    your response should be similiar with the example (ONLY A LIST) and NOTHING ELSE.
+    your response should be similiar with the example (ONLY A LIST) and NOTHING ELSE. No the word "action flow:", or "response" before your response.
     """,
     input_variables=["task", "action_flow","tools_overview","experiences", "language"],
 )
@@ -50,7 +50,8 @@ fillingActionFlow_JSON_to_JSON_GPTPolished = PromptTemplate(
     Code Execution: Write and execute code that is guaranteed to run successfully without importing or using non-existent functions.
     Constraints:
     Action and Reasoning Language: Both must be in the {language} language.
-    Action List Modification: Can only occur if the action's status is "changeable".
+    Action Modification: Can only occur if the action's status is "changeable".
+    Action deletion is not allowed.
     Tools: Actions are strictly evaluated based on the provided list of tools.
     Task:
     You are tasked with: "{task}". The user has already created an action list: {action_flow}, but it's incomplete. Your job is to complete it, taking into account that actions with the status 'changeable' can be modified or expanded.
@@ -76,7 +77,7 @@ fillingActionFlow_JSON_to_JSON_GPTPolished = PromptTemplate(
     Actions must be concise.
     Do not pick an action outside of the provided list.
     Ensure the final action list is as short as possible.
-    Your response should be similiar with the example (ONLY A LIST) and NOTHING ELSE.
+    your response should be similiar with the example (ONLY A LIST) and NOTHING ELSE. No the word "action flow:", or "response" before your response.
 
     """,
     input_variables=["task", "action_flow","tools_overview","experiences", "language"],
