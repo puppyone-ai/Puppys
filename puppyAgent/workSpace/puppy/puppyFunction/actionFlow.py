@@ -47,10 +47,15 @@ class Action():
                             pass
                     else:
                         pass
+            if searchForDo==True:
+                self.actionFlow.append({"action":comment,"status":"fixed"})
+                searchForDo = False
 
+            # distilate the task from the function
             print(self.actionFlow)
             self.task= inspect.signature(func).parameters["task"]
 
+            ## make the overall plan for the agent
             self.plan()
 
             # run the function defined by user
@@ -155,7 +160,7 @@ def ReAct(task="provide the answer to the weather of Munich",
 
     ## search for the quesiton @google search @zhihu search
     puppy1.do()
-
+    
     ## rethink about the answer @rethinker
     puppy1.do()
 
