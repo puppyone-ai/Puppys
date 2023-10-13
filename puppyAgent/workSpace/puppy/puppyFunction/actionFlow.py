@@ -5,7 +5,7 @@ import copy
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
 from langchain.chat_models import ChatOpenAI
-from prompt.actionFlowPrompt import fillingActionFlow_JSON_to_JSON, fillingActionFlow_JSON_to_JSON_GPTPolished,flillingActionFlow_Python_to_Python, flillingActionFlow_Python_to_Python_GPTPolished, fillingActionParameter_JSON_to_Python
+from prompt.actionFlowPrompt import fillingActionFlow_JSON_to_JSON, fillingActionFlow_JSON_to_JSON_RAW,flillingActionFlow_Python_to_Python, flillingActionFlow_Python_to_Python_RAW, fillingActionParameter_JSON_to_Python
 
 
 class Action():
@@ -23,23 +23,42 @@ class Action():
     # translate the code to action flow in JSON format
     def action(self, func):
         def wrapper(*args, **kwargs):
+
+            # read the source code and extract the action flow
             sourceCode = inspect.getsource(func)
             lines = sourceCode.split('\n')
-            is_comment = False
+            searchForDo = False
             comment = ""
             for line in lines:
-                if is_comment:
-                    is_comment = False
-                    if '.do()' in line:
-                        self.actionFlow.append({"action":comment,"status":"changeable"})
-                    else:
+                if '##' in line:
+                    if searchForDo==True:
                         self.actionFlow.append({"action":comment,"status":"fixed"})
-                elif '##' in line:
+                        searchForDo = False
                     comment = line.split('##', 1)[1].strip()
-                    is_comment = True
+                    searchForDo = True
+                else:
+                    if searchForDo==True:
+                        if '.do()' in line:
+                            if comment.strip() == "":
+                                self.actionFlow.append({"action":comment,"status":"free"})
+                            else:
+                                self.actionFlow.append({"action":comment,"status":"changeable"})
+                            searchForDo = False
+                        else:
+
+                            #TODO: add the code to the list
+                            pass
+                    else:
+                        pass
+            if searchForDo==True:
+                self.actionFlow.append({"action":comment,"status":"fixed"})
+                searchForDo = False
+
+            # distilate the task from the function
             print(self.actionFlow)
             self.task= inspect.signature(func).parameters["task"]
 
+            ## make the overall plan for the agent
             self.plan()
 
             # run the function defined by user
@@ -134,11 +153,13 @@ class Action():
     def actionToTools(self):
         print(self.actionFlow(self.currentStep))
         
-
 puppy1 = Action()
 
+
+
 @puppy1.action
-def ReAct(task="provide the answer to the weather of Munich"): 
+def ReAct(task="provide the answer to the weather of Munich",
+          plan=True): 
 
     ## search for the quesiton @google search @zhihu search
     puppy1.do()
@@ -151,7 +172,5 @@ def ReAct(task="provide the answer to the weather of Munich"):
 
     ##
     puppy1.do()
-
-    print("end")
 
 puppy1.run()
