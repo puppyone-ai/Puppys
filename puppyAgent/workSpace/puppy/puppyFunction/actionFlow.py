@@ -1,7 +1,5 @@
 import inspect
 import os
-import re
-import copy
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
 from langchain.chat_models import ChatOpenAI
@@ -40,9 +38,9 @@ class Action():
                     if searchForDo==True:
                         if '.do()' in line:
                             if comment.strip() == "":
-                                self.actionFlow.append({"action":comment,"status":"free"})
-                            else:
                                 self.actionFlow.append({"action":comment,"status":"changeable"})
+                            else:
+                                self.actionFlow.append({"action":comment,"status":"semi-fixed"})
                             searchForDo = False
                         else:
 
@@ -58,8 +56,16 @@ class Action():
             print(self.actionFlow)
             self.task= inspect.signature(func).parameters["task"]
 
-            ## make the overall plan for the agent
-            self.plan()
+            # make the overall plan for the agent
+            try:
+                self.planning= inspect.signature(func).parameters["planning"].default
+                if self.planning == False:
+                    pass
+                else:
+                    self.plan()
+
+            except:
+                self.plan()            
 
             # run the function defined by user
             self.currentStep = 0
@@ -69,7 +75,7 @@ class Action():
         self.functions.append(wrapper)
         return wrapper
     
-    # make the overall plan for the agent
+    # make the overall plan for the task
     def plan(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-0613",ApiKey="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"):
         # set up the Action planning
 
@@ -90,15 +96,14 @@ class Action():
         """
         agentExperience="none"
 
-
         # predict the workflow
         newActionFlowStr=fillingActionFlow.predict(task =self.task, action_flow=self.actionFlow,tools_overview=toolsSimplified, experiences=agentExperience,language="Chinese")
         self.actionFlow=eval(newActionFlowStr)
 
         print(self.actionFlow)
 
+    # for each action, decide how to do and do it
     def act(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-0613",ApiKey="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"):
-        # set up the action for filling the parameters
 
         # only for testing
         os.environ["OPENAI_API_KEY"]=ApiKey
@@ -121,28 +126,32 @@ class Action():
         newAction=fillingActionParameter.predict(task=self.task, action_flow=self.actionFlow, num=self.currentStep, current_action=self.actionFlow[self.currentStep],tools_detail=toolsSimplified, experiences=agentExperience)
         print(newAction)
         
-        #self.newAction=eval(newAction)
-        #print(self.newAction)
 
+    # do the action 
+    #TODO: If the user set multiple consecutively actions with the status as "changeable", an Index error will be reported.
     def do(self):
-        print("current step number:", self.currentStep)
-        print("action flow:", self.actionFlow)
-        if self.actionFlow[self.currentStep]["status"] == "changeable":
-            print("action for puppy:",self.actionFlow[self.currentStep]["action"])
+        print("current step:",self.currentStep)
+        if self.actionFlow[self.currentStep]["status"] == "semi-fixed":
+            print("action:", self.actionFlow[self.currentStep]["action"])
             self.act()
-
-            self.actionFlow[self.currentStep]["status"] = "fixed"
             self.currentStep += 1
 
         elif self.actionFlow[self.currentStep]["status"] == "fixed":
-            print("action for human:",self.actionFlow[self.currentStep]["action"])
+            print("action:", self.actionFlow[self.currentStep]["action"])
             self.currentStep += 1
             self.do()
-            
-        else:
-            print("pass")
-            print("action for human:",self.actionFlow[self.currentStep]["status"])
+        
+        elif self.actionFlow[self.currentStep]["status"] == "changeable":
+            print("action:", self.actionFlow[self.currentStep]["action"])
+            self.act()
+            try:
+                while self.actionFlow[self.currentStep+1]["status"] == "changeable":
+                    self.currentStep += 1
+                    self.act()
+            except IndexError:
+                pass
             self.currentStep += 1
+
 
     # filling out all the actions in the action flow
     def taskToAction(self):
@@ -156,11 +165,28 @@ class Action():
 puppy1 = Action()
 
 
-
 @puppy1.action
-def ReAct(task="provide the answer to the weather of Munich",
-          plan=True): 
+def WeatherAgent(task="告诉我Who won the US Open men's final in 2019? What is his age raised to the 0.334 power?",planning=True): 
 
+    ## search for the quesiton @google search
+    puppy1.do()
+
+    ## rethink about the answer @rethinker
+    puppy1.do()
+
+    ## clarify I am still running
+    print("now i am here")
+
+    ##
+    puppy1.do()
+
+    ## send the message to the president of the United States
+    puppy1.do()
+
+puppy1.run()
+
+
+'''
     ## search for the quesiton @google search @zhihu search
     puppy1.do()
 
@@ -173,4 +199,5 @@ def ReAct(task="provide the answer to the weather of Munich",
     ##
     puppy1.do()
 
-puppy1.run()
+    ## rethink about the answer @rethinker
+    puppy1.do()'''

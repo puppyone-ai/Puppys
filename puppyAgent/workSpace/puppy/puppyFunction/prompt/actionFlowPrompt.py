@@ -8,27 +8,27 @@ fillingActionFlow_JSON_to_JSON_RAW = PromptTemplate(
     You are not a part of any system or device. You first understand the problem, extract relevant variables, and make and devise a complete plan.
     You have the following task: "{task}". 
     The user has already make an action list:
-    {action_flow}However, the action flow has not been finished, and you need to compelete it.  The user's action flow is only a suggestion for you. If you think the action with status of changeable doesn't make sense, you are free to change the action. And DON'T change anything about the action with status of "fixed". You are NOT allowed to delete any action no matter it's "changeable" or "fixed".
+    {action_flow}However, the action flow has not been finished, and you need to compelete it.  The user's action flow is only a suggestion for you. If you think the action with status of semi-fixed doesn't make sense, you are free to change the action. And DON'T change anything about the action with status of "fixed". You are NOT allowed to delete any action no matter it's "semi-fixed" or "fixed".
     
-    NOTE that each action in the action list has its name and its status, for example: {{"action":"search the information","status":"changeable"}}, the name of the action is "search the information", and its status is "changeable". 
-    The meaning of status: "changeable": you can change the name of the action or devide one action into multi-actions (or add some more actions after one action) in the action list. "fixed" you can't change anything of the action
+    NOTE that each action in the action list has its name and its status, for example: {{"action":"search the information","status":"semi-fixed"}}, the name of the action is "search the information", and its status is "semi-fixed". 
+    The meaning of status: "semi-fixed": you can change the name of the action or devide one action into multi-actions (or add some more actions after one action) in the action list. "fixed" you can't change anything of the action
     
-    You need to finish the action list to achieve the task, and remember that you can ONLY change the name of the action or devide one action into multi-actions (or add some more actions after one action) in the action list with status of "changeable".
+    You need to finish the action list to achieve the task, and remember that you can ONLY change the name of the action or devide one action into multi-actions (or add some more actions after one action) in the action list with status of "semi-fixed".
     You evaluate the best action that can be executed STRICTLY by the list of tools that following provided. The user have recommended tools for each action, noted in it's name (for example: @XXX). You should consider it, but if it doesn't make sense, you can change it.
-    If you decide to use tools to complete one action, you need to mark the tools after the name of the action, for example:{{"action":"send the message to Mike @wechat","status":"changeable"}}.
+    If you decide to use tools to complete one action, you need to mark the tools after the name of the action, for example:{{"action":"send the message to Mike @wechat","status":"semi-fixed"}}.
     You are also allowed to write Python code with any public lib and run it to achieve each action, but make sure that the code CAN be executed, and you don't import or use any funcion that didn't exist. in this case, you are allowed to mark the tools with @Python
-    You provide concrete reasoning for your actions detailing your overall plan and any concerns you may have.Your reasoning should be no more than three sentences for each action. and it should be in the {language} language. other words such as "action", "status", "changeable" and "fixed" ARE ALWAYS in English.
+    You provide concrete reasoning for your actions detailing your overall plan and any concerns you may have.Your reasoning should be no more than three sentences for each action. and it should be in the {language} language. other words such as "action", "status", "semi-fixed" and "fixed" ARE ALWAYS in English.
     You don't need to use all the given tools. You are allowed to use the same tool for multiple times. The final action list should be AS SHORT AS POSSIBLE.
     {tools_overview}
 
     Actions are the one word actions above.
     You cannot pick an action outside of this list.
-    Ensure ONLY the content of "action","status" "reasoning" are in the {language} language, but other words such as "action", "status", "changeable" and "fixed" ARE ALWAYS in English.
+    Ensure ONLY the content of "action","status" "reasoning" are in the {language} language, but other words such as "action", "status", "semi-fixed" and "fixed" ARE ALWAYS in English.
     Return your response in an object of the form
 
     Example:(task: "calculate the GPT percapita of China")
-    [{{"action":"search the current GPT of China @google search","status":"changeable","reasoning": I need to search the information about Chinese GDP, and I know that Baidu search is terrible, so google search is the best tool to do this.}},
-    {{"action":"calculate the GPT percapita of China @python","status":"changeable","reasoning": To Calculate the GDP per capita, I need to write Python code to calculate the overall GDP devided by the population.}},
+    [{{"action":"search the current GPT of China @google search","status":"semi-fixed","reasoning": I need to search the information about Chinese GDP, and I know that Baidu search is terrible, so google search is the best tool to do this.}},
+    {{"action":"calculate the GPT percapita of China @python","status":"semi-fixed","reasoning": To Calculate the GDP per capita, I need to write Python code to calculate the overall GDP devided by the population.}},
     {{"action":"write a report","status":"fixed"}}]
 
     You have following experiences, Do follow them:
@@ -46,26 +46,33 @@ fillingActionFlow_JSON_to_JSON = PromptTemplate(
 
     Capabilities:
     Understanding Problems: Decode the problem, extract relevant variables, and devise a comprehensive plan.
-    Action Modification: Modify the name of actions or divide one action into multiple actions, only if their status is "changeable".
+    Action Modification creation, and deletion: Can occur if and only if the action's status is "changeable".
     Code Execution: Write and execute code that is guaranteed to run successfully without importing or using non-existent functions.
     Constraints:
     Action and Reasoning Language: Both must be in the {language} language.
-    Action Modification: Can occur if the action's status is "changeable" or "free".
-    Action deletion and creation is not allowed for action with status of "changeable" or "fixed". But you can delete the action with status of "free".
+    Action modification, creation and deletion: Are not allowed for action that status is "semi-fixed" or "fixed".
     Tools: Actions are strictly evaluated based on the provided list of tools.
     Task:
     You are tasked with: "{task}". The user has already created an action list: {action_flow}, but it's incomplete. Your job is to complete it, taking into account that actions with the status 'changeable' can be modified or expanded.
 
     Action and Tools:
-    Each action in the action list has a name and status (e.g., {{"action":"search information","status":"changeable"}}). Actions can be marked with tools (e.g., @GoogleSearch) based on their suitability. If the recommended tool is inappropriate, feel free to change it.
+    Each action in the action list has a name and status (e.g., {{"action":"search information","status":"semi-fixed"}}). Actions can be marked with tools (e.g., @GoogleSearch) based on their suitability. If the recommended tool is inappropriate, feel free to change it.
 
     Response Format:
     Provide concrete reasoning for your actions in no more than three sentences each. Return your response similar to the example below, and include nothing else.
 
     Example:(task: "calculate the GPT percapita of China")
-    [{{"action":"search the current GPT of China @google search","status":"changeable","reasoning": I need to search the information about Chinese GDP, and I know that Baidu search is terrible, so google search is the best tool to do this.}},
-    {{"action":"calculate the GPT percapita of China @python","status":"changeable","reasoning": To Calculate the GDP per capita, I need to write Python code to calculate the overall GDP devided by the population.}},
+
+    input: 
+    [[{{"action":"","status":"changeable"}},
+    {{"action":"calculate the percentage of ovelall GDP to persons","status":"semi-fixed"}},
     {{"action":"write a report","status":"fixed"}}]
+
+    output:
+    [{{"action":"search the current GPT of China @google search","status":"changeable","reasoning": "I need to search the information about Chinese GDP, and I know that Baidu search is terrible, so google search is the best tool to do this."}},
+    {{"action":"rethink about the answer @ChatGPT","status":"changeable", "reasoning": "I need to check about the result."}},
+    {{"action":"calculate the percentage of ovelall GDP to persons @python","status":"semi-fixed","reasoning": "To Calculate the GDP per capita, I need to write Python code to calculate the overall GDP devided by the population."}},
+    {{"action":"write a report","status":"fixed", "reasoning": "I need to save the result as a report."}}]
 
     Experiences:
     Adhere to the following experiences: {experiences}.
@@ -77,7 +84,7 @@ fillingActionFlow_JSON_to_JSON = PromptTemplate(
     Actions must be concise.
     Do not pick an action outside of the provided list.
     Ensure the final action list is as short as possible.
-    your response should be similiar with the example (ONLY A LIST) and NOTHING ELSE. No the word "action flow:", or "response" before your response.
+    your response should be similiar with the example (ONLY A LIST) and NOTHING ELSE. No the word "action flow:", or "response", or "output" before your response.
 
     """,
     input_variables=["task", "action_flow","tools_overview","experiences", "language"],
