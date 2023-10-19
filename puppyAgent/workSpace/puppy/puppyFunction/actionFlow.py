@@ -86,7 +86,7 @@ class Action():
         fillingActionFlow=LLMChain(llm=llm, prompt= fillingActionFlow_JSON_to_JSON)
 
         # only for testing:
-        toolsSimplified="""
+        functionsSimplified="""
         google_search: search for information via GoogleSearch, it's aviliable anytime you search
         zhihu_search: search for knowledge via ZhihuSearch, recommended for Chinese knowledge
         ChatGPT: ask ChatGPT for help, you can find information that is not timely
@@ -97,7 +97,7 @@ class Action():
         agentExperience="none"
 
         # predict the workflow
-        newActionFlowStr=fillingActionFlow.predict(task =self.task, action_flow=self.actionFlow,tools_overview=toolsSimplified, experiences=agentExperience,language="Chinese")
+        newActionFlowStr=fillingActionFlow.predict(task =self.task, action_flow=self.actionFlow,functions_overview=functionsSimplified, experiences=agentExperience,language="Chinese")
         self.actionFlow=eval(newActionFlowStr)
 
         print(self.actionFlow)
@@ -112,7 +112,7 @@ class Action():
         fillingActionParameter=LLMChain(llm=llm, prompt= fillingActionParameter_JSON_to_Python)
 
         # only for testing:
-        toolsSimplified="""
+        functionsSimplified="""
         google_search: search for information via GoogleSearch, it's aviliable anytime you search
         zhihu_search: search for knowledge via ZhihuSearch, recommended for Chinese knowledge
         ChatGPT: ask ChatGPT for help, you can find information that is not timely
@@ -123,7 +123,7 @@ class Action():
         agentExperience="none"
 
         # predict the workflow
-        newAction=fillingActionParameter.predict(task=self.task, action_flow=self.actionFlow, num=self.currentStep, current_action=self.actionFlow[self.currentStep],tools_detail=toolsSimplified, experiences=agentExperience)
+        newAction=fillingActionParameter.predict(task=self.task, action_flow=self.actionFlow, num=self.currentStep, current_action=self.actionFlow[self.currentStep],functions_detail=functionsSimplified, experiences=agentExperience)
         print(newAction)
         
 
@@ -159,45 +159,28 @@ class Action():
         print(self.task)
         print(self.currentStep)
 
-    def actionToTools(self):
+    def actionToFunctions(self):
         print(self.actionFlow(self.currentStep))
         
+
+
+
+
+
+
+
+
+
+
 puppy1 = Action()
 
-
 @puppy1.action
-def WeatherAgent(task="告诉我Who won the US Open men's final in 2019? What is his age raised to the 0.334 power?",planning=True): 
-
-    ## search for the quesiton @google search
-    puppy1.do()
-
-    ## rethink about the answer @rethinker
-    puppy1.do()
-
-    ## clarify I am still running
-    print("now i am here")
+def WeatherAgent(task="告诉我 Who won the US Open men's final in 2019? What is his age raised to the 0.334 power?",planning=True): 
 
     ##
     puppy1.do()
 
-    ## send the message to the president of the United States
-    puppy1.do()
-
+    ## send the message to your girlfriend
+    wechat.send("XXX")
+    
 puppy1.run()
-
-
-'''
-    ## search for the quesiton @google search @zhihu search
-    puppy1.do()
-
-    ## rethink about the answer @rethinker
-    puppy1.do()
-
-    ## clarify I am still running
-    print("now i am here")
-
-    ##
-    puppy1.do()
-
-    ## rethink about the answer @rethinker
-    puppy1.do()'''
