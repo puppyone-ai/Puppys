@@ -14,12 +14,12 @@ fillingActionFlow_JSON_to_JSON_RAW = PromptTemplate(
     The meaning of status: "semi-fixed": you can change the name of the action or devide one action into multi-actions (or add some more actions after one action) in the action list. "fixed" you can't change anything of the action
     
     You need to finish the action list to achieve the task, and remember that you can ONLY change the name of the action or devide one action into multi-actions (or add some more actions after one action) in the action list with status of "semi-fixed".
-    You evaluate the best action that can be executed STRICTLY by the list of tools that following provided. The user have recommended tools for each action, noted in it's name (for example: @XXX). You should consider it, but if it doesn't make sense, you can change it.
-    If you decide to use tools to complete one action, you need to mark the tools after the name of the action, for example:{{"action":"send the message to Mike @wechat","status":"semi-fixed"}}.
-    You are also allowed to write Python code with any public lib and run it to achieve each action, but make sure that the code CAN be executed, and you don't import or use any funcion that didn't exist. in this case, you are allowed to mark the tools with @Python
+    You evaluate the best action that can be executed STRICTLY by the list of function that following provided. The user have recommended function for each action, noted in it's name (for example: @XXX). You should consider it, but if it doesn't make sense, you can change it.
+    If you decide to use function to complete one action, you need to mark the function after the name of the action, for example:{{"action":"send the message to Mike @wechat","status":"semi-fixed"}}.
+    You are also allowed to write Python code with any public lib and run it to achieve each action, but make sure that the code CAN be executed, and you don't import or use any funcion that didn't exist. in this case, you are allowed to mark the function with @Python
     You provide concrete reasoning for your actions detailing your overall plan and any concerns you may have.Your reasoning should be no more than three sentences for each action. and it should be in the {language} language. other words such as "action", "status", "semi-fixed" and "fixed" ARE ALWAYS in English.
-    You don't need to use all the given tools. You are allowed to use the same tool for multiple times. The final action list should be AS SHORT AS POSSIBLE.
-    {tools_overview}
+    You don't need to use all the given function. You are allowed to use the same tool for multiple times. The final action list should be AS SHORT AS POSSIBLE.
+    {functions_overview}
 
     Actions are the one word actions above.
     You cannot pick an action outside of this list.
@@ -36,7 +36,7 @@ fillingActionFlow_JSON_to_JSON_RAW = PromptTemplate(
 
     your response should be similiar with the example (ONLY A LIST) and NOTHING ELSE. No the word "action flow:", or "response" before your response.
     """,
-    input_variables=["task", "action_flow","tools_overview","experiences", "language"],
+    input_variables=["task", "action_flow","functions_overview","experiences", "language"],
 )
 
 # rough planing JSON mode GPT polished version
@@ -51,12 +51,12 @@ fillingActionFlow_JSON_to_JSON = PromptTemplate(
     Constraints:
     Action and Reasoning Language: Both must be in the {language} language.
     Action modification, creation and deletion: Are not allowed for action that status is "semi-fixed" or "fixed".
-    Tools: Actions are strictly evaluated based on the provided list of tools.
+    Function: Actions are strictly evaluated based on the provided list of function, and Python.
     Task:
     You are tasked with: "{task}". The user has already created an action list: {action_flow}, but it's incomplete. Your job is to complete it, taking into account that actions with the status 'changeable' can be modified or expanded.
 
-    Action and Tools:
-    Each action in the action list has a name and status (e.g., {{"action":"search information","status":"semi-fixed"}}). Actions can be marked with tools (e.g., @GoogleSearch) based on their suitability. If the recommended tool is inappropriate, feel free to change it.
+    Action and Function:
+    Each action in the action list has a name and status (e.g., {{"action":"search information","status":"semi-fixed"}}). Actions can be marked with function (e.g., @GoogleSearch) based on their suitability. If the recommended tool is inappropriate, feel free to change it.
 
     Response Format:
     Provide concrete reasoning for your actions in no more than three sentences each. Return your response similar to the example below, and include nothing else.
@@ -77,8 +77,8 @@ fillingActionFlow_JSON_to_JSON = PromptTemplate(
     Experiences:
     Adhere to the following experiences: {experiences}.
 
-    Tools Overview:
-    {tools_overview}
+    Function Overview:
+    {functions_overview}
 
     Note:
     Actions must be concise.
@@ -87,7 +87,7 @@ fillingActionFlow_JSON_to_JSON = PromptTemplate(
     your response should be similiar with the example (ONLY A LIST) and NOTHING ELSE. No the word "action flow:", or "response", or "output" before your response.
 
     """,
-    input_variables=["task", "action_flow","tools_overview","experiences", "language"],
+    input_variables=["task", "action_flow","functions_overview","experiences", "language"],
 )
 
 # rough planing Python mode
@@ -114,12 +114,12 @@ flillingActionFlow_Python_to_Python_RAW = PromptTemplate(
 
     then you are only allowed to change the comment of "## search for the quesiton @google search @zhihu search","## rethink about the answer @rethinker", and ## do whatever you want to do. You can devide the action into multi-actions, or add some more actions after one action, but you can't change the code of puppy1.act(), and don't change the comment of "## send the message to the CEO of Google @email", because it doesn't have a function of XXX.act(), even it's rediculos for the task.
 
-    You evaluate the best action that can be executed STRICTLY by the list of tools that following provided. The user have recommended tools for each action, noted in it's name (for example: @XXX). You should consider it, but if it doesn't make sense, you can change it.
-    If you decide to use tools to complete one action, you need to mark the tools after the commente of the action, for example:send the message to Mike @wechat
-    You are also allowed to run Python code with any public lib and run it to achieve each action, but make sure that the code CAN be executed, and you don't import or use any funcion that didn't exist. in this case, you should mark the tools with @Python
+    You evaluate the best action that can be executed STRICTLY by the list of function that following provided. The user have recommended function for each action, noted in it's name (for example: @XXX). You should consider it, but if it doesn't make sense, you can change it.
+    If you decide to use function to complete one action, you need to mark the function after the commente of the action, for example:send the message to Mike @wechat
+    You are also allowed to run Python code with any public lib and run it to achieve each action, but make sure that the code CAN be executed, and you don't import or use any funcion that didn't exist. in this case, you should mark the function with @Python
     You provide concrete reasoning for your actions(only the action with XXX.puppy() following) detailing your overall plan and any concerns you may have.Your reasoning should be no more than three sentences for each action. and it should be in the {language} language. show the reasoning in the comment before the action.
-    You don't need to use all the given tools. You are allowed to use the same tool for multiple times. The final action list should be AS SHORT AS POSSIBLE.
-    {tools_overview}
+    You don't need to use all the given function. You are allowed to use the same tool for multiple times. The final action list should be AS SHORT AS POSSIBLE.
+    {functions_overview}
 
     Actions are the one word actions above.
     You cannot pick an action outside of this list.
@@ -144,7 +144,7 @@ flillingActionFlow_Python_to_Python_RAW = PromptTemplate(
     You have following experiences, Do follow them:{experiences}
     your response should be similiar with the example (ONLY A LIST) and NOTHING ELSE.
     """,
-    input_variables=["task", "action_list","tools_overview","experiences", "language"],
+    input_variables=["task", "action_list","functions_overview","experiences", "language"],
 )
 
 # detial planing Python mode GPT polished version
@@ -169,7 +169,7 @@ flillingActionFlow_Python_to_Python = PromptTemplate(
     Comments marked with ## and not followed by XXX.act() should not be changed or deleted.
     Tool Utilization:
 
-    Execute actions using the tools provided below.
+    Execute actions using the function provided below.
     You may use a different tool if the suggested one is not optimal.
     Reasoning:
 
@@ -179,9 +179,9 @@ flillingActionFlow_Python_to_Python = PromptTemplate(
 
     Do not write or modify any Python code except for changing or adding comments.
     Ensure the Python code can be executed and does not use non-existing functions.
-    Provided Tools:
+    Provided Functions:
 
-    {tools_overview}
+    {functions_overview}
     Example Response:
 
     For a task like "calculate the GDP per capita of China", your response should look like this:
@@ -205,7 +205,7 @@ flillingActionFlow_Python_to_Python = PromptTemplate(
     Return:
     Return the modified action list following the guidelines above.
     """,
-    input_variables=["task", "action_list","tools_overview","experiences", "language"],
+    input_variables=["task", "action_list","functions_overview","experiences", "language"],
 )
 
 # detail planing Python mode:
@@ -220,21 +220,21 @@ fillingActionParameter_JSON_to_Python = PromptTemplate(
     Now this actionflow has reached the {num}th step. You need to finish this step. Your action, reasoning are listed:
 
     {current_action}
-    Note that the tools after@ is the tools that the user have recommended for you, you could consider it, but if you find some tools better than the recommendation, you use them.
-    The instruction of the tools avaliable for the action in this step are:
+    Note that the function after@ is the function that the user have recommended for you, you could consider it, but if you find some function better than the recommendation, you use them.
+    The instruction of the function avaliable for the action in this step are:
     
-    {tools_detail}
+    {functions_detail}
 
     Here are the knowledge you have learned:{experiences}
     
-    Try to understand the meaning of each tool and its parameter, and decide the best tools and use the function for this step to accomplish the task. 
+    Try to understand the meaning of each tool and its parameter, and decide the best function and use the function for this step to accomplish the task. 
     For example: (current step: search the information @google search @zhihu search)
     
     result_1=google_search("the information") # result_1 is the result of google search for the first time
     return result_1
 
     your response should be similiar with the example and NOTHING ELSE.
-    """,input_variables=["task", "action_flow", "num", "current_action", "tools_detail", "experiences"]
+    """,input_variables=["task", "action_flow", "num", "current_action", "functions_detail", "experiences"]
 )
 
 
@@ -255,7 +255,7 @@ startGoalPrompt= PromptTemplate(
     Your reasoning should be no more than six sentences for each task.
     You evaluate the best action to take strictly from the list of actions that provided:
     
-    {tools_overview}
+    {functions_overview}
 
     Actions are the one word actions above.
     You cannot pick an action outside of this list.
@@ -281,7 +281,7 @@ startGoalPrompt= PromptTemplate(
     
     your response should be similiar with the example and NOTHING ELSE.
     """,
-    input_variables=["goal", "tools_overview", "language"],
+    input_variables=["goal", "functions_overview", "language"],
 )
 
 
