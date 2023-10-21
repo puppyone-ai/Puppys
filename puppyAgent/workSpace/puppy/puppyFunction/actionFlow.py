@@ -167,11 +167,6 @@ class Action():
 
 
 
-
-
-
-
-
 puppy1 = Action()
 
 @puppy1.action
@@ -181,6 +176,9 @@ def WeatherAgent(task="告诉我 Who won the US Open men's final in 2019? What i
     puppy1.do()
 
     ## send the message to your girlfriend
-    wechat.send("XXX")
-    
+    print("Finished!")
+
+    ## save the result to the database
+    puppy1.do()
+
 puppy1.run()
