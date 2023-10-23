@@ -220,6 +220,15 @@ fillingActionParameter_JSON_to_Python = PromptTemplate(
     Now this actionflow has reached the {num}th step. You need to finish this step. Your action, reasoning are listed:
 
     {current_action}
+
+    Note that the actionflow before this action as code are shown below:
+
+    {previous_code}
+
+    and the following actions as code are shown below:
+
+    {following_code}
+    
     Note that the function after@ is the function that the user have recommended for you, you could consider it, but if you find some function better than the recommendation, you use them.
     The instruction of the function avaliable for the action in this step are:
     
