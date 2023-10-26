@@ -164,9 +164,6 @@ class Action():
         
 
 
-
-
-
 puppy1 = Action()
 
 @puppy1.action
