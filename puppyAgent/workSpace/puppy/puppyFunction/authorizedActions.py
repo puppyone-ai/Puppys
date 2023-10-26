@@ -1,8 +1,15 @@
 class Authority:
-    def __init__(self, authorizedTools=None):
+    def __init__(self):
 
         # define the authorized tools
-        self.authorizedTools = authorizedTools
+        self.authorizedTools = """
+        google_search: search for information via GoogleSearch, it's aviliable anytime you search
+        zhihu_search: search for knowledge via ZhihuSearch, recommended for Chinese knowledge
+        ChatGPT: ask ChatGPT for help, you can find information that is not timely
+        Nothing: just write python code
+        Message: send a message to the user
+        Save: save the result to the database
+        """
 
     # add a new authorized tool
     def append(self, item: str):
