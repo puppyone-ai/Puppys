@@ -223,11 +223,11 @@ fillingActionParameter_JSON_to_Python = PromptTemplate(
 
     Note that the actionflow before this action as code are shown below:
 
-    {previous_code}
+    previous_code
 
     and the following actions as code are shown below:
 
-    {following_code}
+    following_code
     
     Note that the function after@ is the function that the user have recommended for you, you could consider it, but if you find some function better than the recommendation, you use them.
     The instruction of the function avaliable for the action in this step are:
