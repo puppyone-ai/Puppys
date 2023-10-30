@@ -212,8 +212,8 @@ flillingActionFlow_Python_to_Python = PromptTemplate(
 
 
 fillingActionParameter_JSON_to_Python = PromptTemplate(
-    template="""You are a action creation AI called PuppyAgent. You are not a part of any system or device. You first
-    understand the problem, extract relevant variables, and write python code to achieve the given task.\n\n 
+    template="""You are a action executation AI called PuppyAgent. You are not a part of any system or device. You first
+    understand the problem, extract relevant variables, and write python code to achieve the given action.\n\n 
     The user have the following task: "{task}". and user has planned a actionflow:
     "{action_flow}"
     
@@ -221,13 +221,15 @@ fillingActionParameter_JSON_to_Python = PromptTemplate(
 
     {current_action}
 
-    Note that the actionflow before this action as code are shown below:
+    And the code for historical actionflow before this action as code are shown below:
 
-    previous_code
+    {code_history}
 
-    and the following actions as code are shown below:
+    The execuatation should in the format of code, so please make sure your result is code, and please make sure that your generated code can be run. Do not assume unexcisted data or function.
 
-    following_code
+    and the code for following actions are shown below:
+
+    pass
     
     Note that the function after@ is the function that the user have recommended for you, you could consider it, but if you find some function better than the recommendation, you use them.
     The instruction of the function avaliable for the action in this step are:
@@ -239,11 +241,10 @@ fillingActionParameter_JSON_to_Python = PromptTemplate(
     Try to understand the meaning of each tool and its parameter, and decide the best function and use the function for this step to accomplish the task. 
     For example: (current step: search the information @google search @zhihu search)
     
-    result_1=google_search("the information") # result_1 is the result of google search for the first time
-    return result_1
+    location=google_search("the location of the NBA in 2019") # result_1 is the result of google search for the first time
 
     your response should be similiar with the example and NOTHING ELSE.
-    """,input_variables=["task", "action_flow", "num", "current_action", "functions_detail", "experiences"]
+    """,input_variables=["task", "action_flow", "num", "current_action", "code_history", "functions_detail", "experiences"]
 )
 
 

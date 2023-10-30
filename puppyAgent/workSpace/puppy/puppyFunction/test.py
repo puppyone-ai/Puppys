@@ -54,8 +54,43 @@ class MyClass:
         # 调用内部函数 ReAct
         ReAct()
 
-# 创建 MyClass 的实例
-my_instance = MyClass()
 
-# 调用装饰器修改 Test 函数，并调用修改后的 Test 函数
-inject_new_function(my_instance.Test)()
+import threading
+import queue
+
+def worker(task_queue):
+    while True:
+        task = task_queue.get()
+        if task is None:
+            break
+        try:
+            exec(task)
+        except Exception as e:
+            print(f"Error executing task: {e}")
+        task_queue.task_done()
+
+task_queue = queue.Queue()
+t = threading.Thread(target=worker, args=(task_queue,))
+t.start()
+
+# 添加多个任务到队列，其中一个任务会引发错误
+tasks = [
+    "aaa=1",
+    "print(aaa)",
+    "1 / 0",  # 这将引发一个 ZeroDivisionError
+    "print('Task 4 executed!')"
+]
+
+for task in tasks:
+    task_queue.put(task)
+
+# 结束工作线程
+task_queue.put(None)
+t.join()
+
+
+lst = ["a", "b", "c", "d"]
+result = ''.join(lst)  # join the list elements with no delimiter
+print(result)
+
+
