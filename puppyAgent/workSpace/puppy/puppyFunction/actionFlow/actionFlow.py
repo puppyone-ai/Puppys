@@ -90,6 +90,7 @@ class Action():
         self.functions.append(wrapper)
         return wrapper
     
+    # the thread for running code(actionFlow should be run in this thread)
     def codeThread(self, task_queue):
         while True:
             task = task_queue.get()
@@ -128,7 +129,7 @@ class Action():
     # for each action, decide how to do and do it
     def act(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-0613",ApiKey="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"):
         os.environ["OPENAI_API_KEY"]=ApiKey
-
+        
         llm=ChatOpenAI(temperature=temperature,max_tokens=max_tokens,model_name=model_name)
         fillingActionParameter=LLMChain(llm=llm, prompt= fillingActionParameter_JSON_to_Python)
 
@@ -167,9 +168,11 @@ class Action():
             try:
                 while self.actionFlowJSON[self.currentStep+1]["status"] == "changeable":
                     self.currentStep += 1
+                    print("action:", self.actionFlowJSON[self.currentStep]["action"])
                     self.act()
             except IndexError:
-                pass
+                print("IndexError")
+
             self.currentStep += 1
 
     def taskToAction(self):
@@ -187,14 +190,11 @@ def WeatherAgent(task="compare about the price of Skyline1 and Skyline2(they are
 
     ##
     puppy1.do()
-
-    ## rethink about the result
-    puppy1.do()
-
-    ## compare about the price
-    puppy1.do()
     
     ## send the result to my mom
     print("sent")
+
+    ## send the result to my dad
+    puppy1.do()
 
 puppy1.run()
