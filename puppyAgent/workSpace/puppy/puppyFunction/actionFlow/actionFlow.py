@@ -51,6 +51,9 @@ class Action():
             self.actionFlowJSON.append({"action":comment,"status":"fixed"})
             searchForDo = False
 
+    def actionFlowJSON2Python(self,JSON):
+        pass
+
     # translate the code to action flow in JSON format, and run the agent
     def action(self, func):
         def wrapper(*args, **kwargs):
@@ -129,7 +132,7 @@ class Action():
     # for each action, decide how to do and do it
     def act(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-0613",ApiKey="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"):
         os.environ["OPENAI_API_KEY"]=ApiKey
-        
+
         llm=ChatOpenAI(temperature=temperature,max_tokens=max_tokens,model_name=model_name)
         fillingActionParameter=LLMChain(llm=llm, prompt= fillingActionParameter_JSON_to_Python)
 
