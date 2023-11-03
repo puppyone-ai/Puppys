@@ -241,11 +241,34 @@ fillingActionParameter_JSON_to_Python = PromptTemplate(
     Try to understand the meaning of each tool and its parameter, and decide the best function and use the function for this step to accomplish the task. 
     For example: (current step: search the information @google search @zhihu search)
     
-    location=google_search("the location of the NBA in 2019") # result_1 is the result of google search for the first time
+    # the location is the result of google search. The type of result is string
+    location=google_search("the location of the NBA in 2019")
 
+    DO write the code in python, and DO write the comment that explain the type of the parameter and the meaning of the code.
+    make sure that the parameter in your respond code follow the type of the parameter in the function instruction. 
     your response should be similiar with the example and NOTHING ELSE.
     """,input_variables=["task", "action_flow", "num", "current_action", "code_history", "functions_detail", "experiences"]
 )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

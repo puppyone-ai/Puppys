@@ -51,6 +51,9 @@ class Action():
             self.actionFlowJSON.append({"action":comment,"status":"fixed"})
             searchForDo = False
 
+    def actionFlowJSON2Python(self,JSON):
+        pass
+
     # translate the code to action flow in JSON format, and run the agent
     def action(self, func):
         def wrapper(*args, **kwargs):
@@ -90,6 +93,7 @@ class Action():
         self.functions.append(wrapper)
         return wrapper
     
+    # the thread for running code(actionFlow should be run in this thread)
     def codeThread(self, task_queue):
         while True:
             task = task_queue.get()
@@ -167,9 +171,11 @@ class Action():
             try:
                 while self.actionFlowJSON[self.currentStep+1]["status"] == "changeable":
                     self.currentStep += 1
+                    print("action:", self.actionFlowJSON[self.currentStep]["action"])
                     self.act()
             except IndexError:
-                pass
+                print("IndexError")
+
             self.currentStep += 1
 
     def taskToAction(self):
@@ -180,21 +186,32 @@ class Action():
     def actionToFunctions(self):
         print(self.actionFlowJSON(self.currentStep))
 
+
+
+
+
+
+
+
+
+
 puppy1 = Action()
 
 @puppy1.action
-def WeatherAgent(task="compare about the price of Skyline1 and Skyline2(they are games)",planning=True): 
+def KittyAgent(task="compare about the price of Skyline1 and Skyline2(they are games)",planning=True): 
 
     ##
     puppy1.do()
-
-    ## rethink about the result
-    puppy1.do()
-
-    ## compare about the price
-    puppy1.do()
     
-    ## send the result to my mom
+    ## send the result to my mom @
     print("sent")
+
+    ## say hello to my son(retry)
+    send = False
+    if send == False:
+        puppy1.do()
+
+    ## send the result to my dad
+    puppy1.do()
 
 puppy1.run()
