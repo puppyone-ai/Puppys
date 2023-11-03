@@ -186,16 +186,30 @@ class Action():
     def actionToFunctions(self):
         print(self.actionFlowJSON(self.currentStep))
 
+
+
+
+
+
+
+
+
+
 puppy1 = Action()
 
 @puppy1.action
-def WeatherAgent(task="compare about the price of Skyline1 and Skyline2(they are games)",planning=True): 
+def KittyAgent(task="compare about the price of Skyline1 and Skyline2(they are games)",planning=True): 
 
     ##
     puppy1.do()
     
-    ## send the result to my mom
+    ## send the result to my mom @
     print("sent")
+
+    ## say hello to my son(retry)
+    send = False
+    if send == False:
+        puppy1.do()
 
     ## send the result to my dad
     puppy1.do()
