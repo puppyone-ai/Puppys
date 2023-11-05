@@ -1,4 +1,7 @@
 # ActionFlow
+
+`actionFlow` is like a to-do list for an agent, telling it the exact steps to follow: do this first, then do that. This way, an agent can take things step by step, just like running through a list of commands in a script.
+
 ## What are involved in an action flow?
 
 The `actionFlow` is a crucial attribute of an agent. It delineates how an agent should execute actions and what kinds of actions it should undertake. 
@@ -55,16 +58,16 @@ actionFlow=[{'action': 'search for the NBA game', 'status': 'changable', 'reason
 @puppy1.action
 def ReAct(task="provide the answer to the input question"):   
    ## search for the quesiton @google search @wiki search
-   puppy1.act()
+   puppy1.do()
 
    ## rethink about the answer @rethinker
-   puppy1.act()
+   puppy1.do()
 
    ## clarify I am still running
    print("now i am here")
 
-   ## TODO
-   puppy1.act()
+   ## 
+   puppy1.do()
    
 puppy1.run()
 ```
