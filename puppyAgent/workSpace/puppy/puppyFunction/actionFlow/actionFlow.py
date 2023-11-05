@@ -93,6 +93,13 @@ class Action():
         self.functions.append(wrapper)
         return wrapper
     
+    def code(self, function):
+        pass
+
+    def planning(self, function):
+        pass
+
+
     # the thread for running code(actionFlow should be run in this thread)
     def codeThread(self, task_queue):
         while True:
@@ -192,26 +199,19 @@ class Action():
 
 
 
-
-
-
 puppy1 = Action()
 
 @puppy1.action
-def KittyAgent(task="compare about the price of Skyline1 and Skyline2(they are games)",planning=True): 
+def Dog(task="compare about the price of Skyline1 and Skyline2(they are games)",planning=True): 
 
     ##
     puppy1.do()
-    
-    ## send the result to my mom @
-    print("sent")
 
-    ## say hello to my son(retry)
-    send = False
-    if send == False:
-        puppy1.do()
-
-    ## send the result to my dad
+    ## send the result to my the president of the USA
     puppy1.do()
+
+@puppy1.code
+def DogBrain():
+    pass
 
 puppy1.run()

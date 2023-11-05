@@ -8,16 +8,16 @@ To define an agent, the first thing you need to do is to defien its task and act
 @puppy1.action
 def ReAct(task="provide the answer to the input question"):   
    ## search for the quesiton @google search @wiki search
-   puppy1.act()
+   puppy1.do()
 
    ## rethink about the answer @rethinker
-   puppy1.act()
+   puppy1.do()
 
    ## clarify I am still running
    print("now i am here")
 
-   ## TODO
-   puppy1.act()
+   ## 
+   puppy1.do()
    
 puppy1.run()
 ```
@@ -28,27 +28,27 @@ We defined three modes for each action. These three modes are created to disting
    - **Planning:** The agent decides what action to take.
    - **Execution:**  The agent determines how to execute this specified action.
 
-   please use ## TODO to mark this task is for agent to decide the action, and the puppy1.act() is for agent to execute the action.
+   please use `##` with no comment to mark this task is for agent to decide the action, and the puppy1.do() is for agent to execute the action.
    ```python
-   ## TODO
-   puppy1.act()
+   ## 
+   puppy1.do()
    ```
 
 2. **Agent-Act Only:**
    - **Planning:** Humans specify the action.
    - **Execution:** The agent determines how to execute this specified action.
 
-   please use ## to mark your planed action for the agent, and the puppy1.act() is for agent to execute the action.
+   please use `##` with comment to mark your planed action for the agent, and the `puppy1.do()` is for agent to execute the action.
    ```python
    ## rethink about the answer @rethinker
-   puppy1.act()
+   puppy1.do()
    ```
 
 3. **Agent-Not Involved:**
    - **Planning:** The agent is not involved in planning the action.
    - **Execution:** The agent is not involved in executing the action.
 
-   please use ## to mark your planed action, and write code behind it to execute the action. Even though the agent is not involved in planning and executing the action, a good comment can help the agent to understand the context better, and therefore help the agent to plan and execute other action better.
+   please use `##` to mark your planed action, and write code behind it to execute the action. Even though the agent is not involved in planning and executing the action, a good comment can help the agent to understand the context better, and therefore help the agent to plan and execute other action better.
    ```python
    ## clarify I am still running
    print("now i am here")
