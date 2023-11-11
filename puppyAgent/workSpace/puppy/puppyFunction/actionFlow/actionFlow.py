@@ -199,19 +199,23 @@ class Action():
 
 
 
+
+
+
+
+
 puppy1 = Action()
 
 @puppy1.action
-def Dog(task="compare about the price of Skyline1 and Skyline2(they are games)",planning=True): 
+def Dog(task="帮我找到全网最便宜的 iPhone 购买渠道",planning=True): 
 
     ##
     puppy1.do()
 
-    ## send the result to my the president of the USA
+    ## 发消息给我妈妈
     puppy1.do()
 
-@puppy1.code
-def DogBrain():
-    pass
+    ## 保存结果
+    save(data)
 
 puppy1.run()
