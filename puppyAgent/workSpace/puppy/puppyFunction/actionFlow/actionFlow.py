@@ -212,4 +212,10 @@ def Dog(task="帮我找到全网最便宜的 iPhone 购买渠道",planning=True)
     ##
     puppy1.do()
 
+    ## 发消息给我妈妈
+    puppy1.do()
+
+    ## 保存结果
+    save(data)
+
 puppy1.run()
