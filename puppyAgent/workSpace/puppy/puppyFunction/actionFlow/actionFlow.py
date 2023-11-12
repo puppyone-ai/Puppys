@@ -199,11 +199,6 @@ class Action():
 
 
 
-
-
-
-
-
 puppy1 = Action()
 
 @puppy1.action
@@ -212,10 +207,13 @@ def Dog(task="帮我找到全网最便宜的 iPhone 购买渠道",planning=True)
     ##
     puppy1.do()
 
-    ## 发消息给我妈妈
+    ## send the price to my mom
     puppy1.do()
 
-    ## 保存结果
-    save(data)
+    ##
+    puppy1.do()
+
+
+
 
 puppy1.run()
