@@ -18,7 +18,7 @@ class Action():
 
     # to run the agent
     def run(self):
-        for func in self.functions:
+        for func in self.functions: 
             func()
 
     # translate the actionFlowPython to actionFlowJSON(Initial)
@@ -202,17 +202,16 @@ class Action():
 puppy1 = Action()
 
 @puppy1.action
-def Dog(task="帮我找到全网最便宜的 iPhone 购买渠道",planning=True): 
+def Yuning(task="帮我找到全网最便宜的 iPhone 购买渠道",planning=True): 
 
     ##
     puppy1.do()
 
-    ## send the price to my mom
+    ## send the message to me 
     puppy1.do()
 
     ##
     puppy1.do()
-
 
 
 
