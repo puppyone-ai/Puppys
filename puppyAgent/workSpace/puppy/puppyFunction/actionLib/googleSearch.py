@@ -1,7 +1,7 @@
 from serpapi import GoogleSearch
 import json
 
-
+## Search for the top results
 def SerpyGoogleSearch(test,location,pickingNum=3):
     discription="This is a google search function, it can search for information via GoogleSearch, it's aviliable anytime you search"
 
@@ -51,3 +51,8 @@ def SerpyGoogleSearch(test,location,pickingNum=3):
 
 
 print(SerpyGoogleSearch('how to make a cake','New York'))
+
+## Rethink about the result
+def DistillateResult(result,discription):
+    pass
+    
