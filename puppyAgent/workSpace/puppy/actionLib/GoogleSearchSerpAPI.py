@@ -35,7 +35,6 @@ class SerpyGoogleSearch():
 
         ## pickup the answer box
         if "answer_box" in results:
-            print(results["answer_box"])
             answer_box_results={}
 
 
@@ -270,23 +269,6 @@ class SerpyGoogleSearch():
 
         return final_answer
 
-    ## Rethink about the result
-    def DistillateResult(self, result):
-        # Convert the result to a string
-        result_str = json.dumps(result, indent=4)
-
-        # Set up the prompt for GPT-3
-        prompt = f"I have a set of search results:\n\n{result_str}\n\nCan you describe these results in plain English?"
-
-        # Use the OpenAI API to generate a response
-        response = openai.Completion.create(
-            engine="text-davinci-002",
-            prompt=prompt,
-            max_tokens=150
-        )
-
-        # Return the generated text
-        return response.choices[0].text.strip()
 
 
 if __name__ == '__main__':
@@ -295,5 +277,4 @@ if __name__ == '__main__':
     pickingNum=3
     testSerpyGoogleSearch=SerpyGoogleSearch(test,location,pickingNum)
     result = testSerpyGoogleSearch.run()
-    description = testSerpyGoogleSearch.DistillateResult(result)
-    print(description)
+    print(result)

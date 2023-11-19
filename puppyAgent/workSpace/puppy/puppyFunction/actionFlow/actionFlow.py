@@ -5,6 +5,10 @@ from langchain.chains import LLMChain
 from langchain.chat_models import ChatOpenAI
 from prompt.actionFlowPrompt import *
 
+from puppy.puppyFunction.actionLib.googleSearch import serpGoogle
+
+
+
 import threading
 import queue
 
