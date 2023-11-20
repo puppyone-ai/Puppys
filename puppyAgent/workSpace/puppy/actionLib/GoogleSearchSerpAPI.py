@@ -4,7 +4,7 @@ import openai
 
 ## Search for the top results
 
-class SerpyGoogleSearch():
+class GoogleSearcSerpy():
     def __init__(self,test,location="China",pickingNum=3):
         self.discription="This is a google search function, it can search for information via GoogleSearch, it's aviliable anytime you search"
         self.test=test
@@ -275,6 +275,6 @@ if __name__ == '__main__':
     test="Rockefeller Center hours"
     location="Austin,Texas,United States"
     pickingNum=3
-    testSerpyGoogleSearch=SerpyGoogleSearch(test,location,pickingNum)
+    testSerpyGoogleSearch=GoogleSearchSerpy(test,location,pickingNum)
     result = testSerpyGoogleSearch.run()
     print(result)
