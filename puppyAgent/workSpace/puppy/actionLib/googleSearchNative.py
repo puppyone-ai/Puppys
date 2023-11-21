@@ -20,7 +20,7 @@ class GoogleSearchNative:
 
 
 if __name__ == "__main__":
-    search_content = "who is the president of the united states?"
+    search_content = "how should I intall the package of openAI"
 
     my_api_key = "AIzaSyAr6hD-hcBxHUd2HGco-av94QxMT516Bec"
     my_cse_id = "c7f01980ba6754447"
@@ -36,6 +36,7 @@ if __name__ == "__main__":
         result_simplified_list.append(result_simplified)
         print(result_simplified)
 
-#    print(result_simplified_list)
 
+
+#    print(result_simplified_list)
 #    pprint.pprint(result)
