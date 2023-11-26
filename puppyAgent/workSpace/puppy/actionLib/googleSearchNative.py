@@ -36,7 +36,4 @@ if __name__ == "__main__":
         result_simplified_list.append(result_simplified)
         print(result_simplified)
 
-
-
-#    print(result_simplified_list)
-#    pprint.pprint(result)
+        
