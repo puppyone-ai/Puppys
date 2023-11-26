@@ -5,6 +5,10 @@ from langchain.chains import LLMChain
 from langchain.chat_models import ChatOpenAI
 from prompt.actionFlowPrompt import *
 
+from puppy.puppyFunction.actionLib.googleSearch import serpGoogle
+
+
+
 import threading
 import queue
 
@@ -122,11 +126,7 @@ class Action():
 
         functionsSimplified="""
         google_search: search for information via GoogleSearch, it's aviliable anytime you search
-        zhihu_search: search for knowledge via ZhihuSearch, recommended for Chinese knowledge
         ChatGPT: ask ChatGPT for help, you can find information that is not timely
-        Nothing: just write python code
-        Message: send a message to the user
-        Save: save the result to the database
         """
         agentExperience="none"
 
@@ -144,12 +144,8 @@ class Action():
         fillingActionParameter=LLMChain(llm=llm, prompt= fillingActionParameter_JSON_to_Python)
 
         functionsSimplified="""
-        google_search: search for information via GoogleSearch, it's aviliable anytime you search
-        zhihu_search: search for knowledge via ZhihuSearch, recommended for Chinese knowledge
-        ChatGPT: ask ChatGPT for help, you can find information that is not timely
-        Nothing: just write python code
-        Message: send a message to the user
-        Save: save the result to the database
+        google_search: search for information via GoogleSearch, it's aviliable anytime you search. The result returns a list of dictionaries, each dictionary contains the title, link and snippet of the search result.
+        ChatGPT: ask ChatGPT for help, you can find information that is not timely. The result returns the answer from ChatGPT.
         """
         agentExperience="none"
 
