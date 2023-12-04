@@ -4,13 +4,13 @@ import openai
 
 ## Search for the top results
 
-class GoogleSearcSerpy():
-    def __init__(self,test,location="China",pickingNum=3):
+class GoogleSearchSerpy():
+    def __init__(self,searchContent, apiKey,location="China",pickingNum=3):
         self.discription="This is a google search function, it can search for information via GoogleSearch, it's aviliable anytime you search"
-        self.test=test
+        self.search_content = searchContent
         self.location=location
         self.pickingNum=pickingNum
-        self.apiKey="72b0b910c9b0c16277b7295ff1e271b945610f0e4dcec66359d9a91b344a56e1"
+        self.apiKey=apiKey
 
     def setDiscription(self,discription):
         self.discription=discription
@@ -21,7 +21,7 @@ class GoogleSearcSerpy():
     def run(self):
 
         params = {
-        "q": self.test,
+        "q": self.search_content,
         "location": self.location,
         "hl": "en",
         "gl": "us",
@@ -272,9 +272,10 @@ class GoogleSearcSerpy():
 
 
 if __name__ == '__main__':
-    test="Rockefeller Center hours"
+    text="Rockefeller Center hours"
     location="Austin,Texas,United States"
+    apiKey="72b0b910c9b0c16277b7295ff1e271b945610f0e4dcec66359d9a91b344a56e1"
     pickingNum=3
-    testSerpyGoogleSearch=GoogleSearchSerpy(test,location,pickingNum)
-    result = testSerpyGoogleSearch.run()
+    GoogleSearch=GoogleSearchSerpy(text,apiKey,location,pickingNum)
+    result=GoogleSearch.run()
     print(result)
