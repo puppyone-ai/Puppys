@@ -17,7 +17,7 @@ class GPT():
         self.text = text
         self.apiKey = "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"
         self.model_name = "gpt-4-1106-preview"
-        self.max_tokens = 4000
+        self.max_tokens = 10000
         self.temperature = 0.7
 
     def modelName(self, model_name):
