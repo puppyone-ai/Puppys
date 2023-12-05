@@ -209,8 +209,6 @@ flillingActionFlow_Python_to_Python = PromptTemplate(
 )
 
 # detail planing Python mode:
-
-
 fillingActionParameter_JSON_to_Python = PromptTemplate(
     template="""You are a action executation AI called PuppyAgent. You are not a part of any system or device. You first
     understand the problem, extract relevant variables, and write python code to achieve the given action.\n\n 
@@ -249,15 +247,6 @@ fillingActionParameter_JSON_to_Python = PromptTemplate(
     your response should be similiar with the example and NOTHING ELSE.
     """,input_variables=["task", "action_flow", "num", "current_action", "code_history", "functions_detail", "experiences"]
 )
-
-
-
-
-
-
-
-
-
 
 
 

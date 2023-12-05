@@ -5,7 +5,6 @@ from langchain.chains import LLMChain
 from langchain.chat_models import ChatOpenAI
 from prompt.actionFlowPrompt import *
 
-from puppy.puppyFunction.actionLib.googleSearch import serpGoogle
 
 
 
@@ -118,7 +117,7 @@ class Action():
             task_queue.task_done()
 
     # make the overall plan for the task
-    def plan(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-0613",ApiKey="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"):
+    def plan(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
         os.environ["OPENAI_API_KEY"]=ApiKey
 
         llm=ChatOpenAI(temperature=temperature,max_tokens=max_tokens,model_name=model_name)
@@ -137,7 +136,7 @@ class Action():
         print(self.actionFlowJSON)
 
     # for each action, decide how to do and do it
-    def act(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-0613",ApiKey="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"):
+    def act(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
         os.environ["OPENAI_API_KEY"]=ApiKey
 
         llm=ChatOpenAI(temperature=temperature,max_tokens=max_tokens,model_name=model_name)
@@ -208,7 +207,6 @@ def Yuning(task="帮我找到全网最便宜的 iPhone 购买渠道",planning=Tr
 
     ##
     puppy1.do()
-
 
 
 puppy1.run()
