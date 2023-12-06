@@ -230,9 +230,9 @@ fillingActionParameter_JSON_to_Python = PromptTemplate(
     pass
     
     Note that the function after@ is the function that the user have recommended for you, you could consider it, but if you find some function better than the recommendation, you use them.
-    The instruction of the function avaliable for the action in this step are:
+    The example of the function avaliable for the action in this step are:
     
-    {functions_detail}
+    {example}
 
     Here are the knowledge you have learned:{experiences}
     
@@ -245,7 +245,7 @@ fillingActionParameter_JSON_to_Python = PromptTemplate(
     DO write the code in python, and DO write the comment that explain the type of the parameter and the meaning of the code.
     make sure that the parameter in your respond code follow the type of the parameter in the function instruction. 
     your response should be similiar with the example and NOTHING ELSE.
-    """,input_variables=["task", "action_flow", "num", "current_action", "code_history", "functions_detail", "experiences"]
+    """,input_variables=["task", "action_flow", "num", "current_action", "code_history", "example", "experiences"]
 )
 
 

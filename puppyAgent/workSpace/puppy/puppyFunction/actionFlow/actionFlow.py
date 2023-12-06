@@ -116,6 +116,29 @@ class Action():
                 print(f"Error executing task: {e}")
             task_queue.task_done()
 
+    def importTools(self): 
+        from ...actionLib.actionDefault.googleSearchNative import GoogleSearchNative
+        from ...actionLib.actionDefault.GPT import GPT
+
+        self.toolsBox=[]
+        self.toolsBox.append(GoogleSearchNative)
+        self.toolsBox.append(GPT)
+
+    def getDescriptions(self):
+
+        self.functionsSimplified="""
+        """
+        for tool in self.toolsBox:
+            self.functionsSimplified+=tool().getDescription()+"\n"
+
+    def getExamples(self):
+
+        self.functionsExample="""
+        """
+        for tool in self.toolsBox:
+            self.functionsExample+=tool().getExample()+"\n"
+
+        
     # make the overall plan for the task
     def plan(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
         os.environ["OPENAI_API_KEY"]=ApiKey
@@ -123,14 +146,14 @@ class Action():
         llm=ChatOpenAI(temperature=temperature,max_tokens=max_tokens,model_name=model_name)
         fillingActionFlow=LLMChain(llm=llm, prompt= fillingActionFlow_JSON_to_JSON)
 
-        functionsSimplified="""
-        google_search: search for information via GoogleSearch, it's aviliable anytime you search
-        ChatGPT: ask ChatGPT for help, you can find information that is not timely
-        """
+        self.importTools()
+        self.getDescriptions()
+        self.getExamples()
+
         agentExperience="none"
 
         # predict the workflow
-        newActionFlowStr=fillingActionFlow.predict(task=self.task, action_flow=self.actionFlowJSON,functions_overview=functionsSimplified, experiences=agentExperience,language="Chinese")
+        newActionFlowStr=fillingActionFlow.predict(task=self.task, action_flow=self.actionFlowJSON,functions_overview=self.functionsSimplified, experiences=agentExperience,language="Chinese")
         self.actionFlowJSON=eval(newActionFlowStr)
 
         print(self.actionFlowJSON)
@@ -142,13 +165,13 @@ class Action():
         llm=ChatOpenAI(temperature=temperature,max_tokens=max_tokens,model_name=model_name)
         fillingActionParameter=LLMChain(llm=llm, prompt= fillingActionParameter_JSON_to_Python)
 
-        functionsSimplified="""
-        google_search: search for information via GoogleSearch, it's aviliable anytime you search. The result returns a list of dictionaries, each dictionary contains the title, link and snippet of the search result.
-        ChatGPT: ask ChatGPT for help, you can find information that is not timely. The result returns the answer from ChatGPT.
-        """
+        self.importTools()
+        self.getDescriptions()
+        self.getExamples()
+
         agentExperience="none"
 
-        newAction=fillingActionParameter.predict(task=self.task, action_flow=self.actionFlowJSON, num=self.currentStep, current_action=self.actionFlowJSON[self.currentStep],functions_detail=functionsSimplified, code_history=''.join(self.actionFlowPython),experiences=agentExperience)
+        newAction=fillingActionParameter.predict(task=self.task, action_flow=self.actionFlowJSON, num=self.currentStep, current_action=self.actionFlowJSON[self.currentStep],example=self.functionsExample, code_history=''.join(self.actionFlowPython),experiences=agentExperience)
         self.taskQueue.put(newAction)
 
         print(newAction)

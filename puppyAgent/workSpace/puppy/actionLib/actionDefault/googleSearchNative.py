@@ -26,6 +26,12 @@ class GoogleSearchNative:
     def cseId(self, my_cse_id):
         self.my_cse_id = my_cse_id
 
+    def getExample(self):
+        return self.example
+    
+    def getDescription(self):  
+        return self.description
+
     def search(self):
         service = build("customsearch", "v1", developerKey=self.my_api_key)
         res = service.cse().list(q=self.search_content, cx=self.my_cse_id, num=self.num).execute()

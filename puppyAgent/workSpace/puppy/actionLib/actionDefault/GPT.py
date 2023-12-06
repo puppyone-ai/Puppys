@@ -20,6 +20,12 @@ class GPT():
         self.max_tokens = 10000
         self.temperature = 0.7
 
+    def getExample(self):
+        return self.example
+    
+    def getDescription(self):  
+        return self.description
+
     def modelName(self, model_name):
         self.model_name = model_name
 
