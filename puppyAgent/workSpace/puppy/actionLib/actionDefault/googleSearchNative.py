@@ -49,7 +49,7 @@ class GoogleSearchNative:
             
         return result_simplified_list
 
-
+"""
 if __name__ == "__main__":
 
     search_content = "how should I intall the package of openAI"
@@ -64,6 +64,7 @@ if __name__ == "__main__":
     for e in results:
         print(e)
 
+"""
 
 
 

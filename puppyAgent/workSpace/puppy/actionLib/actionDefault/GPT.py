@@ -37,6 +37,7 @@ class GPT():
         result=chat_model.invoke(self.text)
         return result
     
+"""
 if __name__ == "__main__":
     text = "how should I intall the package of openAI"
     ApiKey="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"
@@ -47,4 +48,4 @@ if __name__ == "__main__":
     print(results)
         
 
-
+"""
