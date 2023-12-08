@@ -1,4 +1,5 @@
 import inspect
+import sys
 import os
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
@@ -117,8 +118,11 @@ class Action():
             task_queue.task_done()
 
     def importTools(self): 
-        from ...actionLib.actionDefault.googleSearchNative import GoogleSearchNative
-        from ...actionLib.actionDefault.GPT import GPT
+
+        sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
+        from actionLib.actionDefault.googleSearchNative import GoogleSearchNative
+        from actionLib.actionDefault.GPT import GPT
 
         self.toolsBox=[]
         self.toolsBox.append(GoogleSearchNative)

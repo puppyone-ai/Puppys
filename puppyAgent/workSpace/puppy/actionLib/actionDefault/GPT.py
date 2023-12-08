@@ -5,16 +5,16 @@ from langchain.chains import LLMChain
 
 
 class GPT():
-    def __init__(self, text):
+    def __init__(self, content=''):
         self.description = "GPT, use when you want to generate text based on the input text by GPT3.5 or GPT4"
         self.example = """
-        # get how to install the package of openAI by GPT4
+        ## get how to install the package of openAI by GPT4
         text = "how should I install the package of openAI"
-        GPT=GPT(text)
+        GPT=GPT(content=text)
         results = GPT.run()
         """
         
-        self.text = text
+        self.text = content
         self.apiKey = "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"
         self.model_name = "gpt-4-1106-preview"
         self.max_tokens = 10000

@@ -6,12 +6,12 @@ import pprint
 
 
 class GoogleSearchNative:
-    def __init__(self, search_content, num=5,**kwargs):
+    def __init__(self, search_content='', num=5,**kwargs):
         self.description = "Google Serach, use when you want to search something on google, return the title, link and snippet of the search result"
         self.example = """
-        # search the result via googlesearch
+        ## search the result via googlesearch
         search_content = "how should I intall the package of openAI"
-        GoogleSearch=GoogleSearchNative(search_content, my_api_key, my_cse_id)
+        GoogleSearch=GoogleSearchNative(search_content)
         searchResults = GoogleSearch.run()
         """
 

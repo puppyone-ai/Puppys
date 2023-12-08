@@ -2,7 +2,7 @@ from types import MethodType
 import threading
 
 class Puppy:
-    def __init__(self, name="", discription="", actionFlow=[], authorizedTools={}, inbox=[],retrieve=[] **kwargs):
+    def __init__(self, name="", discription="", actionFlow=[], authorizedTools={}, inbox=[],retrieve=[] ):
         self.name = name
         self.discription = discription
         self.actionFlow = actionFlow
@@ -10,13 +10,6 @@ class Puppy:
         self.authorizedTools = authorizedTools
         self.retrive = retrieve
         
-        for key, value in kwargs.items():
-            # if the value is a function or method, bind it to the current instance
-            if callable(value):
-                setattr(self, key, value.__get__(self))
-            # else, set it as a property
-            else:
-                setattr(self, key, value)
         """
         name: the name of the agent
         (for example: "David")
