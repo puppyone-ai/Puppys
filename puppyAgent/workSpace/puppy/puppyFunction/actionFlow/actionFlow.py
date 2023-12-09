@@ -7,8 +7,6 @@ from langchain.chat_models import ChatOpenAI
 from prompt.actionFlowPrompt import *
 
 
-
-
 import threading
 import queue
 
@@ -84,10 +82,24 @@ class Action():
             tCode = threading.Thread(target=self.codeThread, args=(self.taskQueue,))
             tCode.start()
 
+            
+            # import the default tools in the code thread
+            importDefault="""
+            from actionLib.actionDefault.googleSearchNative import GoogleSearchNative
+            from actionLib.actionDefault.GPT import GPT
+            """
+
+            # start to run the agent in the code thread
+            self.taskQueue.put(importDefault)
+            
+            
+
             self.currentStep = 0
 
             result = func(*args, **kwargs)
             self.taskQueue.put(None)
+
+            # end the code thread
             tCode.join()
 
             print("CODE HISTORY:",''.join(self.actionFlowPython))
@@ -176,9 +188,13 @@ class Action():
         agentExperience="none"
 
         newAction=fillingActionParameter.predict(task=self.task, action_flow=self.actionFlowJSON, num=self.currentStep, current_action=self.actionFlowJSON[self.currentStep],example=self.functionsExample, code_history=''.join(self.actionFlowPython),experiences=agentExperience)
+        
+        # only for GPT-4
+        newAction=newAction.replace("```python\n", "").replace("\n```", "")
         self.taskQueue.put(newAction)
 
-        print(newAction)
+        print("newAction:",newAction)
+
 
     # for each action, puppy writes code to achieve the action.
     def do(self):
