@@ -1,11 +1,10 @@
 import inspect
+import sys
 import os
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
 from langchain.chat_models import ChatOpenAI
 from prompt.actionFlowPrompt import *
-
-
 
 
 import threading
@@ -83,10 +82,24 @@ class Action():
             tCode = threading.Thread(target=self.codeThread, args=(self.taskQueue,))
             tCode.start()
 
+            
+            # import the default tools in the code thread
+            importDefault="""
+            from actionLib.actionDefault.googleSearchNative import GoogleSearchNative
+            from actionLib.actionDefault.GPT import GPT
+            """
+
+            # start to run the agent in the code thread
+            self.taskQueue.put(importDefault)
+
+            
+
             self.currentStep = 0
 
             result = func(*args, **kwargs)
             self.taskQueue.put(None)
+
+            # end the code thread
             tCode.join()
 
             print("CODE HISTORY:",''.join(self.actionFlowPython))
@@ -116,6 +129,32 @@ class Action():
                 print(f"Error executing task: {e}")
             task_queue.task_done()
 
+    def importTools(self): 
+
+        sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
+        from actionLib.actionDefault.googleSearchNative import GoogleSearchNative
+        from actionLib.actionDefault.GPT import GPT
+
+        self.toolsBox=[]
+        self.toolsBox.append(GoogleSearchNative)
+        self.toolsBox.append(GPT)
+
+    def getDescriptions(self):
+
+        self.functionsSimplified="""
+        """
+        for tool in self.toolsBox:
+            self.functionsSimplified+=tool().getDescription()+"\n"
+
+    def getExamples(self):
+
+        self.functionsExample="""
+        """
+        for tool in self.toolsBox:
+            self.functionsExample+=tool().getExample()+"\n"
+
+        
     # make the overall plan for the task
     def plan(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
         os.environ["OPENAI_API_KEY"]=ApiKey
@@ -123,14 +162,14 @@ class Action():
         llm=ChatOpenAI(temperature=temperature,max_tokens=max_tokens,model_name=model_name)
         fillingActionFlow=LLMChain(llm=llm, prompt= fillingActionFlow_JSON_to_JSON)
 
-        functionsSimplified="""
-        google_search: search for information via GoogleSearch, it's aviliable anytime you search
-        ChatGPT: ask ChatGPT for help, you can find information that is not timely
-        """
+        self.importTools()
+        self.getDescriptions()
+        self.getExamples()
+
         agentExperience="none"
 
         # predict the workflow
-        newActionFlowStr=fillingActionFlow.predict(task=self.task, action_flow=self.actionFlowJSON,functions_overview=functionsSimplified, experiences=agentExperience,language="Chinese")
+        newActionFlowStr=fillingActionFlow.predict(task=self.task, action_flow=self.actionFlowJSON,functions_overview=self.functionsSimplified, experiences=agentExperience,language="Chinese")
         self.actionFlowJSON=eval(newActionFlowStr)
 
         print(self.actionFlowJSON)
@@ -142,16 +181,20 @@ class Action():
         llm=ChatOpenAI(temperature=temperature,max_tokens=max_tokens,model_name=model_name)
         fillingActionParameter=LLMChain(llm=llm, prompt= fillingActionParameter_JSON_to_Python)
 
-        functionsSimplified="""
-        google_search: search for information via GoogleSearch, it's aviliable anytime you search. The result returns a list of dictionaries, each dictionary contains the title, link and snippet of the search result.
-        ChatGPT: ask ChatGPT for help, you can find information that is not timely. The result returns the answer from ChatGPT.
-        """
+        self.importTools()
+        self.getDescriptions()
+        self.getExamples()
+
         agentExperience="none"
 
-        newAction=fillingActionParameter.predict(task=self.task, action_flow=self.actionFlowJSON, num=self.currentStep, current_action=self.actionFlowJSON[self.currentStep],functions_detail=functionsSimplified, code_history=''.join(self.actionFlowPython),experiences=agentExperience)
+        newAction=fillingActionParameter.predict(task=self.task, action_flow=self.actionFlowJSON, num=self.currentStep, current_action=self.actionFlowJSON[self.currentStep],example=self.functionsExample, code_history=''.join(self.actionFlowPython),experiences=agentExperience)
+        
+        # only for GPT-4
+        newAction=newAction.replace("```python\n", "").replace("\n```", "")
         self.taskQueue.put(newAction)
 
-        print(newAction)
+        print("newAction:",newAction)
+
 
     # for each action, puppy writes code to achieve the action.
     def do(self):
@@ -197,7 +240,7 @@ class Action():
 puppy1 = Action()
 
 @puppy1.action
-def Yuning(task="帮我找到全网最便宜的 iPhone 购买渠道",planning=True): 
+def Yuning(task="写一个中国市场上最好用的五款耳机的报告",planning=True): 
 
     ##
     puppy1.do()

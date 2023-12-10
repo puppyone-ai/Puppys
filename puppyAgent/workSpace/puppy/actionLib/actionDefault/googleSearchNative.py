@@ -6,12 +6,12 @@ import pprint
 
 
 class GoogleSearchNative:
-    def __init__(self, search_content, num=5,**kwargs):
+    def __init__(self, search_content='', num=5,**kwargs):
         self.description = "Google Serach, use when you want to search something on google, return the title, link and snippet of the search result"
         self.example = """
-        # search the result via googlesearch
+        ## search the result via googlesearch
         search_content = "how should I intall the package of openAI"
-        GoogleSearch=GoogleSearchNative(search_content, my_api_key, my_cse_id)
+        GoogleSearch=GoogleSearchNative(search_content)
         searchResults = GoogleSearch.run()
         """
 
@@ -25,6 +25,12 @@ class GoogleSearchNative:
 
     def cseId(self, my_cse_id):
         self.my_cse_id = my_cse_id
+
+    def getExample(self):
+        return self.example
+    
+    def getDescription(self):  
+        return self.description
 
     def search(self):
         service = build("customsearch", "v1", developerKey=self.my_api_key)
@@ -43,7 +49,7 @@ class GoogleSearchNative:
             
         return result_simplified_list
 
-
+"""
 if __name__ == "__main__":
 
     search_content = "how should I intall the package of openAI"
@@ -58,6 +64,7 @@ if __name__ == "__main__":
     for e in results:
         print(e)
 
+"""
 
 
 
