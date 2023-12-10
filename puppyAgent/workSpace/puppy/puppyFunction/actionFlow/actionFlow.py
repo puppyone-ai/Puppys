@@ -91,7 +91,7 @@ class Action():
 
             # start to run the agent in the code thread
             self.taskQueue.put(importDefault)
-            
+
             
 
             self.currentStep = 0
@@ -240,7 +240,7 @@ class Action():
 puppy1 = Action()
 
 @puppy1.action
-def Yuning(task="帮我找到全网最便宜的 iPhone 购买渠道",planning=True): 
+def Yuning(task="写一个中国市场上最好用的五款耳机的报告",planning=True): 
 
     ##
     puppy1.do()
