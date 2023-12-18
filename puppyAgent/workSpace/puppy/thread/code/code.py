@@ -6,7 +6,6 @@ import queue
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
 from langchain.chat_models import ChatOpenAI
-from prompt.actionFlowPrompt import *
 
 class CodeThread():
     def __init__(self):
@@ -21,10 +20,11 @@ class CodeThread():
     # to run the agent
     def run(self):
 
-        threadCode = threading.Thread(target=self.codeThread, args=(self.taskQueue,))
+        threadCode = threading.Thread(target=self.codeExecution)
         threadCode.start()
 
-        #TODO
+
+        self.action()
 
         self.taskQueue.put(None)
 
@@ -38,9 +38,14 @@ class CodeThread():
 
             self.actionPending=[]
         
+        def actionFlowInitialize(self):
+            if self.actionFlowHistoryJSON == []:
+                # TODO
+
         def actionFlowTranslate(self,sourceCode):
             # initialize the actionFlowHistoryPython
             self.actionFlowHistoryPython=sourceCode
+            actionFlowHistoryJSON=[]
 
             lines = sourceCode.split('\n')
             searchForDo = False
@@ -50,7 +55,7 @@ class CodeThread():
             for line in lines:
                 if '##' in line:
                     if searchForDo==True:
-                        self.actionFlowHistoryJSON.append({"action":comment,"status":"fixed"})
+                        actionFlowHistoryJSON.append({"action":comment,"status":"fixed"})
                         searchForDo = False
                     comment = line.split('##', 1)[1].strip()
                     searchForDo = True
@@ -58,17 +63,19 @@ class CodeThread():
                     if searchForDo==True:
                         if '.do()' in line:
                             if comment.strip() == "":
-                                self.actionFlowHistoryJSON.append({"action":comment,"status":"changeable"})
+                                actionFlowHistoryJSON.append({"action":comment,"status":"changeable"})
                             else:
-                                self.actionFlowHistoryJSON.append({"action":comment,"status":"semi-fixed"})
+                                actionFlowHistoryJSON.append({"action":comment,"status":"semi-fixed"})
                             searchForDo = False
                         else:
                             pass
                     else:
                         pass
             if searchForDo==True:
-                self.actionFlowHistoryJSON.append({"action":comment,"status":"fixed"})
+                actionFlowHistoryJSON.append({"action":comment,"status":"fixed"})
                 searchForDo = False 
+
+            return actionFlowHistoryJSON
 
         def actionPendingRemove(self):
             self.actionPending.pop()
@@ -83,6 +90,61 @@ class CodeThread():
         def actionExe(self):
             self.taskQueue.put(self.actionPending[0])
 
+    def codeExecution(self):
+        while True:
+            task = self.taskQueue.get()
+            if task is None:
+                break
+            task()
+
+    # for the wrapper of action
+    def codeThread(self, func):
+        def wrapper(self, *args, **kwargs):
+
+            self.initialize()
+            func(*args, **kwargs)
+            
+    def getCodeAction(self):
         
 
-    
+
+if __name__ == '__main__':
+
+    puppy = CodeThread()
+
+    @puppy.codeThread
+    def action():
+        print("MulalaG")
+
+    puppy.run()
+
+
+
+
+
+"""
+Yuning=puppy()
+
+@Yuning.codeThread
+def action():
+    ## 
+    print("action")
+
+
+def trigger():
+    ## once a new PDF is uploaded, trigger the action
+    Yunning.do()
+
+
+@Yuning.goalThread
+def action():
+    setGoal("You are a bad guy!")
+
+@Yuning.safeThread
+def action():
+
+
+
+Yuning.run()
+
+"""
