@@ -12,6 +12,7 @@ class CodeThread():
 
         self.actionFlow=self.ActionFlow()
         self.taskQueue = queue.Queue()
+        self.threadProperty={}
 
     # import tools, initialize the agent
     def initialize(self):
@@ -38,9 +39,11 @@ class CodeThread():
 
             self.actionPending=[]
         
-        def actionFlowInitialize(self):
+        def actionFlowInitialize(self,sourceCode):
             if self.actionFlowHistoryJSON == []:
-                # TODO
+                self.actionFlowHistoryJSON=self.actionFlowTranslate(sourceCode)
+            else:
+                pass
 
         def actionFlowTranslate(self,sourceCode):
             # initialize the actionFlowHistoryPython
@@ -103,9 +106,30 @@ class CodeThread():
 
             self.initialize()
             func(*args, **kwargs)
-            
-    def getCodeAction(self):
         
+        
+        sourseCode=inspect.getsource(func)
+
+        # if the function is action, initialize the actionFlow
+        funcName=func.__name__
+        if funcName == "action":
+
+            # get source code
+            self.actionFlow.actionFlowInitialize(sourseCode)
+
+            print("Initialized: "+funcName)
+            print("SourseCode:")
+            print(sourseCode)
+            print("InitializedActionFlowJSON:"+str(self.actionFlow.actionFlowHistoryJSON))
+
+        if funcName == "trigger":
+            # TODO
+            pass
+
+        # execute the function with wrapper
+        return wrapper
+            
+
 
 
 if __name__ == '__main__':
@@ -114,9 +138,9 @@ if __name__ == '__main__':
 
     @puppy.codeThread
     def action():
+        ## invite people
         print("MulalaG")
 
-    puppy.run()
 
 
 
