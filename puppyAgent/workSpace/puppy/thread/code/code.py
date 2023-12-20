@@ -41,44 +41,81 @@ class CodeThread():
         
         def actionFlowInitialize(self,sourceCode):
             if self.actionFlowHistoryJSON == []:
-                self.actionFlowHistoryJSON=self.actionFlowTranslate(sourceCode)
+
+                # updated the actionFlow JSON
+                self.actionFlowHistoryJSON, self.actionFlowHistoryPython=self.actionFlowTranslate(sourceCode)
+
             else:
                 pass
-
+        
+        # return the actionFlowHistoryJSON and actionFlowHistoryPython
         def actionFlowTranslate(self,sourceCode):
-            # initialize the actionFlowHistoryPython
+
+            ## initialize the actionFlowHistoryPython
             self.actionFlowHistoryPython=sourceCode
             actionFlowHistoryJSON=[]
 
             lines = sourceCode.split('\n')
+
+            ## deal with space in the head of the code
+            comment_pos = None
+            indent_level = None
+            for i, line in enumerate(lines):
+                if '##' in line:
+                    comment_pos = i
+                    indent_level = len(line) - len(line.lstrip(' '))
+                    break
+
+            # if the indent level is found, adjust the indent of the whole function
+            if comment_pos is not None and indent_level is not None:
+
+                # delete all the code before the '##' comment
+                lines = lines[comment_pos:]
+
+                adjusted_lines = []
+                for line in lines:
+                    # only adjust the indent of non-empty lines
+                    if line.strip():
+                        adjusted_lines.append(line[indent_level:])
+                    else:
+                        adjusted_lines.append(line)
+                adjustedSourceCode = '\n'.join(adjusted_lines)
+            else:
+                adjustedSourceCode = sourceCode
+
+            ## translate the actionFlowPython to actionFlowJSON
+            lines = adjustedSourceCode.split('\n')
             searchForDo = False
             comment = ""
+            codeSnippet = ""
+            actionFlowHistoryJSON = []
 
-            # initialize the actionFlowHistoryJSON
             for line in lines:
                 if '##' in line:
-                    if searchForDo==True:
-                        actionFlowHistoryJSON.append({"action":comment,"status":"fixed"})
-                        searchForDo = False
+                    # if there is an unfinished action, add it to the JSON
+                    if searchForDo:
+                        actionFlowHistoryJSON.append({"action": comment, "status": "semi-fixed", "code": codeSnippet.strip()})
+                        codeSnippet = ""
+
                     comment = line.split('##', 1)[1].strip()
                     searchForDo = True
                 else:
-                    if searchForDo==True:
+                    if searchForDo:
+                        codeSnippet += line + '\n'  # history code snippet
                         if '.do()' in line:
-                            if comment.strip() == "":
-                                actionFlowHistoryJSON.append({"action":comment,"status":"changeable"})
-                            else:
-                                actionFlowHistoryJSON.append({"action":comment,"status":"semi-fixed"})
+                            # if there is a .do(), mark it as semi-fixed
+                            actionFlowHistoryJSON.append({"action": comment, "status": "semi-fixed", "code": codeSnippet.strip()})
                             searchForDo = False
-                        else:
-                            pass
+                            codeSnippet = ""
                     else:
+                        # if not in the comment module, ignore the line
                         pass
-            if searchForDo==True:
-                actionFlowHistoryJSON.append({"action":comment,"status":"fixed"})
-                searchForDo = False 
 
-            return actionFlowHistoryJSON
+            # deal with the last action
+            if searchForDo:
+                actionFlowHistoryJSON.append({"action": comment, "status": "fixed", "code": codeSnippet.strip()})
+
+            return actionFlowHistoryJSON, adjustedSourceCode
 
         def actionPendingRemove(self):
             self.actionPending.pop()
@@ -107,7 +144,6 @@ class CodeThread():
             self.initialize()
             func(*args, **kwargs)
         
-        
         sourseCode=inspect.getsource(func)
 
         # if the function is action, initialize the actionFlow
@@ -118,8 +154,8 @@ class CodeThread():
             self.actionFlow.actionFlowInitialize(sourseCode)
 
             print("Initialized: "+funcName)
-            print("SourseCode:")
-            print(sourseCode)
+            print("actionFlowHistoryPython:")
+            print(self.actionFlow.actionFlowHistoryPython)
             print("InitializedActionFlowJSON:"+str(self.actionFlow.actionFlowHistoryJSON))
 
         if funcName == "trigger":
@@ -141,6 +177,14 @@ if __name__ == '__main__':
         ## invite people
         print("MulalaG")
 
+        ## rethink about the result
+        puppy.do()
+
+        ## invite people
+        print("Please come here")
+
+        ## send the message to me
+        puppy.do()
 
 
 
