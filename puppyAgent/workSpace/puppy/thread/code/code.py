@@ -6,13 +6,17 @@ import queue
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
 from langchain.chat_models import ChatOpenAI
+import re
+
 
 class CodeThread():
     def __init__(self):
 
         self.actionFlow=self.ActionFlow()
-        self.taskQueue = queue.Queue()
         self.threadProperty={}
+        self.environment={
+            "goal": "send hello to my mom",
+        }
 
     # import tools, initialize the agent
     def initialize(self):
@@ -20,30 +24,32 @@ class CodeThread():
 
     # to run the agent
     def run(self):
-
+        
+        # start the code thread
         threadCode = threading.Thread(target=self.codeExecution)
+        threadCode.daemon = False
         threadCode.start()
-
-
-        self.action()
-
-        self.taskQueue.put(None)
 
         # end the code thread
         threadCode.join()
 
     class ActionFlow():
         def __init__(self): 
+            self.actionFlowAllJSON = []
+            self.actionFlowAllPython=""""""
             self.actionFlowHistoryJSON = []
             self.actionFlowHistoryPython=""""""
 
-            self.actionPending=[]
+            self.actionCurrent=""""""
+
+            self.actionPending=queue.Queue()
         
         def actionFlowInitialize(self,sourceCode):
-            if self.actionFlowHistoryJSON == []:
+            if self.actionFlowAllJSON == []:
 
                 # updated the actionFlow JSON
-                self.actionFlowHistoryJSON, self.actionFlowHistoryPython=self.actionFlowTranslate(sourceCode)
+                self.actionFlowAllJSON, self.actionFlowAllPython=self.actionFlowTranslate(sourceCode)
+                self.actionPendingUpdate(self.actionFlowAllJSON[0]["code"])
 
             else:
                 pass
@@ -52,7 +58,7 @@ class CodeThread():
         def actionFlowTranslate(self,sourceCode):
 
             ## initialize the actionFlowHistoryPython
-            self.actionFlowHistoryPython=sourceCode
+            self.actionFlowAllPython=sourceCode
             actionFlowHistoryJSON=[]
 
             lines = sourceCode.split('\n')
@@ -120,22 +126,15 @@ class CodeThread():
         def actionPendingRemove(self):
             self.actionPending.pop()
 
-        def actionPendingAdd(self,action):
-            self.actionPending.append(action)
+        def actionPendingUpdate(self,action):
+            self.actionPending.put(action)
 
         def actionFinish(self,action):
-            self.actionFlowHistoryJSON.append({"action":action,"status":"fixed"})
-            self.actionFlowHistoryPython += action + "\n"
+            self.actionFlowAllJSON.append({"action":action,"status":"fixed"})
+            self.actionFlowAllPython += action + "\n"
 
         def actionExe(self):
             self.taskQueue.put(self.actionPending[0])
-
-    def codeExecution(self):
-        while True:
-            task = self.taskQueue.get()
-            if task is None:
-                break
-            task()
 
     # for the wrapper of action
     def codeThread(self, func):
@@ -153,10 +152,13 @@ class CodeThread():
             # get source code
             self.actionFlow.actionFlowInitialize(sourseCode)
 
+            
             print("Initialized: "+funcName)
             print("actionFlowHistoryPython:")
-            print(self.actionFlow.actionFlowHistoryPython)
-            print("InitializedActionFlowJSON:"+str(self.actionFlow.actionFlowHistoryJSON))
+            print(self.actionFlow.actionFlowAllPython)
+            print("InitializedActionFlowJSON:"+str(self.actionFlow.actionFlowAllJSON))
+            #print("Start from:"+self.actionFlow.actionPending.get())
+            
 
         if funcName == "trigger":
             # TODO
@@ -164,8 +166,57 @@ class CodeThread():
 
         # execute the function with wrapper
         return wrapper
-            
 
+    def codeExecution(self):
+        while True:
+            task = self.actionFlow.actionPending.get()
+            self.actionFlow.actionCurrent=task
+            if task is None:
+                break
+            
+            print(task)
+            exec(task)
+
+            self.actionFlow.actionPending.task_done()
+
+    def do(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
+        os.environ["OPENAI_API_KEY"]=ApiKey
+
+        sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+        from prompt.actionFlowPrompt import ActionDo
+
+        llm=ChatOpenAI(temperature=temperature,max_tokens=max_tokens,model_name=model_name)
+        fillingActionParameter=LLMChain(llm=llm, prompt= ActionDo)
+
+        """
+        self.importTools()
+        self.getDescriptions()
+        self.getExamples()
+        """
+
+        self.functionsSimplified="""
+        None
+        """
+
+        agentExperience="none"
+
+        newCode=fillingActionParameter.predict(current_action= self.actionFlow.actionCurrent,
+                                                 code_history=self.actionFlow.actionFlowHistoryPython,
+                                                    code_future="",
+                                                    enviroment=self.environment,
+                                                    function=self.functionsSimplified,
+                                                    experiences=agentExperience)
+                                                
+
+        newCodeOnly=newCode.replace("```python\n", "").replace("\n```", "")
+
+        print("newCode:")
+        print(newCodeOnly)
+
+        self.actionFlow.actionPendingUpdate(newCodeOnly)
+
+        print("newCodeEnd")
 
 
 if __name__ == '__main__':
@@ -174,17 +225,11 @@ if __name__ == '__main__':
 
     @puppy.codeThread
     def action():
-        ## invite people
-        print("MulalaG")
 
-        ## rethink about the result
+        ## Invite people
         puppy.do()
 
-        ## invite people
-        print("Please come here")
-
-        ## send the message to me
-        puppy.do()
+    puppy.run()
 
 
 
