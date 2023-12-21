@@ -285,7 +285,7 @@ ActionDo = PromptTemplate(
     location=google_search("Where is the NBA in 2019")
 
     DO write the code in python. You are allowed to use python code and call those funcitions. and you write commit with information attached to your action. including your thinking, your response and the type of the parameter.
-    Don't assume that you have unexsited functions. If you feel that you have to use non-given functions or parameters, you can only write your response and thinking in the comment, but not in the runnable code.
+    Don't assume that you have unexsited functions. If you feel that you have to use non-given functions or parameters, you can only write your response and thinking in the comment, DON'T write the code as if the function exists. If you do so, I would die.
     make sure that the parameter in your respond code follow the type of the parameter in the function instruction. 
     your response should be similiar with the example(ONLY CODE) and NOTHING ELSE.
 

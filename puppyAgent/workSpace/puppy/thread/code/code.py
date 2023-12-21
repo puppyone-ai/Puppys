@@ -219,6 +219,7 @@ class CodeThread():
         print("newCodeEnd")
 
 
+
 if __name__ == '__main__':
 
     puppy = CodeThread()
@@ -228,6 +229,9 @@ if __name__ == '__main__':
 
         ## Invite people
         puppy.do()
+
+    def trigger():
+        pass
 
     puppy.run()
 
