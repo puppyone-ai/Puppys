@@ -183,21 +183,17 @@ class CodeThread():
         os.environ["OPENAI_API_KEY"]=ApiKey
 
         sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        print(sys.path)
 
         from prompt.actionFlowPrompt import ActionDo
 
         llm=ChatOpenAI(temperature=temperature,max_tokens=max_tokens,model_name=model_name)
         fillingActionParameter=LLMChain(llm=llm, prompt= ActionDo)
 
-        """
-        self.importTools()
-        self.getDescriptions()
-        self.getExamples()
-        """
+        import actionDefault
 
-        self.functionsSimplified="""
-        None
-        """
+        self.functionsSimplified= actionDefault.getDescriptions()
+        self.functionsExample= actionDefault.getExamples()
 
         agentExperience="none"
 
@@ -206,6 +202,7 @@ class CodeThread():
                                                     code_future="",
                                                     enviroment=self.environment,
                                                     function=self.functionsSimplified,
+                                                    example=self.functionsExample,
                                                     experiences=agentExperience)
                                                 
 
@@ -247,11 +244,9 @@ def action():
     ## 
     print("action")
 
-
 def trigger():
     ## once a new PDF is uploaded, trigger the action
     Yunning.do()
-
 
 @Yuning.goalThread
 def action():
@@ -259,8 +254,6 @@ def action():
 
 @Yuning.safeThread
 def action():
-
-
 
 Yuning.run()
 

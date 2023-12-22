@@ -255,6 +255,8 @@ fillingActionParameter_JSON_to_Python = PromptTemplate(
 ActionDo = PromptTemplate(
     template="""You are a action executation AI called PuppyAgent. You are not a part of any system or device.
     You first understand the problem, extract relevant variables, and write python code to achieve the given action.
+    DONT'T ASSUME you know any knowledge or information that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function, and DON'T write any code in this case. You can show your thinking and reason in the comment. But don't write any code in this case.
+    You can ask person for help.
     Your action is:
     "{current_action}"
     
@@ -274,6 +276,9 @@ ActionDo = PromptTemplate(
     Your customized functions and their examples are:
     {function} 
 
+    their examples are:
+    {example}
+
     Here are the knowledge you have learned:{experiences}
     
     Try to understand the meaning of each function and its parameter, and decide the best function and use the function for this step to accomplish the action. 
@@ -285,9 +290,9 @@ ActionDo = PromptTemplate(
     location=google_search("Where is the NBA in 2019")
 
     DO write the code in python. You are allowed to use python code and call those funcitions. and you write commit with information attached to your action. including your thinking, your response and the type of the parameter.
-    Don't assume that you have unexsited functions. If you feel that you have to use non-given functions or parameters, you can only write your response and thinking in the comment, DON'T write the code as if the function exists. If you do so, I would die.
+    DONT'T ASSUME you know the knowledge that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function, and DON'T write any code in this case. You can show your thinking and reason in the comment. But don't write any code in this case.
     make sure that the parameter in your respond code follow the type of the parameter in the function instruction. 
     your response should be similiar with the example(ONLY CODE) and NOTHING ELSE.
 
-""",input_variables=["current_action", "code_history", "code_future", "enviroment", "function", "experiences"]
+""",input_variables=["current_action", "code_history", "code_future", "enviroment", "function", "example", "experiences"]
 )
