@@ -30,6 +30,9 @@ class CodeThread():
         threadCode.daemon = False
         threadCode.start()
 
+        self.actionFlow.actionPendingUpdate("import actionDefault")
+        self.actionFlow.actionPendingUpdate("from actionDefault import AskHumanForHelp")
+
         # end the code thread
         threadCode.join()
 
@@ -211,6 +214,10 @@ class CodeThread():
         print("newCode:")
         print(newCodeOnly)
 
+        # import tools, initialize the agent
+        self.actionFlow.actionPendingUpdate("from actionDefault import AskHumanForHelp")
+
+        # run the code
         self.actionFlow.actionPendingUpdate(newCodeOnly)
 
         print("newCodeEnd")

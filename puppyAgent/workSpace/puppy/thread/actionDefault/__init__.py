@@ -1,7 +1,11 @@
+import sys
+import os
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from askHumanForHelp import AskHumanForHelp
 from googleSearchNative import GoogleSearchNative
 from gpt import GPT
-
 
 
 def getDescriptions():

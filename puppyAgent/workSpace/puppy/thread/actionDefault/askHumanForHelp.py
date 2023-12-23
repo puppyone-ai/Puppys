@@ -8,7 +8,7 @@ class AskHumanForHelp:
         self.description = "Use it when you have no idea how to achieve an action based on the current information knowledge, or functions."
         self.example = """
         ## Ask the user for the informaiton of the phone number of his boss
-        askingHuman = actionDefault.AskHumanForHelp("what is the phone number of your boss?")
+        askingHuman = AskHumanForHelp("what is the phone number of your boss?")
         answer = askingHuman.run()
         """
 

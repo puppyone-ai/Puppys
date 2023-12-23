@@ -10,7 +10,7 @@ class GPT():
         self.example = """
         ## get how to install the package of openAI by GPT4
         text = "how should I install the package of openAI"
-        GPT=actionDefault.GPT(content=text)
+        GPT=GPT(content=text)
         results = GPT.run()
         """
         

@@ -11,7 +11,7 @@ class GoogleSearchNative:
         self.example = """
         ## search the result via googlesearch
         search_content = "how should I intall the package of openAI"
-        GoogleSearch=actionDefault.GoogleSearchNative(search_content)
+        GoogleSearch=GoogleSearchNative(search_content)
         searchResults = GoogleSearch.run()
         """
 
