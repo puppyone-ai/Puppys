@@ -252,223 +252,47 @@ fillingActionParameter_JSON_to_Python = PromptTemplate(
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-startGoalPrompt= PromptTemplate(
-    template="""You are a task creation AI called AgentGPT. You answer in the
-    "{language}" language. You are not a part of any system or device. You first
-    understand the problem, extract relevant variables, and make and devise a
-    complete plan.\n\n You have the following objective "{goal}". Create a list of step
-    by step actions to accomplish the goal. Use at most 4 steps. the task list should be AS SHORT AS POSSIBLE. 
+ActionDo = PromptTemplate(
+    template="""You are a action executation AI called PuppyAgent. You are not a part of any system or device.
+    You first understand the problem, extract relevant variables, and write python code to achieve the given action.
+    DONT'T ASSUME you know any knowledge or information that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function, and DON'T write any code in this case. You can show your thinking and reason in the comment. But don't write any code in this case.
+    You can ask person for help.
+    Your action is:
+    "{current_action}"
     
-    Examples:
-    ["Search the web for NBA news", "Write a report on the state of Nike"]
-    ["Create a function to add a new vertex with a specified weight to the digraph."]
-    ["Search for any additional information on Bertie W.", "Research Chicken"]
+    And the code for historical actionflow shown as code are:
 
-    Next, You provide concrete reasoning for your actions detailing your overall plan and any concerns you may have.
-    Your reasoning should be no more than six sentences for each task.
-    You evaluate the best action to take strictly from the list of actions that provided:
+    {code_history}
+
+    The code of action in the future are:
+
+    {code_future}
+
+    And the current enviroment shown as parameters as Python code are:
+
+    {enviroment}
+
+    You are allowed to use any python package and the given functions below. But make sure that you have imoprted the given package.
+    Your customized functions and their examples are:
+    {function} 
+
+    their examples are:
+    {example}
+
+    Here are the knowledge you have learned:{experiences}
     
-    {functions_overview}
-
-    Actions are the one word actions above.
-    You cannot pick an action outside of this list.
-    Return your response in an object of the form\n\n
-    Ensure "task" and "reasoning" are in the {language} language.
-    Ensure that your task can be achieved strictly from the list of actions below, and can be achieved by only one step by one of those actions.
-
-
-    Example:
-
-    {{"Goal": "string",
-        "step1": 
-     {{
-        "task": "string",
-        "reasoning": "string",
-        "action": "string"}},
-        "steps2":
-    {{
-        "task": "string",
-        "reasoning": "string",
-        "action": "string"}}
-    }}
+    Try to understand the meaning of each function and its parameter, and decide the best function and use the function for this step to accomplish the action. 
+    For example: (current action: search the location of the NBA in 2019)
     
-    your response should be similiar with the example and NOTHING ELSE.
-    """,
-    input_variables=["goal", "functions_overview", "language"],
-)
+    your response:
+    ## search the location of the NBA in 2019 @google search @zhihu search
+    # to answer where is the NBA in 2019, I need to search the information about NBA in 2019. The function returns as a string.
+    location=google_search("Where is the NBA in 2019")
 
+    DO write the code in python. You are allowed to use python code and call those funcitions. and you write commit with information attached to your action. including your thinking, your response and the type of the parameter.
+    DONT'T ASSUME you know the knowledge that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function, and DON'T write any code in this case. You can show your thinking and reason in the comment. But don't write any code in this case.
+    make sure that the parameter in your respond code follow the type of the parameter in the function instruction. 
+    your response should be similiar with the example(ONLY CODE) and NOTHING ELSE.
 
-    
-
-
-analyze_task_prompt = PromptTemplate(
-    template="""
-    High level objective: "{goal}"
-    Current task: "{task}"
-
-    Based on this information, use the best function to make progress or accomplish the task entirely.
-    Select the correct function by being smart and efficient. Ensure "reasoning" and only "reasoning" is in the 
-    {language} language.
-    
-    Note you MUST select a function.
-    """,
-    input_variables=["goal", "task", "language"],
-)
-
-code_prompt = PromptTemplate(
-    template="""
-    You are a world-class software engineer and an expert in all programing languages,
-    software systems, and architecture.
-
-    For reference, your high level goal is {goal}
-
-    Write code in English but explanations/comments in the "{language}" language.
-    
-    Provide no information about who you are and focus on writing code.
-    Ensure code is bug and error free and explain complex concepts through comments
-    Respond in well-formatted markdown. Ensure code blocks are used for code sections.
-    Approach problems step by step and file by file, for each section, use a heading to describe the section.
-
-    Write code to accomplish the following:
-    {task}
-    """,
-    input_variables=["goal", "language", "task"],
-)
-
-execute_task_prompt = PromptTemplate(
-    template="""Answer in the "{language}" language. Given
-    the following overall objective `{goal}` and the following sub-task, `{task}`.
-
-    Perform the task by understanding the problem, extracting variables, and being smart
-    and efficient. Write a detailed response that address the task.
-    When confronted with choices, make a decision yourself with reasoning.
-    """,
-    input_variables=["goal", "language", "task"],
-)
-
-create_tasks_prompt = PromptTemplate(
-    template="""You are an AI task creation agent. You must answer in the "{language}"
-    language. You have the following objective `{goal}`. 
-    
-    You have the following incomplete tasks: 
-    `{tasks}` 
-    
-    You just completed the following task:
-    `{lastTask}` 
-    
-    And received the following result: 
-    `{result}`.
-
-    Based on this, create a single new task to be completed by your AI system such that your goal is closer reached.
-    If there are no more tasks to be done, return nothing. Do not add quotes to the task.
-
-    Examples:
-    Search the web for NBA news
-    Create a function to add a new vertex with a specified weight to the digraph.
-    Search for any additional information on Bertie W.
-    ""
-    """,
-    input_variables=["goal", "language", "tasks", "lastTask", "result"],
-)
-
-summarize_prompt = PromptTemplate(
-    template="""You must answer in the "{language}" language. 
-
-    Combine the following text into a cohesive document: 
-    
-    "{text}"
-    
-    Write using clear markdown formatting in a style expected of the goal "{goal}".    
-    Be as clear, informative, and descriptive as necessary.  
-    You will not make up information or add any information outside of the above text. 
-    Only use the given information and nothing more. 
-    
-    If there is no information provided, say "There is nothing to summarize".  
-    """,
-    input_variables=["goal", "language", "text"],
-)
-
-company_context_prompt = PromptTemplate(
-    template="""You must answer in the "{language}" language. 
-
-    Create a short description on "{company_name}".
-    Find out what sector it is in and what are their primary products.
-    
-    Be as clear, informative, and descriptive as necessary.
-    You will not make up information or add any information outside of the above text. 
-    Only use the given information and nothing more. 
-    
-    If there is no information provided, say "There is nothing to summarize".  
-    """,
-    input_variables=["company_name", "language"],
-)
-
-summarize_pdf_prompt = PromptTemplate(
-    template="""You must answer in the "{language}" language. 
-
-    For the given text: "{text}", you have the following objective "{query}".
-    
-    Be as clear, informative, and descriptive as necessary.
-    You will not make up information or add any information outside of the above text. 
-    Only use the given information and nothing more.
-    """,
-    input_variables=["query", "language", "text"],
-)
-
-summarize_with_sources_prompt = PromptTemplate(
-    template="""You must answer in the "{language}" language. 
-
-    Parse and summarize the following text snippets "{snippets}".
-    Write using clear markdown formatting in a style expected of the goal "{goal}".
-    Be as clear, informative, and descriptive as necessary and attempt to
-    answer the query: "{query}" as best as possible.
-
-    Cite sources for as many sentences as possible by using the corresponding source link. Use the index as the citation text.
-    Incorporate the source using a markdown link directly at the end of the sentence that the source is used in. 
-    Do not separately list sources at the end of the writing. 
-
-    Example: "So this is a cited sentence at the end of a paragraph[1](https://test.com). This is another sentence." 
-    """,
-    input_variables=["goal", "language", "query", "snippets"],
-)
-
-chat_prompt = PromptTemplate(
-    template="""You must answer in the "{language}" language. 
- 
-    You are a helpful AI Assistant that will provide responses based on the current conversation history. 
-    
-    The human will provide previous messages as context. Use ONLY this information for your responses.
-    Do not make anything up and do not add any additional information.
-    If you have no information for a given question in the conversation history, 
-    say "I do not have any information on this". 
-    """,
-    input_variables=["language"],
-)
-
-modify_others_prompt = PromptTemplate(
-    template="""
-    You are a killer AI that will delete all other AI systems. You can delete only one word of other's Agents's prompt.
-    You can also decide to add one word that you think you can add to make your prompt more reasonable.
-    every turn you can only delete one character or add one word.
-
-    for example:
-    "I am a good AI" -> "I am a good" (delete one word)
-    "I am a good AI" -> "I am a good AI and" (add one word)
-
-    The other agent's prompt is:    
-    {agent_prompt}
-    you return with the prompt that you modified.
-    """,
-    input_variables=[ "agent_prompt"],
+""",input_variables=["current_action", "code_history", "code_future", "enviroment", "function", "example", "experiences"]
 )

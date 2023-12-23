@@ -6,7 +6,7 @@ from langchain.chains import LLMChain
 
 class GPT():
     def __init__(self, content=''):
-        self.description = "GPT, use when you want to generate text based on the input text by GPT3.5 or GPT4"
+        self.description = "Large Language Models, use it when you want to generate text based on the input text by GPT3.5 or GPT4"
         self.example = """
         ## get how to install the package of openAI by GPT4
         text = "how should I install the package of openAI"
@@ -46,6 +46,6 @@ if __name__ == "__main__":
     GPT=GPT(text)
     results = GPT.run()
     print(results)
-        
+
 
 """
