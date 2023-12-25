@@ -23,8 +23,7 @@ class AskHumanForHelp:
 
     
     def run(self):
-        userInput=input(self.question)
-        print("waiting.........")
+        userInput=input(self.question+"\n"+"Your answer:")
         print("I understand, you mean: "+userInput)
 
 
