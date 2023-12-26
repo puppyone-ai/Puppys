@@ -15,15 +15,16 @@ class CodeThread():
         self.actionFlow=self.CodeThreadActionFlow()
         self.threadProperty={}
         self.environment={
-            "goal": "send hello to my mom",
         }
+
+        self.goal="make the earth better"
 
     # import tools, initialize the agent
     def codeThreadInitialize(self):
         pass
 
     # to run the thread
-    def codeThreadRun(self):
+    def runCodeThread(self):
         
         # start the code thread
         threadCode = threading.Thread(target=self.codeThreadCodeExecution)
@@ -43,7 +44,8 @@ class CodeThread():
             self.actionFlowHistoryJSON = []
             self.actionFlowHistoryPython=""""""
 
-            self.actionCurrent=""""""
+            self.actionCurrent=""
+            self.actionCurrentPython=""""""
 
             self.actionPending=queue.Queue()
         
@@ -53,6 +55,7 @@ class CodeThread():
                 # updated the actionFlow JSON
                 self.actionFlowAllJSON, self.actionFlowAllPython=self.actionFlowTranslate(sourceCode)
                 self.actionPendingUpdate(self.actionFlowAllJSON[0]["code"])
+                self.actionCurrent=self.actionFlowAllJSON[0]["action"]
 
             else:
                 pass
@@ -131,6 +134,7 @@ class CodeThread():
 
         def actionPendingUpdate(self,action):
             self.actionPending.put(action)
+            self.actionCurrentPython=action
 
         def actionFinish(self,action):
             self.actionFlowAllJSON.append({"action":action,"status":"fixed"})
@@ -142,7 +146,6 @@ class CodeThread():
     # for the wrapper of action
     def codeThread(self, func):
         def wrapper(self, *args, **kwargs):
-
             self.initialize()
             func(*args, **kwargs)
         
@@ -173,11 +176,10 @@ class CodeThread():
     def codeThreadCodeExecution(self):
         while True:
             task = self.actionFlow.actionPending.get()
-            self.actionFlow.actionCurrent=task
+            self.actionFlow.actionCurrentPython=task
             if task is None:
                 break
             
-            print(task)
             exec(task)
 
             self.actionFlow.actionPending.task_done()
@@ -186,7 +188,7 @@ class CodeThread():
         os.environ["OPENAI_API_KEY"]=ApiKey
 
         sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        print(sys.path)
+        # print(sys.path)
 
         from prompt.actionFlowPrompt import ActionDo
 
@@ -195,18 +197,18 @@ class CodeThread():
 
         import actionDefault
 
-        self.functionsSimplified= actionDefault.getDescriptions()
-        self.functionsExample= actionDefault.getExamples()
+        self.functionsDescriptionAndExample= actionDefault.getDescriptionAndExample()
 
         agentExperience="none"
 
-        newCode=fillingActionParameter.predict(current_action= self.actionFlow.actionCurrent,
-                                                 code_history=self.actionFlow.actionFlowHistoryPython,
-                                                    code_future="",
-                                                    enviroment=self.environment,
-                                                    function=self.functionsSimplified,
-                                                    example=self.functionsExample,
-                                                    experiences=agentExperience)
+        newCode=fillingActionParameter.predict(goal=self.goal,
+                                               current_action=self.actionFlow.actionCurrent,
+                                                current_action_Python= self.actionFlow.actionCurrentPython,
+                                                code_history=self.actionFlow.actionFlowHistoryPython,
+                                                code_future="",
+                                                enviroment=self.environment,
+                                                function_description_and_example=self.functionsDescriptionAndExample,
+                                                experiences=agentExperience)
                                                 
 
         newCodeOnly=newCode.replace("```python\n", "").replace("\n```", "")
@@ -267,6 +269,10 @@ class GoalThread():
 
         # end the code thread
         threadCode.join()
+
+    class ToCodeThread():
+        def __init__(self):
+            pass
 
     class GoalThreadActionFlow():
         def __init__(self): 
@@ -403,57 +409,16 @@ class GoalThread():
         return wrapper
 
     def goalThreadCodeExecution(self):
+
         while True:
             task = self.actionFlow.actionPending.get()
             self.actionFlow.actionCurrent=task
             if task is None:
                 break
             
-            print(task)
             exec(task)
 
             self.actionFlow.actionPending.task_done()
-
-    def do(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
-        os.environ["OPENAI_API_KEY"]=ApiKey
-
-        sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        print(sys.path)
-
-        from prompt.actionFlowPrompt import ActionDo
-
-        llm=ChatOpenAI(temperature=temperature,max_tokens=max_tokens,model_name=model_name)
-        fillingActionParameter=LLMChain(llm=llm, prompt= ActionDo)
-
-        import actionDefault
-
-        self.functionsSimplified= actionDefault.getDescriptions()
-        self.functionsExample= actionDefault.getExamples()
-
-        agentExperience="none"
-
-        newCode=fillingActionParameter.predict(current_action= self.actionFlow.actionCurrent,
-                                                 code_history=self.actionFlow.actionFlowHistoryPython,
-                                                    code_future="",
-                                                    enviroment=self.environment,
-                                                    function=self.functionsSimplified,
-                                                    example=self.functionsExample,
-                                                    experiences=agentExperience)
-                                                
-
-        newCodeOnly=newCode.replace("```python\n", "").replace("\n```", "")
-
-        print("newCode:")
-        print(newCodeOnly)
-
-        # import tools, initialize the agent
-        self.actionFlow.actionPendingUpdate("from actionDefault import AskHumanForHelp")
-
-        # run the code
-        self.actionFlow.actionPendingUpdate(newCodeOnly)
-
-        print("newCodeEnd")
-
 
 
 
@@ -463,8 +428,7 @@ class Puppy(CodeThread,GoalThread):
         super().__init__()
 
     def run(self):
-        self.codeThreadRun()
-
+        self.runCodeThread()
 
 
 if __name__ == '__main__':
@@ -473,11 +437,12 @@ if __name__ == '__main__':
     @Yuning.codeThread
     def action():
 
-        ## Invite people
+        ## send the message to my mon
         Yuning.do()
 
+    @Yuning.codeThread
     def trigger():
         pass
 
-    Yuning.run()
 
+    Yuning.run()

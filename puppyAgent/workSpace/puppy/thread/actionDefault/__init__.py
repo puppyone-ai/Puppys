@@ -24,6 +24,21 @@ def getExamples():
     functionsExample+=GPT().getExample()+"\n"
     return functionsExample
 
+def getDescriptionAndExample():
+    
+    functionsDescriptionAndExample="""
+    """
+    functionsDescriptionAndExample+="1. AskHumanForHelp:"+AskHumanForHelp().getDescription()+"\n"
+    functionsDescriptionAndExample+=AskHumanForHelp().getExample()+"\n"
+
+    functionsDescriptionAndExample+="2. GoogleSearchNative:"+GoogleSearchNative().getDescription()+"\n"
+    functionsDescriptionAndExample+=GoogleSearchNative().getExample()+"\n"
+
+    functionsDescriptionAndExample+="3. GPT:"+GPT().getDescription()+"\n"
+    functionsDescriptionAndExample+=GPT().getExample()+"\n"
+    
+    return functionsDescriptionAndExample
+
 
 if __name__ == "__main__":
     print(getDescriptions())
