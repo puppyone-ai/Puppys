@@ -10,20 +10,12 @@ An open-source **AI Agents-and-Humans co-working** framework
 </a>
 </p>
 
-* **Only Prompt Engineering**: PuppyAgent only involves prompt engineering, no fine-tuning, no pre-training.
-* **Build Professional Agents**: PuppyAgent enable you to build an agent in two minutes.
-* **Human-Agent Interacts**: PuppyAgent allows the communication between human and agent in anytime. You can instruct the agent even when the agent is running.
-* **Multi-Agents**: PuppyAgent allows agents to co-work with each other, they can distribute tasks and share information automatically.
-* **RAG**: Information Retriver is essential for agents. PuppyAgent offers an advanced information retrive framework, making your agent smarter!
+* **Code-Native**: Puppys is a code-native agent framework. Every dialog is code.
+* **Multi-Threads**: Puppys enable you to build an agent with multi-thread.
+* **Human-Agent Interacts**: Your agent will ask you when it cannot understand what you said.
+* **RAG**: Retriver is essential for agents. Puppys offers an advanced information retrive framework, making your agent smarter!
 
 
-### Archietecture:
-
-![alt text](assets/PuppyAgentArchietecture.png)
-
-### Everything is Agent:
-
-All operations for notes, tools, workflows, indexing are responsible from agents.
 
 
 

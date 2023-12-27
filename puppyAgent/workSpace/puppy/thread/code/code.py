@@ -11,8 +11,8 @@ import re
 
 class CodeThread():
     def __init__(self):
-
-        self.actionFlow=self.CodeThreadActionFlow()
+        self.currentThreadName="codeThread"
+        self.codeThreadActionFlow=self.CodeThreadActionFlow()
         self.threadProperty={}
         self.environment={
         }
@@ -31,8 +31,8 @@ class CodeThread():
         threadCode.daemon = False
         threadCode.start()
 
-        self.actionFlow.actionPendingUpdate("import actionDefault")
-        self.actionFlow.actionPendingUpdate("from actionDefault import AskHumanForHelp")
+        self.codeThreadActionFlow.actionPendingUpdate("import actionDefault")
+        self.codeThreadActionFlow.actionPendingUpdate("from actionDefault import AskHumanForHelp")
 
         # end the code thread
         threadCode.join()
@@ -53,7 +53,7 @@ class CodeThread():
             if self.actionFlowAllJSON == []:
 
                 # updated the actionFlow JSON
-                self.actionFlowAllJSON, self.actionFlowAllPython=self.actionFlowTranslate(sourceCode)
+                self.actionFlowAllJSON, self.actionFlowAllPython=self.actionFlowTranslatePythonToJSON(sourceCode)
                 self.actionPendingUpdate(self.actionFlowAllJSON[0]["code"])
                 self.actionCurrent=self.actionFlowAllJSON[0]["action"]
 
@@ -61,7 +61,7 @@ class CodeThread():
                 pass
         
         # return the actionFlowHistoryJSON and actionFlowHistoryPython
-        def actionFlowTranslate(self,sourceCode):
+        def actionFlowTranslatePythonToJSON(self,sourceCode):
 
             ## initialize the actionFlowHistoryPython
             self.actionFlowAllPython=sourceCode
@@ -136,6 +136,8 @@ class CodeThread():
             self.actionPending.put(action)
             self.actionCurrentPython=action
 
+        def action
+
         def actionFinish(self,action):
             self.actionFlowAllJSON.append({"action":action,"status":"fixed"})
             self.actionFlowAllPython += action + "\n"
@@ -149,6 +151,7 @@ class CodeThread():
             self.initialize()
             func(*args, **kwargs)
         
+        self.currentThreadName="codeThread"
         sourseCode=inspect.getsource(func)
 
         # if the function is action, initialize the actionFlow
@@ -156,13 +159,13 @@ class CodeThread():
         if funcName == "action":
 
             # get source code
-            self.actionFlow.actionFlowInitialize(sourseCode)
+            self.codeThreadActionFlow.actionFlowInitialize(sourseCode)
 
             
             print("Initialized: "+funcName)
             print("actionFlowHistoryPython:")
-            print(self.actionFlow.actionFlowAllPython)
-            print("InitializedActionFlowJSON:"+str(self.actionFlow.actionFlowAllJSON))
+            print(self.codeThreadActionFlow.actionFlowAllPython)
+            print("InitializedActionFlowJSON:"+str(self.codeThreadActionFlow.actionFlowAllJSON))
             #print("Start from:"+self.actionFlow.actionPending.get())
             
 
@@ -175,14 +178,14 @@ class CodeThread():
 
     def codeThreadCodeExecution(self):
         while True:
-            task = self.actionFlow.actionPending.get()
-            self.actionFlow.actionCurrentPython=task
+            task = self.codeThreadActionFlow.actionPending.get()
+            self.codeThreadActionFlow.actionCurrentPython=task
             if task is None:
                 break
             
             exec(task)
 
-            self.actionFlow.actionPending.task_done()
+            self.codeThreadActionFlow.actionPending.task_done()
 
     def do(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
         os.environ["OPENAI_API_KEY"]=ApiKey
@@ -202,9 +205,9 @@ class CodeThread():
         agentExperience="none"
 
         newCode=fillingActionParameter.predict(goal=self.goal,
-                                               current_action=self.actionFlow.actionCurrent,
-                                                current_action_Python= self.actionFlow.actionCurrentPython,
-                                                code_history=self.actionFlow.actionFlowHistoryPython,
+                                               current_action=self.codeThreadActionFlow.actionCurrent,
+                                                current_action_Python= self.codeThreadActionFlow.actionCurrentPython,
+                                                code_history=self.codeThreadActionFlow.actionFlowHistoryPython,
                                                 code_future="",
                                                 enviroment=self.environment,
                                                 function_description_and_example=self.functionsDescriptionAndExample,
@@ -217,10 +220,10 @@ class CodeThread():
         print(newCodeOnly)
 
         # import tools, initialize the agent
-        self.actionFlow.actionPendingUpdate("from actionDefault import AskHumanForHelp")
+        self.codeThreadActionFlow.actionPendingUpdate("from actionDefault import AskHumanForHelp")
 
         # run the code
-        self.actionFlow.actionPendingUpdate(newCodeOnly)
+        self.codeThreadActionFlow.actionPendingUpdate(newCodeOnly)
 
         print("newCodeEnd")
 
@@ -380,10 +383,10 @@ class GoalThread():
     # for the wrapper of action
     def goalThread(self, func):
         def wrapper(self, *args, **kwargs):
-
             self.initialize()
             func(*args, **kwargs)
         
+        self.currentThreadName="goalThread"
         sourseCode=inspect.getsource(func)
 
         # if the function is action, initialize the actionFlow
@@ -391,7 +394,7 @@ class GoalThread():
         if funcName == "action":
 
             # get source code
-            self.actionFlow.actionFlowInitialize(sourseCode)
+
 
             
             print("Initialized: "+funcName)
@@ -408,6 +411,7 @@ class GoalThread():
         # execute the function with wrapper
         return wrapper
 
+
     def goalThreadCodeExecution(self):
 
         while True:
@@ -423,6 +427,11 @@ class GoalThread():
 
 
 
+
+
+
+
+
 class Puppy(CodeThread,GoalThread):
     def __init__(self):
         super().__init__()
@@ -430,19 +439,28 @@ class Puppy(CodeThread,GoalThread):
     def run(self):
         self.runCodeThread()
 
+print(Puppy.__mro__)
 
 if __name__ == '__main__':
+
+
     Yuning = Puppy()
 
     @Yuning.codeThread
     def action():
-
-        ## send the message to my mon
+        
+        ## searth the top 5 earphones in chinese market
         Yuning.do()
 
-    @Yuning.codeThread
-    def trigger():
-        pass
+        ## send message to my dad
+        Yuning.do()
 
+    @Yuning.goalThread
+    def action():
 
+        ## set the goal to "make the world better"
+        Yuning.setGoal("make the world better")
+        Yuning.update
+        Yuning.do()
+        
     Yuning.run()
