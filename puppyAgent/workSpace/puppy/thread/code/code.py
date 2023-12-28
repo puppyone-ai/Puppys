@@ -41,27 +41,38 @@ class CodeThread():
         def __init__(self): 
             self.actionFlowAllJSON = []
             self.actionFlowAllPython=""""""
+
             self.actionFlowHistoryJSON = []
             self.actionFlowHistoryPython=""""""
+
+            self.actionFlowPendingJSON =[]
+            self.actionFlowPendingPython=""""""
 
             self.actionCurrent=""
             self.actionCurrentPython=""""""
 
-            self.actionPending=queue.Queue()
+            self.actionCurrent=queue.Queue()
         
         def actionFlowInitialize(self,sourceCode):
-            if self.actionFlowAllJSON == []:
 
+            if self.actionFlowHistoryJSON == []:
                 # updated the actionFlow JSON
-                self.actionFlowAllJSON, self.actionFlowAllPython=self.actionFlowTranslatePythonToJSON(sourceCode)
-                self.actionPendingUpdate(self.actionFlowAllJSON[0]["code"])
-                self.actionCurrent=self.actionFlowAllJSON[0]["action"]
+                self.actionFlowPendingJSON, self.actionFlowPendingPython=self.actionFlowTranslatePython(sourceCode)
+                self.actionPendingUpdate(self.actionFlowHistoryJSON[0]["code"])
+                self.actionCurrent=self.actionFlowHistoryJSON[0]["action"]
 
             else:
                 pass
         
         # return the actionFlowHistoryJSON and actionFlowHistoryPython
-        def actionFlowTranslatePythonToJSON(self,sourceCode):
+        def actionFlowTranslatePython(self,sourceCode):
+
+            """
+            translate the source code to actionFlowJSON and actionFlowPython
+
+            args: sourceCode(Python)
+            return: actionFlowHistoryJSON(List), actionFlowHistoryPython(String)
+            """
 
             ## initialize the actionFlowHistoryPython
             self.actionFlowAllPython=sourceCode
@@ -129,21 +140,40 @@ class CodeThread():
 
             return actionFlowHistoryJSON, adjustedSourceCode
 
+        def actionFlowHistoryAddToFront(self,actionCode):
+            actionJSON,actionCode=self.actionFlowTranslatePython(actionCode)
+            self.actionFlowHistoryJSON=actionJSON+self.actionFlowHistoryJSON
+            self.actionFlowHistoryPython=str(actionCode)+'\n'+self.actionFlowHistoryPython
+            
+        def actionFlowHistoryAddToEnd(self,actionCode):
+            actionJSON,actionCode=self.actionFlowTranslatePython(actionCode)
+            self.actionFlowHistoryJSON=self.actionFlowHistoryJSON+actionJSON
+            self.actionFlowHistoryPython=self.actionFlowHistoryPython+'\n'+str(actionCode)
+
+        def actionFlowPendingAddToFront(self,actionCode):
+            actionJSON,actionCode=self.actionFlowTranslatePython(actionCode)
+            self.actionFlowPendingJSON=actionJSON+self.actionFlowPendingJSON
+            self.actionFlowPendingPython=str(actionCode)+'\n'+self.actionFlowPendingPython
+            
+        def actionFlowPendingAddToEnd(self,actionCode):
+            actionJSON,actionCode=self.actionFlowTranslatePython(actionCode)
+            self.actionFlowPendingJSON=self.actionFlowPendingJSON+actionJSON
+            self.actionFlowPendingPython=self.actionFlowPendingPython+'\n'+str(actionCode)
+
         def actionPendingRemove(self):
-            self.actionPending.pop()
+            self.actionCurrent.pop()
 
         def actionPendingUpdate(self,action):
-            self.actionPending.put(action)
+            self.actionCurrent.put(action)
             self.actionCurrentPython=action
 
-        def action
 
         def actionFinish(self,action):
             self.actionFlowAllJSON.append({"action":action,"status":"fixed"})
             self.actionFlowAllPython += action + "\n"
 
         def actionExe(self):
-            self.taskQueue.put(self.actionPending[0])
+            self.taskQueue.put(self.actionCurrent[0])
 
     # for the wrapper of action
     def codeThread(self, func):
@@ -178,14 +208,14 @@ class CodeThread():
 
     def codeThreadCodeExecution(self):
         while True:
-            task = self.codeThreadActionFlow.actionPending.get()
+            task = self.codeThreadActionFlow.actionCurrent.get()
             self.codeThreadActionFlow.actionCurrentPython=task
             if task is None:
                 break
             
             exec(task)
 
-            self.codeThreadActionFlow.actionPending.task_done()
+            self.codeThreadActionFlow.actionCurrent.task_done()
 
     def do(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
         os.environ["OPENAI_API_KEY"]=ApiKey
@@ -455,6 +485,7 @@ if __name__ == '__main__':
         ## send message to my dad
         Yuning.do()
 
+    '''
     @Yuning.goalThread
     def action():
 
@@ -462,5 +493,6 @@ if __name__ == '__main__':
         Yuning.setGoal("make the world better")
         Yuning.update
         Yuning.do()
+    '''
         
     Yuning.run()
