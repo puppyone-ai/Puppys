@@ -289,7 +289,7 @@ ActionDo = PromptTemplate(
     # to answer where is the NBA in 2019, I need to search the information about NBA in 2019. The function returns as a string.
     location=google_search("Where is the NBA in 2019")
 
-    DO write the code in python. The action should be provided in code with comment after ##. You are allowed to use python code and call those funcitions. and you write commit with information attached to your action. including your thinking, your response and the type of the parameter.
+    DO write the code in python. The name of the action should be provided by Python code with comment after ##, For example, "## search the location of the NBA in 2019 @google search @zhihu search" in the example. You are allowed to use python code and call those funcitions. and you write commit with information attached to your action. including your thinking, your response and the type of the parameter.
     DONT'T ASSUME you know the knowledge that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function, and you can show your thinking and reason in the comment. But don't write any code calling undefined functions in this case.
     make sure that the parameter in your respond code follow the type of the parameter in the function instruction. 
     your response should be similiar with the example(ONLY CODE) and NOTHING ELSE.

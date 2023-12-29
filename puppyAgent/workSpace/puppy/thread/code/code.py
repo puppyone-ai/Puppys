@@ -48,7 +48,7 @@ class CodeThread():
             self.actionFlowPendingJSON =[]
             self.actionFlowPendingPython=""""""
 
-            self.actionCurrent=""
+            self.actionCurrenJSON=[]
             self.actionCurrentPython=""""""
 
             self.actionCurrent=queue.Queue()
@@ -58,8 +58,8 @@ class CodeThread():
             if self.actionFlowHistoryJSON == []:
                 # updated the actionFlow JSON
                 self.actionFlowPendingJSON, self.actionFlowPendingPython=self.actionFlowTranslatePython(sourceCode)
-                self.actionPendingUpdate(self.actionFlowHistoryJSON[0]["code"])
-                self.actionCurrent=self.actionFlowHistoryJSON[0]["action"]
+                self.actionPendingUpdate(self.actionFlowPendingJSON[0]["code"])
+                self.actionCurrent=self.actionFlowPendingJSON[0]["action"]
 
             else:
                 pass
@@ -140,32 +140,67 @@ class CodeThread():
 
             return actionFlowHistoryJSON, adjustedSourceCode
 
+        # operation for actionFlowHistory
+        def actionFlowHistoryGetFront(self):
+            return self.actionFlowHistoryJSON[0],self.actionFlowHistoryPython.split('##')[0]
+        
         def actionFlowHistoryAddToFront(self,actionCode):
             actionJSON,actionCode=self.actionFlowTranslatePython(actionCode)
             self.actionFlowHistoryJSON=actionJSON+self.actionFlowHistoryJSON
             self.actionFlowHistoryPython=str(actionCode)+'\n'+self.actionFlowHistoryPython
             
+        def actionFlowHistoryRemoveFront(self):
+            self.actionFlowHistoryJSON.pop(0)
+            if len(self.actionFlowHistoryPython.split('##',1))>0:
+                self.actionFlowHistoryPython=self.actionFlowHistoryPython.split('##',1)[0]
+            else:
+                self.actionFlowHistoryPython=""
+
+        def actionFlowHistoryGetEnd(self):
+            return self.actionFlowHistoryJSON[-1], self.actionFlowHistoryPython.split('##')[-1]
+        
         def actionFlowHistoryAddToEnd(self,actionCode):
             actionJSON,actionCode=self.actionFlowTranslatePython(actionCode)
             self.actionFlowHistoryJSON=self.actionFlowHistoryJSON+actionJSON
             self.actionFlowHistoryPython=self.actionFlowHistoryPython+'\n'+str(actionCode)
 
+        def actionFlowHistoryRemoveEnd(self):
+            self.actionFlowHistoryJSON.pop()
+            if len(self.actionFlowHistoryPython.split('##',1))>0:
+                self.actionFlowHistoryPython=self.actionFlowHistoryPython.split('##',1)[-1]
+            else:
+                self.actionFlowHistoryPython=""
+
+        # operation for actionFlowPending
+        def actionFlowPendingGetFront(self):
+            return self.actionFlowPendingJSON[0],self.actionFlowPendingPython.split('##')[0]
+        
         def actionFlowPendingAddToFront(self,actionCode):
             actionJSON,actionCode=self.actionFlowTranslatePython(actionCode)
             self.actionFlowPendingJSON=actionJSON+self.actionFlowPendingJSON
             self.actionFlowPendingPython=str(actionCode)+'\n'+self.actionFlowPendingPython
             
+        def actionFlowPendingRemoveFront(self):
+            self.actionFlowPendingJSON.pop(0)
+            if len(self.actionFlowPendingPython.split('##',1))>0:
+                self.actionFlowPendingPython=self.actionFlowPendingPython.split('##',1)[0]
+            else:
+                self.actionFlowPendingPython=""
+
+        def actionFlowPendingGetEnd(self):
+            return self.actionFlowPendingJSON[-1], self.actionFlowPendingPython.split('##')[-1]
+        
         def actionFlowPendingAddToEnd(self,actionCode):
             actionJSON,actionCode=self.actionFlowTranslatePython(actionCode)
             self.actionFlowPendingJSON=self.actionFlowPendingJSON+actionJSON
             self.actionFlowPendingPython=self.actionFlowPendingPython+'\n'+str(actionCode)
 
-        def actionPendingRemove(self):
-            self.actionCurrent.pop()
-
-        def actionPendingUpdate(self,action):
-            self.actionCurrent.put(action)
-            self.actionCurrentPython=action
+        def actionFlowPendingRemoveEnd(self):
+            self.actionFlowPendingJSON.pop()
+            if len(self.actionFlowPendingPython.split('##',1))>0:
+                self.actionFlowPendingPython=self.actionFlowPendingPython.split('##',1)[-1]
+            else:
+                self.actionFlowPendingPython=""
 
 
         def actionFinish(self,action):
