@@ -30,10 +30,12 @@ class CodeThread():
         threadCode = threading.Thread(target=self.codeThreadCodeExecution)
         threadCode.daemon = False
         threadCode.start()
-
-        self.codeThreadActionFlow.actionPendingUpdate("import actionDefault")
-        self.codeThreadActionFlow.actionPendingUpdate("from actionDefault import AskHumanForHelp")
-
+        
+        self.codeThreadActionFlow.actionOnGoing.put("sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))")
+        self.codeThreadActionFlow.actionOnGoing.put("print(sys.path)")
+        self.codeThreadActionFlow.actionOnGoing.put("import actionDefault")
+        self.codeThreadActionFlow.actionOnGoing.put("from actionDefault import AskHumanForHelp")
+        
         # end the code thread
         threadCode.join()
 
@@ -51,18 +53,24 @@ class CodeThread():
             self.actionCurrenJSON=[]
             self.actionCurrentPython=""""""
 
-            self.actionCurrent=queue.Queue()
+            self.actionOnGoing=queue.Queue()
         
         def actionFlowInitialize(self,sourceCode):
 
             if self.actionFlowHistoryJSON == []:
                 # updated the actionFlow JSON
-                self.actionFlowPendingJSON, self.actionFlowPendingPython=self.actionFlowTranslatePython(sourceCode)
-                self.actionPendingUpdate(self.actionFlowPendingJSON[0]["code"])
-                self.actionCurrent=self.actionFlowPendingJSON[0]["action"]
+                actionFlowInitialJSON, actionFlowInitialPython=self.actionFlowTranslatePython(sourceCode)
+                self.actionFlowPendingAddToFront(actionFlowInitialPython)
 
             else:
                 pass
+
+            print("(self.actionCurrentPython):",self.actionCurrentPython)
+
+            self.actionCurrenJSON, self.actionCurrentPython = self.actionFlowPendingGetFront()
+            self.actionFlowPendingRemoveFront()
+            self.actionOnGoing.put(self.actionCurrentPython)
+
         
         # return the actionFlowHistoryJSON and actionFlowHistoryPython
         def actionFlowTranslatePython(self,sourceCode):
@@ -202,13 +210,44 @@ class CodeThread():
             else:
                 self.actionFlowPendingPython=""
 
+        # operation for actionCurrent
+        def actionFlowPendingGetFront(self):
+            return self.actionFlowPendingJSON[0],self.actionFlowPendingPython.split('##')[0]
+        
+        def actionFlowPendingAddToFront(self,actionCode):
+            actionJSON,actionCode=self.actionFlowTranslatePython(actionCode)
+            self.actionFlowPendingJSON=actionJSON+self.actionFlowPendingJSON
+            self.actionFlowPendingPython=str(actionCode)+'\n'+self.actionFlowPendingPython
+            
+        def actionFlowPendingRemoveFront(self):
+            self.actionFlowPendingJSON.pop(0)
+            if len(self.actionFlowPendingPython.split('##',1))>0:
+                self.actionFlowPendingPython=self.actionFlowPendingPython.split('##',1)[0]
+            else:
+                self.actionFlowPendingPython=""
+
+        def actionFlowPendingGetEnd(self):
+            return self.actionFlowPendingJSON[-1], self.actionFlowPendingPython.split('##')[-1]
+        
+        def actionFlowPendingAddToEnd(self,actionCode):
+            actionJSON,actionCode=self.actionFlowTranslatePython(actionCode)
+            self.actionFlowPendingJSON=self.actionFlowPendingJSON+actionJSON
+            self.actionFlowPendingPython=self.actionFlowPendingPython+'\n'+str(actionCode)
+
+        def actionFlowPendingRemoveEnd(self):
+            self.actionFlowPendingJSON.pop()
+            if len(self.actionFlowPendingPython.split('##',1))>0:
+                self.actionFlowPendingPython=self.actionFlowPendingPython.split('##',1)[-1]
+            else:
+                self.actionFlowPendingPython=""
 
         def actionFinish(self,action):
             self.actionFlowAllJSON.append({"action":action,"status":"fixed"})
             self.actionFlowAllPython += action + "\n"
 
+        # put the current action into the actionOnGoing 
         def actionExe(self):
-            self.taskQueue.put(self.actionCurrent[0])
+            self.actionOnGoing.put(self.actionCurrentPython)
 
     # for the wrapper of action
     def codeThread(self, func):
@@ -243,20 +282,19 @@ class CodeThread():
 
     def codeThreadCodeExecution(self):
         while True:
-            task = self.codeThreadActionFlow.actionCurrent.get()
-            self.codeThreadActionFlow.actionCurrentPython=task
+            print("waiting...")
+            task = self.codeThreadActionFlow.actionOnGoing.get()
             if task is None:
                 break
             
             exec(task)
 
-            self.codeThreadActionFlow.actionCurrent.task_done()
+            self.codeThreadActionFlow.actionOnGoing.task_done()
 
     def do(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
         os.environ["OPENAI_API_KEY"]=ApiKey
 
-        sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        # print(sys.path)
+        print("waiting...")
 
         from prompt.actionFlowPrompt import ActionDo
 
@@ -270,7 +308,7 @@ class CodeThread():
         agentExperience="none"
 
         newCode=fillingActionParameter.predict(goal=self.goal,
-                                               current_action=self.codeThreadActionFlow.actionCurrent,
+                                               current_action=self.codeThreadActionFlow.actionOnGoing,
                                                 current_action_Python= self.codeThreadActionFlow.actionCurrentPython,
                                                 code_history=self.codeThreadActionFlow.actionFlowHistoryPython,
                                                 code_future="",
@@ -504,6 +542,7 @@ class Puppy(CodeThread,GoalThread):
     def run(self):
         self.runCodeThread()
 
+
 print(Puppy.__mro__)
 
 if __name__ == '__main__':
@@ -515,7 +554,7 @@ if __name__ == '__main__':
     def action():
         
         ## searth the top 5 earphones in chinese market
-        Yuning.do()
+        print("hello")
 
         ## send message to my dad
         Yuning.do()
