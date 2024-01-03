@@ -1,30 +1,39 @@
-def split_string_by_hash(input_str):
-    # 使用 split 方法按照 "##" 分割字符串
-    parts = input_str.split("##")
+class YourClassFinal:
+    def __init__(self, actionFlowPendingPython):
+        self.actionFlowPendingPython = actionFlowPendingPython
 
-    # 忽略第一个 "##" 之前的内容
-    parts = parts[1:]
+    def actionFlowPendingRemoveFront(self):
+        parts = self.actionFlowPendingPython.split('##')
+        if len(parts) > 2:
+            # 保留第二个分隔符之后的所有内容，包括分隔符本身
+            self.actionFlowPendingPython = '##' + '##'.join(parts[2:])
+        else:
+            # 如果没有第二个分隔符，清空字符串
+            self.actionFlowPendingPython = ""
 
-    # 为每个分割出的部分添加回 "##" 前缀，并存储到列表中
-    results = ["##" + part for part in parts if part.strip()]
+# 终极测试用例
+final_test_cases = [
+    "Hello##world##example text",
+    "Hello##world",
+    "Hello world",
+    "##Start with separator##example text",
+    """
+    ## Start with separator
+    example text
 
-    return results
+    ## dkjfakldsj
+    dfddsfsd
 
-# 测试字符串
-input_str = """
-This is some introductory text.
+    ##takd
+    dddd
+    """
+]
 
+# 运行终极测试
+final_results = []
+for case in final_test_cases:
+    obj = YourClassFinal(case)
+    obj.actionFlowPendingRemoveFront()
+    final_results.append(obj.actionFlowPendingPython)
 
-## search the top 5 earphones in chinese market
-print("hello")        
-
-
-
-## send the top 5 earphones in chinese market to my email
-# 所一定要有的包
-print("sent")
-"""
-
-# 调用函数并打印结果
-print(split_string_by_hash(input_str))
-
+print(final_results)

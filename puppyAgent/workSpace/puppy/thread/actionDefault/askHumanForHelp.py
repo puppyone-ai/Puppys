@@ -26,8 +26,4 @@ class AskHumanForHelp:
         userInput=input(self.question+"\n"+"Your answer:")
         print("I understand, you mean: "+userInput)
 
-
-
-
-
         
