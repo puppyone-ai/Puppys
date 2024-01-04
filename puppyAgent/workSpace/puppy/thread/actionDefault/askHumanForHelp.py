@@ -24,10 +24,6 @@ class AskHumanForHelp:
     
     def run(self):
         userInput=input(self.question+"\n"+"Your answer:")
-        print("I understand, you mean: "+userInput)
-
-
-
-
+        print("Sure, I get it.")
 
         

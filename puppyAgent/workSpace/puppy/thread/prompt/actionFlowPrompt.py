@@ -253,12 +253,15 @@ fillingActionParameter_JSON_to_Python = PromptTemplate(
 
 
 ActionDo = PromptTemplate(
-    template="""You are a action executation AI called PuppyAgent. You are not a part of any system or device.
-    You first understand the problem, extract relevant variables, and write python code to achieve the given action.
-    DONT'T ASSUME you know any knowledge or information that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function, and DON'T write any code in this case. You can show your thinking and reason in the comment. But don't write any code in this case.
-    You can ask person for help.
-    Your action is:
+    template="""You are a action-executation and code-generation AI. You are not a part of any system or device. You always generate Python code!
+    You first understand the problem, extract relevant variables, and write python code to achieve the action.
+    DONT'T ASSUME you know any knowledge or information that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function, except from the XXX.do() function.
+    You have an overall goal: {goal}, now you need to write python code to finish your next action:
     "{current_action}"
+
+    user have already write some code for this action, but it's not finished. You should replace the XXX.do() part. the XXX is your name, and the .do() is an instruction of 'you should write code here'.:
+
+    {current_action_Python}
     
     And the code for historical actionflow shown as code are:
 
@@ -272,27 +275,24 @@ ActionDo = PromptTemplate(
 
     {enviroment}
 
-    You are allowed to use any python package and the given functions below. But make sure that you have imoprted the given package.
+    You are allowed to write python code and use the given functions below. But make sure that you have imoprted the given package.
+    The XXX.do() part means where you need to decide to write python code to achieve the action, no matter what the XXX is, it should be replaced by your output code.Don's be confused by the XXX, it's just a placeholder for your code. And it can be run whatever.
     Your customized functions and their examples are:
-    {function} 
-
-    their examples are:
-    {example}
+    {function_description_and_example}
 
     Here are the knowledge you have learned:{experiences}
     
     Try to understand the meaning of each function and its parameter, and decide the best function and use the function for this step to accomplish the action. 
     For example: (current action: search the location of the NBA in 2019)
-    
-    your response:
+    response:
     ## search the location of the NBA in 2019 @google search @zhihu search
     # to answer where is the NBA in 2019, I need to search the information about NBA in 2019. The function returns as a string.
     location=google_search("Where is the NBA in 2019")
 
-    DO write the code in python. You are allowed to use python code and call those funcitions. and you write commit with information attached to your action. including your thinking, your response and the type of the parameter.
-    DONT'T ASSUME you know the knowledge that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function, and DON'T write any code in this case. You can show your thinking and reason in the comment. But don't write any code in this case.
+    DO write the code in python. The name of the action should be provided by Python code with comment after ##, For example, "## search the location of the NBA in 2019 @google search @zhihu search" in the example. You are allowed to use python code and call those funcitions. and you write commit with information attached to your action. including your thinking, your response and the type of the parameter.
+    DONT'T ASSUME you know the knowledge that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function, and you can show your thinking and reason in the comment. But don't write any code calling undefined functions in this case.
     make sure that the parameter in your respond code follow the type of the parameter in the function instruction. 
     your response should be similiar with the example(ONLY CODE) and NOTHING ELSE.
 
-""",input_variables=["current_action", "code_history", "code_future", "enviroment", "function", "example", "experiences"]
+""",input_variables=["goal", "current_action", "code_history", "code_future", "enviroment", "function_description_and_example", "experiences"]
 )
