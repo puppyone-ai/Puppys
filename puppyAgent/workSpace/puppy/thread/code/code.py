@@ -41,16 +41,16 @@ class CodeThread():
     class CodeThreadActionFlow():
         def __init__(self): 
             self.actionFlowAllJSON = []
-            self.actionFlowAllPython=""""""
+            self.actionFlowAllPython= []
 
             self.actionFlowHistoryJSON = []
-            self.actionFlowHistoryPython=""""""
+            self.actionFlowHistoryPython= []
 
             self.actionFlowPendingJSON =[]
-            self.actionFlowPendingPython=""""""
+            self.actionFlowPendingPython= []
 
             self.actionFlowCurrentJSON=[]
-            self.actionFlowCurrentPython=""""""
+            self.actionFlowCurrentPython= []
 
             self.actionOnGoing=queue.Queue()
         
@@ -62,9 +62,7 @@ class CodeThread():
             self.actionFlowPendingAddToFront(actionFlowInitialPython)
 
 
-        # return the actionFlowHistoryJSON and actionFlowHistoryPython
-        def actionFlowTranslatePython(self,sourceCode):
-
+        def actionFlowTranslatePythonList(self,adjustedSourceCodeList: list):
             """
             translate the source code to actionFlowJSON and actionFlowPython
 
@@ -72,9 +70,10 @@ class CodeThread():
             return: actionFlowHistoryJSON(List), actionFlowHistoryPython(String)
             """
 
-            ## initialize the actionFlowHistoryPython
-            self.actionFlowAllPython=sourceCode
-            actionFlowHistoryJSON=[]
+            sourceCode="\n".join(adjustedSourceCodeList)
+            ## initialize the actionFlowJSON and actionFlowPython
+            actionFlowJSON=[]
+            actionFlowPython=[]
 
             lines = sourceCode.split('\n')
 
@@ -86,7 +85,8 @@ class CodeThread():
                     comment_pos = i
                     indent_level = len(line) - len(line.lstrip(' '))
                     break
-
+            
+            # return the adjusted source code, with is the code without the indent
             # if the indent level is found, adjust the indent of the whole function
             if comment_pos is not None and indent_level is not None:
 
@@ -104,18 +104,19 @@ class CodeThread():
             else:
                 adjustedSourceCode = sourceCode
 
-            ## translate the actionFlowPython to actionFlowJSON
+
+            ## return the actionFlowJSON
             lines = adjustedSourceCode.split('\n')
             searchForDo = False
             comment = ""
             codeSnippet = ""
-            actionFlowHistoryJSON = []
+            actionFlowJSON = []
 
             for line in lines:
                 if '##' in line:
                     # if there is an unfinished action, add it to the JSON
                     if searchForDo:
-                        actionFlowHistoryJSON.append({"action": comment, "status": "semi-fixed", "code": codeSnippet.strip()})
+                        actionFlowJSON.append({"action": comment, "status": "semi-fixed", "code": "## "+comment+"\n"+codeSnippet.strip()})
                         codeSnippet = ""
 
                     comment = line.split('##', 1)[1].strip()
@@ -125,7 +126,7 @@ class CodeThread():
                         codeSnippet += line + '\n'  # history code snippet
                         if '.do()' in line:
                             # if there is a .do(), mark it as semi-fixed
-                            actionFlowHistoryJSON.append({"action": comment, "status": "semi-fixed", "code": codeSnippet.strip()})
+                            actionFlowJSON.append({"action": comment, "status": "semi-fixed", "code": "## "+comment+"\n"+codeSnippet.strip()})
                             searchForDo = False
                             codeSnippet = ""
                     else:
@@ -134,233 +135,197 @@ class CodeThread():
 
             # deal with the last action
             if searchForDo:
-                actionFlowHistoryJSON.append({"action": comment, "status": "fixed", "code": codeSnippet.strip()})
+                actionFlowJSON.append({"action": comment, "status": "fixed", "code": "## "+comment+"\n"+codeSnippet.strip()})
 
-            return actionFlowHistoryJSON, adjustedSourceCode
+            ## return the actionFlowPython
+            for action in actionFlowJSON:
+                actionFlowPython.append(action["code"])
+
+            return actionFlowJSON, actionFlowPython
+            
+
+        # return the actionFlowHistoryJSON and actionFlowHistoryPython
+        def actionFlowTranslatePython(self, sourceCode: str):
+
+            """
+            translate the source code to actionFlowJSON and actionFlowPython
+
+            args: sourceCode(Python)
+            return: actionFlowHistoryJSON(List), actionFlowHistoryPython(String)
+            """
+
+            ## initialize the actionFlowJSON and actionFlowPython
+            actionFlowJSON=[]
+            actionFlowPython=[]
+
+            lines = sourceCode.split('\n')
+
+            ## deal with space in the head of the code
+            comment_pos = None
+            indent_level = None
+            for i, line in enumerate(lines):
+                if '##' in line:
+                    comment_pos = i
+                    indent_level = len(line) - len(line.lstrip(' '))
+                    break
+            
+            # return the adjusted source code, with is the code without the indent
+            # if the indent level is found, adjust the indent of the whole function
+            if comment_pos is not None and indent_level is not None:
+
+                # delete all the code before the '##' comment
+                lines = lines[comment_pos:]
+
+                adjusted_lines = []
+                for line in lines:
+                    # only adjust the indent of non-empty lines
+                    if line.strip():
+                        adjusted_lines.append(line[indent_level:])
+                    else:
+                        adjusted_lines.append(line)
+                adjustedSourceCode = '\n'.join(adjusted_lines)
+            else:
+                adjustedSourceCode = sourceCode
+
+
+            ## return the actionFlowJSON
+            lines = adjustedSourceCode.split('\n')
+            searchForDo = False
+            comment = ""
+            codeSnippet = ""
+            actionFlowJSON = []
+
+            for line in lines:
+                if '##' in line:
+                    # if there is an unfinished action, add it to the JSON
+                    if searchForDo:
+                        actionFlowJSON.append({"action": comment, "status": "semi-fixed", "code": "## "+comment+"\n"+codeSnippet.strip()})
+                        codeSnippet = ""
+
+                    comment = line.split('##', 1)[1].strip()
+                    searchForDo = True
+                else:
+                    if searchForDo:
+                        codeSnippet += line + '\n'  # history code snippet
+                        if '.do()' in line:
+                            # if there is a .do(), mark it as semi-fixed
+                            actionFlowJSON.append({"action": comment, "status": "semi-fixed", "code": "## "+comment+"\n"+codeSnippet.strip()})
+                            searchForDo = False
+                            codeSnippet = ""
+                    else:
+                        # if not in the comment module, ignore the line
+                        pass
+
+            # deal with the last action
+            if searchForDo:
+                actionFlowJSON.append({"action": comment, "status": "fixed", "code": "## "+comment+"\n"+codeSnippet.strip()})
+
+            ## return the actionFlowPython
+            for action in actionFlowJSON:
+                actionFlowPython.append(action["code"])
+
+            return actionFlowJSON, actionFlowPython
 
 
         # operation for actionFlowHistory
         def actionFlowHistoryGetFront(self):
-            parts = self.actionFlowHistoryPython.split('##')
-            if len(parts) > 2:
-                # 保留第二个分隔符之后的所有内容，包括分隔符本身
-                formattedStrings = '##' + '##'.join(parts[:1])
-            else:
-                # 如果没有第二个分隔符，清空字符串
-                formattedStrings = [self.actionFlowHistoryPython]
 
-            stringResult=""
-            for act in formattedStrings:
-                stringResult+=act
-
-            return self.actionFlowHistoryJSON[0],stringResult
+            return self.actionFlowHistoryJSON[0],self.actionFlowHistoryPython[0]
         
         def actionFlowHistoryAddToFront(self,actionCode):
-            actionJSON,actionCode=self.actionFlowTranslatePython(actionCode)
+            actionJSON,actionPython=self.actionFlowTranslatePythonList(actionCode)
             self.actionFlowHistoryJSON=actionJSON+self.actionFlowHistoryJSON
-            self.actionFlowHistoryPython=str(actionCode)+'\n'+self.actionFlowHistoryPython
+            self.actionFlowHistoryPython=actionPython+self.actionFlowHistoryPython
             
         def actionFlowHistoryRemoveFront(self):
             self.actionFlowHistoryJSON.pop(0)
-            parts = self.actionFlowHistoryPython.split('##')
-            # if the str starts with "##", the first element will be an empty string
-            start_index = 1 if parts[0] == '' else 0
-
-            if len(parts) > start_index + 1:
-                # keep all the content after the second ##
-                self.actionFlowHistoryPython = '##' + '##'.join(parts[start_index + 1:])
-            else:
-                # if there is no second separator, clear the string
-                self.actionFlowHistoryPython = ""
+            self.actionFlowHistoryPython.pop(0)
 
         def actionFlowHistoryGetEnd(self):
-            split_strings = self.actionFlowHistoryPython.split("##")
-            
-            # if the string starts with "##", the first element will be an empty string, which needs to be skipped
-            start_index = 1 if split_strings[0] == "" else 0
 
-            # starting from start_index, add "##" to the front of each element
-            formattedStrings = ["##" + s for s in split_strings[start_index:]]
-
-            
-            return self.actionFlowPendingJSON[0],formattedStrings[-1]
+            return self.actionFlowHistoryJSON[-1],self.actionFlowHistoryPython[-1]
         
         def actionFlowHistoryAddToEnd(self,actionCode):
-            actionJSON,actionCode=self.actionFlowTranslatePython(actionCode)
+            actionJSON,actionPython=self.actionFlowTranslatePythonList(actionCode)
             self.actionFlowHistoryJSON=self.actionFlowHistoryJSON+actionJSON
-            self.actionFlowHistoryPython=self.actionFlowHistoryPython+'\n'+str(actionCode)
+            self.actionFlowHistoryPython=self.actionFlowHistoryPython+actionPython
 
-        """
         def actionFlowHistoryRemoveEnd(self):
             self.actionFlowHistoryJSON.pop()
-            if len(self.actionFlowHistoryPython.split('##',1))>0:
-                self.actionFlowHistoryPython=self.actionFlowHistoryPython.split('##',1)[-1]
-            else:
-                self.actionFlowHistoryPython=""
-        """
+            self.actionFlowHistoryPython.pop()
+
 
         # operation for actionFlowPending
         def actionFlowPendingGetFront(self):
 
-            parts = self.actionFlowPendingPython.split('##')
-            print("parts",parts)
-            formattedStrings = '##'.join(parts[:1])
-            print("formattedStrings",formattedStrings)
-
-            stringResult=""
-            for act in formattedStrings:
-                stringResult+=act
-
-            return self.actionFlowPendingJSON[0],stringResult
+            return self.actionFlowPendingJSON[0],self.actionFlowPendingPython[0]
         
-        # add action to the front
         def actionFlowPendingAddToFront(self,actionCode):
-            actionJSON,actionCode=self.actionFlowTranslatePython(actionCode)
+            actionJSON,actionPython=self.actionFlowTranslatePythonList(actionCode)
             self.actionFlowPendingJSON=actionJSON+self.actionFlowPendingJSON
-            self.actionFlowPendingPython=str(actionCode)+'\n'+str(self.actionFlowPendingPython)
-        
-        # remove the front action
+            self.actionFlowPendingPython=actionPython+self.actionFlowPendingPython
+            
         def actionFlowPendingRemoveFront(self):
-
             self.actionFlowPendingJSON.pop(0)
-            parts = self.actionFlowPendingPython.split('##')
-            if len(parts) > 2:
-                # 保留第二个分隔符之后的所有内容，包括分隔符本身
-                self.actionFlowPendingPython = '##' + '##'.join(parts[2:])
-            else:
-                # 如果没有第二个分隔符，清空字符串
-                self.actionFlowPendingPython = ""
+            self.actionFlowPendingPython.pop(0)
 
-
-        # get the end action
         def actionFlowPendingGetEnd(self):
-            split_strings = self.actionFlowPendingPython.split("##")
-            
-            # if the string starts with "##", the first element will be an empty string, which needs to be skipped
-            start_index = 1 if split_strings[0] == "" else 0
 
-            # starting from start_index, add "##" to the front of each element
-            formattedStrings = ["##" + s for s in split_strings[start_index:]]
-
-            
-            return self.actionFlowPendingJSON[0],formattedStrings[-1]
+            return self.actionFlowPendingJSON[-1],self.actionFlowPendingPython[-1]
         
-        # add action to the end
         def actionFlowPendingAddToEnd(self,actionCode):
-            actionJSON,actionCode=self.actionFlowTranslatePython(actionCode)
+            actionJSON,actionPython=self.actionFlowTranslatePythonList(actionCode)
             self.actionFlowPendingJSON=self.actionFlowPendingJSON+actionJSON
-            self.actionFlowPendingPython=self.actionFlowPendingPython+'\n'+str(actionCode)
+            self.actionFlowPendingPython=self.actionFlowPendingPython+actionPython
 
-        """
-        # remove the action from the end
         def actionFlowPendingRemoveEnd(self):
             self.actionFlowPendingJSON.pop()
-            if len(self.actionFlowPendingPython.split('##',1))>0:
-                self.actionFlowPendingPython=self.actionFlowPendingPython.split('##',1)[-1]
-            else:
-                self.actionFlowPendingPython=""
-        """
+            self.actionFlowPendingPython.pop()
 
         # operation for actionFlowCurrent
-        # get the front action
-
-
-
-
-
-
-
-
-
-
-
-        
         def actionFlowCurrentGetFront(self):
 
-            parts = self.actionFlowCurrentPython.split('##')
-            if len(parts) > 2:
-                # 保留第二个分隔符之后的所有内容，包括分隔符本身
-                formattedStrings = '##' + '##'.join(parts[:1])
-            else:
-                # 如果没有第二个分隔符，清空字符串
-                formattedStrings = [self.actionFlowCurrentPython]
-
-            stringResult=""
-            for act in formattedStrings:
-                stringResult+=act
-
-            return self.actionFlowCurrentJSON[0],stringResult
+            return self.actionFlowCurrentJSON[0],self.actionFlowCurrentPython[0]
         
-        # add action to the front
         def actionFlowCurrentAddToFront(self,actionCode):
-
-            if actionCode.startswith("##"):
-                actionJSON,actionCode=self.actionFlowTranslatePython(actionCode)
-                self.actionFlowCurrentJSON=actionJSON+self.actionFlowCurrentJSON
-                self.actionFlowCurrentPython=str(actionCode)+'\n'+str(self.actionFlowCurrentPython)
-            else:
-                raise ValueError("The actionCode should start with '##'")
+            actionJSON,actionPython=self.actionFlowTranslatePythonList(actionCode)
+            self.actionFlowCurrentJSON=actionJSON+self.actionFlowCurrentJSON
+            self.actionFlowCurrentPython=actionPython+self.actionFlowCurrentPython
             
-        # remove the front action
         def actionFlowCurrentRemoveFront(self):
-
             self.actionFlowCurrentJSON.pop(0)
-            parts = self.actionFlowCurrentPython.split('##')
-            if len(parts) > 2:
-                # 保留第二个分隔符之后的所有内容，包括分隔符本身
-                self.actionFlowCurrentPython = '##' + '##'.join(parts[2:])
-            else:
-                # 如果没有第二个分隔符，清空字符串
-                self.actionFlowCurrentPython = ""
+            self.actionFlowCurrentPython.pop(0)
 
-
-        # get the end action
         def actionFlowCurrentGetEnd(self):
-            split_strings = self.actionFlowCurrentPython.split("##")
-            
-            # if the string starts with "##", the first element will be an empty string, which needs to be skipped
-            start_index = 1 if split_strings[0] == "" else 0
 
-            # starting from start_index, add "##" to the front of each element
-            formattedStrings = ["##" + s for s in split_strings[start_index:]]
-
-            
-            return self.actionFlowCurrentJSON[0],formattedStrings[-1]
+            return self.actionFlowCurrentJSON[-1],self.actionFlowCurrentPython[-1]
         
-        # add action to the end
         def actionFlowCurrentAddToEnd(self,actionCode):
-            actionJSON,actionCode=self.actionFlowTranslatePython(actionCode)
+            actionJSON,actionPython=self.actionFlowTranslatePythonList(actionCode)
             self.actionFlowCurrentJSON=self.actionFlowCurrentJSON+actionJSON
-            self.actionFlowCurrentPython=self.actionFlowCurrentPython+'\n'+str(actionCode)
+            self.actionFlowCurrentPython=self.actionFlowCurrentPython+actionPython
 
-        """
-        # remove the action from the end
         def actionFlowCurrentRemoveEnd(self):
             self.actionFlowCurrentJSON.pop()
-            if len(self.actionFlowCurrentPython.split('##',1))>0:
-                self.actionFlowCurrentPython=self.actionFlowCurrentPython.split('##',1)[-1]
-            else:
-                self.actionFlowCurrentPython=""
-        """
+            self.actionFlowCurrentPython.pop()
 
         def actionFlowCurrentClear(self):
             self.actionFlowCurrentJSON=[]
-            self.actionFlowCurrentPython=""
-
+            self.actionFlowCurrentPython=[]
 
         # import the action from the actionFlowPending to actionCurrent
         def actionCurrentLoad(self):
-            self.actionFlowCurrentAddToEnd(self.actionFlowPendingGetFront()[1])
+            self.actionFlowCurrentAddToEnd([self.actionFlowPendingGetFront()[1]])
             self.actionFlowPendingRemoveFront()
 
         # save the action from actionCurrent to actionFlowPending
         def actionCurrentSave(self):
-            self.actionFlowHistoryAddToFront(self.actionFlowCurrentGetFront()[1]) 
+            self.actionFlowHistoryAddToFront([self.actionFlowCurrentGetFront()[1]]) 
             self.actionFlowCurrentRemoveFront()
 
         # put the action from actionCurrent to actionOnGoing
         def actionCurrentExecute(self):
-            self.actionOnGoing.put(self.actionFlowCurrentPython)
+            self.actionOnGoing.put(self.actionFlowCurrentPython[0])
 
 
     # for the wrapper of action
@@ -379,7 +344,7 @@ class CodeThread():
             # get source code
             self.codeThreadActionFlow.actionFlowInitialize(sourseCode)
 
-            print("Initialize Start---------------------------------------")
+            print("Initialize Start-------------------------------------------")
             print("Initialized Function: "+funcName)
             print("actionFlowPendingPython:")
             print(self.codeThreadActionFlow.actionFlowPendingPython)
@@ -401,30 +366,24 @@ class CodeThread():
         import actionDefault
         from actionDefault import AskHumanForHelp
 
-        print("Import Start ------------------------------------------")
+        print("Import Start ----------------------------------------------")
 
         self.codeThreadActionFlow.actionFlowCurrentClear()
 
         while self.codeThreadActionFlow.actionFlowCurrentJSON ==[] and self.codeThreadActionFlow.actionFlowPendingJSON !=[]:
-            print("actionFlowPending:")
-            print(self.codeThreadActionFlow.actionFlowPendingPython)
-            print("Action Start ------------------------------------------")
+            print("\n")
+            print("Action Start ----------------------------------------------")
+
 
             self.codeThreadActionFlow.actionCurrentLoad()
+            print("actionFlowPending:----->")
+            print(self.codeThreadActionFlow.actionFlowPendingPython)
+            print("actionFlowCurrent:----->")
+            print(self.codeThreadActionFlow.actionFlowCurrentPython)
+            print("actionFlowHistory:----->")
+            print(self.codeThreadActionFlow.actionFlowHistoryPython)
 
             while self.codeThreadActionFlow.actionFlowCurrentJSON !=[]:
-
-                """
-                print("Action OnGoing.........................")
-                print("actionFlowCurrent:")
-                print(self.codeThreadActionFlow.actionFlowCurrentPython)
-                """
-                print("actionFlowCurrentPython:")
-                print(self.codeThreadActionFlow.actionFlowCurrentPython)
-                print("actionFlowPendingPython:")
-                print(self.codeThreadActionFlow.actionFlowPendingPython)
-                print("actionFlowHistoryPython:")
-                print(self.codeThreadActionFlow.actionFlowHistoryPython)
 
                 self.codeThreadActionFlow.actionCurrentExecute()
                 """
@@ -433,9 +392,11 @@ class CodeThread():
 """
                 action = self.codeThreadActionFlow.actionOnGoing.get()
 
-
-                print("The current action is:")
+                print("\n")
+                print("############### following action is running ###############")
                 print(action)
+                print("###########################################################")
+                print("\n")
                 if action is None:
                     break
                 
@@ -472,15 +433,12 @@ class CodeThread():
                                                 
 
         newCodeOnly=newCode.replace("```python\n", "").replace("\n```", "")
-
-        print("Code Start #############################################")
+        print("\n")
+        print("++++++++++++++++++ Generated Code Start +++++++++++++++++++")
         print(newCodeOnly)
-
-        print("########################################################")
-
-        self.codeThreadActionFlow.actionFlowCurrentAddToEnd(newCodeOnly)
-
-
+        print("+++++++++++++++++++ Generated Code End ++++++++++++++++++++")
+        print("\n")
+        self.codeThreadActionFlow.actionFlowCurrentAddToEnd([newCodeOnly])
 
 
 class Puppy(CodeThread):
@@ -491,8 +449,6 @@ class Puppy(CodeThread):
         self.codeThreadRun()
 
 
-
-
 if __name__ == '__main__':
 
     Mei = Puppy()
@@ -500,14 +456,15 @@ if __name__ == '__main__':
     @Mei.codeThread
     def action():
         
-        ## searth the top 5 earphones in chinese market
-        print("ni_hao")
+        ## tell me your phone number
+        Mei.do()
 
         ## send message to my dad
 
         # hello?
         print("Dont Say Hello!")
         print("take me to the church")
+        Mei.do()
 
 
         
