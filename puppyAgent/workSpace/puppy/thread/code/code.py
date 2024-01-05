@@ -59,6 +59,9 @@ class CodeThread():
             self.actionFlowHistoryJSON = []
             # updated the actionFlow JSON
             actionFlowInitialJSON, actionFlowInitialPython=self.actionFlowTranslatePython(sourceCode)
+            print("*****")
+            print(actionFlowInitialJSON)
+            print(actionFlowInitialPython)
             self.actionFlowPendingAddToFront(actionFlowInitialPython)
 
 
@@ -107,35 +110,44 @@ class CodeThread():
 
             ## return the actionFlowJSON
             lines = adjustedSourceCode.split('\n')
-            searchForDo = False
+
+            searchForCode=False
+
             comment = ""
             codeSnippet = ""
             actionFlowJSON = []
 
             for line in lines:
                 if '##' in line:
-                    # if there is an unfinished action, add it to the JSON
-                    if searchForDo:
-                        actionFlowJSON.append({"action": comment, "status": "semi-fixed", "code": "## "+comment+"\n"+codeSnippet.strip()})
-                        codeSnippet = ""
-
-                    comment = line.split('##', 1)[1].strip()
-                    searchForDo = True
-                else:
-                    if searchForDo:
-                        codeSnippet += line + '\n'  # history code snippet
-                        if '.do()' in line:
-                            # if there is a .do(), mark it as semi-fixed
-                            actionFlowJSON.append({"action": comment, "status": "semi-fixed", "code": "## "+comment+"\n"+codeSnippet.strip()})
-                            searchForDo = False
-                            codeSnippet = ""
+                    if searchForCode==True:
+                        actionFlowJSON.append({"action": comment, "code": "## "+comment+"\n"+codeSnippet.strip()})
                     else:
-                        # if not in the comment module, ignore the line
+                        pass
+                    comment = line.split('##', 1)[1].strip()
+                    searchForCode = False
+                    codeSnippet = ""
+                else:
+                    if line.strip()!="":
+                        searchForCode=True
+                        codeSnippet += line + '\n'  # history code snippet
+                    else:
                         pass
 
+
             # deal with the last action
-            if searchForDo:
-                actionFlowJSON.append({"action": comment, "status": "fixed", "code": "## "+comment+"\n"+codeSnippet.strip()})
+            if searchForCode==True:
+                actionFlowJSON.append({"action": comment,  "code": "## "+comment+"\n"+codeSnippet.strip()})
+
+            
+            for action in actionFlowJSON:
+                if ".do()"in action["code"]:
+                    if action["action"]=="":
+                        action["status"]= "changeable"
+                    else:
+                        action["status"]="semi-fixed"
+
+                else:
+                    action["status"]="fixed"
 
             ## return the actionFlowPython
             for action in actionFlowJSON:
@@ -190,41 +202,51 @@ class CodeThread():
 
             ## return the actionFlowJSON
             lines = adjustedSourceCode.split('\n')
-            searchForDo = False
+
+            searchForCode=False
+
             comment = ""
             codeSnippet = ""
             actionFlowJSON = []
 
             for line in lines:
                 if '##' in line:
-                    # if there is an unfinished action, add it to the JSON
-                    if searchForDo:
-                        actionFlowJSON.append({"action": comment, "status": "semi-fixed", "code": "## "+comment+"\n"+codeSnippet.strip()})
-                        codeSnippet = ""
-
-                    comment = line.split('##', 1)[1].strip()
-                    searchForDo = True
-                else:
-                    if searchForDo:
-                        codeSnippet += line + '\n'  # history code snippet
-                        if '.do()' in line:
-                            # if there is a .do(), mark it as semi-fixed
-                            actionFlowJSON.append({"action": comment, "status": "semi-fixed", "code": "## "+comment+"\n"+codeSnippet.strip()})
-                            searchForDo = False
-                            codeSnippet = ""
+                    if searchForCode==True:
+                        actionFlowJSON.append({"action": comment, "code": "## "+comment+"\n"+codeSnippet.strip()})
                     else:
-                        # if not in the comment module, ignore the line
+                        pass
+                    comment = line.split('##', 1)[1].strip()
+                    searchForCode = False
+                    codeSnippet = ""
+                else:
+                    if line.strip()!="":
+                        searchForCode=True
+                        codeSnippet += line + '\n'  # history code snippet
+                    else:
                         pass
 
+
             # deal with the last action
-            if searchForDo:
-                actionFlowJSON.append({"action": comment, "status": "fixed", "code": "## "+comment+"\n"+codeSnippet.strip()})
+            if searchForCode==True:
+                actionFlowJSON.append({"action": comment,  "code": "## "+comment+"\n"+codeSnippet.strip()})
+
+            
+            for action in actionFlowJSON:
+                if ".do()"in action["code"]:
+                    if action["action"]=="":
+                        action["status"]= "changeable"
+                    else:
+                        action["status"]="semi-fixed"
+
+                else:
+                    action["status"]="fixed"
 
             ## return the actionFlowPython
             for action in actionFlowJSON:
                 actionFlowPython.append(action["code"])
 
             return actionFlowJSON, actionFlowPython
+
 
 
         # operation for actionFlowHistory
@@ -313,15 +335,18 @@ class CodeThread():
             self.actionFlowCurrentJSON=[]
             self.actionFlowCurrentPython=[]
 
+        # change the status of the actionFlowCurrent Front
+        def actionFlowCurrentStatusChangeFront(self,status):
+            self.actionFlowCurrentJSON[0]["status"]=status
+
+
         # import the action from the actionFlowPending to actionCurrent
         def actionCurrentLoad(self):
             self.actionFlowCurrentAddToEnd([self.actionFlowPendingGetFront()[1]])
-            self.actionFlowPendingRemoveFront()
 
         # save the action from actionCurrent to actionFlowPending
         def actionCurrentSave(self):
             self.actionFlowHistoryAddToFront([self.actionFlowCurrentGetFront()[1]]) 
-            self.actionFlowCurrentRemoveFront()
 
         # put the action from actionCurrent to actionOnGoing
         def actionCurrentExecute(self):
@@ -374,22 +399,34 @@ class CodeThread():
             print("\n")
             print("Action Start ----------------------------------------------")
 
-
+            # STEP 1: load the action from actionFlowPending to actionFlowCurrent
             self.codeThreadActionFlow.actionCurrentLoad()
+
+            # STEP 2: delete the action from actionFlowPending
+            self.codeThreadActionFlow.actionFlowPendingRemoveFront()
+
             print("actionFlowPending:----->")
             print(self.codeThreadActionFlow.actionFlowPendingPython)
-            print("actionFlowCurrent:----->")
-            print(self.codeThreadActionFlow.actionFlowCurrentPython)
+            print("actionFlowCurrentJSON:----->")
+            print(self.codeThreadActionFlow.actionFlowCurrentJSON)
             print("actionFlowHistory:----->")
             print(self.codeThreadActionFlow.actionFlowHistoryPython)
 
             while self.codeThreadActionFlow.actionFlowCurrentJSON !=[]:
+                
+                # STEP 3: load the action from actionFlowCurrent to actionOngoing
+                if self.codeThreadActionFlow.actionFlowCurrentGetFront()[0]["status"]=="fixed":
 
-                self.codeThreadActionFlow.actionCurrentExecute()
-                """
-                print("Action OnGoing before:")
-                print(self.codeThreadActionFlow.actionOnGoing.queue)
-"""
+                    self.codeThreadActionFlow.actionCurrentExecute()
+
+                elif self.codeThreadActionFlow.actionFlowCurrentGetFront()[0]["status"]=="semi-fixed":
+                    self.codeThreadDo()
+
+                elif self.codeThreadActionFlow.actionFlowCurrentGetFront()[0]["status"]=="changeable":
+                    pass
+                    ## TODO
+                
+                # STEP 4: load the action from actionOngoing and execute the code
                 action = self.codeThreadActionFlow.actionOnGoing.get()
 
                 print("\n")
@@ -401,14 +438,27 @@ class CodeThread():
                     break
                 
                 exec(action)
+                self.codeThreadActionFlow.actionOnGoing.task_done()
+
+                # STEP 5: load the action from the actionFlowCurrent to the actionFlowHistory
                 self.codeThreadActionFlow.actionCurrentSave()
 
-                #self.codeThreadActionFlow.actionOnGoing.task_done()
+                # STEP 6: evaluate if the action is done
+                # TODO
+
+                # STEP 7: remove the action from the actionFlowCurrent
+
+                if self.codeThreadActionFlow.actionFlowCurrentGetFront()[0]["status"]=="fixed":
+                    self.codeThreadActionFlow.actionFlowCurrentRemoveFront()
+
+                else:
+                    pass
+
 
         print("Done")
                 
 
-    def do(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
+    def codeThreadDo(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
         os.environ["OPENAI_API_KEY"]=ApiKey
 
         from prompt.actionFlowPrompt import ActionDo
@@ -449,6 +499,10 @@ class Puppy(CodeThread):
         self.codeThreadRun()
 
 
+
+
+
+
 if __name__ == '__main__':
 
     Mei = Puppy()
@@ -456,15 +510,30 @@ if __name__ == '__main__':
     @Mei.codeThread
     def action():
         
-        ## tell me your phone number
+        ##    
+
+
+        ##    
+        print("action")
+
+
+        ## print hello world
+        print("Hello World!")
+
+        ## send the message to my boss
         Mei.do()
 
-        ## send message to my dad
-
-        # hello?
-        print("Dont Say Hello!")
-        print("take me to the church")
+        ##
         Mei.do()
+
+        ##   
+        Mei.do()
+
+        ##
+        print("take me")
+
+        ##
+
 
 
         
