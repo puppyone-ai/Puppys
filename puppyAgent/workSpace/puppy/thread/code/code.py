@@ -60,97 +60,6 @@ class CodeThread():
             self.actionFlowPendingAddToFront(actionFlowInitialJSON)
 
 
-        def translatePythonList(self,adjustedSourceCodeList: list):
-            """
-            translate the source code to actionFlowJSON and actionFlowPython
-
-            args: sourceCode(Python)
-            return: actionFlowHistoryJSON(List), actionFlowHistoryPython(String)
-            """
-
-            sourceCode="\n".join(adjustedSourceCodeList)
-            ## initialize the actionFlowJSON and actionFlowPython
-            actionFlowJSON=[]
-            actionFlowPython=[]
-
-            lines = sourceCode.split('\n')
-
-            ## deal with space in the head of the code
-            comment_pos = None
-            indent_level = None
-            for i, line in enumerate(lines):
-                if '##' in line:
-                    comment_pos = i
-                    indent_level = len(line) - len(line.lstrip(' '))
-                    break
-            
-            # return the adjusted source code, with is the code without the indent
-            # if the indent level is found, adjust the indent of the whole function
-            if comment_pos is not None and indent_level is not None:
-
-                # delete all the code before the '##' comment
-                lines = lines[comment_pos:]
-
-                adjusted_lines = []
-                for line in lines:
-                    # only adjust the indent of non-empty lines
-                    if line.strip():
-                        adjusted_lines.append(line[indent_level:])
-                    else:
-                        adjusted_lines.append(line)
-                adjustedSourceCode = '\n'.join(adjusted_lines)
-            else:
-                adjustedSourceCode = sourceCode
-
-
-            ## return the actionFlowJSON
-            lines = adjustedSourceCode.split('\n')
-
-            searchForCode=False
-
-            comment = ""
-            codeSnippet = ""
-            actionFlowJSON = []
-
-            for line in lines:
-                if '##' in line:
-                    if searchForCode==True:
-                        actionFlowJSON.append({"action": comment, "code": "## "+comment+"\n"+codeSnippet.strip()})
-                    else:
-                        pass
-                    comment = line.split('##', 1)[1].strip()
-                    searchForCode = False
-                    codeSnippet = ""
-                else:
-                    if line.strip()!="":
-                        searchForCode=True
-                        codeSnippet += line + '\n'  # history code snippet
-                    else:
-                        pass
-
-
-            # deal with the last action
-            if searchForCode==True:
-                actionFlowJSON.append({"action": comment,  "code": "## "+comment+"\n"+codeSnippet.strip()})
-
-            
-            for action in actionFlowJSON:
-                if ".do()"in action["code"]:
-                    if action["action"]=="":
-                        action["status"]= "changeable"
-                    else:
-                        action["status"]="semi-fixed"
-
-                else:
-                    action["status"]="fixed"
-
-            ## return the actionFlowPython
-            for action in actionFlowJSON:
-                actionFlowPython.append(action["code"])
-
-            return actionFlowJSON, actionFlowPython
-            
-
         # return the actionFlowHistoryJSON and actionFlowHistoryPython
         def translatePython(self, sourceCode: str):
 
@@ -390,6 +299,8 @@ class CodeThread():
         sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         import actionDefault
         from actionDefault import AskHumanForHelp
+        from actionDefault import GoogleSearchNative
+        from actionDefault import GPT
 
         print("Import Start ----------------------------------------------")
 
@@ -421,6 +332,7 @@ class CodeThread():
 
                 elif self.codeThreadActionFlow.actionFlowCurrentGetFront()["status"]=="semi-fixed":
                     self.codeThreadDo()
+                    self.codeThreadActionFlow.actionCurrentExecute()
 
                 elif self.codeThreadActionFlow.actionFlowCurrentGetFront()["status"]=="changeable":
                     pass
@@ -448,7 +360,7 @@ class CodeThread():
 
                 # STEP 7: remove the action from the actionFlowCurrent
 
-                if self.codeThreadActionFlow.actionFlowCurrentGetFront()[0]["status"]=="fixed":
+                if self.codeThreadActionFlow.actionFlowCurrentGetFront()["status"]=="fixed":
                     self.codeThreadActionFlow.actionFlowCurrentRemoveFront()
 
                 else:
@@ -460,6 +372,9 @@ class CodeThread():
 
     def codeThreadDo(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
         os.environ["OPENAI_API_KEY"]=ApiKey
+        """
+        write code to achieve the action
+        """
 
         from prompt.actionFlowPrompt import ActionDo
 
@@ -482,14 +397,13 @@ class CodeThread():
                                                 experiences=agentExperience)
                                                 
 
-        newCodeOnly=newCode.replace("```python\n", "").replace("\n```", "")
+        newCode=newCode.replace("```python\n", "").replace("\n```", "")
         print("\n")
         print("++++++++++++++++++ Generated Code Start +++++++++++++++++++")
-        print(newCodeOnly)
+        print(newCode)
         print("+++++++++++++++++++ Generated Code End ++++++++++++++++++++")
         print("\n")
-        self.codeThreadActionFlow.actionFlowCurrentRemoveFront()
-        self.codeThreadActionFlow.actionFlowCurrentAddToFront([newCodeOnly])
+        self.codeThreadActionFlow.actionFlowCurrentAddToFront(self.codeThreadActionFlow.decorateActionFlowCodeToJSON(newCode,status="fixed"))
 
 
 
@@ -497,12 +411,16 @@ class CodeThread():
         """
         check if the code is valid
         """
+        
         actionFlowJSON,actionFlowPython=self.codeThreadActionFlow.translatePython(code)
         if actionFlowJSON[0]["action"]==self.codeThreadActionFlow.actionFlowCurrentGetFront()[0]["action"]:
             actionJSON=True
 
         if actionFlowPython[0]==self.codeThreadActionFlow.actionFlowCurrentGetFront()[1]:
             actionPython=True
+
+    def checkIfActionIsDone(self):
+        pass
 
 
 class Puppy(CodeThread):
@@ -527,11 +445,10 @@ if __name__ == '__main__':
 
     @Mei.codeThread
     def action():
-        
-        ##规划一下我和温温的半周年纪念日，在北京
+        ## click the button
         Mei.do()
 
-        ## 考虑一个大傻逼，如何给他发消息
+        ## take me to the church and make me a nun
         Mei.do()
-        
+
     Mei.run()

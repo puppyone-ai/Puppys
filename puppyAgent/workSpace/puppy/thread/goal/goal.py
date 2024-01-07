@@ -10,10 +10,10 @@ import re
 import time
 
 
-class GoalThread():
+class CodeThread():
     def __init__(self):
-        self.currentThreadName="goalThread"
-        self.goalThreadActionFlow=self.GoalThreadActionFlow()
+        self.currentThreadName="codeThread"
+        self.codeThreadActionFlow=self.GoalThreadActionFlow()
         self.threadProperty={}
         self.environment={
         }
@@ -27,125 +27,41 @@ class GoalThread():
     # to run the thread
     def goalThreadRun(self):
         
-        # start the goal thread
-        threadCode = threading.Thread(target=self.goalThreadCodeExecution)
+        # start the code thread
+        threadCode = threading.Thread(target=self.codeThreadCodeExecution)
         threadCode.daemon = False
         threadCode.start()
         
 
-        #self.goalThreadActionFlow.actionOnGoing.put(importTools)
+        #self.codeThreadActionFlow.actionOnGoing.put(importTools)
 
-        # end the goal thread
+        # end the code thread
         threadCode.join()
 
     class GoalThreadActionFlow():
         def __init__(self): 
             self.actionFlowAllJSON = []
-            self.actionFlowAllPython= []
 
             self.actionFlowHistoryJSON = []
-            self.actionFlowHistoryPython= []
 
             self.actionFlowPendingJSON =[]
-            self.actionFlowPendingPython= []
 
             self.actionFlowCurrentJSON=[]
-            self.actionFlowCurrentPython= []
 
             self.actionOnGoing=queue.Queue()
         
-        def actionFlowInitialize(self,sourceCode):
+        def initialize(self,sourceCode):
 
             self.actionFlowHistoryJSON = []
             # updated the actionFlow JSON
-            actionFlowInitialJSON, actionFlowInitialPython=self.actionFlowTranslatePython(sourceCode)
-            self.actionFlowPendingAddToFront(actionFlowInitialPython)
-
-
-        def actionFlowTranslatePythonList(self,adjustedSourceCodeList: list):
-            """
-            translate the source goal to actionFlowJSON and actionFlowPython
-
-            args: sourceCode(Python)
-            return: actionFlowHistoryJSON(List), actionFlowHistoryPython(String)
-            """
-
-            sourceCode="\n".join(adjustedSourceCodeList)
-            ## initialize the actionFlowJSON and actionFlowPython
-            actionFlowJSON=[]
-            actionFlowPython=[]
-
-            lines = sourceCode.split('\n')
-
-            ## deal with space in the head of the goal
-            comment_pos = None
-            indent_level = None
-            for i, line in enumerate(lines):
-                if '##' in line:
-                    comment_pos = i
-                    indent_level = len(line) - len(line.lstrip(' '))
-                    break
-            
-            # return the adjusted source goal, with is the goal without the indent
-            # if the indent level is found, adjust the indent of the whole function
-            if comment_pos is not None and indent_level is not None:
-
-                # delete all the goal before the '##' comment
-                lines = lines[comment_pos:]
-
-                adjusted_lines = []
-                for line in lines:
-                    # only adjust the indent of non-empty lines
-                    if line.strip():
-                        adjusted_lines.append(line[indent_level:])
-                    else:
-                        adjusted_lines.append(line)
-                adjustedSourceCode = '\n'.join(adjusted_lines)
-            else:
-                adjustedSourceCode = sourceCode
-
-
-            ## return the actionFlowJSON
-            lines = adjustedSourceCode.split('\n')
-            searchForDo = False
-            comment = ""
-            goalSnippet = ""
-            actionFlowJSON = []
-
-            for line in lines:
-                if '##' in line:
-                    # if there is an unfinished action, add it to the JSON
-                    if searchForDo:
-                        actionFlowJSON.append({"action": comment, "status": "semi-fixed", "code": "## "+comment+"\n"+goalSnippet.strip()})
-                        goalSnippet = ""
-
-                    comment = line.split('##', 1)[1].strip()
-                    searchForDo = True
-                else:
-                    if searchForDo:
-                        goalSnippet += line + '\n'  # history code snippet
-                        if '.do()' in line:
-                            # if there is a .do(), mark it as semi-fixed
-                            actionFlowJSON.append({"action": comment, "status": "semi-fixed", "code": "## "+comment+"\n"+goalSnippet.strip()})
-                            searchForDo = False
-                            goalSnippet = ""
-                    else:
-                        # if not in the comment module, ignore the line
-                        pass
-
-            # deal with the last action
-            if searchForDo:
-                actionFlowJSON.append({"action": comment, "status": "fixed", "code": "## "+comment+"\n"+goalSnippet.strip()})
-
-            ## return the actionFlowPython
-            for action in actionFlowJSON:
-                actionFlowPython.append(action["code"])
-
-            return actionFlowJSON, actionFlowPython
+            actionFlowInitialJSON, actionFlowInitialPython=self.translatePython(sourceCode)
+            print("*****")
+            print(actionFlowInitialJSON)
+            self.actionFlowPendingAddToFront(actionFlowInitialJSON)
             
 
         # return the actionFlowHistoryJSON and actionFlowHistoryPython
-        def actionFlowTranslatePython(self, sourceCode: str):
+        def translatePython(self, sourceCode: str):
 
             """
             translate the source code to actionFlowJSON and actionFlowPython
@@ -190,35 +106,44 @@ class GoalThread():
 
             ## return the actionFlowJSON
             lines = adjustedSourceCode.split('\n')
-            searchForDo = False
+
+            searchForCode=False
+
             comment = ""
             codeSnippet = ""
             actionFlowJSON = []
 
             for line in lines:
                 if '##' in line:
-                    # if there is an unfinished action, add it to the JSON
-                    if searchForDo:
-                        actionFlowJSON.append({"action": comment, "status": "semi-fixed", "code": "## "+comment+"\n"+codeSnippet.strip()})
-                        codeSnippet = ""
-
-                    comment = line.split('##', 1)[1].strip()
-                    searchForDo = True
-                else:
-                    if searchForDo:
-                        codeSnippet += line + '\n'  # history code snippet
-                        if '.do()' in line:
-                            # if there is a .do(), mark it as semi-fixed
-                            actionFlowJSON.append({"action": comment, "status": "semi-fixed", "code": "## "+comment+"\n"+codeSnippet.strip()})
-                            searchForDo = False
-                            codeSnippet = ""
+                    if searchForCode==True:
+                        actionFlowJSON.append({"action": comment, "code": "## "+comment+"\n"+codeSnippet.strip()})
                     else:
-                        # if not in the comment module, ignore the line
+                        pass
+                    comment = line.split('##', 1)[1].strip()
+                    searchForCode = False
+                    codeSnippet = ""
+                else:
+                    if line.strip()!="":
+                        searchForCode=True
+                        codeSnippet += line + '\n'  # history code snippet
+                    else:
                         pass
 
+
             # deal with the last action
-            if searchForDo:
-                actionFlowJSON.append({"action": comment, "status": "fixed", "code": "## "+comment+"\n"+codeSnippet.strip()})
+            if searchForCode==True:
+                actionFlowJSON.append({"action": comment,  "code": "## "+comment+"\n"+codeSnippet.strip()})
+
+            
+            for action in actionFlowJSON:
+                if ".do()"in action["code"]:
+                    if action["action"]=="":
+                        action["status"]= "changeable"
+                    else:
+                        action["status"]="semi-fixed"
+
+                else:
+                    action["status"]="fixed"
 
             ## return the actionFlowPython
             for action in actionFlowJSON:
@@ -226,115 +151,128 @@ class GoalThread():
 
             return actionFlowJSON, actionFlowPython
 
+        def decorateActionFlowCodeToJSON(self, code, status="undefined"):
+            actionFlowJSON=self.translatePython(code)[0]
+
+            if status=="undefined":
+                pass
+            else:
+                for action in actionFlowJSON:
+                    action["status"]=status
+            
+            return actionFlowJSON
+
 
         # operation for actionFlowHistory
-        def actionFlowHistoryGetFront(self):
+        def actionFlowHistoryGetCode(self):
+            code=""
+            for action in self.actionFlowHistoryJSON:
+                code+=action["code"]+"\n"
 
-            return self.actionFlowHistoryJSON[0],self.actionFlowHistoryPython[0]
+            return code
+
+        def actionFlowHistoryGetFront(self):
+            return self.actionFlowHistoryJSON[0]
         
-        def actionFlowHistoryAddToFront(self,actionCode):
-            actionJSON,actionPython=self.actionFlowTranslatePythonList(actionCode)
-            self.actionFlowHistoryJSON=actionJSON+self.actionFlowHistoryJSON
-            self.actionFlowHistoryPython=actionPython+self.actionFlowHistoryPython
+        ##
+        def actionFlowHistoryAddToFront(self,actionFlowJSON):
+            self.actionFlowHistoryJSON=actionFlowJSON+self.actionFlowHistoryJSON
             
         def actionFlowHistoryRemoveFront(self):
             self.actionFlowHistoryJSON.pop(0)
-            self.actionFlowHistoryPython.pop(0)
 
         def actionFlowHistoryGetEnd(self):
-
-            return self.actionFlowHistoryJSON[-1],self.actionFlowHistoryPython[-1]
+            return self.actionFlowHistoryJSON[-1]
         
-        def actionFlowHistoryAddToEnd(self,actionCode):
-            actionJSON,actionPython=self.actionFlowTranslatePythonList(actionCode)
-            self.actionFlowHistoryJSON=self.actionFlowHistoryJSON+actionJSON
-            self.actionFlowHistoryPython=self.actionFlowHistoryPython+actionPython
+        def actionFlowHistoryAddToEnd(self,actionFlowJSON):
+            self.actionFlowHistoryJSON=self.actionFlowHistoryJSON+actionFlowJSON
 
         def actionFlowHistoryRemoveEnd(self):
             self.actionFlowHistoryJSON.pop()
-            self.actionFlowHistoryPython.pop()
-
 
         # operation for actionFlowPending
-        def actionFlowPendingGetFront(self):
+        def actionFlowPendingGetCode(self):
+            code=""
+            for action in self.actionFlowPendingJSON:
+                code+=action["code"]+"\n"
 
-            return self.actionFlowPendingJSON[0],self.actionFlowPendingPython[0]
+            print("the code is:",code)
+
+            return code
+
+        def actionFlowPendingGetFront(self):
+            return self.actionFlowPendingJSON[0]
         
-        def actionFlowPendingAddToFront(self,actionCode):
-            actionJSON,actionPython=self.actionFlowTranslatePythonList(actionCode)
-            self.actionFlowPendingJSON=actionJSON+self.actionFlowPendingJSON
-            self.actionFlowPendingPython=actionPython+self.actionFlowPendingPython
+        def actionFlowPendingAddToFront(self,actionFlowJSON):
+            self.actionFlowPendingJSON=actionFlowJSON+self.actionFlowPendingJSON
             
         def actionFlowPendingRemoveFront(self):
             self.actionFlowPendingJSON.pop(0)
-            self.actionFlowPendingPython.pop(0)
 
         def actionFlowPendingGetEnd(self):
-
-            return self.actionFlowPendingJSON[-1],self.actionFlowPendingPython[-1]
+            return self.actionFlowPendingJSON[-1]
         
-        def actionFlowPendingAddToEnd(self,actionCode):
-            actionJSON,actionPython=self.actionFlowTranslatePythonList(actionCode)
-            self.actionFlowPendingJSON=self.actionFlowPendingJSON+actionJSON
-            self.actionFlowPendingPython=self.actionFlowPendingPython+actionPython
+        def actionFlowPendingAddToEnd(self,actionFlowJSON):
+            self.actionFlowPendingJSON=self.actionFlowPendingJSON+actionFlowJSON
 
         def actionFlowPendingRemoveEnd(self):
             self.actionFlowPendingJSON.pop()
-            self.actionFlowPendingPython.pop()
 
         # operation for actionFlowCurrent
-        def actionFlowCurrentGetFront(self):
+        def actionFlowCurrentGetCode(self):
+            code=""
+            for action in self.actionFlowCurrentJSON:
+                code+=action["code"]+"\n"
 
-            return self.actionFlowCurrentJSON[0],self.actionFlowCurrentPython[0]
+            return code
         
-        def actionFlowCurrentAddToFront(self,actionCode):
-            actionJSON,actionPython=self.actionFlowTranslatePythonList(actionCode)
-            self.actionFlowCurrentJSON=actionJSON+self.actionFlowCurrentJSON
-            self.actionFlowCurrentPython=actionPython+self.actionFlowCurrentPython
+        def actionFlowCurrentGetFront(self):
+            return self.actionFlowCurrentJSON[0]
+        
+        def actionFlowCurrentAddToFront(self,actionFlowJSON):
+            self.actionFlowCurrentJSON=actionFlowJSON+self.actionFlowCurrentJSON
             
         def actionFlowCurrentRemoveFront(self):
             self.actionFlowCurrentJSON.pop(0)
-            self.actionFlowCurrentPython.pop(0)
 
         def actionFlowCurrentGetEnd(self):
-
-            return self.actionFlowCurrentJSON[-1],self.actionFlowCurrentPython[-1]
+            return self.actionFlowCurrentJSON[-1]
         
-        def actionFlowCurrentAddToEnd(self,actionCode):
-            actionJSON,actionPython=self.actionFlowTranslatePythonList(actionCode)
-            self.actionFlowCurrentJSON=self.actionFlowCurrentJSON+actionJSON
-            self.actionFlowCurrentPython=self.actionFlowCurrentPython+actionPython
+        ##
+        def actionFlowCurrentAddToEnd(self,actionFlowJSON):
+            self.actionFlowCurrentJSON=self.actionFlowCurrentJSON+actionFlowJSON
 
         def actionFlowCurrentRemoveEnd(self):
             self.actionFlowCurrentJSON.pop()
-            self.actionFlowCurrentPython.pop()
 
         def actionFlowCurrentClear(self):
             self.actionFlowCurrentJSON=[]
-            self.actionFlowCurrentPython=[]
+
+        # change the status of the actionFlowCurrent Front
+        def actionFlowCurrentStatusChangeFront(self,status):
+            self.actionFlowCurrentJSON[0]["status"]=status
+
 
         # import the action from the actionFlowPending to actionCurrent
         def actionCurrentLoad(self):
-            self.actionFlowCurrentAddToEnd([self.actionFlowPendingGetFront()[1]])
-            self.actionFlowPendingRemoveFront()
+            self.actionFlowCurrentAddToEnd([self.actionFlowPendingGetFront()])
 
         # save the action from actionCurrent to actionFlowPending
         def actionCurrentSave(self):
-            self.actionFlowHistoryAddToFront([self.actionFlowCurrentGetFront()[1]]) 
-            self.actionFlowCurrentRemoveFront()
+            self.actionFlowHistoryAddToFront([self.actionFlowCurrentGetFront()]) 
 
         # put the action from actionCurrent to actionOnGoing
         def actionCurrentExecute(self):
-            self.actionOnGoing.put(self.actionFlowCurrentPython[0])
+            self.actionOnGoing.put(self.actionFlowCurrentJSON[0]["code"])
 
 
     # for the wrapper of action
-    def goalThread(self, func):
+    def codeThread(self, func):
         def wrapper(self, *args, **kwargs):
             self.initialize()
             func(*args, **kwargs)
         
-        self.currentThreadName="goalThread"
+        self.currentThreadName="codeThread"
         sourseCode=inspect.getsource(func)
 
         # if the function is action, initialize the actionFlow
@@ -342,15 +280,13 @@ class GoalThread():
         if funcName == "action":
 
             # get source code
-            self.goalThreadActionFlow.actionFlowInitialize(sourseCode)
+            self.codeThreadActionFlow.initialize(sourseCode)
 
             print("Initialize Start-------------------------------------------")
             print("Initialized Function: "+funcName)
-            print("actionFlowPendingPython:")
-            print(self.goalThreadActionFlow.actionFlowPendingPython)
-            print("InitializedActionFlowJSON:"+str(self.goalThreadActionFlow.actionFlowPendingJSON))
+            print("actionFlowPending:")
+            print(self.codeThreadActionFlow.actionFlowPendingJSON)
 
-            
 
         if funcName == "trigger":
             # TODO
@@ -359,7 +295,7 @@ class GoalThread():
         # execute the function with wrapper
         return wrapper
 
-    def goalThreadCodeExecution(self):
+    def codeThreadCodeExecution(self):
 
         # import tools, for agents
         sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -368,31 +304,41 @@ class GoalThread():
 
         print("Import Start ----------------------------------------------")
 
-        self.goalThreadActionFlow.actionFlowCurrentClear()
+        self.codeThreadActionFlow.actionFlowCurrentClear()
 
-        while self.goalThreadActionFlow.actionFlowCurrentJSON ==[] and self.goalThreadActionFlow.actionFlowPendingJSON !=[]:
+        while self.codeThreadActionFlow.actionFlowCurrentJSON ==[] and self.codeThreadActionFlow.actionFlowPendingJSON !=[]:
             print("\n")
             print("Action Start ----------------------------------------------")
 
+            # STEP 1: load the action from actionFlowPending to actionFlowCurrent
+            self.codeThreadActionFlow.actionCurrentLoad()
 
-            self.goalThreadActionFlow.actionCurrentLoad()
+            # STEP 2: delete the action from actionFlowPending
+            self.codeThreadActionFlow.actionFlowPendingRemoveFront()
+
             print("actionFlowPending:----->")
-            print(self.goalThreadActionFlow.actionFlowPendingPython)
-            print("actionFlowCurrent:----->")
-            print(self.goalThreadActionFlow.actionFlowCurrentPython)
+            print(self.codeThreadActionFlow.actionFlowPendingJSON)
+            print("actionFlowCurrentJSON:----->")
+            print(self.codeThreadActionFlow.actionFlowCurrentJSON)
             print("actionFlowHistory:----->")
-            print(self.goalThreadActionFlow.actionFlowHistoryPython)
+            print(self.codeThreadActionFlow.actionFlowHistoryJSON)
 
-            while self.goalThreadActionFlow.actionFlowCurrentJSON !=[]:
+            while self.codeThreadActionFlow.actionFlowCurrentJSON !=[]:
+                
+                # STEP 3: load the action from actionFlowCurrent to actionOngoing
+                if self.codeThreadActionFlow.actionFlowCurrentGetFront()["status"]=="fixed":
 
-                self.goalThreadActionFlow.actionCurrentExecute()
-                """
-                print("Action OnGoing before:")
-                print(self.codeThreadActionFlow.actionOnGoing.queue)
+                    self.codeThreadActionFlow.actionCurrentExecute()
 
-"""
+                elif self.codeThreadActionFlow.actionFlowCurrentGetFront()["status"]=="semi-fixed":
+                    self.codeThreadDo()
 
-                action = self.goalThreadActionFlow.actionOnGoing.get()
+                elif self.codeThreadActionFlow.actionFlowCurrentGetFront()["status"]=="changeable":
+                    pass
+                    ## TODO
+                
+                # STEP 4: load the action from actionOngoing and execute the code
+                action = self.codeThreadActionFlow.actionOnGoing.get()
 
                 print("\n")
                 print("############### following action is running ###############")
@@ -403,14 +349,27 @@ class GoalThread():
                     break
                 
                 exec(action)
-                self.goalThreadActionFlow.actionCurrentSave()
+                self.codeThreadActionFlow.actionOnGoing.task_done()
 
-                #self.goalThreadActionFlow.actionOnGoing.task_done()
+                # STEP 5: load the action from the actionFlowCurrent to the actionFlowHistory
+                self.codeThreadActionFlow.actionCurrentSave()
+
+                # STEP 6: evaluate if the action is done
+                # TODO
+
+                # STEP 7: remove the action from the actionFlowCurrent
+
+                if self.codeThreadActionFlow.actionFlowCurrentGetFront()[0]["status"]=="fixed":
+                    self.codeThreadActionFlow.actionFlowCurrentRemoveFront()
+
+                else:
+                    pass
+
 
         print("Done")
                 
 
-    def do(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
+    def codeThreadDo(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
         os.environ["OPENAI_API_KEY"]=ApiKey
 
         from prompt.actionFlowPrompt import ActionDo
@@ -425,10 +384,10 @@ class GoalThread():
         agentExperience="none"
 
         newCode=fillingActionParameter.predict(goal=self.goal,
-                                               current_action=self.goalThreadActionFlow.actionOnGoing,
-                                                current_action_Python= self.goalThreadActionFlow.actionFlowCurrentPython,
-                                                code_history=self.goalThreadActionFlow.actionFlowHistoryPython,
-                                                code_future="",
+                                               current_action=self.codeThreadActionFlow.actionOnGoing,
+                                                current_action_Python= self.codeThreadActionFlow.actionFlowCurrentGetCode(),
+                                                code_history=self.codeThreadActionFlow.actionFlowHistoryGetCode(),
+                                                code_future=self.codeThreadActionFlow.actionFlowPendingGetCode(),
                                                 enviroment=self.environment,
                                                 function_description_and_example=self.functionsDescriptionAndExample,
                                                 experiences=agentExperience)
@@ -440,10 +399,24 @@ class GoalThread():
         print(newCodeOnly)
         print("+++++++++++++++++++ Generated Code End ++++++++++++++++++++")
         print("\n")
-        self.goalThreadActionFlow.actionFlowCurrentAddToEnd([newCodeOnly])
+        self.codeThreadActionFlow.actionFlowCurrentRemoveFront()
+        self.codeThreadActionFlow.actionFlowCurrentAddToFront([newCodeOnly])
 
 
-class Puppy(GoalThread):
+
+    def codeThreadDoCheckCode(self, code):
+        """
+        check if the code is valid
+        """
+        actionFlowJSON,actionFlowPython=self.codeThreadActionFlow.translatePython(code)
+        if actionFlowJSON[0]["action"]==self.codeThreadActionFlow.actionFlowCurrentGetFront()[0]["action"]:
+            actionJSON=True
+
+        if actionFlowPython[0]==self.codeThreadActionFlow.actionFlowCurrentGetFront()[1]:
+            actionPython=True
+
+
+class Puppy(CodeThread):
     def __init__(self):
         super().__init__()
 
@@ -451,23 +424,25 @@ class Puppy(GoalThread):
         self.goalThreadRun()
 
 
+
+## TODO
+        
+"""
+把所有的 code 都变成 JSON，把所有对 actionFlow 的操作都由python code 变成由 JSON来主导的
+"""
+
+
 if __name__ == '__main__':
 
     Mei = Puppy()
 
-    @Mei.goalThread
+    @Mei.codeThread
     def action():
-        
-        ## tell me your phone number
+    
+
+        ## 给温温写一首诗，并他给他
         Mei.do()
-
-        ## send message to my dad
-
-        # hello?
-        print("Dont Say Hello!")
-        print("take me to the church")
-        Mei.do()
-
-
+        sendMessage = SendMessage(text,phoneNum="13857362736")
+        sendMessage.run()
         
     Mei.run()
