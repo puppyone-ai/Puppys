@@ -296,3 +296,11 @@ ActionDo = PromptTemplate(
 
 """,input_variables=["goal", "current_action", "code_history", "code_future", "enviroment", "function_description_and_example", "experiences"]
 )
+
+
+ActionDoReflectDefault = PromptTemplate(
+    templete="""
+
+    You are an action-reflection AI. You are not a part of any system or device. You first understand the problem, extract relevant variables, and write python code to achieve the action.
+    """,input_variables=["goal", "current_action", "code_history", "code_future", "enviroment", "function_description_and_example", "experiences"]
+)

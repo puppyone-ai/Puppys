@@ -224,6 +224,9 @@ class CodeThread():
 
             return code
         
+        def actionFlowCurrentSkip(self):
+            self.actionFlowCurrentJSON.pop(0)
+        
         def actionFlowCurrentGetFront(self):
             return self.actionFlowCurrentJSON[0]
         
@@ -405,13 +408,20 @@ class CodeThread():
         print("\n")
         self.codeThreadActionFlow.actionFlowCurrentAddToFront(self.codeThreadActionFlow.decorateActionFlowCodeToJSON(newCode,status="fixed"))
 
+    def reflect(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
+        os.environ["OPENAI_API_KEY"]=ApiKey
+        """
+        reflect if the action is done or not.
+        """
+        
+        from prompt.actionFlowPrompt import ActionReflect
 
 
     def codeThreadDoCheckCode(self, code):
         """
         check if the code is valid
         """
-        
+
         actionFlowJSON,actionFlowPython=self.codeThreadActionFlow.translatePython(code)
         if actionFlowJSON[0]["action"]==self.codeThreadActionFlow.actionFlowCurrentGetFront()[0]["action"]:
             actionJSON=True
@@ -430,13 +440,27 @@ class Puppy(CodeThread):
     def run(self):
         self.codeThreadRun()
 
-
-
-## TODO
         
+
+
+
 """
-把所有的 code 都变成 JSON，把所有对 actionFlow 的操作都由python code 变成由 JSON来主导的
-"""
+把反省 agent 是否完成了任务加到 action 里面"""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 if __name__ == '__main__':
@@ -445,10 +469,15 @@ if __name__ == '__main__':
 
     @Mei.codeThread
     def action():
-        ## click the button
+
+        ## find the price of the game Cities: Skylines 2 on Steam
         Mei.do()
 
-        ## take me to the church and make me a nun
+        ## campare if the price is lower than 10 dollars
         Mei.do()
+
+
+
 
     Mei.run()
+
