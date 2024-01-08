@@ -72,3 +72,4 @@ def ReAct(task="provide the answer to the input question"):
 puppy1.run()
 ```
 
+## The philosophy behind it
