@@ -26,7 +26,7 @@ class CodeThread():
         pass
 
     # to run the thread
-    def run(self):
+    def codeThreadRun(self):
         
         # start the code thread
         threadCode = threading.Thread(target=self.CodeExecution)
@@ -267,10 +267,16 @@ class CodeThread():
         def actionCurrentExecute(self):
             self.actionOnGoing.put(self.actionFlowCurrentJSON[0]["code"])
 
+        def actionFlowCurrentSkip(self):
+            self.actionFlowCurrentJSON.pop(0)
+
     class Action():
         def __init__(self, codeThreadInstance):
             self.codeThreadInstance = codeThreadInstance
-            self.actionList={}
+            self.actionList=[{"action":"do",
+                             "code":"",
+                             "function_before_action":[],
+                                "function_after_action":[],}]
 
         # opreations for actions
         def actionGet(self):
@@ -285,48 +291,91 @@ class CodeThread():
         def actionClear(self):
             self.actionList={}
 
-        class Do():
-            """
-            write code to achieve the action
-            """
-            pass
+        def actionWrapper(self, func):
+            def wrapper(*args, **kwargs):
+                print("Before action:")
+                for function in self.actionList[func.__name__]["function_before_action"]:
+                    function()
+                    exec(function)
 
-        # define default actions for codeThread
+                result = func(*args, **kwargs)
+
+                print("After action")
+                for function in self.actionList[func.__name__]["function_before_action"]:
+                    function()
+                    exec(function)
+
+                return result
+
         
-        def do(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
-            os.environ["OPENAI_API_KEY"]=ApiKey
-            """
-            write code to achieve the action
-            """
+        def addNewAction(self,action):
+            self.actionList.append(action)
 
-            from prompt.actionFlowPrompt import ActionDo
 
-            llm=ChatOpenAI(temperature=temperature,max_tokens=max_tokens,model_name=model_name)
-            fillingActionParameter=LLMChain(llm=llm, prompt= ActionDo)
+        def addFunctionBeforeActionFront(self,function,action):
+            for e in self.actionList:
+                if e["action"]==action:
+                    e["function_before_action"].insert(0,function)
+        
+        def addFunctionBeforeActionEnd(self,function,action):
+            for e in self.actionList:
+                if e["action"]==action:
+                    e["function_before_action"].append(function)
 
-            import actionDefault
+        def addFunctionAfterActionFront(self,function,action):
+            for e in self.actionList:
+                if e["action"]==action:
+                    e["function_after_action"].insert(0,function)
 
-            self.functionsDescriptionAndExample= actionDefault.getDescriptionAndExample()
+        def addFunctionAfterActionEnd(self,function,action):
+            for e in self.actionList:
+                if e["action"]==action:
+                    e["function_after_action"].append(function)
 
-            agentExperience="none"
 
-            newCode=fillingActionParameter.predict(goal=self.goal,
-                                                current_action=self.actionFlow.actionOnGoing,
-                                                    current_action_Python= self.actionFlow.actionFlowCurrentGetCode(),
-                                                    code_history=self.actionFlow.actionFlowHistoryGetCode(),
-                                                    code_future=self.actionFlow.actionFlowPendingGetCode(),
-                                                    enviroment=self.environment,
-                                                    function_description_and_example=self.functionsDescriptionAndExample,
-                                                    experiences=agentExperience)
-                                                    
+        def getFunctionBeforeAction(self,action):
+            return self.actionList[action]["function_before_action"]
+        
+        def getFunctionAfterAction(self,action):
+            return self.actionList[action]["function_after_action"]
+            
+        def thinkKeepGoingOrNot(self):
+            pass
+       
+    def do(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
+        os.environ["OPENAI_API_KEY"]=ApiKey
+        """
+        write code to achieve the action
+        """
 
-            newCode=newCode.replace("```python\n", "").replace("\n```", "")
-            print("\n")
-            print("++++++++++++++++++ Generated Code Start +++++++++++++++++++")
-            print(newCode)
-            print("+++++++++++++++++++ Generated Code End ++++++++++++++++++++")
-            print("\n")
-            self.actionFlow.actionFlowCurrentAddToFront(self.actionFlow.decorateActionFlowCodeToJSON(newCode,status="fixed"))
+        from prompt.actionFlowPrompt import ActionDo
+
+        llm=ChatOpenAI(temperature=temperature,max_tokens=max_tokens,model_name=model_name)
+        fillingActionParameter=LLMChain(llm=llm, prompt= ActionDo)
+
+        import actionDefault
+
+        self.functionsDescriptionAndExample= actionDefault.getDescriptionAndExample()
+
+        agentExperience="none"
+
+        newCode=fillingActionParameter.predict(goal=self.goal,
+                                            current_action=self.actionFlow.actionOnGoing,
+                                                current_action_Python= self.actionFlow.actionFlowCurrentGetCode(),
+                                                code_history=self.actionFlow.actionFlowHistoryGetCode(),
+                                                code_future=self.actionFlow.actionFlowPendingGetCode(),
+                                                enviroment=self.environment,
+                                                function_description_and_example=self.functionsDescriptionAndExample,
+                                                experiences=agentExperience)
+                                                
+
+        newCode=newCode.replace("```python\n", "").replace("\n```", "")
+        print("\n")
+        print("++++++++++++++++++ Generated Code Start +++++++++++++++++++")
+        print(newCode)
+        print("+++++++++++++++++++ Generated Code End ++++++++++++++++++++")
+        print("\n")
+        self.actionFlow.actionFlowCurrentAddToFront(self.actionFlow.decorateActionFlowCodeToJSON(newCode,status="fixed"))
 
         def reflect(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
             os.environ["OPENAI_API_KEY"]=ApiKey
@@ -365,7 +414,7 @@ class CodeThread():
 
         # if the function is action, initialize the actionFlow
         funcName=func.__name__
-        if funcName == "action":
+        if funcName == "actionFlow":
 
             # get source code
             self.actionFlow.initialize(sourseCode)
@@ -450,11 +499,16 @@ class CodeThread():
 
                 # STEP 7: remove the action from the actionFlowCurrent
 
+
                 if self.actionFlow.actionFlowCurrentGetFront()["status"]=="fixed":
+                    self.actionFlow.actionFlowCurrentRemoveFront()
+                    self.actionFlow.actionFlowCurrentRemoveFront()
+
+                elif self.actionFlow.actionFlowCurrentGetFront()["status"]=="semi-fixed":
                     self.actionFlow.actionFlowCurrentRemoveFront()
 
                 else:
-                    pass
+                    self.actionFlow.actionFlowCurrentRemoveFront()
 
 
         print("Done")
@@ -467,25 +521,15 @@ class Puppy(CodeThread):
         super().__init__()
 
     def run(self):
-        self.run()
+        self.codeThreadRun()
 
         
 
 
 
 """
-把反省 agent 是否完成了任务加到 action 里面"""
-
-
-
-
-
-
-
-
-
-
-
+把反省 agent 是否完成了任务加到 action 里面
+"""
 
 
 
@@ -494,19 +538,16 @@ class Puppy(CodeThread):
 
 if __name__ == '__main__':
 
-    Mei = Puppy()
+    ZIQI = Puppy()
 
-    @Mei.codeThread
-    def action():
+    @ZIQI.codeThread
+    def actionFlow():
 
-        ## find the price of the game Cities: Skylines 2 on Steam
-        Mei.do()
+        ## 帮我找到一个中国市场上最好用的五款耳机
+        ZIQI.do()
 
-        ## campare if the price is lower than 10 dollars
-        Mei.do()
+        ## 帮我把你的结果发给我
+        ZIQI.do()
 
-
-
-
-    Mei.run()
+    ZIQI.run()
 
