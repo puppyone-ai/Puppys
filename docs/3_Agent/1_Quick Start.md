@@ -2,13 +2,15 @@
 
 ## Define and run your own agent
 
+Just like teach a kid to follow your instruction step by step, you need to define the the actionflow for your agent.
+
 To define an agent, the first thing you need to do is to define its task and actionflow. These can be done by defining a function with Decorator of XXX.action, where the XXX is the name of your agent. For example, the task is *provide the answer to the input question*
 
 ```python
 puppy1 = Action()
 
 @puppy1.action
-def ReAct(task="provide the answer to the input question"):   
+def Agent():   
    ## search for the quesiton @google search @wiki search
    puppy1.do()
 
