@@ -1,15 +1,14 @@
 import queue
 
 class ActionFlow():
-    def __init__(self): 
+    def __init__(self, codeThreadInstance): 
+        self.codeThreadInstance = codeThreadInstance
+
         self.actionFlowAllJSON = []
-
         self.actionFlowHistoryJSON = []
-
         self.actionFlowPendingJSON =[]
-
         self.actionFlowCurrentJSON=[]
-
+        
         self.actionOnGoing=queue.Queue()
     
     def initialize(self,sourceCode):

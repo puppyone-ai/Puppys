@@ -3,19 +3,19 @@ import sys
 import os
 import threading
 import queue
-from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
 from langchain.chat_models import ChatOpenAI
 import re
 import time
 from actionFlow import ActionFlow
+from actions import Actions
 
 
 class CodeThread():
     def __init__(self):
         self.currentThreadName="codeThread"
         self.actionFlow=ActionFlow()
-        self.actions=self.Action(self)
+        self.actions=Actions(self)
         self.threadProperty={}
         self.environment={
         }
@@ -39,141 +39,6 @@ class CodeThread():
 
         # end the code thread
         threadCode.join()
-
-    
-
-    class Action():
-        def __init__(self, codeThreadInstance):
-            self.codeThreadInstance = codeThreadInstance
-            self.actionList=[{"action":"do",
-                             "code":"",
-                             "function_before_action":[],
-                                "function_after_action":[],}]
-
-        # opreations for actions
-        def actionGet(self):
-            return self.actionList
-        
-        def actionAdd(self,action):
-            self.actionList.update(action)
-
-        def actionRemove(self,action):
-            self.actionList.pop(action)
-
-        def actionClear(self):
-            self.actionList={}
-
-        def actionWrapper(self, func):
-            def wrapper(*args, **kwargs):
-                print("Before action:")
-                for function in self.actionList[func.__name__]["function_before_action"]:
-                    function()
-                    exec(function)
-
-                result = func(*args, **kwargs)
-
-                print("After action")
-                for function in self.actionList[func.__name__]["function_before_action"]:
-                    function()
-                    exec(function)
-
-                return result
-
-        
-        def addNewAction(self,action):
-            self.actionList.append(action)
-
-
-        def addFunctionBeforeActionFront(self,function,action):
-            for e in self.actionList:
-                if e["action"]==action:
-                    e["function_before_action"].insert(0,function)
-        
-        def addFunctionBeforeActionEnd(self,function,action):
-            for e in self.actionList:
-                if e["action"]==action:
-                    e["function_before_action"].append(function)
-
-        def addFunctionAfterActionFront(self,function,action):
-            for e in self.actionList:
-                if e["action"]==action:
-                    e["function_after_action"].insert(0,function)
-
-        def addFunctionAfterActionEnd(self,function,action):
-            for e in self.actionList:
-                if e["action"]==action:
-                    e["function_after_action"].append(function)
-
-
-        def getFunctionBeforeAction(self,action):
-            return self.actionList[action]["function_before_action"]
-        
-        def getFunctionAfterAction(self,action):
-            return self.actionList[action]["function_after_action"]
-            
-        def thinkKeepGoingOrNot(self):
-            pass
-       
-    def do(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
-        os.environ["OPENAI_API_KEY"]=ApiKey
-        """
-        write code to achieve the action
-        """
-
-        from prompt.actionFlowPrompt import ActionDo
-
-        llm=ChatOpenAI(temperature=temperature,max_tokens=max_tokens,model_name=model_name)
-        fillingActionParameter=LLMChain(llm=llm, prompt= ActionDo)
-
-        import actionDefault
-
-        self.functionsDescriptionAndExample= actionDefault.getDescriptionAndExample()
-
-        agentExperience="none"
-
-        newCode=fillingActionParameter.predict(goal=self.goal,
-                                            current_action=self.actionFlow.actionOnGoing,
-                                                current_action_Python= self.actionFlow.actionFlowCurrentGetCode(),
-                                                code_history=self.actionFlow.actionFlowHistoryGetCode(),
-                                                code_future=self.actionFlow.actionFlowPendingGetCode(),
-                                                enviroment=self.environment,
-                                                function_description_and_example=self.functionsDescriptionAndExample,
-                                                experiences=agentExperience)
-                                                
-
-        newCode=newCode.replace("```python\n", "").replace("\n```", "")
-        print("\n")
-        print("++++++++++++++++++ Generated Code Start +++++++++++++++++++")
-        print(newCode)
-        print("+++++++++++++++++++ Generated Code End ++++++++++++++++++++")
-        print("\n")
-        self.actionFlow.actionFlowCurrentAddToFront(self.actionFlow.decorateActionFlowCodeToJSON(newCode,status="fixed"))
-
-        def reflect(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
-            os.environ["OPENAI_API_KEY"]=ApiKey
-            """
-            reflect if the action is done or not.
-            """
-            
-            from prompt.actionFlowPrompt import ActionReflect
-
-
-        def codeThreadDoCheckCode(self, code):
-            """
-            check if the code is valid
-            """
-
-            actionFlowJSON,actionFlowPython=self.actionFlow.translatePython(code)
-            if actionFlowJSON[0]["action"]==self.actionFlow.actionFlowCurrentGetFront()[0]["action"]:
-                actionJSON=True
-
-            if actionFlowPython[0]==self.actionFlow.actionFlowCurrentGetFront()[1]:
-                actionPython=True
-
-        def checkIfActionIsDone(self):
-            pass
-
-
 
     # for the wrapper of action
     def codeThread(self, func):
@@ -242,7 +107,7 @@ class CodeThread():
                     self.actionFlow.actionCurrentExecute()
 
                 elif self.actionFlow.actionFlowCurrentGetFront()["status"]=="semi-fixed":
-                    self.do()
+                    self.actions.do()
                     self.actionFlow.actionCurrentExecute()
 
                 elif self.actionFlow.actionFlowCurrentGetFront()["status"]=="changeable":
