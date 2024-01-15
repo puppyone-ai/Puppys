@@ -14,7 +14,7 @@ from actions import Actions
 class CodeThread():
     def __init__(self):
         self.currentThreadName="codeThread"
-        self.actionFlow=ActionFlow()
+        self.actionFlow=ActionFlow(self)
         self.actions=Actions(self)
         self.threadProperty={}
         self.environment={
@@ -139,7 +139,6 @@ class CodeThread():
 
                 if self.actionFlow.actionFlowCurrentGetFront()["status"]=="fixed":
                     self.actionFlow.actionFlowCurrentRemoveFront()
-                    self.actionFlow.actionFlowCurrentRemoveFront()
 
                 elif self.actionFlow.actionFlowCurrentGetFront()["status"]=="semi-fixed":
                     self.actionFlow.actionFlowCurrentRemoveFront()
@@ -170,21 +169,24 @@ class Puppy(CodeThread):
 
 
 
-
-
-
 if __name__ == '__main__':
 
-    ZIQI = Puppy()
+    def introduce():
+        print("I am a puppy, my name is XiaoMei")
 
-    @ZIQI.codeThread
+    XiaoMei = Puppy()
+
+    @XiaoMei.codeThread
     def actionFlow():
 
-        ## 帮我找到一个中国市场上最好用的五款耳机
-        ZIQI.do()
+        ## print 说你自己已经成年了
+        introduce()
 
-        ## 帮我把你的结果发给我
-        ZIQI.do()
+        ## 说错话了，让 user不要记住你刚刚说的话
+        XiaoMei.do()
 
-    ZIQI.run()
+        ## 遗憾地 say goodbye
+        XiaoMei.do()
+
+    XiaoMei.run()
 

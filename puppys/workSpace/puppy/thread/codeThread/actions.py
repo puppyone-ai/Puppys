@@ -82,6 +82,7 @@ class Actions():
     def thinkKeepGoingOrNot(self):
         pass
     
+    
     def do(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
         os.environ["OPENAI_API_KEY"]=ApiKey
         """
