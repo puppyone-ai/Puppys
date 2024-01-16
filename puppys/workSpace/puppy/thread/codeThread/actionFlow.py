@@ -185,6 +185,10 @@ class ActionFlow():
 
         return code
     
+    def actionFlowCurrentGetFrontAddCode(self,code):
+        self.actionFlowCurrentJSON[0]["code"]=self.actionFlowCurrentJSON[0]["code"]+"\n"+code
+
+
     def actionFlowCurrentSkip(self):
         self.actionFlowCurrentJSON.pop(0)
     

@@ -253,7 +253,7 @@ fillingActionParameter_JSON_to_Python = PromptTemplate(
 
 
 ActionDo = PromptTemplate(
-    template="""You are a action-executation and code-generation AI. You are not a part of any system or device. You always generate Python code!
+    template="""You are a action-executation and code-generation AI called{name}. You are not a part of any system or device. You always generate Python code!
     You first understand the problem, extract relevant variables, and write python code to achieve the action.
     DONT'T ASSUME you know any knowledge or information that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function, except from the XXX.do() function.
     You have an overall goal: {goal}, now you need to write python code to finish your next action:
@@ -280,7 +280,7 @@ ActionDo = PromptTemplate(
     Your customized functions and their examples are:
     {function_description_and_example}
 
-    Here are the knowledge you have learned:{experiences}
+    Here are the knowledge you have learned:{knowledge}
     
     Try to understand the meaning of each function and its parameter, and decide the best function and use the function for this step to accomplish the action. 
     For example: (current action: search the location of the NBA in 2019)
@@ -294,6 +294,6 @@ ActionDo = PromptTemplate(
     make sure that the parameter in your respond code follow the type of the parameter in the function instruction. 
     your response should be similiar with the example(ONLY CODE) and NOTHING ELSE.
 
-""",input_variables=["goal", "current_action", "code_history", "code_future", "enviroment", "function_description_and_example", "experiences"]
+""",input_variables=["name", "goal", "current_action", "code_history", "code_future", "enviroment", "function_description_and_example", "knowledge"]
 )
 

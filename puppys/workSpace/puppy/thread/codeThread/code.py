@@ -9,13 +9,17 @@ import re
 import time
 from actionFlow import ActionFlow
 from actions import Actions
+from knowledge import Knowledge
 
 
 class CodeThread():
     def __init__(self):
+
         self.currentThreadName="codeThread"
         self.actionFlow=ActionFlow(self)
         self.actions=Actions(self)
+        self.knowledge=Knowledge(self)
+
         self.threadProperty={}
         self.environment={
         }
@@ -73,10 +77,12 @@ class CodeThread():
 
         # import tools, for agents
         sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
         import actionDefault
-        from actionDefault import AskHumanForHelp
-        from actionDefault import GoogleSearchNative
-        from actionDefault import GPT
+
+        self.actionDefault = actionDefault
+        self.askHumanForHelp = actionDefault.AskHumanForHelp(self)
+
 
         print("Import Start ----------------------------------------------")
 
@@ -139,6 +145,7 @@ class CodeThread():
 
                 if self.actionFlow.actionFlowCurrentGetFront()["status"]=="fixed":
                     self.actionFlow.actionFlowCurrentRemoveFront()
+                    self.actionFlow.actionFlowCurrentRemoveFront()
 
                 elif self.actionFlow.actionFlowCurrentGetFront()["status"]=="semi-fixed":
                     self.actionFlow.actionFlowCurrentRemoveFront()
@@ -153,19 +160,24 @@ class CodeThread():
 
 
 class Puppy(CodeThread):
-    def __init__(self):
+    def __init__(self, name="puppy"):
+        
         super().__init__()
+        self.name=name
 
     def run(self):
         self.codeThreadRun()
 
         
 
-
-
 """
 把反省 agent 是否完成了任务加到 action 里面
 """
+
+"""
+设计一下什么代码放到 actionHistory 里面
+"""
+
 
 
 
@@ -174,18 +186,18 @@ if __name__ == '__main__':
     def introduce():
         print("I am a puppy, my name is XiaoMei")
 
-    XiaoMei = Puppy()
+    XiaoMei = Puppy(name="XiaoMei")
+
+    pass
+
 
     @XiaoMei.codeThread
     def actionFlow():
 
-        ## print 说你自己已经成年了
-        introduce()
-
-        ## 说错话了，让 user不要记住你刚刚说的话
+        ## 数一下这个屋子里的苹果的个数
         XiaoMei.do()
 
-        ## 遗憾地 say goodbye
+        ## 告诉我苹果的个数能不能被 4个人整除？
         XiaoMei.do()
 
     XiaoMei.run()

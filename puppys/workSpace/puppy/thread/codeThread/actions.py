@@ -94,28 +94,30 @@ class Actions():
         llm=ChatOpenAI(temperature=temperature,max_tokens=max_tokens,model_name=model_name)
         fillingActionParameter=LLMChain(llm=llm, prompt= ActionDo)
 
-        import actionDefault
 
-        self.codeThreadInstance.functionsDescriptionAndExample= actionDefault.getDescriptionAndExample()
+        self.codeThreadInstance.functionsDescriptionAndExample= self.codeThreadInstance.askHumanForHelp.getDescriptionAndExample()
 
-        agentExperience="none"
 
-        newCode=fillingActionParameter.predict(goal=self.codeThreadInstance.goal,
+        newCode=fillingActionParameter.predict(name=self.codeThreadInstance.name,
+                                               goal=self.codeThreadInstance.goal,
                                             current_action=self.codeThreadInstance.actionFlow.actionOnGoing,
                                                 current_action_Python= self.codeThreadInstance.actionFlow.actionFlowCurrentGetCode(),
                                                 code_history=self.codeThreadInstance.actionFlow.actionFlowHistoryGetCode(),
                                                 code_future=self.codeThreadInstance.actionFlow.actionFlowPendingGetCode(),
                                                 enviroment=self.codeThreadInstance.environment,
                                                 function_description_and_example=self.codeThreadInstance.functionsDescriptionAndExample,
-                                                experiences=agentExperience)
+                                                knowledge=self.codeThreadInstance.knowledge.getKnowledgeStr())
                                                 
 
         newCode=newCode.replace("```python\n", "").replace("\n```", "")
+
+        """
         print("\n")
         print("++++++++++++++++++ Generated Code Start +++++++++++++++++++")
         print(newCode)
         print("+++++++++++++++++++ Generated Code End ++++++++++++++++++++")
         print("\n")
+        """
         self.codeThreadInstance.actionFlow.actionFlowCurrentAddToFront(self.codeThreadInstance.actionFlow.decorateActionFlowCodeToJSON(newCode,status="fixed"))
 
     def reflect(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
