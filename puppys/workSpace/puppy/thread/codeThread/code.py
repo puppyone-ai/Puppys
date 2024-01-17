@@ -24,7 +24,10 @@ class CodeThread():
         self.environment={
         }
 
-        self.goal="make the earth better"
+        self.goal=""
+
+        self.codeThreadFuncPreActionList=[]
+        self.codeThreadFuncPostActionList=[]
 
     # import tools, initialize the agent
     def codeThreadInitialize(self):
@@ -73,30 +76,14 @@ class CodeThread():
         # execute the function with wrapper
         return wrapper
     
-    
-    # set the function before and after the action
-    def codeThreadActionDecorator(func):
 
-        def wrapper(self, *args, **kwargs):
-            self.codeThreadFuncBeforeAction()
-            func(self, *args, **kwargs)
-            self.codeThreadFuncAfterAction()
-
-        return wrapper
-    
-    def codeThreadFuncBeforeAction(self):
-        print("你好，我是小美，我是你的小狗，我会帮助你完成你的任务。")
-
-    def codeThreadFuncAfterAction(self):
-        pass
-
-    @codeThreadActionDecorator
     def codeThreadActionRun(self):
 
         # STEP 3.1: run the function before the defined action
+        for func in self.codeThreadFuncPreActionList:
+            func()
 
-
-        # STEP 3.1: check if the action is fixed, semi-fixed, or changeable
+        # STEP 3.2: check if the action is fixed, semi-fixed, or changeable
         if self.actionFlow.actionFlowCurrentGetFront()["status"]=="fixed":
             self.actionFlow.actionCurrentExecute()
 
@@ -108,7 +95,7 @@ class CodeThread():
             pass
             ## TODO
         
-        # STEP 4: load the action from actionOngoing and execute the code
+        # STEP 3.3: load the action from actionOngoing and execute the code
         action = self.actionFlow.actionOnGoing.get()
 
         print("\n")
@@ -119,6 +106,14 @@ class CodeThread():
         
         exec(action)
         self.actionFlow.actionOnGoing.task_done()
+
+        # STEP 3.4: run the function before the defined action
+        for func in self.codeThreadFuncPostActionList:
+            # 检查函数是否是绑定方法
+            if isinstance(func, type(func)):
+                func()
+            else:
+                func(self)
 
 
 
@@ -159,13 +154,13 @@ class CodeThread():
                 # STEP 3: run the action 
                 self.codeThreadActionRun()
 
-                # STEP 5: load the action from the actionFlowCurrent to the actionFlowHistory
+                # STEP 4: load the action from the actionFlowCurrent to the actionFlowHistory
                 self.actionFlow.actionCurrentSave()
 
-                # STEP 6: evaluate if the action is done
+                # STEP 5: evaluate if the action is done
                 # TODO
 
-                # STEP 7: remove the action from the actionFlowCurrent
+                # STEP 6: remove the action from the actionFlowCurrent
 
 
                 if self.actionFlow.actionFlowCurrentGetFront()["status"]=="fixed":

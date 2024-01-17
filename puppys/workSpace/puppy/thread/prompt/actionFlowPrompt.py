@@ -253,26 +253,22 @@ fillingActionParameter_JSON_to_Python = PromptTemplate(
 
 
 ActionDo = PromptTemplate(
-    template="""You are a action-executation and code-generation AI called{name}. You are not a part of any system or device. You always generate Python code!
-    You first understand the problem, extract relevant variables, and write python code to achieve the action.
-    DONT'T ASSUME you know any knowledge or information that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function, except from the XXX.do() function.
-    You have an overall goal: {goal}, now you need to write python code to finish your next action:
-    "{current_action}"
-
-    user have already write some code for this action, but it's not finished. You should replace the XXX.do() part. the XXX is your name, and the .do() is an instruction of 'you should write code here'.:
-
-    {current_action_Python}
+    template="""You are an AI agent called{name}. You always generate Python code! If you want to say any naturl language, you should make what you said as comment in python code, for example: # Hello, I am an agent. Otherwise the user would meet a bug.
+    Beside what you want to say, you can write python code to achieve the action.
+    When you write code, DONT'T ASSUME you know any knowledge or information that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function, except from the XXX.do() function.
     
-    And the code for historical actionflow shown as code are:
-
+    You have an overall goal: {goal}, And your action history is (this part has already been run):
     {code_history}
 
-    The code of action in the future are(But you don't need to do this part now, just for your information)):
+    Now it's time to achieve this action: user have already write some code for this action, but it's not finished. You should replace the XXX.do() part. the XXX is your name, and the .do() is an instruction of 'you should write code here'.:
+
+    {current_action}
+
+    The code of action in the future is(But you don't need to do this part now, just for your information)):
 
     {code_future}
 
     And the current enviroment shown as parameters as Python code are:
-
     {enviroment}
 
     You are allowed to write python code and use the given functions below. But make sure that you have imoprted the given package.
@@ -286,7 +282,7 @@ ActionDo = PromptTemplate(
     For example: (current action: search the location of the NBA in 2019)
     response:
     ## search the location of the NBA in 2019 @google search @zhihu search
-    # to answer where is the NBA in 2019, I need to search the information about NBA in 2019. The function returns as a string.
+    # Hello! to answer where is the NBA in 2019, I need to search the information about NBA in 2019. The function returns as a string.
     location=google_search("Where is the NBA in 2019")
 
     DO write the code in python. The name of the action should be provided by Python code with comment after ##, For example, "## search the location of the NBA in 2019 @google search @zhihu search" in the example. You are allowed to use python code and call those funcitions. and you write commit with information attached to your action. including your thinking, your response and the type of the parameter.
@@ -295,5 +291,26 @@ ActionDo = PromptTemplate(
     your response should be similiar with the example(ONLY CODE) and NOTHING ELSE.
 
 """,input_variables=["name", "goal", "current_action", "code_history", "code_future", "enviroment", "function_description_and_example", "knowledge"]
+)
+
+
+ActionCheckDone = PromptTemplate(
+    template="""You are an AI agent called{name}. You always generate Python code! If you want to say something, you should make what you said as comment in python code, for example: # Hello, I am an agent.
+    Beside what you want to say, you need to decide if your current action has been achieved or not.
+    When you write code, DONT'T ASSUME you know any knowledge or information that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function, except from the XXX.do() function.
+    
+    You have an overall goal: {goal}, And your action history is (this part has already been run):
+    {code_history}
+
+    Now face this action: 
+
+    {current_action_Python}
+
+    The code of action in the future is(But you don't need to do this part now, just for your information)):
+
+    {code_future}
+
+
+""",input_variables=["name", "goal", "current_action", "code_history", "code_future"]
 )
 
