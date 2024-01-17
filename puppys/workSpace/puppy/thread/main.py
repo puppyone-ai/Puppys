@@ -1,4 +1,4 @@
-from goal.goal import GoalThread
+from goalThread.goal import GoalThread
 from code.code import CodeThread
 
 class Puppy:

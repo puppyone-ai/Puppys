@@ -1,61 +1,27 @@
-def actionFlowTranslate(adjustedSourceCodeList):
-    """
-    translate the source code to actionFlowJSON and actionFlowPython
+import threading
+import time
 
-    args: sourceCode(Python)
-    return: actionFlowHistoryJSON(List), actionFlowHistoryPython(String)
-    """
-    for actionCode in adjustedSourceCodeList:
-        ## return the actionFlowJSON
-        lines = actionCode.split('\n')
-        searchForDo = False
-        comment = ""
-        codeSnippet = ""
-        actionFlowJSON = []
+def worker():
+    for i in range(5):
+        print(f"工作线程: 正在执行任务 {i}")
+        time.sleep(2)  # 模拟耗时任务
+    print("工作线程: 完成所有任务")
 
-        for line in lines:
-            if '##' in line:
-                # if there is an unfinished action, add it to the JSON
-                if searchForDo:
-                    actionFlowJSON.append({"action": comment, "status": "semi-fixed", "code": actionCode})
-                    codeSnippet = ""
+def responder():
+    while True:
+        response = input("输入线程: 请输入您的回复: ")
+        if response == "exit":
+            print("输入线程: 结束")
+            break
+        else:
+            print(f"输入线程: 您的回复是 '{response}'")
 
-                comment = line.split('##', 1)[1].strip()
-                searchForDo = True
-            else:
-                if searchForDo:
-                    codeSnippet += line + '\n'  # history code snippet
-                    if '.do()' in line:
-                        # if there is a .do(), mark it as semi-fixed
-                        actionFlowJSON.append({"action": comment, "status": "semi-fixed", "code": actionCode})
-                        searchForDo = False
-                        codeSnippet = ""
-                else:
-                    # if not in the comment module, ignore the line
-                    pass
+if __name__ == "__main__":
+    worker_thread = threading.Thread(target=worker)
+    responder_thread = threading.Thread(target=responder)
 
-        # deal with the last action
-        if searchForDo:
-            actionFlowJSON.append({"action": comment, "status": "fixed", "code": actionCode})
+    worker_thread.start()
+    responder_thread.start()
 
-    return actionFlowJSON, adjustedSourceCodeList
-
-sourceCode = """
-
-nihkdfdsa
-
-## click the button
-button = browser.find_element_by_id("button")
-
-"""
-
-
-sourceCodeList=["## click the button\nbutton = browser.find_element_by_id('button')\npuppy.do()","## click the puppy\nbutton = browser.find_element_by_id('button')"]
-
-JSON,python=actionFlowTranslate(sourceCodeList)
-for e in JSON:
-    print(e)
-
-for e in python:
-    print(e)
-    print("\n")
+    worker_thread.join()
+    responder_thread.join()

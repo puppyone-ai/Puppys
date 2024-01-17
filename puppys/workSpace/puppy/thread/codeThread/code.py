@@ -34,7 +34,7 @@ class CodeThread():
     def codeThreadRun(self):
         
         # start the code thread
-        threadCode = threading.Thread(target=self.CodeExecution)
+        threadCode = threading.Thread(target=self.codeThreadActionFlowRun)
         threadCode.daemon = False
         threadCode.start()
         
@@ -72,8 +72,57 @@ class CodeThread():
 
         # execute the function with wrapper
         return wrapper
+    
+    
+    # set the function before and after the action
+    def codeThreadActionDecorator(func):
 
-    def CodeExecution(self):
+        def wrapper(self, *args, **kwargs):
+            self.codeThreadFuncBeforeAction()
+            func(self, *args, **kwargs)
+            self.codeThreadFuncAfterAction()
+
+        return wrapper
+    
+    def codeThreadFuncBeforeAction(self):
+        print("你好，我是小美，我是你的小狗，我会帮助你完成你的任务。")
+
+    def codeThreadFuncAfterAction(self):
+        pass
+
+    @codeThreadActionDecorator
+    def codeThreadActionRun(self):
+
+        # STEP 3.1: run the function before the defined action
+
+
+        # STEP 3.1: check if the action is fixed, semi-fixed, or changeable
+        if self.actionFlow.actionFlowCurrentGetFront()["status"]=="fixed":
+            self.actionFlow.actionCurrentExecute()
+
+        elif self.actionFlow.actionFlowCurrentGetFront()["status"]=="semi-fixed":
+            self.actions.do()
+            self.actionFlow.actionCurrentExecute()
+
+        elif self.actionFlow.actionFlowCurrentGetFront()["status"]=="changeable":
+            pass
+            ## TODO
+        
+        # STEP 4: load the action from actionOngoing and execute the code
+        action = self.actionFlow.actionOnGoing.get()
+
+        print("\n")
+        print("############### following action is running ###############")
+        print(action)
+        print("###########################################################")
+        print("\n")
+        
+        exec(action)
+        self.actionFlow.actionOnGoing.task_done()
+
+
+
+    def codeThreadActionFlowRun(self):
 
         # import tools, for agents
         sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -107,32 +156,8 @@ class CodeThread():
 
             while self.actionFlow.actionFlowCurrentJSON !=[]:
                 
-                # STEP 3: load the action from actionFlowCurrent to actionOngoing
-                if self.actionFlow.actionFlowCurrentGetFront()["status"]=="fixed":
-
-                    self.actionFlow.actionCurrentExecute()
-
-                elif self.actionFlow.actionFlowCurrentGetFront()["status"]=="semi-fixed":
-                    self.actions.do()
-                    self.actionFlow.actionCurrentExecute()
-
-                elif self.actionFlow.actionFlowCurrentGetFront()["status"]=="changeable":
-                    pass
-                    ## TODO
-                
-                # STEP 4: load the action from actionOngoing and execute the code
-                action = self.actionFlow.actionOnGoing.get()
-
-                print("\n")
-                print("############### following action is running ###############")
-                print(action)
-                print("###########################################################")
-                print("\n")
-                if action is None:
-                    break
-                
-                exec(action)
-                self.actionFlow.actionOnGoing.task_done()
+                # STEP 3: run the action 
+                self.codeThreadActionRun()
 
                 # STEP 5: load the action from the actionFlowCurrent to the actionFlowHistory
                 self.actionFlow.actionCurrentSave()
@@ -168,15 +193,13 @@ class Puppy(CodeThread):
     def run(self):
         self.codeThreadRun()
 
-        
+
 
 """
 把反省 agent 是否完成了任务加到 action 里面
 """
 
-"""
-设计一下什么代码放到 actionHistory 里面
-"""
+
 
 
 
@@ -194,10 +217,13 @@ if __name__ == '__main__':
     @XiaoMei.codeThread
     def actionFlow():
 
-        ## 数一下这个屋子里的苹果的个数
+        ## 数一下现在有多少个苹果？
         XiaoMei.do()
 
         ## 告诉我苹果的个数能不能被 4个人整除？
+        XiaoMei.do()
+
+        ## 把这个消息发送给我的爸爸
         XiaoMei.do()
 
     XiaoMei.run()

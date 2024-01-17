@@ -4,8 +4,8 @@ from googleapiclient.discovery import build
 
 
 class AskHumanForHelp:
-    def __init__(self, codeThreadInstance, question='',**kwargs):
-        self.codeThreadInstance = codeThreadInstance
+    def __init__(self, threadInstance, question='',**kwargs):
+        self.threadInstance = threadInstance
         self.name="askHumanForHelp"
         self.description = "Use it when you have no idea how to achieve an action based on the current information knowledge, or functions."
         self.example = """
@@ -14,6 +14,7 @@ class AskHumanForHelp:
         """
         self.functionBeforeAction = []
         self.functionAfterAction = []
+        self.allowedThread = ["codeThread"]
 
 
         self.question = question
@@ -38,8 +39,6 @@ class AskHumanForHelp:
         userInput=input(question+"\n"+"Your answer:")
         print("Sure, I have already add what you said to my knowledge.")
 
-        self.codeThreadInstance.actionFlow.actionFlowCurrentGetFrontAddCode(str("'''\n")+userInput+str("\n'''"))
+        self.threadInstance.actionFlow.actionFlowCurrentGetFrontAddCode(str("'''\n")+userInput+str("\n'''"))
 
         return userInput
-
-        
