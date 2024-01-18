@@ -108,12 +108,8 @@ class CodeThread():
         self.actionFlow.actionOnGoing.task_done()
 
         # STEP 3.4: run the function before the defined action
-        for func in self.codeThreadFuncPostActionList:
-            # 检查函数是否是绑定方法
-            if isinstance(func, type(func)):
-                func()
-            else:
-                func(self)
+        for func in self.codeThreadFuncPreActionList:
+            func()
 
 
 
@@ -125,7 +121,7 @@ class CodeThread():
         import actionDefault
 
         self.actionDefault = actionDefault
-        self.askHumanForHelp = actionDefault.AskHumanForHelp(self)
+        self.sendMessageToHuman = actionDefault.SendMessageToHuman(self)
 
 
         print("Import Start ----------------------------------------------")
@@ -161,17 +157,7 @@ class CodeThread():
                 # TODO
 
                 # STEP 6: remove the action from the actionFlowCurrent
-
-
-                if self.actionFlow.actionFlowCurrentGetFront()["status"]=="fixed":
-                    self.actionFlow.actionFlowCurrentRemoveFront()
-                    self.actionFlow.actionFlowCurrentRemoveFront()
-
-                elif self.actionFlow.actionFlowCurrentGetFront()["status"]=="semi-fixed":
-                    self.actionFlow.actionFlowCurrentRemoveFront()
-
-                else:
-                    self.actionFlow.actionFlowCurrentRemoveFront()
+                self.actionFlow.actionFlowCurrentRemoveFront()
 
 
         print("Done")
@@ -195,10 +181,6 @@ class Puppy(CodeThread):
 """
 
 
-
-
-
-
 if __name__ == '__main__':
 
     def introduce():
@@ -212,14 +194,9 @@ if __name__ == '__main__':
     @XiaoMei.codeThread
     def actionFlow():
 
-        ## 数一下现在有多少个苹果？
+        ##  20 秒钟之后给我说一段你的自我介绍
         XiaoMei.do()
 
-        ## 告诉我苹果的个数能不能被 4个人整除？
-        XiaoMei.do()
-
-        ## 把这个消息发送给我的爸爸
-        XiaoMei.do()
 
     XiaoMei.run()
 

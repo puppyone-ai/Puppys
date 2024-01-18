@@ -82,6 +82,51 @@ class Actions():
     def thinkKeepGoingOrNot(self):
         pass
     
+    def checkDo(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
+        os.environ["OPENAI_API_KEY"]=ApiKey
+        """
+        write code to achieve the action
+        """
+        print("checking")
+
+        from prompt.actionFlowPrompt import ActionCheckDone
+
+        llm=ChatOpenAI(temperature=temperature,max_tokens=max_tokens,model_name=model_name)
+        checkIfActionIsDone=LLMChain(llm=llm, prompt= ActionCheckDone)
+
+        self.codeThreadInstance.functionsDescriptionAndExample= self.codeThreadInstance.sendMessageToHuman.getDescriptionAndExample()
+
+        newCode=checkIfActionIsDone.predict(name=self.codeThreadInstance.name,
+                                               goal=self.codeThreadInstance.goal,
+                                                current_action=self.codeThreadInstance.actionFlow.actionFlowCurrentGetFront()["action"],
+                                                current_action_Python= self.codeThreadInstance.actionFlow.actionFlowCurrentGetCode(),
+                                                code_history=self.codeThreadInstance.actionFlow.actionFlowHistoryGetCode(),
+                                                code_future=self.codeThreadInstance.actionFlow.actionFlowPendingGetCode(),
+                                                enviroment=self.codeThreadInstance.environment,
+                                                knowledge=self.codeThreadInstance.knowledge.getKnowledgeStr())
+                                                
+
+        newCode=newCode.replace("```python\n", "").replace("\n```", "")
+
+        print("\n")
+        print("++++++++++++++++++ Checking Code Start +++++++++++++++++++")
+        print(newCode)
+        print("+++++++++++++++++++ Checking Code End ++++++++++++++++++++")
+        print("\n")
+
+        print("beforechecking:*****",self.codeThreadInstance.actionFlow.actionFlowCurrentJSON)
+
+        continueAction="Unknown"
+        exec(newCode)
+
+        if continueAction == True:
+            self.codeThreadInstance.actionFlow.actionFlowCurrentJSON.pop(0)
+
+        elif continueAction == False:
+            pass
+
+
+        print("afterchecking:*****",self.codeThreadInstance.actionFlow.actionFlowCurrentJSON)
     
     def do(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
         os.environ["OPENAI_API_KEY"]=ApiKey
@@ -89,18 +134,20 @@ class Actions():
         write code to achieve the action
         """
 
+        self.checkDo()
+
         from prompt.actionFlowPrompt import ActionDo
 
         llm=ChatOpenAI(temperature=temperature,max_tokens=max_tokens,model_name=model_name)
         fillingActionParameter=LLMChain(llm=llm, prompt= ActionDo)
 
 
-        self.codeThreadInstance.functionsDescriptionAndExample= self.codeThreadInstance.askHumanForHelp.getDescriptionAndExample()
+        self.codeThreadInstance.functionsDescriptionAndExample= self.codeThreadInstance.sendMessageToHuman.getDescriptionAndExample()
 
 
         newCode=fillingActionParameter.predict(name=self.codeThreadInstance.name,
                                                goal=self.codeThreadInstance.goal,
-                                            current_action=self.codeThreadInstance.actionFlow.actionOnGoing,
+                                                current_action=self.codeThreadInstance.actionFlow.actionFlowCurrentGetFront()["action"],
                                                 current_action_Python= self.codeThreadInstance.actionFlow.actionFlowCurrentGetCode(),
                                                 code_history=self.codeThreadInstance.actionFlow.actionFlowHistoryGetCode(),
                                                 code_future=self.codeThreadInstance.actionFlow.actionFlowPendingGetCode(),
@@ -111,13 +158,12 @@ class Actions():
 
         newCode=newCode.replace("```python\n", "").replace("\n```", "")
 
-        """
         print("\n")
         print("++++++++++++++++++ Generated Code Start +++++++++++++++++++")
         print(newCode)
         print("+++++++++++++++++++ Generated Code End ++++++++++++++++++++")
         print("\n")
-        """
+
         self.codeThreadInstance.actionFlow.actionFlowCurrentAddToFront(self.codeThreadInstance.actionFlow.decorateActionFlowCodeToJSON(newCode,status="fixed"))
 
     def reflect(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):

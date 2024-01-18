@@ -9,6 +9,9 @@ class ActionFlow():
         self.actionFlowPendingJSON =[]
         self.actionFlowCurrentJSON=[]
         
+        """
+        actionFlowAllJSON: [{}]"""
+
         self.actionOnGoing=queue.Queue()
     
     def initialize(self,sourceCode):

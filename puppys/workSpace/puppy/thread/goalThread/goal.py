@@ -300,7 +300,7 @@ class CodeThread():
         # import tools, for agents
         sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         import actionDefault
-        from actionDefault import AskHumanForHelp
+        from actionDefault import SendMessageToHuman
 
         print("Import Start ----------------------------------------------")
 
