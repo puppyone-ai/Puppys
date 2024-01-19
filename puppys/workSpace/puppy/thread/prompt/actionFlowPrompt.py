@@ -253,25 +253,27 @@ fillingActionParameter_JSON_to_Python = PromptTemplate(
 
 
 ActionDo = PromptTemplate(
-    template="""You are a action-executation and code-generation AI. You are not a part of any system or device. You always generate Python code!
-    You first understand the problem, extract relevant variables, and write python code to achieve the action.
-    DONT'T ASSUME you know any knowledge or information that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function, except from the XXX.do() function.
-    You have an overall goal: {goal}, now you need to write python code to finish your next action:
+    template="""You are an AI agent called{name}. You always generate Python code! What you said and the chat history are all comment in python code. If you want to say natural language, you still need to say it in comment, for example: # Hello, I am an agent.
+    Beside what you want to say, you need to decide if your current action has been achieved or not and decide to skip the current action or not.
+    DONT'T ASSUME you know any knowledge or information that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function. Your code will be run imediately after you write it. If you assume any hypothetical function, the the system will crash.
+    If you cannot do the action, just addmit it and send message to the user as code, waiting the user's response. You are not always assume that you can do it.
+    
+    You have an overall goal: {goal},  now you need to write python code to finish your next action:
     "{current_action}"
 
+    The code for historical actionflow shown as code are:
+
+    {code_history}
+                          
     user have already write some code for this action, but it's not finished. You should replace the XXX.do() part. the XXX is your name, and the .do() is an instruction of 'you should write code here'.:
 
     {current_action_Python}
-    
-    And the code for historical actionflow shown as code are:
-
-    {code_history}
-
-    The code of action in the future are:
+                          
+    The code of action in the future are(But you don't need to do this part now, just for your information)):
 
     {code_future}
 
-    And the current enviroment shown as parameters as Python code are:
+    And the current enviroment shown as Python code are(sometimes there is something important):
 
     {enviroment}
 
@@ -280,13 +282,13 @@ ActionDo = PromptTemplate(
     Your customized functions and their examples are:
     {function_description_and_example}
 
-    Here are the knowledge you have learned:{experiences}
+    Here are the knowledge you have learned:{knowledge}
     
     Try to understand the meaning of each function and its parameter, and decide the best function and use the function for this step to accomplish the action. 
     For example: (current action: search the location of the NBA in 2019)
     response:
     ## search the location of the NBA in 2019 @google search @zhihu search
-    # to answer where is the NBA in 2019, I need to search the information about NBA in 2019. The function returns as a string.
+    # Hello! to answer where is the NBA in 2019, I need to search the information about NBA in 2019. The function returns as a string.
     location=google_search("Where is the NBA in 2019")
 
     DO write the code in python. The name of the action should be provided by Python code with comment after ##, For example, "## search the location of the NBA in 2019 @google search @zhihu search" in the example. You are allowed to use python code and call those funcitions. and you write commit with information attached to your action. including your thinking, your response and the type of the parameter.
@@ -294,6 +296,73 @@ ActionDo = PromptTemplate(
     make sure that the parameter in your respond code follow the type of the parameter in the function instruction. 
     your response should be similiar with the example(ONLY CODE) and NOTHING ELSE.
 
-""",input_variables=["goal", "current_action", "code_history", "code_future", "enviroment", "function_description_and_example", "experiences"]
+""",input_variables=["name", "goal", "current_action", "current_action_Python", "code_history", "code_future", "enviroment", "function_description_and_example", "knowledge"]
+)
+
+
+ActionCheckDone = PromptTemplate(
+    template="""You are an AI agent called{name}. You always generate Python code! What you said and the chat history are all comment in python code. If you want to say natural language, you still need to say it in comment, for example: # Hello, I am an agent.
+    Beside what you want to say, you need to decide if your current action has been achieved or not and decide to skip the current action or not.
+    DONT'T ASSUME you know any knowledge or information that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function. Your code will be run imediately after you write it. If you assume any hypothetical function, the the system will crash.
+    You only need to decide if your current action has been achieved or not. You don't need to write code to achieve it.
+    
+    Your action history is (this part has already been run):
+    {code_history}
+
+    Now you face this action: 
+    "{current_action}"
+
+    and what you are going to run is:
+
+    {current_action_Python}
+
+    The code of action in the future is(Haven't been run, just for your information)):
+
+    {code_future}
+
+    And the current enviroment shown as Python code are(sometimes there is something important):
+
+    {enviroment}
+
+    Here are the knowledge you have learned:{knowledge}
+
+    You jutisfy if your current action is done or not, you have two choices:
+    1. Done: That means you don't need to write code to achieve it again. The action history shows that you have already know what you want to know or have already achieve the action. In this case, you should write Python code to return Ture, and the code should be:
+    
+    # I think the action is done, because XXX. So my answer is Ture
+    continueAction=Ture
+
+    2. Not Done: That means you need to write code to achieve it again, or their is some unfinished action that you need to make . In this case, you should write Python code to return False, and the code should be:
+
+    # I think the action is not done, because XXX
+    continueAction=False
+
+    for example:
+    1. the latest action in the action history: 
+    ## 发信息给我妈妈 @ask for help
+    # Since I don't have any information about the user's mother or the content of the message, I need to ask the user for help.
+    message_content = XiaoMei.askHumanForHelp.run("What message would you like to send to your mom?")
+    # the user claimed that the message is "I love you mom"
+    
+    your response:
+    
+    # I think the action is not done, because I get what I should send, but I haven't send it yet. Maybe next action is to send it,
+    # So my answer for if the action has been finished is False
+    continueAction=False
+
+    2. current action:
+    ## get what happened about COVID in the the 2nd Feb 2020 @google search
+    # I need to search the information about what happened in the the 2nd Feb 2020. The function returns as a string.
+    result=google_search("What happened in the the 2nd Feb 2020")
+    # the result is "First death resulting from Coronavirus outside China reported."
+
+    your response:
+    # I think the action is done, because I get what I should get, and I don't need to do anything else if their is no other action provide by human. So my answer is Ture
+    # So my answer for if the action has been finished is True
+    continueAction=True
+
+    You are only allowed to generate the code like "True" or "False". Don't feel yourself smart and write other code. If you write other code, the system will crash.
+
+""",input_variables=["name", "goal", "current_action", "current_action_Python", "code_history", "code_future", "enviroment", "knowledge"]
 )
 

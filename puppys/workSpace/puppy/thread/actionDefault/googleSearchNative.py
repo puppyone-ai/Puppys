@@ -6,13 +6,15 @@ import pprint
 
 
 class GoogleSearchNative:
-    def __init__(self, search_content='', num=5,**kwargs):
+    def __init__(self, codeThreadInstance,search_content='', num=5,**kwargs):
+        self.codeThreadInstance = codeThreadInstance
+        
+        self.name="googleSearchNative"
         self.description = "Serach Engine, use when you want to search something on google, return the title, link and snippet of the search result"
         self.example = """
         ## search the result via googlesearch
         search_content = "how should I intall the package of openAI"
-        GoogleSearch=GoogleSearchNative(search_content)
-        searchResults = GoogleSearch.run()
+        searchResults = puppy.GoogleSearchNative.run(search_content)
         """
 
         self.search_content = search_content
@@ -32,13 +34,13 @@ class GoogleSearchNative:
     def getDescription(self):  
         return self.description
 
-    def search(self):
+    def search(self,search_content=""):
         service = build("customsearch", "v1", developerKey=self.my_api_key)
         res = service.cse().list(q=self.search_content, cx=self.my_cse_id, num=self.num).execute()
         return res['items']
     
-    def run(self):
-        results = self.search()
+    def run(self,search_content=""):
+        results = self.search(search_content)
         result_simplified_list=[]
         for result in results:
             result_simplified={}
