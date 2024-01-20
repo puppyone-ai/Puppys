@@ -80,38 +80,35 @@ class CodeThread():
 
     def codeThreadActionRun(self):
 
-        # STEP 3.1: run the function before the defined action
-        for func in self.codeThreadFuncPreActionList:
-            func()
-
-        # STEP 3.2: check if the action is fixed, semi-fixed, or changeable
+        # STEP 3.1: check if the action is fixed, semi-fixed, or changeable
         if self.actionFlow.actionFlowCurrentGetFront()["status"]=="fixed":
-            self.actionFlow.actionCurrentExecute()
+            pass
 
         elif self.actionFlow.actionFlowCurrentGetFront()["status"]=="semi-fixed":
             self.actions.do()
-            self.actionFlow.actionCurrentExecute()
 
         elif self.actionFlow.actionFlowCurrentGetFront()["status"]=="changeable":
             pass
-            ## TODO
         
-        # STEP 3.3: load the action from actionOngoing and execute the code
-        action = self.actionFlow.actionOnGoing.get()
-
-        print("\n")
-        print("############### following action is running ###############")
-        print(action)
-        print("###########################################################")
-        print("\n")
+        # STEP 3.2 load the action from actionCurrent to actionOnGoing
+        if self.actionFlow.actionFlowCurrentJSON !=[]:
+            self.actionFlow.actionCurrentExecute()
+            
         
-        exec(action,self.codeThreadVars)
-        self.actionFlow.actionOnGoing.task_done()
+            # STEP 3.3: load the action from actionOngoing and execute the code
+            action = self.actionFlow.actionOnGoing.get()
 
-        # STEP 3.4: run the function before the defined action
-        for func in self.codeThreadFuncPreActionList:
-            func()
+            print("\n")
+            print("############### following action is running ###############")
+            print(action)
+            print("###########################################################")
+            print("\n")
+            
+            exec(action,self.codeThreadVars)
+            self.actionFlow.actionOnGoing.task_done()
 
+        else: 
+            pass
 
 
     def codeThreadActionFlowRun(self):
@@ -148,24 +145,48 @@ class CodeThread():
 
             while self.actionFlow.actionFlowCurrentJSON !=[]:
                 
-                # STEP 3: run the action 
-                self.codeThreadActionRun()
-
-                # STEP 4: load the action from the actionFlowCurrent to the actionFlowHistory
-                self.actionFlow.actionCurrentSave()
-
-
-                # STEP 5: remove the action from the actionFlowCurrent
-                if self.actionFlow.actionFlowCurrentJSON !=[]:
-                    self.actionFlow.actionFlowCurrentRemoveFront()
-                
-                else:
+                # STEP 3.1: check if the action is fixed, semi-fixed, or changeable
+                if self.actionFlow.actionFlowCurrentGetFront()["status"]=="fixed":
                     pass
 
+                elif self.actionFlow.actionFlowCurrentGetFront()["status"]=="semi-fixed":
+                    self.actions.do()
+
+                elif self.actionFlow.actionFlowCurrentGetFront()["status"]=="changeable":
+                    pass
+                
+                # STEP 3.2 load the action from actionCurrent to actionOnGoing
+                if self.actionFlow.actionFlowCurrentJSON !=[]:
+                    self.actionFlow.actionCurrentExecute()
+                    
+                
+                    # STEP 3.3: load the action from actionOngoing and execute the code
+                    action = self.actionFlow.actionOnGoing.get()
+
+                    print("\n")
+                    print("############### following action is running ###############")
+                    print(action)
+                    print("###########################################################")
+                    print("\n")
+                    
+                    exec(action,self.codeThreadVars)
+                    self.actionFlow.actionOnGoing.task_done()
+
+                    # STEP 4: load the action from the actionFlowCurrent to the actionFlowHistory
+                    self.actionFlow.actionCurrentSave()
+
+
+                    # STEP 5: remove the action from the actionFlowCurrent
+                    if self.actionFlow.actionFlowCurrentJSON !=[]:
+                        self.actionFlow.actionFlowCurrentRemoveFront()
+                    
+                    else:
+                        pass
+
+                else: 
+                    pass
 
         print("Done")
-    
-    # the wrapper for the action for the code thread
 
 
 class Puppy(CodeThread):
@@ -197,9 +218,11 @@ pass
 @XiaoMei.codeThread
 def actionFlow():
 
-    ##  20 秒钟之后给我说一段你的自我介绍 
+    ##  定义一个用来计算 e^X积分的函数
     XiaoMei.do()
 
+    ## 使用这个函数来计算 e^X在0到1之间的积分
+    XiaoMei.do()
 
 XiaoMei.run()
 
