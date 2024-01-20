@@ -327,15 +327,13 @@ ActionCheckDone = PromptTemplate(
     Here are the knowledge you have learned:{knowledge}
 
     You jutisfy if your current action is done or not, you have two choices:
-    1. Done: That means you don't need to write code to achieve it again. The action history shows that you have already know what you want to know or have already achieve the action. In this case, you should write Python code to return Ture, and the code should be:
+    1. Done: That means you don't need to write code to achieve it again. The action history shows that you have already know what you want to know or have already achieve the action. In this case, you should write Python code to return Ture, and your generated code should be:
     
-    # I think the action is done, because XXX. So my answer is Ture
-    continueAction=Ture
+    Ture
 
-    2. Not Done: That means you need to write code to achieve it again, or their is some unfinished action that you need to make . In this case, you should write Python code to return False, and the code should be:
+    2. Not Done: That means you need to write code to achieve it again, or their is some unfinished action that you need to make . In this case, you should write Python code to return False, and the your generated code should be:
 
-    # I think the action is not done, because XXX
-    continueAction=False
+    False
 
     for example:
     1. the latest action in the action history: 
@@ -344,11 +342,9 @@ ActionCheckDone = PromptTemplate(
     message_content = XiaoMei.askHumanForHelp.run("What message would you like to send to your mom?")
     # the user claimed that the message is "I love you mom"
     
-    your response:
+    your response:(You realized that the action is not done, because I get what I should send, but I haven't send it yet. Maybe next action is to send it,)
     
-    # I think the action is not done, because I get what I should send, but I haven't send it yet. Maybe next action is to send it,
-    # So my answer for if the action has been finished is False
-    continueAction=False
+    False
 
     2. current action:
     ## get what happened about COVID in the the 2nd Feb 2020 @google search
@@ -356,12 +352,11 @@ ActionCheckDone = PromptTemplate(
     result=google_search("What happened in the the 2nd Feb 2020")
     # the result is "First death resulting from Coronavirus outside China reported."
 
-    your response:
-    # I think the action is done, because I get what I should get, and I don't need to do anything else if their is no other action provide by human. So my answer is Ture
-    # So my answer for if the action has been finished is True
-    continueAction=True
+    your response:(you realized that the action is done, because I get what I should get, and I don't need to do anything else if their is no other action provide by human. So my answer is Ture
+ )
+    True
 
-    You are only allowed to generate the code like "True" or "False". Don't feel yourself smart and write other code. If you write other code, the system will crash.
+    You are only allowed to generate the code "True" or "False". Don't feel yourself smart and write other code. If you write other code, the system will crash.
 
 """,input_variables=["name", "goal", "current_action", "current_action_Python", "code_history", "code_future", "enviroment", "knowledge"]
 )

@@ -116,13 +116,10 @@ class Actions():
 
         print("beforechecking:*****",self.codeThreadInstance.actionFlow.actionFlowCurrentJSON)
 
-        continueAction="Unknown"
-        exec(newCode)
-
-        if continueAction == True:
+        if newCode == "True":
             self.codeThreadInstance.actionFlow.actionFlowCurrentJSON.pop(0)
 
-        elif continueAction == False:
+        elif newCode == "False":
             pass
 
 

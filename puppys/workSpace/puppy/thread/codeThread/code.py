@@ -23,6 +23,7 @@ class CodeThread():
         self.threadProperty={}
         self.environment={
         }
+        self.codeThreadVars={}
 
         self.goal=""
 
@@ -104,7 +105,7 @@ class CodeThread():
         print("###########################################################")
         print("\n")
         
-        exec(action)
+        exec(action,self.codeThreadVars)
         self.actionFlow.actionOnGoing.task_done()
 
         # STEP 3.4: run the function before the defined action
@@ -153,11 +154,13 @@ class CodeThread():
                 # STEP 4: load the action from the actionFlowCurrent to the actionFlowHistory
                 self.actionFlow.actionCurrentSave()
 
-                # STEP 5: evaluate if the action is done
-                # TODO
 
-                # STEP 6: remove the action from the actionFlowCurrent
-                self.actionFlow.actionFlowCurrentRemoveFront()
+                # STEP 5: remove the action from the actionFlowCurrent
+                if self.actionFlow.actionFlowCurrentJSON !=[]:
+                    self.actionFlow.actionFlowCurrentRemoveFront()
+                
+                else:
+                    pass
 
 
         print("Done")
@@ -176,27 +179,27 @@ class Puppy(CodeThread):
 
 
 
+
 """
-把反省 agent 是否完成了任务加到 action 里面
+设置 action 的 visiable 和 invisible 的性质
 """
 
 
-if __name__ == '__main__':
 
-    def introduce():
-        print("I am a puppy, my name is XiaoMei")
+def introduce():
+    print("I am a puppy, my name is XiaoMei")
 
-    XiaoMei = Puppy(name="XiaoMei")
+XiaoMei = Puppy(name="XiaoMei")
 
-    pass
-
-
-    @XiaoMei.codeThread
-    def actionFlow():
-
-        ##  20 秒钟之后给我说一段你的自我介绍
-        XiaoMei.do()
+pass
 
 
-    XiaoMei.run()
+@XiaoMei.codeThread
+def actionFlow():
+
+    ##  20 秒钟之后给我说一段你的自我介绍 
+    XiaoMei.do()
+
+
+XiaoMei.run()
 
