@@ -116,6 +116,8 @@ class CodeThread():
         # import tools, for agents
         sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+
+        # loading actions
         import actionDefault
 
         self.actionDefault = actionDefault
@@ -125,6 +127,11 @@ class CodeThread():
         print("Import Start ----------------------------------------------")
 
         self.actionFlow.actionFlowCurrentClear()
+
+        # loading vars
+        self.codeThreadVars=globals()
+
+        # start the action flow
 
         while self.actionFlow.actionFlowCurrentJSON ==[] and self.actionFlow.actionFlowPendingJSON !=[]:
             print("\n")
@@ -199,8 +206,6 @@ class Puppy(CodeThread):
         self.codeThreadRun()
 
 
-
-
 """
 设置 action 的 visiable 和 invisible 的性质
 """
@@ -210,18 +215,16 @@ class Puppy(CodeThread):
 def introduce():
     print("I am a puppy, my name is XiaoMei")
 
+
 XiaoMei = Puppy(name="XiaoMei")
-
-pass
-
 
 @XiaoMei.codeThread
 def actionFlow():
 
-    ##  定义一个用来计算 e^X积分的函数
+    ##  上网搜一下今天的时政新闻
     XiaoMei.do()
 
-    ## 使用这个函数来计算 e^X在0到1之间的积分
+    ## 发给我
     XiaoMei.do()
 
 XiaoMei.run()

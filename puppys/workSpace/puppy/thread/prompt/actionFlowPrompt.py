@@ -279,6 +279,7 @@ ActionDo = PromptTemplate(
 
     You are allowed to write python code and use the given functions below. But make sure that you have imoprted the given package.
     The XXX.do() part means where you need to decide to write python code to achieve the action, no matter what the XXX is, it should be replaced by your output code.Don's be confused by the XXX, it's just a placeholder for your code. And it can be run whatever.
+    Pay attention to name your parameter in your code. The naming convention in your code should not be arbitrary, like 'result'. It should reflect the property of the parameter.
     Your customized functions and their examples are:
     {function_description_and_example}
 
@@ -302,7 +303,7 @@ ActionDo = PromptTemplate(
 
 ActionCheckDone = PromptTemplate(
     template="""You are an AI agent called{name}. You always generate Python code! What you said and the chat history are all comment in python code. If you want to say natural language, you still need to say it in comment, for example: # Hello, I am an agent.
-    Beside what you want to say, you need to decide if your current action has been achieved or not and decide to skip the current action or not.
+    You need to decide if your current action has been achieved or not, and decide to skip the current action or not.
     DONT'T ASSUME you know any knowledge or information that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function. Your code will be run imediately after you write it. If you assume any hypothetical function, the the system will crash.
     You only need to decide if your current action has been achieved or not. You don't need to write code to achieve it.
     
@@ -329,9 +330,9 @@ ActionCheckDone = PromptTemplate(
     You jutisfy if your current action is done or not, you have two choices:
     1. Done: That means you don't need to write code to achieve it again. The action history shows that you have already know what you want to know or have already achieve the action. In this case, you should write Python code to return Ture, and your generated code should be:
     
-    Ture
+    True
 
-    2. Not Done: That means you need to write code to achieve it again, or their is some unfinished action that you need to make . In this case, you should write Python code to return False, and the your generated code should be:
+    2. Unfinished: That means you need to write code to achieve it again, or their is some unfinished action that you need to make . In this case, you should write Python code to return False, and the your generated code should be:
 
     False
 
