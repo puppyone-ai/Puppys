@@ -221,7 +221,7 @@ XiaoMei = Puppy(name="XiaoMei")
 @XiaoMei.codeThread
 def actionFlow():
 
-    ##  上网搜一下今天的时政新闻
+    ##  
     XiaoMei.do()
 
     ## 发给我
