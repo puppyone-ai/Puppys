@@ -96,10 +96,9 @@ class Actions():
 
         self.codeThreadInstance.functionsDescriptionAndExample= self.codeThreadInstance.sendMessageToHuman.getDescriptionAndExample()
 
-        newCode=checkIfActionIsDone.predict(name=self.codeThreadInstance.name,
+        newCode=checkIfActionIsDone.predict(puppyName=self.codeThreadInstance.puppyName,
                                                goal=self.codeThreadInstance.goal,
                                                 current_action=self.codeThreadInstance.actionFlow.actionFlowCurrentGetFront()["action"],
-                                                current_action_Python= self.codeThreadInstance.actionFlow.actionFlowCurrentGetCode(),
                                                 code_history=self.codeThreadInstance.actionFlow.actionFlowHistoryGetCode(),
                                                 code_future=self.codeThreadInstance.actionFlow.actionFlowPendingGetCode(),
                                                 enviroment=self.codeThreadInstance.environment,
@@ -125,12 +124,13 @@ class Actions():
         """
 
         continueAction= self.checkDo()
+        exec(continueAction,self.codeThreadInstance.codeThreadVars)
 
-        if continueAction=="True":
+        if self.codeThreadInstance.codeThreadVars["finishedOrNot"]==True:
             self.codeThreadInstance.actionFlow.actionFlowCurrentJSON.pop(0)
             print("afterchecking:*****",self.codeThreadInstance.actionFlow.actionFlowCurrentJSON)
 
-        elif continueAction=="False":
+        elif self.codeThreadInstance.codeThreadVars["finishedOrNot"]==False:
 
             print("afterchecking:*****",self.codeThreadInstance.actionFlow.actionFlowCurrentJSON)
 
@@ -144,7 +144,7 @@ class Actions():
             self.codeThreadInstance.functionsDescriptionAndExample= self.codeThreadInstance.sendMessageToHuman.getDescriptionAndExample()
 
 
-            newCode=fillingActionParameter.predict(name=self.codeThreadInstance.name,
+            newCode=fillingActionParameter.predict(puppyName=self.codeThreadInstance.puppyName,
                                                 goal=self.codeThreadInstance.goal,
                                                     current_action=self.codeThreadInstance.actionFlow.actionFlowCurrentGetFront()["action"],
                                                     current_action_Python= self.codeThreadInstance.actionFlow.actionFlowCurrentGetCode(),

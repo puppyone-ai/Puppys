@@ -182,11 +182,10 @@ class ActionFlow():
 
     # operation for actionFlowCurrent
     def actionFlowCurrentGetCode(self):
-        code=""
-        for action in self.actionFlowCurrentJSON:
-            code+=action["code"]+"\n"
-
-        return code
+        return self.actionFlowCurrentJSON[0]["code"]
+    
+    def actionFlowCurrentGetName(self):
+        return self.actionFlowCurrentJSON[0]["action"]
     
     def actionFlowCurrentGetFrontAddCode(self,code):
         self.actionFlowCurrentJSON[0]["code"]=self.actionFlowCurrentJSON[0]["code"]+"\n"+code

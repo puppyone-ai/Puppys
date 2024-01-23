@@ -14,7 +14,7 @@ from knowledge import Knowledge
 
 class CodeThread():
     def __init__(self):
-
+        
         self.currentThreadName="codeThread"
         self.actionFlow=ActionFlow(self)
         self.actions=Actions(self)
@@ -200,7 +200,7 @@ class Puppy(CodeThread):
     def __init__(self, name="puppy"):
         
         super().__init__()
-        self.name=name
+        self.puppyName=name
 
     def run(self):
         self.codeThreadRun()
@@ -211,21 +211,33 @@ class Puppy(CodeThread):
 """
 
 
-
 def introduce():
     print("I am a puppy, my name is XiaoMei")
 
-
 XiaoMei = Puppy(name="XiaoMei")
+"""
+@XiaoMei.codeThread
+def actionFlow():
+
+    ## 数一下我现在屋子里的苹果有多少？
+    XiaoMei.do()
+
+    ## 计算这些苹果够 5 个人分吗？
+    XiaoMei.do()
+
+
+XiaoMei.run()
+"""
+
 
 @XiaoMei.codeThread
 def actionFlow():
 
-    ##  
+    ## 我这里有一个文件夹：/Users/mgq/Desktop/未命名文件夹, 告诉我里面有什么文件？
     XiaoMei.do()
 
-    ## 发给我
+    ## 把你过去 run 过的 code的历史记录保存到这个文件夹里
+    # 我这里指的是你 historical actionflow 里的信息
     XiaoMei.do()
 
 XiaoMei.run()
-
