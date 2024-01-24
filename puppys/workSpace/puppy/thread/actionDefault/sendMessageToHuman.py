@@ -13,7 +13,7 @@ class SendMessageToHuman:
         """
         self.example = f"""
         ## Ask the user about the phone number of his boss
-        answer = {self.puppyName}.sendMessageToHuman.run("What's the phone number of your boss?") 
+        answer = {self.puppyName}.sendMessageToHuman.run("What's the phone number of your boss?") # where the XXX.sendMesageToHuman.run(), the XXX is your name.
         """
         self.functionBeforeAction = []
         self.functionAfterAction = []
@@ -37,8 +37,9 @@ class SendMessageToHuman:
 
     
     def run(self,question=""):
-        print("example is",self.example)
         self.question=question
+
+        print("example:",self.example)
 
         userInput=input(question+"\n"+"Your response:")
         print("Sure, I have already add what you said to my knowledge.")
