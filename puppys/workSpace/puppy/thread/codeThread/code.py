@@ -214,17 +214,17 @@ class Puppy(CodeThread):
 
 
 
-XiaoMei = Puppy(name="XiaoMei")
+puppy = Puppy(name="XiaoMei")
 
 
 
-@XiaoMei.codeThread
+@puppy.codeThread
 def actionFlow():
 
-    ## 我有一个用户资料的文件夹，里面有很多用户的资料，告诉我这个文件夹里有哪些文件？
-    XiaoMei.do()
+    ## 帮我定一个机票
+    puppy.do()
 
-    ## 在文件夹里把你过去的 Action History 保存下来
-    XiaoMei.do()
+    ## 算一下机票的价格
+    puppy.do()
 
-XiaoMei.run()
+puppy.run()
