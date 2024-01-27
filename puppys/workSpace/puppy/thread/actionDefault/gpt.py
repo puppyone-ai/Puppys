@@ -7,7 +7,7 @@ from langchain.chains import LLMChain
 class GPT():
     def __init__(self, codeThreadInstance, question='',**kwargs):
         self.codeThreadInstance = codeThreadInstance
-        self.name="GPT"
+        self.ActionName="GPT"
         self.description = "Large Language Models, use it when you want to generate text based on the input text by GPT3.5 or GPT4"
         self.example = """
         ## get how to install the package of openAI by GPT4

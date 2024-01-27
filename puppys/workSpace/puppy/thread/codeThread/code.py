@@ -14,7 +14,7 @@ from knowledge import Knowledge
 
 class CodeThread():
     def __init__(self):
-
+        
         self.currentThreadName="codeThread"
         self.actionFlow=ActionFlow(self)
         self.actions=Actions(self)
@@ -23,6 +23,7 @@ class CodeThread():
         self.threadProperty={}
         self.environment={
         }
+        self.codeThreadVars={}
 
         self.goal=""
 
@@ -79,38 +80,35 @@ class CodeThread():
 
     def codeThreadActionRun(self):
 
-        # STEP 3.1: run the function before the defined action
-        for func in self.codeThreadFuncPreActionList:
-            func()
-
-        # STEP 3.2: check if the action is fixed, semi-fixed, or changeable
+        # STEP 3.1: check if the action is fixed, semi-fixed, or changeable
         if self.actionFlow.actionFlowCurrentGetFront()["status"]=="fixed":
-            self.actionFlow.actionCurrentExecute()
+            pass
 
         elif self.actionFlow.actionFlowCurrentGetFront()["status"]=="semi-fixed":
             self.actions.do()
-            self.actionFlow.actionCurrentExecute()
 
         elif self.actionFlow.actionFlowCurrentGetFront()["status"]=="changeable":
             pass
-            ## TODO
         
-        # STEP 3.3: load the action from actionOngoing and execute the code
-        action = self.actionFlow.actionOnGoing.get()
-
-        print("\n")
-        print("############### following action is running ###############")
-        print(action)
-        print("###########################################################")
-        print("\n")
+        # STEP 3.2 load the action from actionCurrent to actionOnGoing
+        if self.actionFlow.actionFlowCurrentJSON !=[]:
+            self.actionFlow.actionCurrentExecute()
+            
         
-        exec(action)
-        self.actionFlow.actionOnGoing.task_done()
+            # STEP 3.3: load the action from actionOngoing and execute the code
+            action = self.actionFlow.actionOnGoing.get()
 
-        # STEP 3.4: run the function before the defined action
-        for func in self.codeThreadFuncPreActionList:
-            func()
+            print("\n")
+            print("############### following action is running ###############")
+            print(action)
+            print("###########################################################")
+            print("\n")
+            
+            exec(action,self.codeThreadVars)
+            self.actionFlow.actionOnGoing.task_done()
 
+        else: 
+            pass
 
 
     def codeThreadActionFlowRun(self):
@@ -118,6 +116,8 @@ class CodeThread():
         # import tools, for agents
         sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+
+        # loading actions
         import actionDefault
 
         self.actionDefault = actionDefault
@@ -127,6 +127,11 @@ class CodeThread():
         print("Import Start ----------------------------------------------")
 
         self.actionFlow.actionFlowCurrentClear()
+
+        # loading vars
+        self.codeThreadVars=globals()
+
+        # start the action flow
 
         while self.actionFlow.actionFlowCurrentJSON ==[] and self.actionFlow.actionFlowPendingJSON !=[]:
             print("\n")
@@ -147,56 +152,79 @@ class CodeThread():
 
             while self.actionFlow.actionFlowCurrentJSON !=[]:
                 
-                # STEP 3: run the action 
-                self.codeThreadActionRun()
+                # STEP 3.1: check if the action is fixed, semi-fixed, or changeable
+                if self.actionFlow.actionFlowCurrentGetFront()["status"]=="fixed":
+                    pass
 
-                # STEP 4: load the action from the actionFlowCurrent to the actionFlowHistory
-                self.actionFlow.actionCurrentSave()
+                elif self.actionFlow.actionFlowCurrentGetFront()["status"]=="semi-fixed":
+                    self.actions.do()
 
-                # STEP 5: evaluate if the action is done
-                # TODO
+                elif self.actionFlow.actionFlowCurrentGetFront()["status"]=="changeable":
+                    pass
+                
+                # STEP 3.2 load the action from actionCurrent to actionOnGoing
+                if self.actionFlow.actionFlowCurrentJSON !=[]:
+                    self.actionFlow.actionCurrentExecute()
+                    
+                
+                    # STEP 3.3: load the action from actionOngoing and execute the code
+                    action = self.actionFlow.actionOnGoing.get()
 
-                # STEP 6: remove the action from the actionFlowCurrent
-                self.actionFlow.actionFlowCurrentRemoveFront()
+                    print("\n")
+                    print("############### following action is running ###############")
+                    print(action)
+                    print("###########################################################")
+                    print("\n")
+                    
+                    exec(action,self.codeThreadVars)
+                    self.actionFlow.actionOnGoing.task_done()
 
+                    # STEP 4: load the action from the actionFlowCurrent to the actionFlowHistory
+                    self.actionFlow.actionCurrentSave()
+
+
+                    # STEP 5: remove the action from the actionFlowCurrent
+                    if self.actionFlow.actionFlowCurrentJSON !=[]:
+                        self.actionFlow.actionFlowCurrentRemoveFront()
+                    
+                    else:
+                        pass
+
+                else: 
+                    pass
 
         print("Done")
-    
-    # the wrapper for the action for the code thread
 
 
 class Puppy(CodeThread):
     def __init__(self, name="puppy"):
         
         super().__init__()
-        self.name=name
+        self.puppyName=name
 
     def run(self):
         self.codeThreadRun()
 
 
-
 """
-把反省 agent 是否完成了任务加到 action 里面
+设置 action 的 visiable 和 invisible 的性质
 """
 
 
-if __name__ == '__main__':
-
-    def introduce():
-        print("I am a puppy, my name is XiaoMei")
-
-    XiaoMei = Puppy(name="XiaoMei")
-
-    pass
 
 
-    @XiaoMei.codeThread
-    def actionFlow():
 
-        ##  20 秒钟之后给我说一段你的自我介绍
-        XiaoMei.do()
+puppy = Puppy(name="XiaoMei")
 
 
-    XiaoMei.run()
 
+@puppy.codeThread
+def actionFlow():
+
+    ## 帮我定一个机票
+    puppy.do()
+
+    ## 算一下机票的价格
+    puppy.do()
+
+puppy.run()

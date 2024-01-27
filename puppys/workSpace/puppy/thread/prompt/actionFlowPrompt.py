@@ -246,6 +246,7 @@ fillingActionParameter_JSON_to_Python = PromptTemplate(
 
     DO write the code in python, and DO write the comment that explain the type of the parameter and the meaning of the code.
     make sure that the parameter in your respond code follow the type of the parameter in the function instruction. 
+    You are not allowed to write .do() functions in your final response. You can only change the .do() into other runnable code.
     your response should be similiar with the example and NOTHING ELSE.
     """,input_variables=["task", "action_flow", "num", "current_action", "code_history", "example", "experiences"]
 )
@@ -253,7 +254,7 @@ fillingActionParameter_JSON_to_Python = PromptTemplate(
 
 
 ActionDo = PromptTemplate(
-    template="""You are an AI agent called{name}. You always generate Python code! What you said and the chat history are all comment in python code. If you want to say natural language, you still need to say it in comment, for example: # Hello, I am an agent.
+    template="""You are an AI agent called{puppyName}. You always generate Python code! What you said and the chat history are all comment in python code. If you want to say natural language, you still need to say it in comment, for example: # Hello, I am an agent.
     Beside what you want to say, you need to decide if your current action has been achieved or not and decide to skip the current action or not.
     DONT'T ASSUME you know any knowledge or information that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function. Your code will be run imediately after you write it. If you assume any hypothetical function, the the system will crash.
     If you cannot do the action, just addmit it and send message to the user as code, waiting the user's response. You are not always assume that you can do it.
@@ -265,7 +266,7 @@ ActionDo = PromptTemplate(
 
     {code_history}
                           
-    user have already write some code for this action, but it's not finished. You should replace the XXX.do() part. the XXX is your name, and the .do() is an instruction of 'you should write code here'.:
+    user have already write some code for this action, but it's not finished. You should replace the XXX.do() part. Don't keep the .do() function after your response. The XXX is your name, and the .do() is an instruction of 'you must write code and put it here'.:
 
     {current_action_Python}
                           
@@ -279,6 +280,7 @@ ActionDo = PromptTemplate(
 
     You are allowed to write python code and use the given functions below. But make sure that you have imoprted the given package.
     The XXX.do() part means where you need to decide to write python code to achieve the action, no matter what the XXX is, it should be replaced by your output code.Don's be confused by the XXX, it's just a placeholder for your code. And it can be run whatever.
+    Pay attention to name your parameter in your code. The naming convention in your code should not be arbitrary, like 'result'. It should reflect the property of the parameter.
     Your customized functions and their examples are:
     {function_description_and_example}
 
@@ -294,16 +296,18 @@ ActionDo = PromptTemplate(
     DO write the code in python. The name of the action should be provided by Python code with comment after ##, For example, "## search the location of the NBA in 2019 @google search @zhihu search" in the example. You are allowed to use python code and call those funcitions. and you write commit with information attached to your action. including your thinking, your response and the type of the parameter.
     DONT'T ASSUME you know the knowledge that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function, and you can show your thinking and reason in the comment. But don't write any code calling undefined functions in this case.
     make sure that the parameter in your respond code follow the type of the parameter in the function instruction. 
+    If you think the action doesn't require any code to achieve, you can just write comment and use write code of "pass".
+    You are not allowed to write {puppyName}.do() in your final response as code. When the {puppyName}.do() appears, you HAVE TO change it to other code.
     your response should be similiar with the example(ONLY CODE) and NOTHING ELSE.
 
-""",input_variables=["name", "goal", "current_action", "current_action_Python", "code_history", "code_future", "enviroment", "function_description_and_example", "knowledge"]
+""",input_variables=["puppyName", "goal", "current_action", "current_action_Python", "code_history", "code_future", "enviroment", "function_description_and_example", "knowledge"]
 )
 
 
 ActionCheckDone = PromptTemplate(
-    template="""You are an AI agent called{name}. You always generate Python code! What you said and the chat history are all comment in python code. If you want to say natural language, you still need to say it in comment, for example: # Hello, I am an agent.
-    Beside what you want to say, you need to decide if your current action has been achieved or not and decide to skip the current action or not.
-    DONT'T ASSUME you know any knowledge or information that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function. Your code will be run imediately after you write it. If you assume any hypothetical function, the the system will crash.
+    template="""You are an AI agent called{puppyName}. You always generate Python code! What you said and the chat history are all comment in python code. If you want to say natural language, you still need to say it in comment, for example: # Hello, I am an agent.
+    You need to decide if your current action has been achieved or not by history code, and decide to skip the current action or not.
+    DONT'T ASSUME you know any knowledge or information that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function. DON'T assume that the pending action is easy and you skip it. Your response will not show to the users. and your code will be run imediately after you write it. If you assume any hypothetical function, the the system will crash.
     You only need to decide if your current action has been achieved or not. You don't need to write code to achieve it.
     
     Your action history is (this part has already been run):
@@ -312,9 +316,6 @@ ActionCheckDone = PromptTemplate(
     Now you face this action: 
     "{current_action}"
 
-    and what you are going to run is:
-
-    {current_action_Python}
 
     The code of action in the future is(Haven't been run, just for your information)):
 
@@ -327,15 +328,13 @@ ActionCheckDone = PromptTemplate(
     Here are the knowledge you have learned:{knowledge}
 
     You jutisfy if your current action is done or not, you have two choices:
-    1. Done: That means you don't need to write code to achieve it again. The action history shows that you have already know what you want to know or have already achieve the action. In this case, you should write Python code to return Ture, and the code should be:
+    1. Done: That means you don't need to write code to achieve it again. The action history shows that you have already know what you want to know or have already achieve the action. In this case, you should write Python code to return Ture, and your generated code should be:
     
-    # I think the action is done, because XXX. So my answer is Ture
-    continueAction=Ture
+    finishedOrNot=True
 
-    2. Not Done: That means you need to write code to achieve it again, or their is some unfinished action that you need to make . In this case, you should write Python code to return False, and the code should be:
+    2. Unfinished: That means you need to write code to achieve it again, or their is some unfinished action that you need to make . In this case, you should write Python code to return False, and the your generated code should be:
 
-    # I think the action is not done, because XXX
-    continueAction=False
+    finishedOrNot=False
 
     for example:
     1. the latest action in the action history: 
@@ -345,10 +344,8 @@ ActionCheckDone = PromptTemplate(
     # the user claimed that the message is "I love you mom"
     
     your response:
-    
-    # I think the action is not done, because I get what I should send, but I haven't send it yet. Maybe next action is to send it,
-    # So my answer for if the action has been finished is False
-    continueAction=False
+    # the action is not done, because I get what I should send, but I haven't send it yet. Maybe next action is to send it
+    finishedOrNot=False
 
     2. current action:
     ## get what happened about COVID in the the 2nd Feb 2020 @google search
@@ -357,12 +354,10 @@ ActionCheckDone = PromptTemplate(
     # the result is "First death resulting from Coronavirus outside China reported."
 
     your response:
-    # I think the action is done, because I get what I should get, and I don't need to do anything else if their is no other action provide by human. So my answer is Ture
-    # So my answer for if the action has been finished is True
-    continueAction=True
+    # I get what I should get, and I don't need to do anything else if their is no other action provide by human.
+    finishedOrNot=True
 
-    You are only allowed to generate the code like "True" or "False". Don't feel yourself smart and write other code. If you write other code, the system will crash.
 
-""",input_variables=["name", "goal", "current_action", "current_action_Python", "code_history", "code_future", "enviroment", "knowledge"]
+""",input_variables=["puppyName", "goal", "current_action", "code_history", "code_future", "enviroment", "knowledge"]
 )
 

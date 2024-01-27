@@ -96,10 +96,9 @@ class Actions():
 
         self.codeThreadInstance.functionsDescriptionAndExample= self.codeThreadInstance.sendMessageToHuman.getDescriptionAndExample()
 
-        newCode=checkIfActionIsDone.predict(name=self.codeThreadInstance.name,
+        newCode=checkIfActionIsDone.predict(puppyName=self.codeThreadInstance.puppyName,
                                                goal=self.codeThreadInstance.goal,
                                                 current_action=self.codeThreadInstance.actionFlow.actionFlowCurrentGetFront()["action"],
-                                                current_action_Python= self.codeThreadInstance.actionFlow.actionFlowCurrentGetCode(),
                                                 code_history=self.codeThreadInstance.actionFlow.actionFlowHistoryGetCode(),
                                                 code_future=self.codeThreadInstance.actionFlow.actionFlowPendingGetCode(),
                                                 enviroment=self.codeThreadInstance.environment,
@@ -114,19 +113,9 @@ class Actions():
         print("+++++++++++++++++++ Checking Code End ++++++++++++++++++++")
         print("\n")
 
-        print("beforechecking:*****",self.codeThreadInstance.actionFlow.actionFlowCurrentJSON)
 
-        continueAction="Unknown"
-        exec(newCode)
+        return newCode
 
-        if continueAction == True:
-            self.codeThreadInstance.actionFlow.actionFlowCurrentJSON.pop(0)
-
-        elif continueAction == False:
-            pass
-
-
-        print("afterchecking:*****",self.codeThreadInstance.actionFlow.actionFlowCurrentJSON)
     
     def do(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
         os.environ["OPENAI_API_KEY"]=ApiKey
@@ -134,37 +123,47 @@ class Actions():
         write code to achieve the action
         """
 
-        self.checkDo()
+        continueAction= self.checkDo()
+        exec(continueAction,self.codeThreadInstance.codeThreadVars)
 
-        from prompt.actionFlowPrompt import ActionDo
+        if self.codeThreadInstance.codeThreadVars["finishedOrNot"]==True:
+            self.codeThreadInstance.actionFlow.actionFlowCurrentJSON.pop(0)
+            print("afterchecking:*****",self.codeThreadInstance.actionFlow.actionFlowCurrentJSON)
 
-        llm=ChatOpenAI(temperature=temperature,max_tokens=max_tokens,model_name=model_name)
-        fillingActionParameter=LLMChain(llm=llm, prompt= ActionDo)
+        elif self.codeThreadInstance.codeThreadVars["finishedOrNot"]==False:
+
+            print("afterchecking:*****",self.codeThreadInstance.actionFlow.actionFlowCurrentJSON)
+
+    
+            from prompt.actionFlowPrompt import ActionDo
+
+            llm=ChatOpenAI(temperature=temperature,max_tokens=max_tokens,model_name=model_name)
+            fillingActionParameter=LLMChain(llm=llm, prompt= ActionDo)
 
 
-        self.codeThreadInstance.functionsDescriptionAndExample= self.codeThreadInstance.sendMessageToHuman.getDescriptionAndExample()
+            self.codeThreadInstance.functionsDescriptionAndExample= self.codeThreadInstance.sendMessageToHuman.getDescriptionAndExample()
 
 
-        newCode=fillingActionParameter.predict(name=self.codeThreadInstance.name,
-                                               goal=self.codeThreadInstance.goal,
-                                                current_action=self.codeThreadInstance.actionFlow.actionFlowCurrentGetFront()["action"],
-                                                current_action_Python= self.codeThreadInstance.actionFlow.actionFlowCurrentGetCode(),
-                                                code_history=self.codeThreadInstance.actionFlow.actionFlowHistoryGetCode(),
-                                                code_future=self.codeThreadInstance.actionFlow.actionFlowPendingGetCode(),
-                                                enviroment=self.codeThreadInstance.environment,
-                                                function_description_and_example=self.codeThreadInstance.functionsDescriptionAndExample,
-                                                knowledge=self.codeThreadInstance.knowledge.getKnowledgeStr())
-                                                
+            newCode=fillingActionParameter.predict(puppyName=self.codeThreadInstance.puppyName,
+                                                goal=self.codeThreadInstance.goal,
+                                                    current_action=self.codeThreadInstance.actionFlow.actionFlowCurrentGetFront()["action"],
+                                                    current_action_Python= self.codeThreadInstance.actionFlow.actionFlowCurrentGetCode(),
+                                                    code_history=self.codeThreadInstance.actionFlow.actionFlowHistoryGetCode(),
+                                                    code_future=self.codeThreadInstance.actionFlow.actionFlowPendingGetCode(),
+                                                    enviroment=self.codeThreadInstance.environment,
+                                                    function_description_and_example=self.codeThreadInstance.functionsDescriptionAndExample,
+                                                    knowledge=self.codeThreadInstance.knowledge.getKnowledgeStr())
+                                                    
 
-        newCode=newCode.replace("```python\n", "").replace("\n```", "")
+            newCode=newCode.replace("```python\n", "").replace("\n```", "")
 
-        print("\n")
-        print("++++++++++++++++++ Generated Code Start +++++++++++++++++++")
-        print(newCode)
-        print("+++++++++++++++++++ Generated Code End ++++++++++++++++++++")
-        print("\n")
+            print("\n")
+            print("++++++++++++++++++ Generated Code Start +++++++++++++++++++")
+            print(newCode)
+            print("+++++++++++++++++++ Generated Code End ++++++++++++++++++++")
+            print("\n")
 
-        self.codeThreadInstance.actionFlow.actionFlowCurrentAddToFront(self.codeThreadInstance.actionFlow.decorateActionFlowCodeToJSON(newCode,status="fixed"))
+            self.codeThreadInstance.actionFlow.actionFlowCurrentAddToFront(self.codeThreadInstance.actionFlow.decorateActionFlowCodeToJSON(newCode,status="fixed"))
 
     def reflect(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
         os.environ["OPENAI_API_KEY"]=ApiKey
