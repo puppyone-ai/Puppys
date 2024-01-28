@@ -130,6 +130,7 @@ class CodeThread():
 
         # loading vars
         self.codeThreadVars=globals()
+        print(self.codeThreadVars)
 
         # start the action flow
 
@@ -210,21 +211,18 @@ class Puppy(CodeThread):
 设置 action 的 visiable 和 invisible 的性质
 """
 
+ 
+
+XiaoMei = Puppy(name="XiaoMei")
 
 
-
-
-puppy = Puppy(name="XiaoMei")
-
-
-
-@puppy.codeThread
+@XiaoMei.codeThread
 def actionFlow():
 
-    ## 帮我定一个机票
-    puppy.do()
+    ## 找到一个文件夹
+    XiaoMei.do()
 
-    ## 算一下机票的价格
-    puppy.do()
+    ## 把我们的 action History保存到这个文件夹里
+    XiaoMei.do()
 
-puppy.run()
+XiaoMei.run()
