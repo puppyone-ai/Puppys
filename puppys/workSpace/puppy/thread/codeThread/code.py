@@ -224,9 +224,7 @@ def actionFlow():
     ## 把我们的 action History保存到这个文件夹里
 =======
 
-
 XiaoMei = Puppy(name="XiaoMei")
-
 
 
 @XiaoMei.codeThread
