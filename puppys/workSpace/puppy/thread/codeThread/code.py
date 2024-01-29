@@ -3,8 +3,6 @@ import sys
 import os
 import threading
 import queue
-from langchain.chains import LLMChain
-from langchain.chat_models import ChatOpenAI
 import re
 import time
 from actionFlow import ActionFlow
@@ -214,17 +212,17 @@ class Puppy(CodeThread):
 
 
 
-puppy = Puppy(name="XiaoMei")
+XiaoMei = Puppy(name="XiaoMei")
 
 
 
-@puppy.codeThread
+@XiaoMei.codeThread
 def actionFlow():
 
-    ## 帮我定一个机票
-    puppy.do()
+    ## 帮我找一个文件夹
+    XiaoMei.do()
 
-    ## 算一下机票的价格
-    puppy.do()
+    ## 把你的 historical actionflow 存到文件夹下
+    XiaoMei.do()
 
-puppy.run()
+XiaoMei.run()
