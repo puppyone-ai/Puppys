@@ -3,8 +3,6 @@ import sys
 import os
 import threading
 import queue
-from langchain.chains import LLMChain
-from langchain.chat_models import ChatOpenAI
 import re
 import time
 from actionFlow import ActionFlow
@@ -216,6 +214,7 @@ class Puppy(CodeThread):
 XiaoMei = Puppy(name="XiaoMei")
 
 
+<<<<<<< HEAD
 @XiaoMei.codeThread
 def actionFlow():
 
@@ -223,6 +222,21 @@ def actionFlow():
     XiaoMei.do()
 
     ## 把我们的 action History保存到这个文件夹里
+=======
+
+
+XiaoMei = Puppy(name="XiaoMei")
+
+
+
+@XiaoMei.codeThread
+def actionFlow():
+
+    ## 帮我找一个文件夹
+    XiaoMei.do()
+
+    ## 把你的 historical actionflow 存到文件夹下
+>>>>>>> 62b364c (:fire: delete LangChain code from framwork)
     XiaoMei.do()
 
 XiaoMei.run()

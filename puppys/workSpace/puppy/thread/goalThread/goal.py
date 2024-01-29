@@ -372,7 +372,7 @@ class CodeThread():
     def codeThreadDo(self,temperature=0.1,max_tokens=2000,model_name="gpt-4-1106-preview",ApiKey="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"):
         os.environ["OPENAI_API_KEY"]=ApiKey
 
-        from prompt.actionFlowPrompt import ActionDo
+        from promptTemplete.actionFlowPrompt import ActionDo
 
         llm=ChatOpenAI(temperature=temperature,max_tokens=max_tokens,model_name=model_name)
         fillingActionParameter=LLMChain(llm=llm, prompt= ActionDo)
