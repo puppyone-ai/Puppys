@@ -39,8 +39,6 @@ class SendMessageToHuman:
     def run(self,question=""):
         self.question=question
 
-        print("example:",self.example)
-
         userInput=input(question+"\n"+"Your response:")
         print("Sure, I have already add what you said to my knowledge.")
 
