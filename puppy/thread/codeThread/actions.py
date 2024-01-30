@@ -1,6 +1,9 @@
 from openai import OpenAI
 from openai import OpenAI
 import os
+from halo import Halo
+import time
+
 
 class Actions():
     def __init__(self, codeThreadInstance):
@@ -18,6 +21,7 @@ class Actions():
                 "function_after_action":function_after_action,}
         self.actionList.update(action)
 
+
     # opreations for actions
     def actionGet(self):
         return self.actionList
@@ -30,23 +34,6 @@ class Actions():
     # clear the action list
     def actionClear(self):
         self.actionList={}
-
-    # every action should be wrapped by this function
-    def actionWrapper(self, func):
-        def wrapper(*args, **kwargs):
-            print("Before action:")
-            for function in self.actionList[func.__name__]["function_before_action"]:
-                function()
-                exec(function)
-
-            result = func(*args, **kwargs)
-
-            print("After action")
-            for function in self.actionList[func.__name__]["function_before_action"]:
-                function()
-                exec(function)
-
-            return result
 
     
     def addNewAction(self,action):
@@ -88,7 +75,6 @@ class Actions():
         """
         write code to achieve the action
         """
-        print("checking")
 
         client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", ApiKey))
         
@@ -165,6 +151,9 @@ class Actions():
 
         # prompt finished **************************************************************************************************
 
+        spinner = Halo(text='generating', spinner='moon')
+        spinner.start()
+
         completion = client.chat.completions.create(
             model=model_name,
             messages=prompt,
@@ -173,17 +162,19 @@ class Actions():
             n=1,
             )
 
+        spinner.stop()
+
         # return the output code
         newCode=completion.choices[0].message.content
 
 
         newCode=newCode.replace("```python\n", "").replace("\n```", "")
 
-        print("\n")
+
         print("++++++++++++++++++ Checking Code Start +++++++++++++++++++")
         print(newCode)
         print("+++++++++++++++++++ Checking Code End ++++++++++++++++++++")
-        print("\n")
+
 
 
         return newCode
@@ -270,6 +261,9 @@ class Actions():
 
             # prompt finished **************************************************************************************************
 
+            spinner = Halo(text='generating', spinner='moon')
+            spinner.start()
+
             completion = client.chat.completions.create(
             model=model_name,
             messages=prompt,
@@ -278,17 +272,19 @@ class Actions():
             n=1,
             )
 
+            spinner.stop()
+
             # return the output code
             newCode=completion.choices[0].message.content
             
 
             newCode=newCode.replace("```python\n", "").replace("\n```", "")
 
-            print("\n")
+
             print("++++++++++++++++++ Generated Code Start +++++++++++++++++++")
             print(newCode)
             print("+++++++++++++++++++ Generated Code End ++++++++++++++++++++")
-            print("\n")
+
 
             self.codeThreadInstance.actionFlow.actionFlowCurrentAddToFront(self.codeThreadInstance.actionFlow.decorateActionFlowCodeToJSON(newCode,status="fixed"))
 
