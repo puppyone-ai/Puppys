@@ -1,16 +1,11 @@
 import inspect
-import sys
-import os
 import threading
-import queue
-import re
-import time
-from actionFlow import ActionFlow
-from actions import Actions
-from knowledge import Knowledge
+from .actionFlow import ActionFlow
+from .actions import Actions
+from .knowledge import Knowledge
 
 
-class CodeThread():
+class GoalThread():
     def __init__(self):
         
         self.currentThreadName="codeThread"
@@ -21,22 +16,22 @@ class CodeThread():
         self.threadProperty={}
         self.environment={
         }
-        self.codeThreadVars={}
+        self.goalThreadVars={}
 
         self.goal=""
 
-        self.codeThreadFuncPreActionList=[]
-        self.codeThreadFuncPostActionList=[]
+        self.goalThreadFuncPreActionList=[]
+        self.goalThreadFuncPostActionList=[]
 
     # import tools, initialize the agent
-    def codeThreadInitialize(self):
+    def goalThreadInitialize(self):
         pass
 
     # to run the thread
-    def codeThreadRun(self):
+    def goalThreadRun(self):
         
         # start the code thread
-        threadCode = threading.Thread(target=self.codeThreadActionFlowRun)
+        threadCode = threading.Thread(target=self.goalThreadActionFlowRun)
         threadCode.daemon = False
         threadCode.start()
         
@@ -47,12 +42,12 @@ class CodeThread():
         threadCode.join()
 
     # for the wrapper of action
-    def codeThread(self, func):
+    def goalThread(self, func):
         def wrapper(self, *args, **kwargs):
             self.initialize()
             func(*args, **kwargs)
         
-        self.currentThreadName="codeThread"
+        self.currentThreadName="goalThread"
         sourseCode=inspect.getsource(func)
 
         # if the function is action, initialize the actionFlow
@@ -76,7 +71,7 @@ class CodeThread():
         return wrapper
     
 
-    def codeThreadActionRun(self):
+    def goalThreadActionRun(self):
 
         # STEP 3.1: check if the action is fixed, semi-fixed, or changeable
         if self.actionFlow.actionFlowCurrentGetFront()["status"]=="fixed":
@@ -102,24 +97,23 @@ class CodeThread():
             print("###########################################################")
             print("\n")
             
-            exec(action,self.codeThreadVars)
+            exec(action,self.goalThreadVars)
             self.actionFlow.actionOnGoing.task_done()
 
         else: 
             pass
 
 
-    def codeThreadActionFlowRun(self):
+    def goalThreadActionFlowRun(self):
 
         # import tools, for agents
-        sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
         # loading actions
-        import actionDefault
+        from ...puppyFunction.actionDefault import ActionDefault
 
-        self.actionDefault = actionDefault
-        self.sendMessageToHuman = actionDefault.SendMessageToHuman(self)
+        self.actionDefault = ActionDefault(self)
+        self.sendMessageToHuman = self.actionDefault.sendMessageToHuman
 
 
         print("Import Start ----------------------------------------------")
@@ -127,8 +121,8 @@ class CodeThread():
         self.actionFlow.actionFlowCurrentClear()
 
         # loading vars
-        self.codeThreadVars=globals()
-        print(self.codeThreadVars)
+        self.goalThreadVars=globals()
+        print(self.goalThreadVars)
 
         # start the action flow
 
@@ -175,7 +169,7 @@ class CodeThread():
                     print("###########################################################")
                     print("\n")
                     
-                    exec(action,self.codeThreadVars)
+                    exec(action,self.goalThreadVars)
                     self.actionFlow.actionOnGoing.task_done()
 
                     # STEP 4: load the action from the actionFlowCurrent to the actionFlowHistory
@@ -193,40 +187,3 @@ class CodeThread():
                     pass
 
         print("Done")
-
-
-class Puppy(CodeThread):
-    def __init__(self, name="puppy"):
-        
-        super().__init__()
-        self.puppyName=name
-
-    def run(self):
-        self.codeThreadRun()
-
-
-"""
-设置 action 的 visiable 和 invisible 的性质
-"""
-
- 
-
-XiaoMei = Puppy(name="XiaoMei")
-
-
-
-
-puppy = Puppy(name="XiaoMei")
-
-
-
-@XiaoMei.codeThread
-def actionFlow():
-
-    ## 帮我找一个文件夹
-    XiaoMei.do()
-
-    ## 把你的 historical actionflow 存到文件夹下
-    XiaoMei.do()
-
-XiaoMei.run()
