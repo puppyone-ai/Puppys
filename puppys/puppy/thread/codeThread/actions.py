@@ -1,5 +1,3 @@
-from langchain.chat_models import ChatOpenAI
-from langchain.chains import LLMChain
 from openai import OpenAI
 from openai import OpenAI
 import os
@@ -27,6 +25,7 @@ class Actions():
     # remove an action from the action list
     def actionRemove(self,action):
         self.actionList.pop(action)
+
 
     # clear the action list
     def actionClear(self):
