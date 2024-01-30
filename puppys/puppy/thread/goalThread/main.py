@@ -110,7 +110,7 @@ class GoalThread():
 
 
         # loading actions
-        from ...puppyFunction.actionDefault import ActionDefault
+        from ...publicFunction.actionDefault import ActionDefault
 
         self.actionDefault = ActionDefault(self)
         self.sendMessageToHuman = self.actionDefault.sendMessageToHuman
