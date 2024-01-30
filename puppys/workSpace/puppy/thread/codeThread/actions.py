@@ -1,6 +1,7 @@
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
 from openai import OpenAI
+from openai import OpenAI
 import os
 
 class Actions():
@@ -83,7 +84,6 @@ class Actions():
     def thinkKeepGoingOrNot(self):
         pass
     
-
     def checkDo(self,temperature=0.1,max_token_num=4096,model_name="gpt-4-turbo-preview",ApiKey="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"):
         os.environ["OPENAI_API_KEY"]=ApiKey
         """
@@ -190,9 +190,7 @@ class Actions():
         return newCode
 
     
-
     def do(self,temperature=0.1,max_token_num=4096,model_name="gpt-4-turbo-preview",ApiKey="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"):
-
         os.environ["OPENAI_API_KEY"]=ApiKey
         """
         write code to achieve the action

@@ -214,13 +214,19 @@ class Puppy(CodeThread):
 XiaoMei = Puppy(name="XiaoMei")
 
 
+
+
+puppy = Puppy(name="XiaoMei")
+
+
+
 @XiaoMei.codeThread
 def actionFlow():
 
-    ## 找到一个文件夹
+    ## 帮我找一个文件夹
     XiaoMei.do()
 
-    ## 把我们的 action History保存到这个文件夹里
+    ## 把你的 historical actionflow 存到文件夹下
     XiaoMei.do()
 
 XiaoMei.run()
