@@ -70,38 +70,8 @@ class CodeThread():
         # execute the function with wrapper
         return wrapper
     
-
-    def codeThreadActionRun(self):
-
-        # STEP 3.1: check if the action is fixed, semi-fixed, or changeable
-        if self.actionFlow.actionFlowCurrentGetFront()["status"]=="fixed":
-            pass
-
-        elif self.actionFlow.actionFlowCurrentGetFront()["status"]=="semi-fixed":
-            self.actions.do()
-
-        elif self.actionFlow.actionFlowCurrentGetFront()["status"]=="changeable":
-            pass
-        
-        # STEP 3.2 load the action from actionCurrent to actionOnGoing
-        if self.actionFlow.actionFlowCurrentJSON !=[]:
-            self.actionFlow.actionCurrentExecute()
-            
-        
-            # STEP 3.3: load the action from actionOngoing and execute the code
-            action = self.actionFlow.actionOnGoing.get()
-
-            print("\n")
-            print("############### following action is running ###############")
-            print(action)
-            print("###########################################################")
-            print("\n")
-            
-            exec(action,self.codeThreadVars)
-            self.actionFlow.actionOnGoing.task_done()
-
-        else: 
-            pass
+    def exeuteCode(self, code, vars= self.codeThreadVars, mode="default"):
+        exec(code, vars)
 
 
     def codeThreadActionFlowRun(self):
@@ -110,7 +80,7 @@ class CodeThread():
 
 
         # loading actions
-        from ...puppyFunction.actionDefault import ActionDefault
+        from ...publicFunction.actionDefault import ActionDefault
 
         self.actionDefault = ActionDefault(self)
         self.sendMessageToHuman = self.actionDefault.sendMessageToHuman
@@ -159,7 +129,7 @@ class CodeThread():
                     self.actionFlow.actionCurrentExecute()
                     
                 
-                    # STEP 3.3: load the action from actionOngoing and execute the code
+                    # STEP 3.3: load the action from actionOngoing and execute the code, and determine if the action is hidden
                     action = self.actionFlow.actionOnGoing.get()
 
                     print("\n")
@@ -198,23 +168,5 @@ class Puppy(CodeThread):
         self.codeThreadRun()
 
 
-"""
-设置 action 的 visiable 和 invisible 的性质
-"""
-
- 
-
-XiaoMei = Puppy(name="XiaoMei")
 
 
-
-@XiaoMei.codeThread
-def actionFlow():
-
-    ## 帮我找一个文件夹
-    XiaoMei.do()
-
-    ## 把你的 historical actionflow 存到文件夹下
-    XiaoMei.do()
-
-XiaoMei.run()

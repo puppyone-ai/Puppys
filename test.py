@@ -28,3 +28,16 @@ def actionFlow():
     XiaoMei.do()
 
 XiaoMei.run()
+
+
+
+
+
+"""
+设置 thread 之间的 communication
+"""
+
+
+"""
+设置 action 的 visiable 和 invisible 的性质
+"""
