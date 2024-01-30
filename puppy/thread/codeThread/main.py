@@ -71,7 +71,7 @@ class CodeThread():
         return wrapper
     
     def exeuteCode(self, code, vars= {}, mode="default"):
-        exec(code, vars)
+        exec(code, vars=globals())
 
 
     def codeThreadActionFlowRun(self):
@@ -92,6 +92,7 @@ class CodeThread():
 
         # loading vars
         self.codeThreadVars=globals()
+        print(self.codeThreadVars)
 
         # start the action flow
 
@@ -138,7 +139,7 @@ class CodeThread():
                     print("###########################################################")
                     print("\n")
                     
-                    exec(action,self.codeThreadVars)
+                    exec(action,globals())
                     self.actionFlow.actionOnGoing.task_done()
 
                     # STEP 4: load the action from the actionFlowCurrent to the actionFlowHistory
