@@ -70,7 +70,7 @@ class CodeThread():
         # execute the function with wrapper
         return wrapper
     
-    def exeuteCode(self, code, vars= self.codeThreadVars, mode="default"):
+    def exeuteCode(self, code, vars= {}, mode="default"):
         exec(code, vars)
 
 

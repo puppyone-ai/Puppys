@@ -1,15 +1,5 @@
-from puppys.puppy.thread.codeThread.main import CodeThread
-from puppys.puppy.thread.goalThread.main import GoalThread
+from puppy import Puppy
 
-
-class Puppy(CodeThread):
-    def __init__(self, name=""):
-        
-        super().__init__()
-        self.puppyName=name
-
-    def run(self):
-        self.codeThreadRun()
 
 
 
