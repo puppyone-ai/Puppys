@@ -128,6 +128,7 @@ class CodeThread():
 
         # loading vars
         self.codeThreadVars=globals()
+        print(self.codeThreadVars)
 
         # start the action flow
 
@@ -208,11 +209,14 @@ class Puppy(CodeThread):
 设置 action 的 visiable 和 invisible 的性质
 """
 
-
-
-
+ 
 
 XiaoMei = Puppy(name="XiaoMei")
+
+
+
+
+puppy = Puppy(name="XiaoMei")
 
 
 
