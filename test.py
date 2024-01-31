@@ -14,7 +14,6 @@ def actionFlow():
     ## 把你的 historical actionflow 存到文件夹下
     XiaoMei.do()
 
-print("big globals:",globals())
 XiaoMei.run()
 
 
@@ -28,6 +27,7 @@ XiaoMei.run()
 """
 设置 thread 之间的 communication
 """
+
 
 
 """
