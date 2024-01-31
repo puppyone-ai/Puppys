@@ -169,11 +169,10 @@ class Actions():
 
 
         newCode=newCode.replace("```python\n", "").replace("\n```", "")
-
-
-        print("++++++++++++++++++ Checking Code Start +++++++++++++++++++")
+        print("\n")
+        print("\U00002705 Checking Code ***************************************************************")
         print(newCode)
-        print("+++++++++++++++++++ Checking Code End ++++++++++++++++++++")
+        print("********************************************************************************")
 
 
 
@@ -280,10 +279,10 @@ class Actions():
 
             newCode=newCode.replace("```python\n", "").replace("\n```", "")
 
-
-            print("++++++++++++++++++ Generated Code Start +++++++++++++++++++")
+            print("\n")
+            print("\U0001F4A4 Generated Code ==============================================================")
             print(newCode)
-            print("+++++++++++++++++++ Generated Code End ++++++++++++++++++++")
+            print("================================================================================")
 
 
             self.codeThreadInstance.actionFlow.actionFlowCurrentAddToFront(self.codeThreadInstance.actionFlow.decorateActionFlowCodeToJSON(newCode,status="fixed"))

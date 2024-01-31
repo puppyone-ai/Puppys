@@ -86,31 +86,35 @@ class CodeThread():
         self.sendMessageToHuman = self.actionDefault.sendMessageToHuman
 
 
-        print("Import Start ----------------------------------------------")
+        
 
         self.actionFlow.actionFlowCurrentClear()
 
         # loading vars
         self.codeThreadVars=globals()
-        print(self.codeThreadVars)
-
+        
+        #print(self.codeThreadVars)
+        print("\n")
+        print("\U0001F4E5 Import Done")
         # start the action flow
 
         while self.actionFlow.actionFlowCurrentJSON ==[] and self.actionFlow.actionFlowPendingJSON !=[]:
             print("\n")
-            print("Action Start ----------------------------------------------")
+            print("\U0001F525 Action Start")
 
             # STEP 1: load the action from actionFlowPending to actionFlowCurrent
             self.actionFlow.actionCurrentLoad()
 
             # STEP 2: delete the action from actionFlowPending
             self.actionFlow.actionFlowPendingRemoveFront()
-
-            print("actionFlowPending:----->")
+            print("\n")
+            print("\U0001F51C ActionFlowPending:")
             print(self.actionFlow.actionFlowPendingJSON)
-            print("actionFlowCurrentJSON:----->")
+            print("\n")
+            print("\U000025B6 ActionFlowCurrentJSON:")
             print(self.actionFlow.actionFlowCurrentJSON)
-            print("actionFlowHistory:----->")
+            print("\n")
+            print("\U0001F519 ActionFlowHistory:")
             print(self.actionFlow.actionFlowHistoryJSON)
 
             while self.actionFlow.actionFlowCurrentJSON !=[]:
@@ -134,10 +138,9 @@ class CodeThread():
                     action = self.actionFlow.actionOnGoing.get()
 
                     print("\n")
-                    print("############### following action is running ###############")
+                    print("\U0001F697 Running Code ################################################################")
                     print(action)
-                    print("###########################################################")
-                    print("\n")
+                    print("################################################################################")
                     
                     exec(action,globals())
                     self.actionFlow.actionOnGoing.task_done()
