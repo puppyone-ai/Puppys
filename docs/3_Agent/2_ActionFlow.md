@@ -2,6 +2,10 @@
 
 `actionFlow` is like a to-do list for an agent, telling it the exact steps to follow: do this first, then do that. This way, an agent can take things step by step, just like running through a list of commands in a script.
 
+## What does an actionFlow look like?
+
+![alt text](/assets/agent_with_fixed_actions.png)
+
 ## What are involved in an action flow?
 
 The `actionFlow` is a crucial attribute of an agent. It delineates how an agent should execute actions and what kinds of actions it should undertake. 
