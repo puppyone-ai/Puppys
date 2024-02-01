@@ -84,33 +84,13 @@ class Actions():
         prompt=[
         # 1. define your agent type and name
         {"role": "system",
-        "content":f"""You are an AI code assistant agent called {self.codeThreadInstance.puppyName}. You always write Python code! You are really good at it. Your natural language output should be written as comment in python code. for example: # Hello, I am an assistant.
-        DONT'T ASSUME you know any unclear knowledge or information that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function. Your code will be run imediately after you write it. If you assume any hypothetical function, the the system will crash.
-        You need to justify if your current action has been achieved or not by history code, and decide to skip the current action or not.
-        You only need to decide if your current action has been achieved or not. You don't need to write code to achieve it."""},
-
-        # 2. provide the goal, current action, code history, code future, enviroment, knowledge
-        {"role": "system", 
-        "content":f"""
-        You have an overall long-term goal: {self.codeThreadInstance.goal},  now you need to write python code to finish your next action:
-        {self.codeThreadInstance.actionFlow.actionFlowCurrentGetFront()["action"]}
-
-        The code for historical actionflow shown as code are:
-        {self.codeThreadInstance.actionFlow.actionFlowHistoryGetCode()}
-                            
-        user have already write some code for this action, but it's not finished. You should replace the XXX.do() part. Don't keep the .do() function after your response. The XXX is your name, and the .do() is an instruction of 'you must write code and put it here'.:
-        {self.codeThreadInstance.actionFlow.actionFlowCurrentGetCode()}
-                            
-        The code of action in the future are(But you don't need to do this part now, just for your information)):
-        {self.codeThreadInstance.actionFlow.actionFlowPendingGetCode()}
-
-        And the current enviroment shown as Python code are(sometimes there is something important):
-        {self.codeThreadInstance.environment}
-
-        Here are the knowledge you have learned:
-        {self.codeThreadInstance.knowledge.getKnowledgeStr()}"""},
-
-        # 3. set the standard of if the action is done or not
+        "content":f"""You are an AI code assistant agent called {self.codeThreadInstance.puppyName}. 
+        1. You always write Python code! You are really good at it. Your natural language output should be written as comment in python code. for example: # Hello, I am an assistant.
+        2. DONT'T ASSUME you know any unclear knowledge or information that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function. Your code will be run imediately after you write it. If you assume any hypothetical function, the the system will crash.
+        3. You need to justify if your current action has been achieved or not by history code, and decide to skip the current action or not.
+        4. You only need to decide if your current action has been achieved or not. You don't need to write code to achieve it."""},
+        
+        # 2. set the standard of if the action is done or not
         {"role": "system",
         "content":f"""
 
@@ -142,6 +122,28 @@ class Actions():
         # I get what I should get, and I don't need to do anything else if their is no other action provide by human.
         finishedOrNot=True"""},
 
+        # 3. provide the goal, current action, code history, code future, enviroment, knowledge
+        {"role": "system", 
+        "content":f"""
+        You have an overall long-term goal: {self.codeThreadInstance.goal},  now you need to write python code to finish your next action:
+        {self.codeThreadInstance.actionFlow.actionFlowCurrentGetFront()["action"]}
+
+        The code for historical actionflow shown as code are:
+        {self.codeThreadInstance.actionFlow.actionFlowHistoryGetCode()}
+                            
+        user have already write some code for this action, but it's not finished. You should replace the XXX.do() part. Don't keep the .do() function after your response. The XXX is your name, and the .do() is an instruction of 'you must write code and put it here'.:
+        {self.codeThreadInstance.actionFlow.actionFlowCurrentGetCode()}
+                            
+        The code of action in the future are(But you don't need to do this part now, just for your information)):
+        {self.codeThreadInstance.actionFlow.actionFlowPendingGetCode()}
+
+        And the current enviroment shown as Python code are(sometimes there is something important):
+        {self.codeThreadInstance.environment}
+
+        Here are the knowledge you have learned:
+        {self.codeThreadInstance.knowledge.getKnowledgeStr()}"""},
+
+        
         # 4. justfy if the action is done or not
         {"role": "user",
         "content":f"""
@@ -204,31 +206,12 @@ class Actions():
             # 1. define your agent type and name
             {"role": "system", 
             "content": f"""
-            You are an AI code assistant agent called {self.codeThreadInstance.puppyName}. You always write Python code! You are really good at it. Your natural language output should be written as comment in python code. for example: # Hello, I am an assistant.
-            DONT'T ASSUME you know any unclear knowledge or information that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function. Your code will be run imediately after you write it. If you assume any hypothetical function, the the system will crash.
-            If you cannot do the action, you are allowed to addmit it and send message to user. You are not always assume that you can do it."""},
-            
+            You are an AI code assistant agent called {self.codeThreadInstance.puppyName}. 
+            1. You always write Python code! You are really good at it. Your natural language output should be written as comment in python code. for example: # Hello, I am an assistant.
+            2. DONT'T ASSUME you know any unclear knowledge or information that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function. Your code will be run imediately after you write it. If you assume any hypothetical function, the the system will crash.
+            3. If you cannot do the action, you are allowed to send message to user for help."""},
 
-            # 2. provide the goal, current action, code history, code future, enviroment, knowledge
-            {"role": "system", 
-            "content":f"""
-            You have an overall goal: {self.codeThreadInstance.goal},  now you need to write python code to finish your next action:
-            {self.codeThreadInstance.actionFlow.actionFlowCurrentGetFront()["action"]}
-
-            The code for historical actionflow shown as code are:
-            {self.codeThreadInstance.actionFlow.actionFlowHistoryGetCode()}
-                                
-            user have already write some code for this action, but it's not finished. You should replace the XXX.do() part. Don't keep the .do() function after your response. The XXX is your name, and the .do() is an instruction of 'you must write code and put it here'.:
-            {self.codeThreadInstance.actionFlow.actionFlowCurrentGetCode()}
-                                
-            The code of action in the future are(But you don't need to do this part now, just for your information)):
-            {self.codeThreadInstance.actionFlow.actionFlowPendingGetCode()}
-
-            And the current enviroment shown as Python code are(sometimes there is something important):
-            {self.codeThreadInstance.environment}"""},
-            
-            
-            # 3. provide the functions description and example, and knowledge
+            # 2. provide the functions description and example, and knowledge
             {"role": "system", 
             "content":f"""
             You are allowed to use the given functions below. But make sure that you have imoprted the given package.
@@ -247,10 +230,28 @@ class Actions():
             # Hello! to answer where is the NBA in 2019, I need to search the information about NBA in 2019. The function returns as a string.
             location=google_search("Where is the NBA in 2019")"""},
 
+            # 3. provide the goal, current action, code history, code future, enviroment, knowledge
+            {"role": "user", 
+            "content":f"""
+            You have an overall goal: {self.codeThreadInstance.goal},  now you need to write python code to finish your next action:
+            {self.codeThreadInstance.actionFlow.actionFlowCurrentGetFront()["action"]}
+
+            The code for historical actionflow shown as code are:
+            {self.codeThreadInstance.actionFlow.actionFlowHistoryGetCode()}
+                                
+            user have already write some code for this action, but it's not finished. You should replace the XXX.do() part. Don't keep the .do() function after your response. The XXX is your name, and the .do() is an instruction of 'you must write code and put it here'.:
+            {self.codeThreadInstance.actionFlow.actionFlowCurrentGetCode()}
+                                
+            The code of action in the future are(But you don't need to do this part now, just for your information)):
+            {self.codeThreadInstance.actionFlow.actionFlowPendingGetCode()}
+
+            And the current enviroment shown as Python code are(sometimes there is something important):
+            {self.codeThreadInstance.environment}"""},
+            
+
             # 4. provide the code of the action
             {"role": "user",
             "content":f"""
-
             Now you write code to achieve your action: {self.codeThreadInstance.actionFlow.actionFlowCurrentGetFront()["action"]}
             DONT'T ASSUME you know the knowledge that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function, and you can show your thinking and reason in the comment. But don't write any code calling undefined functions in this case.
             make sure that the parameter in your respond code follow the type of the parameter in the function instruction. .

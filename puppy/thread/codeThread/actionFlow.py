@@ -19,8 +19,6 @@ class ActionFlow():
         self.actionFlowHistoryJSON = []
         # updated the actionFlow JSON
         actionFlowInitialJSON, actionFlowInitialPython=self.translatePython(sourceCode)
-        print("*****")
-        print(actionFlowInitialJSON)
         self.actionFlowPendingAddToFront(actionFlowInitialJSON)
 
 

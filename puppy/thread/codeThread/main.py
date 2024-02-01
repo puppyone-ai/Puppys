@@ -57,10 +57,8 @@ class CodeThread():
             # get source code
             self.actionFlow.initialize(sourseCode)
 
-            print("Initialize Start-------------------------------------------")
+            print("\U0001F3B2 Initialize Done")
             print("Initialized Function: "+funcName)
-            print("actionFlowPending:")
-            print(self.actionFlow.actionFlowPendingJSON)
 
 
         if funcName == "trigger":
