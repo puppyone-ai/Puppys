@@ -3,6 +3,8 @@ import threading
 from .actionFlow import ActionFlow
 from .actions import Actions
 from .knowledge import Knowledge
+#from ...publicFunction.actionDefault import ActionDefault
+
 
 
 class CodeThread():
@@ -67,9 +69,13 @@ class CodeThread():
 
         # execute the function with wrapper
         return wrapper
-    
-    def exeuteCode(self, code, vars= {}, mode="default"):
-        exec(code, vars=globals())
+
+
+    def createPuppyInstance(self, instanceName):
+        new_instance = Puppy(name=instanceName)
+        # 将新创建的实例添加到globalVars字典中，使用instance_name作为键
+        self.codeThreadVars[instanceName] = new_instance
+
 
 
     def codeThreadActionFlowRun(self):
@@ -88,9 +94,25 @@ class CodeThread():
 
         self.actionFlow.actionFlowCurrentClear()
 
+        #from ...globalVars.executeCode import executeCodeHidden, executeCodeTracked
+        #from ....test2 import XiaoMei
+
+        self.createPuppyInstance(self.puppyName)
+
+
+        '''
         # loading vars
-        self.codeThreadVars=globals()
+        import sys
+        import os
+
+        sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+        from globalVars import executeCode
+
         
+        from globalVar import globalVar
+        print("import done")
+        self.codeThreadVars= globalVar
+        '''
         #print(self.codeThreadVars)
         print("\n")
         print("\U0001F4E5 Import Done")
@@ -140,7 +162,7 @@ class CodeThread():
                     print(action)
                     print("################################################################################")
                     
-                    exec(action,globals())
+                    exec(action, self.codeThreadVars)
                     self.actionFlow.actionOnGoing.task_done()
 
                     # STEP 4: load the action from the actionFlowCurrent to the actionFlowHistory
