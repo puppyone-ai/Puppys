@@ -18,7 +18,7 @@ class CodeThread():
         self.threadProperty={}
         self.environment={
         }
-        self.codeThreadVars={}
+        self.codeThreadVars={"self":self}
 
         self.goal=""
 
@@ -74,7 +74,8 @@ class CodeThread():
     def createPuppyInstance(self, instanceName):
         new_instance = Puppy(name=instanceName)
         # 将新创建的实例添加到globalVars字典中，使用instance_name作为键
-        self.codeThreadVars[instanceName] = new_instance
+
+        globals()[instanceName] = new_instance
 
 
 
@@ -94,25 +95,7 @@ class CodeThread():
 
         self.actionFlow.actionFlowCurrentClear()
 
-        #from ...globalVars.executeCode import executeCodeHidden, executeCodeTracked
-        #from ....test2 import XiaoMei
 
-        self.createPuppyInstance(self.puppyName)
-
-
-        '''
-        # loading vars
-        import sys
-        import os
-
-        sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
-        from globalVars import executeCode
-
-        
-        from globalVar import globalVar
-        print("import done")
-        self.codeThreadVars= globalVar
-        '''
         #print(self.codeThreadVars)
         print("\n")
         print("\U0001F4E5 Import Done")
@@ -162,6 +145,8 @@ class CodeThread():
                     print(action)
                     print("################################################################################")
                     
+
+
                     exec(action, self.codeThreadVars)
                     self.actionFlow.actionOnGoing.task_done()
 

@@ -14,7 +14,7 @@ class SendMessageToHuman:
         """
         self.example = f"""
         ## Ask the user about the phone number of his boss
-        answer = {self.puppyName}.sendMessageToHuman.run("\U0001F600 :What's the phone number of your boss?") # where the XXX.sendMesageToHuman.run(), the XXX is your name.
+        answer = self.sendMessageToHuman.run("\U0001F600 :What's the phone number of your boss?")
         """
         self.functionBeforeAction = []
         self.functionAfterAction = []

@@ -12,7 +12,7 @@ class GPT():
         self.example = """
         ## get how to install the package of openAI by GPT4
         text = "how should I install the package of openAI"
-        result=puppy.GPT.run(content=text)# where the puppy is name, change it with your name
+        result=self.GPT.run(content=text)
         """
         
         self.apiKey = "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"
