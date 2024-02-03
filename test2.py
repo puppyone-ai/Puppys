@@ -1,7 +1,4 @@
 ## TODO
-"""
-解决 exec 的 var 在跨文件不共享的问题
-"""
 
 """
 设置 thread 之间的 communication
@@ -11,11 +8,6 @@
 设置 action 的 visiable 和 invisible 的性质
 """
 
-import os
-import sys
-
-sys.path.append((os.path.abspath(os.path.abspath(__file__))))
-print(sys.path)
 
 from puppy import Puppy
 
