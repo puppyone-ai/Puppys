@@ -16,6 +16,7 @@ class ActionFlow():
     
     def initialize(self,sourceCode):
 
+
         self.actionFlowHistoryJSON = []
         # updated the actionFlow JSON
         actionFlowInitialJSON, actionFlowInitialPython=self.translatePython(sourceCode)

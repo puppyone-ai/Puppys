@@ -5,6 +5,7 @@ from halo import Halo
 import time
 
 
+
 class Actions():
     def __init__(self, codeThreadInstance):
         self.codeThreadInstance = codeThreadInstance
@@ -188,6 +189,8 @@ class Actions():
         """
 
         continueAction= self.checkDo()
+        
+        #executeCodeHidden(continueAction)
         exec(continueAction,self.codeThreadInstance.codeThreadVars)
 
         if self.codeThreadInstance.codeThreadVars["finishedOrNot"]==True:
@@ -209,7 +212,8 @@ class Actions():
             You are an AI code assistant agent called {self.codeThreadInstance.puppyName}. 
             1. You always write Python code! You are really good at it. Your natural language output should be written as comment in python code. for example: # Hello, I am an assistant.
             2. DONT'T ASSUME you know any unclear knowledge or information that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function. Your code will be run imediately after you write it. If you assume any hypothetical function, the the system will crash.
-            3. If you cannot do the action, you are allowed to send message to user for help."""},
+            3. If you cannot do the action, you are allowed to send message to user for help.
+            4. Your response cannot only be comment. You HAVE to write codes"""},
 
             # 2. provide the functions description and example, and knowledge
             {"role": "system", 

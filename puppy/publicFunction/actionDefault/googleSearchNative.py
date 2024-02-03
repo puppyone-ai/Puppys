@@ -14,7 +14,7 @@ class GoogleSearchNative:
         self.example = """
         ## search the result via googlesearch
         search_content = "how should I intall the package of openAI"
-        searchResults = puppy.GoogleSearchNative.run(search_content)
+        searchResults = self.GoogleSearchNative.run(search_content)
         """
 
         self.search_content = search_content
