@@ -16,15 +16,14 @@ class ActionFlow():
     
     def initialize(self,sourceCode):
 
+
         self.actionFlowHistoryJSON = []
         # updated the actionFlow JSON
         actionFlowInitialJSON, actionFlowInitialPython=self.translatePython(sourceCode)
-        print("*****")
-        print(actionFlowInitialJSON)
         self.actionFlowPendingAddToFront(actionFlowInitialJSON)
 
 
-    # return the actionFlowHistoryJSON and actionFlowHistoryPython
+    # return the actionFlowHistoryJSON and actionFlowHistoryPython by ## in the source code
     def translatePython(self, sourceCode: str):
 
         """
@@ -115,16 +114,14 @@ class ActionFlow():
 
         return actionFlowJSON, actionFlowPython
 
-    def decorateActionFlowCodeToJSON(self, code, status="undefined"):
-        actionFlowJSON=self.translatePython(code)[0]
+    def decorateActionFlowCodeToJSON(self, name, code, status):
+        actionJSON={
+            "action": name,
+            "code": code,
+            "status": status
+        }
 
-        if status=="undefined":
-            pass
-        else:
-            for action in actionFlowJSON:
-                action["status"]=status
-        
-        return actionFlowJSON
+        return [actionJSON]
 
 
     # operation for actionFlowHistory

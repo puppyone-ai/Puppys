@@ -9,6 +9,12 @@
 """
 
 
+
+
+
+
+
+
 from puppy import Puppy
 
 
@@ -19,10 +25,11 @@ XiaoMei = Puppy(name="XiaoMei")
 @XiaoMei.codeThread
 def actionFlow():
 
-    ## 问用户关于厦门的天气
+    ## 搜北京的天气
     XiaoMei.do()
 
-    ## 把你的 historical actionflow 存到文件夹下
+    ## 十分钟之后把天气发给我
     XiaoMei.do()
 
 XiaoMei.run()
+

@@ -5,6 +5,7 @@
 
 
 
+
 ## The philosophy behind it
 
 In our observation of human society, we can draw a bit of inspiration. In human societies, for a project, the stages of **planning**, **executing**, and **acceptance** are typically separate. Moreover, these stages are often carried out by three different individuals. 
