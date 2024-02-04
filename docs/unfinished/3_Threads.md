@@ -16,7 +16,7 @@ def ReFlecx(task="draw a figure of heart py python"):
     ## write the code
     puppy1.do()
 
-    ## execute the code, and provide if the code runs correctly or not
+    ## execute the code, and provide if the code runs correctly or 
     puppy1.do()
 
     ## reflect the code, if it's wrong, try to modify and run the code and run it, if after 3 times, the code is still wrong, then pass, and return "Sorry, I can't do it"

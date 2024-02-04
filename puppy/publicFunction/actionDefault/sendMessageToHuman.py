@@ -14,7 +14,7 @@ class SendMessageToHuman:
         """
         self.example = f"""
         ## Ask the user about the phone number of his boss
-        answer = self.sendMessageToHuman.run("\U0001F600 :What's the phone number of your boss?")
+        answer = self.sendMessageToHuman.run("\U0001F600: What's the phone number of your boss?")
         """
         self.functionBeforeAction = []
         self.functionAfterAction = []
@@ -41,9 +41,9 @@ class SendMessageToHuman:
         self.question=question
 
         userInput=input(question+"\n"+"Your response:")
-        print("Sure, I have already add what you said to my knowledge.")
+        print("\U0001F600: Sure, get it.")
 
-        chatHistory="\n"+str('"""')+"Your response:"+str(self.question)+"\n"+"User's response:"+userInput+"\n"+str('"""')
+        chatHistory="\n"+"# User's response: "+userInput+"\n"
 
         self.threadInstance.actionFlow.actionFlowCurrentGetFrontAddCode(chatHistory)  
         return userInput
