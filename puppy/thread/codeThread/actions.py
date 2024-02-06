@@ -293,6 +293,8 @@ class Actions():
             ## TODO ERROR here
             self.codeThreadInstance.actionFlow.actionFlowCurrentAddToFront(self.codeThreadInstance.actionFlow.decorateActionFlowCodeToJSON(name=self.codeThreadInstance.actionFlow.actionFlowCurrentGetName,code=newCode,status="fixed"))
 
+            print("knowledge is",self.codeThreadInstance.knowledge.getKnowledgeStr())
+
     def reflect(self,temperature=0.1,max_tokens=4096,model_name="gpt-4-1106-preview",ApiKey="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"):
         os.environ["OPENAI_API_KEY"]=ApiKey
         """
