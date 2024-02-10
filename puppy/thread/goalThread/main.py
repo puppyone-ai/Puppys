@@ -3,12 +3,14 @@ import threading
 from .actionFlow import ActionFlow
 from .actions import Actions
 from .knowledge import Knowledge
+#from ...publicFunction.actionDefault import ActionDefault
+
 
 
 class GoalThread():
     def __init__(self):
         
-        self.currentThreadName="codeThread"
+        self.currentThreadName="goalThread"
         self.actionFlow=ActionFlow(self)
         self.actions=Actions(self)
         self.knowledge=Knowledge(self)
@@ -16,12 +18,10 @@ class GoalThread():
         self.threadProperty={}
         self.environment={
         }
-        self.goalThreadVars={}
+        self.Vars={"self":self}
 
         self.goal=""
 
-        self.goalThreadFuncPreActionList=[]
-        self.goalThreadFuncPostActionList=[]
 
     # import tools, initialize the agent
     def goalThreadInitialize(self):
@@ -31,7 +31,7 @@ class GoalThread():
     def goalThreadRun(self):
         
         # start the code thread
-        threadCode = threading.Thread(target=self.goalThreadActionFlowRun)
+        threadCode = threading.Thread(target=self.goalhreadActionFlowRun)
         threadCode.daemon = False
         threadCode.start()
         
@@ -57,10 +57,8 @@ class GoalThread():
             # get source code
             self.actionFlow.initialize(sourseCode)
 
-            print("Initialize Start-------------------------------------------")
+            print("\U0001F3B2 Initialize Done")
             print("Initialized Function: "+funcName)
-            print("actionFlowPending:")
-            print(self.actionFlow.actionFlowPendingJSON)
 
 
         if funcName == "trigger":
@@ -69,39 +67,16 @@ class GoalThread():
 
         # execute the function with wrapper
         return wrapper
-    
 
-    def goalThreadActionRun(self):
 
-        # STEP 3.1: check if the action is fixed, semi-fixed, or changeable
-        if self.actionFlow.actionFlowCurrentGetFront()["status"]=="fixed":
-            pass
+    def createPuppyInstance(self, instanceName):
+        new_instance = Puppy(name=instanceName)
+        # 将新创建的实例添加到globalVars字典中，使用instance_name作为键
 
-        elif self.actionFlow.actionFlowCurrentGetFront()["status"]=="semi-fixed":
-            self.actions.do()
+        globals()[instanceName] = new_instance
 
-        elif self.actionFlow.actionFlowCurrentGetFront()["status"]=="changeable":
-            pass
-        
-        # STEP 3.2 load the action from actionCurrent to actionOnGoing
-        if self.actionFlow.actionFlowCurrentJSON !=[]:
-            self.actionFlow.actionCurrentExecute()
-            
-        
-            # STEP 3.3: load the action from actionOngoing and execute the code
-            action = self.actionFlow.actionOnGoing.get()
-
-            print("\n")
-            print("############### following action is running ###############")
-            print(action)
-            print("###########################################################")
-            print("\n")
-            
-            exec(action,self.goalThreadVars)
-            self.actionFlow.actionOnGoing.task_done()
-
-        else: 
-            pass
+    def execMode(self, code, mode="thread"):
+        exec(code, self.Vars)
 
 
     def goalThreadActionFlowRun(self):
@@ -116,31 +91,33 @@ class GoalThread():
         self.sendMessageToHuman = self.actionDefault.sendMessageToHuman
 
 
-        print("Import Start ----------------------------------------------")
+        
 
         self.actionFlow.actionFlowCurrentClear()
 
-        # loading vars
-        self.goalThreadVars=globals()
-        print(self.goalThreadVars)
 
+        #print(self.Vars)
+        print("\n")
+        print("\U0001F4E5 Import Done")
         # start the action flow
 
         while self.actionFlow.actionFlowCurrentJSON ==[] and self.actionFlow.actionFlowPendingJSON !=[]:
             print("\n")
-            print("Action Start ----------------------------------------------")
+            print("\U0001F525 Action Start")
 
             # STEP 1: load the action from actionFlowPending to actionFlowCurrent
             self.actionFlow.actionCurrentLoad()
 
             # STEP 2: delete the action from actionFlowPending
             self.actionFlow.actionFlowPendingRemoveFront()
-
-            print("actionFlowPending:----->")
+            print("\n")
+            print("\U0001F51C ActionFlowPending:")
             print(self.actionFlow.actionFlowPendingJSON)
-            print("actionFlowCurrentJSON:----->")
+            print("\n")
+            print("\U000025B6 ActionFlowCurrentJSON:")
             print(self.actionFlow.actionFlowCurrentJSON)
-            print("actionFlowHistory:----->")
+            print("\n")
+            print("\U0001F519 ActionFlowHistory:")
             print(self.actionFlow.actionFlowHistoryJSON)
 
             while self.actionFlow.actionFlowCurrentJSON !=[]:
@@ -160,16 +137,17 @@ class GoalThread():
                     self.actionFlow.actionCurrentExecute()
                     
                 
-                    # STEP 3.3: load the action from actionOngoing and execute the code
+                    # STEP 3.3: load the action from actionOngoing and execute the code, and determine if the action is hidden
                     action = self.actionFlow.actionOnGoing.get()
 
                     print("\n")
-                    print("############### following action is running ###############")
+                    print("\U0001F697 Running Code ################################################################")
                     print(action)
-                    print("###########################################################")
-                    print("\n")
+                    print("################################################################################")
                     
-                    exec(action,self.goalThreadVars)
+
+
+                    exec(action, self.Vars)
                     self.actionFlow.actionOnGoing.task_done()
 
                     # STEP 4: load the action from the actionFlowCurrent to the actionFlowHistory
@@ -187,3 +165,17 @@ class GoalThread():
                     pass
 
         print("Done")
+
+
+class Puppy(GoalThread):
+    def __init__(self, name="puppy"):
+        
+        super().__init__()
+        self.puppyName=name
+
+    def run(self):
+        self.goalThreadRun()
+
+
+
+

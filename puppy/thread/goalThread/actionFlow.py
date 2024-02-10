@@ -1,8 +1,8 @@
 import queue
 
 class ActionFlow():
-    def __init__(self, codeThreadInstance): 
-        self.codeThreadInstance = codeThreadInstance
+    def __init__(self, goalThreadInstance): 
+        self.goalThreadInstance = goalThreadInstance
 
         self.actionFlowAllJSON = []
         self.actionFlowHistoryJSON = []
