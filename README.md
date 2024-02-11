@@ -1,6 +1,6 @@
-![alt text](assets/PuppyAgentHorizon.png)
+![alt text](/assets/PuppyAgentHorizon.png)
 
-An open-source **AI Agents-and-Humans co-working** framework
+An open-source **Code-Based AI Agents** framework
 
 <p align="center">version, stars, website, document</P>
 

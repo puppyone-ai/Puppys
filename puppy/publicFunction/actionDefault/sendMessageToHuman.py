@@ -43,8 +43,9 @@ class SendMessageToHuman:
         userInput=input(question+"\n"+"Your response:")
         print("\U0001F600: Sure, get it.")
 
-        chatHistory="\n"+"# User's response: "+userInput+"\n"
+        chatHistory="\n"+"your message:"+self.question+"\n"+"# User's response: "+userInput+"\n"
 
         self.threadInstance.actionFlow.actionFlowCurrentGetFrontAddCode(chatHistory)  
+        #self.threadInstance.knowledge.knowledge.append(chatHistory)
         return userInput
     

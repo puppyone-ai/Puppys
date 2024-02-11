@@ -18,7 +18,7 @@ class CodeThread():
         self.threadProperty={}
         self.environment={
         }
-        self.codeThreadVars={"self":self}
+        self.Vars={"self":self}
 
         self.goal=""
 
@@ -77,6 +77,8 @@ class CodeThread():
 
         globals()[instanceName] = new_instance
 
+    def execMode(self, code, mode="thread"):
+        exec(code, self.Vars)
 
 
     def codeThreadActionFlowRun(self):
@@ -96,7 +98,7 @@ class CodeThread():
         self.actionFlow.actionFlowCurrentClear()
 
 
-        #print(self.codeThreadVars)
+        #print(self.Vars)
         print("\n")
         print("\U0001F4E5 Import Done")
         # start the action flow
@@ -147,7 +149,7 @@ class CodeThread():
                     
 
 
-                    exec(action, self.codeThreadVars)
+                    exec(action, self.Vars)
                     self.actionFlow.actionOnGoing.task_done()
 
                     # STEP 4: load the action from the actionFlowCurrent to the actionFlowHistory

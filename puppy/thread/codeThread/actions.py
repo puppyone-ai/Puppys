@@ -7,8 +7,8 @@ import time
 
 
 class Actions():
-    def __init__(self, codeThreadInstance):
-        self.codeThreadInstance = codeThreadInstance
+    def __init__(self, threadInstance):
+        self.threadInstance = threadInstance
         self.actionList=[{"name":"do",
                             "code":"",
                             "function_before_action":[],
@@ -79,13 +79,13 @@ class Actions():
 
         client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", ApiKey))
         
-        self.codeThreadInstance.functionsDescriptionAndExample= self.codeThreadInstance.sendMessageToHuman.getDescriptionAndExample()
+        self.threadInstance.functionsDescriptionAndExample= self.threadInstance.sendMessageToHuman.getDescriptionAndExample()
 
         # prompt for actionDo ***********************************************************************************************
         prompt=[
         # 1. define your agent type and name
         {"role": "system",
-        "content":f"""You are an AI code assistant agent called {self.codeThreadInstance.puppyName}. 
+        "content":f"""You are an AI code assistant agent called {self.threadInstance.puppyName}. 
         1. You always write Python code! You are really good at it. Your natural language output should be written as comment in python code. for example: # Hello, I am an assistant.
         2. DONT'T ASSUME you know any unclear knowledge or information that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function. Your code will be run imediately after you write it. If you assume any hypothetical function, the the system will crash.
         3. You need to justify if your current action has been achieved or not by history code, and decide to skip the current action or not.
@@ -126,29 +126,29 @@ class Actions():
         # 3. provide the goal, current action, code history, code future, enviroment, knowledge
         {"role": "system", 
         "content":f"""
-        You have an overall long-term goal: {self.codeThreadInstance.goal},  now you need to write python code to finish your next action:
-        {self.codeThreadInstance.actionFlow.actionFlowCurrentGetFront()["action"]}
+        You have an overall long-term goal: {self.threadInstance.goal},  now you need to write python code to finish your next action:
+        {self.threadInstance.actionFlow.actionFlowCurrentGetFront()["action"]}
 
         The code for historical actionflow shown as code are:
-        {self.codeThreadInstance.actionFlow.actionFlowHistoryGetCode()}
+        {self.threadInstance.actionFlow.actionFlowHistoryGetCode()}
                             
         user have already write some code for this action, but it's not finished. You should replace the XXX.do() part. Don't keep the .do() function after your response. The XXX is your name, and the .do() is an instruction of 'you must write code and put it here'.:
-        {self.codeThreadInstance.actionFlow.actionFlowCurrentGetCode()}
+        {self.threadInstance.actionFlow.actionFlowCurrentGetCode()}
                             
         The code of action in the future are(But you don't need to do this part now, just for your information)):
-        {self.codeThreadInstance.actionFlow.actionFlowPendingGetCode()}
+        {self.threadInstance.actionFlow.actionFlowPendingGetCode()}
 
         And the current enviroment shown as Python code are(sometimes there is something important):
-        {self.codeThreadInstance.environment}
+        {self.threadInstance.environment}
 
         Here are the knowledge you have learned:
-        {self.codeThreadInstance.knowledge.getKnowledgeStr()}"""},
+        {self.threadInstance.knowledge.getKnowledgeStr()}"""},
 
         
         # 4. justfy if the action is done or not
         {"role": "user",
         "content":f"""
-        Now you need to write code to justify if the action of {self.codeThreadInstance.actionFlow.actionFlowCurrentGetFront()["action"]} is done or not. 
+        Now you need to write code to justify if the action of {self.threadInstance.actionFlow.actionFlowCurrentGetFront()["action"]} is done or not. 
         """}
         ]
 
@@ -191,15 +191,15 @@ class Actions():
         continueAction= self.checkDo()
         
         #executeCodeHidden(continueAction)
-        exec(continueAction,self.codeThreadInstance.codeThreadVars)
+        exec(continueAction,self.threadInstance.Vars)
 
-        if self.codeThreadInstance.codeThreadVars["finishedOrNot"]==True:
-            self.codeThreadInstance.actionFlow.actionFlowCurrentJSON.pop(0)
+        if self.threadInstance.Vars["finishedOrNot"]==True:
+            self.threadInstance.actionFlow.actionFlowCurrentJSON.pop(0)
 
-        elif self.codeThreadInstance.codeThreadVars["finishedOrNot"]==False:
+        elif self.threadInstance.Vars["finishedOrNot"]==False:
 
 
-            self.codeThreadInstance.functionsDescriptionAndExample= self.codeThreadInstance.sendMessageToHuman.getDescriptionAndExample()
+            self.threadInstance.functionsDescriptionAndExample= self.threadInstance.sendMessageToHuman.getDescriptionAndExample()
 
             client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", ApiKey))
 
@@ -209,7 +209,7 @@ class Actions():
             # 1. define your agent type and name
             {"role": "system", 
             "content": f"""
-            You are an AI code assistant agent called {self.codeThreadInstance.puppyName}. 
+            You are an AI code assistant agent called {self.threadInstance.puppyName}. 
             1. You always write Python code! You are really good at it. Your natural language output should be written as comment in python code. for example: # Hello, I am an assistant.
             2. DONT'T ASSUME you know any unclear knowledge or information that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function. Your code will be run imediately after you write it. If you assume any hypothetical function, the the system will crash.
             3. If you cannot do the action, you are allowed to send message to user for help.
@@ -223,9 +223,9 @@ class Actions():
             Pay attention to name your parameter in your code. The naming convention in your code should not be arbitrary, like 'result' or 'response'. It should reflect the property of the parameter.
             
             Your customized functions and their examples are:
-            {self.codeThreadInstance.functionsDescriptionAndExample}
+            {self.threadInstance.functionsDescriptionAndExample}
 
-            Here are the knowledge you have learned:{self.codeThreadInstance.knowledge.getKnowledgeStr()}
+            Here are the knowledge you have learned:{self.threadInstance.knowledge.getKnowledgeStr()}
             
             Try to understand the meaning of each function and its parameter, and decide the best function and use the function for this step to accomplish the action. 
             For example: (current action: search the location of the NBA in 2019)
@@ -237,29 +237,29 @@ class Actions():
             # 3. provide the goal, current action, code history, code future, enviroment, knowledge
             {"role": "user", 
             "content":f"""
-            You have an overall goal: {self.codeThreadInstance.goal},  now you need to write python code to finish your next action:
-            {self.codeThreadInstance.actionFlow.actionFlowCurrentGetFront()["action"]}
+            You have an overall goal: {self.threadInstance.goal},  now you need to write python code to finish your next action:
+            {self.threadInstance.actionFlow.actionFlowCurrentGetFront()["action"]}
 
             The code for historical actionflow shown as code are:
-            {self.codeThreadInstance.actionFlow.actionFlowHistoryGetCode()}
+            {self.threadInstance.actionFlow.actionFlowHistoryGetCode()}
                                 
             user have already write some code for this action, but it's not finished. You should replace the XXX.do() part. Don't keep the .do() function after your response. The XXX is your name, and the .do() is an instruction of 'you must write code and put it here'.:
-            {self.codeThreadInstance.actionFlow.actionFlowCurrentGetCode()}
+            {self.threadInstance.actionFlow.actionFlowCurrentGetCode()}
                                 
             The code of action in the future are(But you don't need to do this part now, just for your information)):
-            {self.codeThreadInstance.actionFlow.actionFlowPendingGetCode()}
+            {self.threadInstance.actionFlow.actionFlowPendingGetCode()}
 
             And the current enviroment shown as Python code are(sometimes there is something important):
-            {self.codeThreadInstance.environment}"""},
+            {self.threadInstance.environment}"""},
             
 
             # 4. provide the code of the action
             {"role": "user",
             "content":f"""
-            Now you write code to achieve your action: {self.codeThreadInstance.actionFlow.actionFlowCurrentGetFront()["action"]}
+            Now you write code to achieve your action: {self.threadInstance.actionFlow.actionFlowCurrentGetFront()["action"]}
             DONT'T ASSUME you know the knowledge that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function, and you can show your thinking and reason in the comment. But don't write any code calling undefined functions in this case.
             make sure that the parameter in your respond code follow the type of the parameter in the function instruction. .
-            You are NOT allowed to write {self.codeThreadInstance.puppyName}.do() in your final response as code. When the {self.codeThreadInstance.puppyName}.do() appears, you HAVE TO change it to other code.
+            You are NOT allowed to write {self.threadInstance.puppyName}.do() in your final response as code. When the {self.codeThreadInstance.puppyName}.do() appears, you HAVE TO change it to other code.
             your response should be similiar with the example(ONLY CODE) and NOTHING ELSE.
             """}]
 
@@ -291,7 +291,9 @@ class Actions():
 
 
             ## TODO ERROR here
-            self.codeThreadInstance.actionFlow.actionFlowCurrentAddToFront(self.codeThreadInstance.actionFlow.decorateActionFlowCodeToJSON(name=self.codeThreadInstance.actionFlow.actionFlowCurrentGetName,code=newCode,status="fixed"))
+            self.threadInstance.actionFlow.actionFlowCurrentAddToFront(self.threadInstance.actionFlow.decorateActionFlowCodeToJSON(name=self.threadInstance.actionFlow.actionFlowCurrentGetName,code=newCode,status="fixed"))
+
+            print("knowledge is",self.threadInstance.knowledge.getKnowledgeStr())
 
     def reflect(self,temperature=0.1,max_tokens=4096,model_name="gpt-4-1106-preview",ApiKey="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"):
         os.environ["OPENAI_API_KEY"]=ApiKey
