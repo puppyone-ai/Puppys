@@ -2,15 +2,28 @@
 
 **What language do agents speak?**
 
-When we ask LLM to plan, have we considered what language the LLM models use during the planning process? I don't mean agents speak English or Chinese, I mean does it speak natural language or code language?
+When an agent to plan, what language does it use for reasoning? Is it **natural language**, or **code language**? 
 
-
-Think about this question for 10 seconds. Previous agent frameworks answer this question with **Agents speack natural language**. Just like Auto-GPT, AutoGen... 
-
-However, the answer is not that easy...
+This is a question worth pondering. The answer from current agent frameworks is **natural language**, and the code language only interact with natural language, but don't play a role while planing. Such as AutoGen and Auto-GPT, as following:
 
 ![alt text](/assets/N2N.png)
 
+However, **That's far not enough**
+
+In fact, a LLM based agent consists of three parts: 
+
+1. sensing the environment. 
+>for example: *There are three chairs in the room.*
+
+1. making decisions:
+
+
+2. executing actions.
+
+
+ Sensing the environment often relies on natural language, such as stating 'There are three chairs in the room.' Execution, however, is usually conducted through code, like print(\"hello world\"). Hence, agent planning necessarily involves both natural language and code language. Relying on only one of these is inadequate
+ 
+Therefore we introduce **Puppys**.
 
 ![alt text](/assets/NC2NC.png)
 
