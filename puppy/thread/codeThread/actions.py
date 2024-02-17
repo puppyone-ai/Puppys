@@ -5,7 +5,6 @@ from halo import Halo
 import time
 
 
-
 class Actions():
     def __init__(self, threadInstance):
         self.threadInstance = threadInstance
