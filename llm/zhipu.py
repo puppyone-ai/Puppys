@@ -1,18 +1,17 @@
-from openai import OpenAI
+from zhipuai import ZhipuAI
 from halo import Halo
 import os
 
-
-def OpenAIChat(prompt=[],
-               temperature=0.1, max_token_num=4096, model_name="gpt-4-turbo-preview",
-               ApiKey="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",
+def ZhipuChat(prompt=[],
+               temperature=0.1, max_token_num=4096, model_name="glm-4",
+               ApiKey="938d656b9770894fd640a2ab9725bbaf.6zOTpj2EcoznRkzD",
                emoji=False, emojiText = "generating", spinner = "moon",
                printingMode=False, streamingMode=False
                ):
 
-    os.environ["OPENAI_API_KEY"] = ApiKey
+    os.environ["ZHIPU_API_KEY"] = ApiKey
 
-    client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", ApiKey))
+    client = ZhipuAI(api_key=os.environ.get("ZHIPU_API_KEY", ApiKey))
 
     if emoji == True:
         spinner = Halo(text=emojiText, spinner=spinner)
@@ -26,7 +25,6 @@ def OpenAIChat(prompt=[],
         messages=prompt,
         temperature=temperature,
         max_tokens=max_token_num,
-        n=1,
         stream=streamingMode,
     )
 
@@ -58,6 +56,13 @@ def OpenAIChat(prompt=[],
 
 
 if __name__ == "__main__":
-    response = OpenAIChat(prompt=[{"role": "user", "content": "Introduce yourself, with 20 words"}],
-                      printingMode=True, streamingMode=True, emoji=True)
+    response = ZhipuChat(prompt=[
+                        {"role": "user", "content": "作为一名营销专家，请为我的产品创作一个吸引人的slogan"},
+                        {"role": "assistant", "content": "当然，为了创作一个吸引人的slogan，请告诉我一些关于您产品的信息"},
+                        {"role": "user", "content": "智谱AI开放平台"},
+                        {"role": "assistant", "content": "智启未来，谱绘无限一智谱AI，让创新触手可及!"},
+                        {"role": "user", "content": "创造一个更精准、吸引人的slogan"}],
+                          printingMode=True, streamingMode=True, emoji=True)
+
+    #print(response)
 
