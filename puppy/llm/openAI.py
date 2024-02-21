@@ -2,17 +2,16 @@ from openai import OpenAI
 from halo import Halo
 import os
 
-
 def OpenAIChat(prompt=[],
-               temperature=0.1, max_token_num=4096, model_name="gpt-4-turbo-preview",
-               ApiKey="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",
+               temperature=0.1, max_tokens=4096, model="gpt-4-turbo-preview",
+               api_key="",
                emoji=False, emojiText = "generating", spinner = "moon",
-               printingMode=False, streamingMode=False
+               printing=False, stream=False
                ):
 
-    os.environ["OPENAI_API_KEY"] = ApiKey
+    os.environ["OPENAI_API_KEY"] = api_key
 
-    client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", ApiKey))
+    client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", api_key))
 
     if emoji == True:
         spinner = Halo(text=emojiText, spinner=spinner)
@@ -22,12 +21,12 @@ def OpenAIChat(prompt=[],
         pass
 
     completion = client.chat.completions.create(
-        model=model_name,
+        model=model,
         messages=prompt,
         temperature=temperature,
-        max_tokens=max_token_num,
+        max_tokens=max_tokens,
         n=1,
-        stream=streamingMode,
+        stream=stream,
     )
 
     if emoji:
@@ -36,14 +35,14 @@ def OpenAIChat(prompt=[],
     else:
         pass
 
-    if printingMode == True:
+    if printing == True:
 
-        if streamingMode == False:
+        if stream == False:
             print(completion.choices[0].message.content)
             print("\n")
             return completion.choices[0].message.content
 
-        elif streamingMode == True:
+        elif stream == True:
             finalResponse=""
             for chunk in completion:
                 if chunk.choices[0].delta.content is not None:
@@ -59,5 +58,6 @@ def OpenAIChat(prompt=[],
 
 if __name__ == "__main__":
     response = OpenAIChat(prompt=[{"role": "user", "content": "Introduce yourself, with 20 words"}],
-                      printingMode=True, streamingMode=True, emoji=True)
+                          printing=True, stream=True, emoji=True,
+                          api_key="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")
 
