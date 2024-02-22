@@ -2,23 +2,21 @@ from openai import OpenAI
 from openai import OpenAI
 import os
 from halo import Halo
-import time
+from ...llm.openAI import OpenAIChat
+from ...llm.zhipu import ZhipuChat
 
 
 class Actions():
     def __init__(self, threadInstance):
         self.threadInstance = threadInstance
         self.actionList=[{"name":"do",
-                            "code":"",
-                            "function_before_action":[],
-                            "function_after_action":[],}]
+                            "code":""
+                            }]
         
     # add a new action to the action list
     def actionAdd(self,name,code,function_before_action,function_after_action):
         action={"name":name,
-                "code":code,
-                "function_before_action":function_before_action,
-                "function_after_action":function_after_action,}
+                "code":code,}
         self.actionList.update(action)
 
 
@@ -34,7 +32,6 @@ class Actions():
     # clear the action list
     def actionClear(self):
         self.actionList={}
-
     
     def addNewAction(self,action):
         self.actionList.append(action)
@@ -70,17 +67,15 @@ class Actions():
     def thinkKeepGoingOrNot(self):
         pass
     
-    def checkDo(self,temperature=0.1,max_token_num=4096,model_name="gpt-4-turbo-preview",ApiKey="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"):
-        os.environ["OPENAI_API_KEY"]=ApiKey
+    def checkDo(self,temperature=0.1,max_tokens=4096,model="gpt-4-turbo-preview",api_key="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"):
+        os.environ["OPENAI_API_KEY"]=api_key
         """
         write code to achieve the action
         """
 
-        client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", ApiKey))
         
         self.threadInstance.functionsDescriptionAndExample= self.threadInstance.sendMessageToHuman.getDescriptionAndExample()
 
-        # prompt for actionDo ***********************************************************************************************
         prompt=[
         # 1. define your agent type and name
         {"role": "system",
@@ -151,38 +146,25 @@ class Actions():
         """}
         ]
 
-        # prompt finished **************************************************************************************************
-
-        spinner = Halo(text='generating', spinner='moon')
-        spinner.start()
-
-        completion = client.chat.completions.create(
-            model=model_name,
-            messages=prompt,
-            temperature=0.1,
-            max_tokens=max_token_num,
-            n=1,
-            )
-
-        spinner.stop()
-
-        # return the output code
-        newCode=completion.choices[0].message.content
-
-
-        newCode=newCode.replace("```python\n", "").replace("\n```", "")
         print("\n")
         print("\U00002705 Checking Code ***************************************************************")
-        print(newCode)
+
+        newCode = OpenAIChat(prompt=prompt,
+                             model=model,
+                             temperature=temperature,
+                             api_key=api_key,
+                             max_tokens=max_tokens,
+                             printing=True, stream=True)
+
+        newCode=newCode.replace("```python\n", "").replace("\n```", "")
+
         print("********************************************************************************")
-
-
 
         return newCode
 
     
-    def do(self,temperature=0.1,max_token_num=4096,model_name="gpt-4-turbo-preview",ApiKey="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"):
-        os.environ["OPENAI_API_KEY"]=ApiKey
+    def do(self,temperature=0.1,max_tokens=4096,model="gpt-4-turbo-preview",api_key="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"):
+        os.environ["OPENAI_API_KEY"]=api_key
         """
         write code to achieve the action
         """
@@ -197,10 +179,7 @@ class Actions():
 
         elif self.threadInstance.Vars["finishedOrNot"]==False:
 
-
             self.threadInstance.functionsDescriptionAndExample= self.threadInstance.sendMessageToHuman.getDescriptionAndExample()
-
-            client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", ApiKey))
 
 
             # prompt for actionDo ***********************************************************************************************
@@ -258,38 +237,27 @@ class Actions():
             Now you write code to achieve your action: {self.threadInstance.actionFlow.actionFlowCurrentGetFront()["action"]}
             DONT'T ASSUME you know the knowledge that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function, and you can show your thinking and reason in the comment. But don't write any code calling undefined functions in this case.
             make sure that the parameter in your respond code follow the type of the parameter in the function instruction. .
-            You are NOT allowed to write {self.threadInstance.puppyName}.do() in your final response as code. When the {self.codeThreadInstance.puppyName}.do() appears, you HAVE TO change it to other code.
+            You are NOT allowed to write {self.threadInstance.puppyName}.do() in your final response as code. When the {self.threadInstance.puppyName}.do() appears, you HAVE TO change it to other code.
             your response should be similiar with the example(ONLY CODE) and NOTHING ELSE.
             """}]
 
             # prompt finished **************************************************************************************************
 
-            spinner = Halo(text='generating', spinner='moon')
-            spinner.start()
+            print("\n")
+            print("\U0001F4A4 Generated Code ==============================================================")
 
-            completion = client.chat.completions.create(
-            model=model_name,
-            messages=prompt,
-            temperature=0.1,
-            max_tokens=max_token_num,
-            n=1,
-            )
-
-            spinner.stop()
-
-            # return the output code
-            newCode=completion.choices[0].message.content
-            
+            newCode=OpenAIChat(prompt=prompt,
+                               model=model,
+                               temperature=temperature,
+                               api_key=api_key,
+                                max_tokens=max_tokens,
+                               printing=True, stream=True)
 
             newCode=newCode.replace("```python\n", "").replace("\n```", "")
 
-            print("\n")
-            print("\U0001F4A4 Generated Code ==============================================================")
-            print(newCode)
             print("================================================================================")
 
 
-            ## TODO ERROR here
             self.threadInstance.actionFlow.actionFlowCurrentAddToFront(self.threadInstance.actionFlow.decorateActionFlowCodeToJSON(name=self.threadInstance.actionFlow.actionFlowCurrentGetName,code=newCode,status="fixed"))
 
             print("knowledge is",self.threadInstance.knowledge.getKnowledgeStr())

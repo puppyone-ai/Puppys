@@ -3,15 +3,15 @@ from halo import Halo
 import os
 
 def ZhipuChat(prompt=[],
-               temperature=0.1, max_token_num=4096, model_name="glm-4",
-               ApiKey="938d656b9770894fd640a2ab9725bbaf.6zOTpj2EcoznRkzD",
-               emoji=False, emojiText = "generating", spinner = "moon",
-               printingMode=False, streamingMode=False
-               ):
+              temperature=0.1, max_tokens=4096, model="glm-4",
+              api_key="",
+              emoji=False, emojiText = "generating", spinner = "moon",
+              printing=False, stream=False
+              ):
 
-    os.environ["ZHIPU_API_KEY"] = ApiKey
+    os.environ["ZHIPU_API_KEY"] = api_key
 
-    client = ZhipuAI(api_key=os.environ.get("ZHIPU_API_KEY", ApiKey))
+    client = ZhipuAI(api_key=os.environ.get("ZHIPU_API_KEY", api_key))
 
     if emoji == True:
         spinner = Halo(text=emojiText, spinner=spinner)
@@ -21,11 +21,11 @@ def ZhipuChat(prompt=[],
         pass
 
     completion = client.chat.completions.create(
-        model=model_name,
+        model=model,
         messages=prompt,
         temperature=temperature,
-        max_tokens=max_token_num,
-        stream=streamingMode,
+        max_tokens=max_tokens,
+        stream=stream,
     )
 
     if emoji:
@@ -34,14 +34,14 @@ def ZhipuChat(prompt=[],
     else:
         pass
 
-    if printingMode == True:
+    if printing == True:
 
-        if streamingMode == False:
+        if stream == False:
             print(completion.choices[0].message.content)
             print("\n")
             return completion.choices[0].message.content
 
-        elif streamingMode == True:
+        elif stream == True:
             finalResponse=""
             for chunk in completion:
                 if chunk.choices[0].delta.content is not None:
@@ -62,7 +62,8 @@ if __name__ == "__main__":
                         {"role": "user", "content": "智谱AI开放平台"},
                         {"role": "assistant", "content": "智启未来，谱绘无限一智谱AI，让创新触手可及!"},
                         {"role": "user", "content": "创造一个更精准、吸引人的slogan"}],
-                          printingMode=True, streamingMode=True, emoji=True)
+                        printing=True, stream=True, emoji=True,
+                        api_key="938d656b9770894fd640a2ab9725bbaf.6zOTpj2EcoznRkzD")
 
     #print(response)
 

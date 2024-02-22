@@ -8,7 +8,9 @@ We've just briefly introduced `actionFlow`, but it's not comprehensive enough. H
  
  `actionFlowHistory`,
  
- and their logic.
+ and their logic:
+
+![alt text](/assets/actionFlowPipeline.png)
 
 ## How to represent the actionFlow?
 
