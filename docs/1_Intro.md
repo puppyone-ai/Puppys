@@ -40,4 +40,7 @@ Condensed matter and quantum mechanics corresponse two different languages. The 
 
 Building an [*Grand Unified Theoretical*](https://en.wikipedia.org/wiki/Grand_Unified_Theory#:~:text=Grand%20Unified%20Theory%20(GUT)%20is,GUT%20models%20theorize%20its%20existence.) agent framework is so damn difficult.
 
+
+Tuning machine: 
+
 ![alt text](/assets/env&func.png)
