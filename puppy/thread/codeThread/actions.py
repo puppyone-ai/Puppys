@@ -147,7 +147,7 @@ class Actions():
         ]
 
         print("\n")
-        print("\U00002705 Checking Code ***************************************************************")
+        print("\U00002705 Checking ********************************************************************")
 
         newCode = OpenAIChat(prompt=prompt,
                              model=model,
@@ -244,7 +244,7 @@ class Actions():
             # prompt finished **************************************************************************************************
 
             print("\n")
-            print("\U0001F4A4 Generated Code ==============================================================")
+            print("\U0001F4A4 Action ######################################################################")
 
             newCode=OpenAIChat(prompt=prompt,
                                model=model,
@@ -255,12 +255,11 @@ class Actions():
 
             newCode=newCode.replace("```python\n", "").replace("\n```", "")
 
-            print("================================================================================")
+            print("################################################################################")
 
 
             self.threadInstance.actionFlow.actionFlowCurrentAddToFront(self.threadInstance.actionFlow.decorateActionFlowCodeToJSON(name=self.threadInstance.actionFlow.actionFlowCurrentGetName,code=newCode,status="fixed"))
 
-            print("knowledge is",self.threadInstance.knowledge.getKnowledgeStr())
 
     def reflect(self,temperature=0.1,max_tokens=4096,model_name="gpt-4-1106-preview",ApiKey="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"):
         os.environ["OPENAI_API_KEY"]=ApiKey

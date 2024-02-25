@@ -100,12 +100,12 @@ class CodeThread():
 
 
         #print(self.Vars)
-        print("\n")
+
         print("\U0001F4E5 Import Done")
         # start the action flow
 
         while self.actionFlow.actionFlowCurrentJSON ==[] and self.actionFlow.actionFlowPendingJSON !=[]:
-            print("\n")
+
             print("\U0001F525 Action Start")
 
             # STEP 1: load the action from actionFlowPending to actionFlowCurrent
@@ -113,13 +113,11 @@ class CodeThread():
 
             # STEP 2: delete the action from actionFlowPending
             self.actionFlow.actionFlowPendingRemoveFront()
-            print("\n")
+
             print("\U0001F51C ActionFlowPending:")
             print(self.actionFlow.actionFlowPendingJSON)
-            print("\n")
             print("\U000025B6 ActionFlowCurrentJSON:")
             print(self.actionFlow.actionFlowCurrentJSON)
-            print("\n")
             print("\U0001F519 ActionFlowHistory:")
             print(self.actionFlow.actionFlowHistoryJSON)
 
