@@ -6,7 +6,6 @@ from .knowledge import Knowledge
 #from ...publicFunction.actionDefault import ActionDefault
 
 
-
 class CodeThread():
     def __init__(self):
         
@@ -18,7 +17,19 @@ class CodeThread():
         self.threadProperty={}
         self.environment={
         }
-        self.Vars={"self":self}
+
+
+        self.vars_ForDev = {}
+        self.funcs_forDev ={}
+
+        self.vars_Shared = {}
+        self.funcs_Shared = {}
+
+        self.varsFuncs_Temp = {}
+
+
+
+        self.tempVarsFunc = {"self":self}
 
         self.goal=""
 
@@ -79,7 +90,7 @@ class CodeThread():
         globals()[instanceName] = new_instance
 
     def execMode(self, code, mode="thread"):
-        exec(code, self.Vars)
+        exec(code, self.tempVarsFunc)
 
 
     def codeThreadActionFlowRun(self):
@@ -148,7 +159,7 @@ class CodeThread():
                     
 
 
-                    exec(action, self.Vars)
+                    exec(action, self.tempVarsFunc)
                     self.actionFlow.actionOnGoing.task_done()
 
                     # STEP 4: load the action from the actionFlowCurrent to the actionFlowHistory
