@@ -25,16 +25,10 @@ class CodeThread():
         self.vars_Shared = {}
         self.funcs_Shared = {}
 
-        self.varsFuncs_Temp = {}
-
-
-
-        self.tempVarsFunc = {"self":self}
+        self.varsFuncs_Temp = {"self":self}
 
         self.goal=""
 
-        self.codeThreadFuncPreActionList=[]
-        self.codeThreadFuncPostActionList=[]
 
     # import tools, initialize the agent
     def codeThreadInitialize(self):
@@ -90,7 +84,7 @@ class CodeThread():
         globals()[instanceName] = new_instance
 
     def execMode(self, code, mode="thread"):
-        exec(code, self.tempVarsFunc)
+        exec(code, self.varsFuncs_Temp)
 
 
     def codeThreadActionFlowRun(self):
@@ -159,7 +153,7 @@ class CodeThread():
                     
 
 
-                    exec(action, self.tempVarsFunc)
+                    exec(action, self.varsFuncs_Temp)
                     self.actionFlow.actionOnGoing.task_done()
 
                     # STEP 4: load the action from the actionFlowCurrent to the actionFlowHistory
