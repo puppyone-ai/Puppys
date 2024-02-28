@@ -36,7 +36,6 @@ class Actions():
     def addNewAction(self,action):
         self.actionList.append(action)
 
-
     def addFunctionBeforeActionFront(self,function,action):
         for e in self.actionList:
             if e["action"]==action:
