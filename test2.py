@@ -10,7 +10,7 @@ from puppy import Puppy
 XiaoMei = Puppy(name="XiaoMei")
 
 
-@XiaoMei.codeThread
+@XiaoMei.mainThread
 def actionFlow():
 
     ## send me a message of hello after 1 minute.

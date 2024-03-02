@@ -6,10 +6,10 @@ from .knowledge import Knowledge
 #from ...publicFunction.actionDefault import ActionDefault
 
 
-class CodeThread():
+class MainThread():
     def __init__(self):
         
-        self.currentThreadName="codeThread"
+        self.currentThreadName="mainThread"
         self.actionFlow=ActionFlow(self)
         self.actions=Actions(self)
         self.knowledge=Knowledge(self)
@@ -30,15 +30,13 @@ class CodeThread():
         self.goal=""
 
 
-    # import tools, initialize the agent
-    def codeThreadInitialize(self):
-        pass
+
 
     # to run the thread
-    def codeThreadRun(self):
+    def MainThreadRun(self):
         
         # start the code thread
-        threadCode = threading.Thread(target=self.codeThreadActionFlowRun)
+        threadCode = threading.Thread(target=self.mainThreadActionFlowRun)
         threadCode.daemon = False
         threadCode.start()
         
@@ -49,7 +47,7 @@ class CodeThread():
         threadCode.join()
 
     # for the wrapper of action
-    def codeThread(self, func):
+    def mainThread(self, func):
         def wrapper(self, *args, **kwargs):
             self.initialize()
             func(*args, **kwargs)
@@ -87,7 +85,7 @@ class CodeThread():
         exec(code, self.varsFuncs_Temp)
 
 
-    def codeThreadActionFlowRun(self):
+    def mainThreadActionFlowRun(self):
 
         # import tools, for agents
 
@@ -173,14 +171,14 @@ class CodeThread():
         print("Done")
 
 
-class Puppy(CodeThread):
+class Puppy(MainThread):
     def __init__(self, name="puppy"):
         
         super().__init__()
         self.puppyName=name
 
     def run(self):
-        self.codeThreadRun()
+        self.MainThreadRun()
 
 
 

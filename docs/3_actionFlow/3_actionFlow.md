@@ -26,15 +26,16 @@ For example:
 Translate: **ActionFlow in Python code**
 
 ```python
-@puppy1.codeThread
-def actionFlow:   
+@puppy1.mainThread
+def actionFlow:
     ## search for the NBA game
     search_content = 'What NBA game is available'
     searchResults = self.GoogleSearch.run(search_content)
 
     ## send the price to me
     puppy1.do()
-   
+
+
 puppy1.run()
 ```
 
