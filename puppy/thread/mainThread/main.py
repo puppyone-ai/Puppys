@@ -30,8 +30,6 @@ class MainThread():
         self.goal=""
 
 
-
-
     # to run the thread
     def MainThreadRun(self):
         
@@ -52,7 +50,7 @@ class MainThread():
             self.initialize()
             func(*args, **kwargs)
         
-        self.currentThreadName="codeThread"
+        self.currentThreadName="mainThread"
         sourseCode=inspect.getsource(func)
 
         # if the function is action, initialize the actionFlow
@@ -96,8 +94,6 @@ class MainThread():
         self.actionDefault = ActionDefault(self)
         self.sendMessageToHuman = self.actionDefault.sendMessageToHuman
 
-
-        
 
         self.actionFlow.actionFlowCurrentClear()
 

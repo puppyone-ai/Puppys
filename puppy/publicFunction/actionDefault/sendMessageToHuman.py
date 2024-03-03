@@ -19,7 +19,7 @@ class SendMessageToHuman:
         """
         self.functionBeforeAction = []
         self.functionAfterAction = []
-        self.allowedThread = ["codeThread"]
+        self.allowedThread = ["mainThread"]
 
 
         self.question = question
