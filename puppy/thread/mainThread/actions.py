@@ -36,7 +36,6 @@ class Actions():
     def addNewAction(self,action):
         self.actionList.append(action)
 
-
     def addFunctionBeforeActionFront(self,function,action):
         for e in self.actionList:
             if e["action"]==action:
@@ -147,7 +146,7 @@ class Actions():
         ]
 
         print("\n")
-        print("\U00002705 Checking Code ***************************************************************")
+        print("\U00002705 Checking ********************************************************************")
 
         newCode = OpenAIChat(prompt=prompt,
                              model=model,
@@ -172,12 +171,12 @@ class Actions():
         continueAction= self.checkDo()
         
         #executeCodeHidden(continueAction)
-        exec(continueAction,self.threadInstance.Vars)
+        exec(continueAction, self.threadInstance.varsFuncs_Temp)
 
-        if self.threadInstance.Vars["finishedOrNot"]==True:
+        if self.threadInstance.varsFuncs_Temp["finishedOrNot"]==True:
             self.threadInstance.actionFlow.actionFlowCurrentJSON.pop(0)
 
-        elif self.threadInstance.Vars["finishedOrNot"]==False:
+        elif self.threadInstance.varsFuncs_Temp["finishedOrNot"]==False:
 
             self.threadInstance.functionsDescriptionAndExample= self.threadInstance.sendMessageToHuman.getDescriptionAndExample()
 
@@ -244,7 +243,7 @@ class Actions():
             # prompt finished **************************************************************************************************
 
             print("\n")
-            print("\U0001F4A4 Generated Code ==============================================================")
+            print("\U0001F4A4 Action ######################################################################")
 
             newCode=OpenAIChat(prompt=prompt,
                                model=model,
@@ -255,12 +254,11 @@ class Actions():
 
             newCode=newCode.replace("```python\n", "").replace("\n```", "")
 
-            print("================================================================================")
+            print("################################################################################")
 
 
             self.threadInstance.actionFlow.actionFlowCurrentAddToFront(self.threadInstance.actionFlow.decorateActionFlowCodeToJSON(name=self.threadInstance.actionFlow.actionFlowCurrentGetName,code=newCode,status="fixed"))
 
-            print("knowledge is",self.threadInstance.knowledge.getKnowledgeStr())
 
     def reflect(self,temperature=0.1,max_tokens=4096,model_name="gpt-4-1106-preview",ApiKey="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"):
         os.environ["OPENAI_API_KEY"]=ApiKey

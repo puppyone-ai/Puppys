@@ -10,17 +10,11 @@ from puppy import Puppy
 XiaoMei = Puppy(name="XiaoMei")
 
 
-@XiaoMei.codeThread
+@XiaoMei.mainThread
 def actionFlow():
 
-    ## 帮我查一下北京的天气
+    ## send me a message of hello after 1 minute.
     XiaoMei.do()
-
-    ## 10 秒钟之后告诉我北京的天气是啥
-    XiaoMei.do()
-
 
 
 XiaoMei.run()
-
-

@@ -191,12 +191,12 @@ class Actions():
         continueAction= self.checkDo()
         
         #executeCodeHidden(continueAction)
-        exec(continueAction,self.threadInstance.Vars)
+        exec(continueAction, self.threadInstance.varsFuncs_Temp)
 
-        if self.threadInstance.Vars["finishedOrNot"]==True:
+        if self.threadInstance.varsFuncs_Temp["finishedOrNot"]==True:
             self.threadInstance.actionFlow.actionFlowCurrentJSON.pop(0)
 
-        elif self.threadInstance.Vars["finishedOrNot"]==False:
+        elif self.threadInstance.varsFuncs_Temp["finishedOrNot"]==False:
 
 
             self.threadInstance.functionsDescriptionAndExample= self.threadInstance.sendMessageToHuman.getDescriptionAndExample()

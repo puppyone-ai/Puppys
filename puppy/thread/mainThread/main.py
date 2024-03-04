@@ -6,11 +6,10 @@ from .knowledge import Knowledge
 #from ...publicFunction.actionDefault import ActionDefault
 
 
-
-class CodeThread():
+class MainThread():
     def __init__(self):
         
-        self.currentThreadName="codeThread"
+        self.currentThreadName="mainThread"
         self.actionFlow=ActionFlow(self)
         self.actions=Actions(self)
         self.knowledge=Knowledge(self)
@@ -18,22 +17,24 @@ class CodeThread():
         self.threadProperty={}
         self.environment={
         }
-        self.Vars={"self":self}
+
+
+        self.vars_ForDev = {}
+        self.funcs_forDev ={}
+
+        self.vars_Shared = {}
+        self.funcs_Shared = {}
+
+        self.varsFuncs_Temp = {"self":self}
 
         self.goal=""
 
-        self.codeThreadFuncPreActionList=[]
-        self.codeThreadFuncPostActionList=[]
-
-    # import tools, initialize the agent
-    def codeThreadInitialize(self):
-        pass
 
     # to run the thread
-    def codeThreadRun(self):
+    def MainThreadRun(self):
         
         # start the code thread
-        threadCode = threading.Thread(target=self.codeThreadActionFlowRun)
+        threadCode = threading.Thread(target=self.mainThreadActionFlowRun)
         threadCode.daemon = False
         threadCode.start()
         
@@ -44,12 +45,12 @@ class CodeThread():
         threadCode.join()
 
     # for the wrapper of action
-    def codeThread(self, func):
+    def mainThread(self, func):
         def wrapper(self, *args, **kwargs):
             self.initialize()
             func(*args, **kwargs)
         
-        self.currentThreadName="codeThread"
+        self.currentThreadName="mainThread"
         sourseCode=inspect.getsource(func)
 
         # if the function is action, initialize the actionFlow
@@ -79,10 +80,10 @@ class CodeThread():
         globals()[instanceName] = new_instance
 
     def execMode(self, code, mode="thread"):
-        exec(code, self.Vars)
+        exec(code, self.varsFuncs_Temp)
 
 
-    def codeThreadActionFlowRun(self):
+    def mainThreadActionFlowRun(self):
 
         # import tools, for agents
 
@@ -94,18 +95,16 @@ class CodeThread():
         self.sendMessageToHuman = self.actionDefault.sendMessageToHuman
 
 
-        
-
         self.actionFlow.actionFlowCurrentClear()
 
 
         #print(self.Vars)
-        print("\n")
+
         print("\U0001F4E5 Import Done")
         # start the action flow
 
         while self.actionFlow.actionFlowCurrentJSON ==[] and self.actionFlow.actionFlowPendingJSON !=[]:
-            print("\n")
+
             print("\U0001F525 Action Start")
 
             # STEP 1: load the action from actionFlowPending to actionFlowCurrent
@@ -113,13 +112,11 @@ class CodeThread():
 
             # STEP 2: delete the action from actionFlowPending
             self.actionFlow.actionFlowPendingRemoveFront()
-            print("\n")
+
             print("\U0001F51C ActionFlowPending:")
             print(self.actionFlow.actionFlowPendingJSON)
-            print("\n")
             print("\U000025B6 ActionFlowCurrentJSON:")
             print(self.actionFlow.actionFlowCurrentJSON)
-            print("\n")
             print("\U0001F519 ActionFlowHistory:")
             print(self.actionFlow.actionFlowHistoryJSON)
 
@@ -150,7 +147,7 @@ class CodeThread():
                     
 
 
-                    exec(action, self.Vars)
+                    exec(action, self.varsFuncs_Temp)
                     self.actionFlow.actionOnGoing.task_done()
 
                     # STEP 4: load the action from the actionFlowCurrent to the actionFlowHistory
@@ -170,14 +167,14 @@ class CodeThread():
         print("Done")
 
 
-class Puppy(CodeThread):
+class Puppy(MainThread):
     def __init__(self, name="puppy"):
         
         super().__init__()
         self.puppyName=name
 
     def run(self):
-        self.codeThreadRun()
+        self.MainThreadRun()
 
 
 
