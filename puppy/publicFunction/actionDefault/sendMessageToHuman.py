@@ -1,13 +1,13 @@
-
 import pandas as pd
 from googleapiclient.discovery import build
 
 
 class SendMessageToHuman:
-    def __init__(self, threadInstance, question='',**kwargs):
-        self.puppyName=threadInstance.puppyName
+    def __init__(self, threadInstance, **kwargs):
         self.threadInstance = threadInstance
-        self.ActionName="sendMessageToHuman"
+
+        self.name = "sendMessageToHuman"
+        self.tag = "func"
         self.description = """Use it when you have no idea how to achieve an action based on the current information knowledge, or functions. or you want to convey a message to the user
         If you feel confused about any knowledge that are essential for following actions. You can stop keeping going and only ask human for help. You don't need to finish all the actions in one time.
         use emoji to make the conversation more interesting. For example, happy/ sad/ sorry/ angry/ question/ etc.
@@ -15,38 +15,38 @@ class SendMessageToHuman:
         """
         self.example = f"""
         ## Ask the user about the phone number of his boss
-        answer = self.sendMessageToHuman.run("\U0001F600: What's the phone number of your boss?")
+        answer = self.sendMessageToHuman("\U0001F600: What's the phone number of your boss?")
         """
         self.functionBeforeAction = []
         self.functionAfterAction = []
         self.allowedThread = ["mainThread"]
 
 
-        self.question = question
-
+    def __call__(self, question=""):
+        return self.run(question)
 
     def getExample(self):
         return self.example
-    
-    def getDescription(self):  
+
+    def getDescription(self):
         return self.description
-    
+
     def getDescriptionAndExample(self):
-        return self.description+"\n"+self.example
-    
-    def setQuestion(self,question):
-        self.question=question
+        return self.description + "\n" + self.example
 
-    
-    def run(self,question=""):
-        self.question=question
+    def setQuestion(self, question):
+        self.question = question
 
-        userInput=input(question+"\n"+"Your response:")
+    def run(self, question=""):
+        self.question = question
+
+        userInput = input(question + "\n" + "Your response:")
         print("\U0001F600: Sure, get it.")
 
-        chatHistory="\n"+"your message:"+self.question+"\n"+"# User's response: "+userInput+"\n"
+        chatHistory = "\n" + "your message:" + self.question + "\n" + "# User's response: " + userInput + "\n"
 
-        self.threadInstance.actionFlow.actionFlowCurrentGetFrontAddCode(chatHistory)  
-        #self.threadInstance.knowledge.knowledge.append(chatHistory)
+        self.threadInstance.actionFlow.actionFlowCurrentGetFrontAddCode(chatHistory)
+        # self.threadInstance.knowledge.knowledge.append(chatHistory)
         return userInput
-    
+
+

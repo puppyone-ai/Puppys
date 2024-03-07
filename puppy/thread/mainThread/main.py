@@ -55,7 +55,7 @@ class MainThread():
 
         # if the function is action, initialize the actionFlow
         funcName=func.__name__
-        if funcName == "actionFlow":
+        if funcName == "actionFlowPending":
 
             # get source code
             self.actionFlow.initialize(sourseCode)

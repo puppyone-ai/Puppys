@@ -6,10 +6,11 @@ import pprint
 
 
 class GoogleSearchNative:
-    def __init__(self, codeThreadInstance,search_content='', num=5,**kwargs):
-        self.codeThreadInstance = codeThreadInstance
+    def __init__(self, ThreadInstance, search_content='', num=5, **kwargs):
+        self.ThreadInstance = ThreadInstance
         
         self.ActionName="googleSearchNative"
+        self.tag = "func"
         self.description = "Serach Engine, use when you want to search something on google, return the title, link and snippet of the search result"
         self.example = """
         ## search the result via googlesearch
