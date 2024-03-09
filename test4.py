@@ -43,12 +43,30 @@ class agentFuncTemplate:
         pass
         """
 
-    def __call__(self):
-        self.run()
+    def __call__(self, **kwargs):
+        self.run(**kwargs)
 
     def run(self, **kwargs):
         pass
 
+
+# This is an example of a function for agents
+class agentVarsTemplate:
+    def __init__(self, threadInstance, **kwargs):
+        self.threadInstance = threadInstance
+        self.name = "None"
+        self.tag = "vars"
+        self.description = "nothing"
+        self.example = """
+        ## doing nothing
+        pass
+        """
+
+    def __call__(self, **kwargs):
+        self.run(**kwargs)
+
+    def run(self, **kwargs):
+        pass
 
 
 class numApples:

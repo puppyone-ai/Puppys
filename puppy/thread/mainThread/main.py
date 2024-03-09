@@ -15,24 +15,95 @@ class MainThread():
         self.knowledge=Knowledge(self)
 
         self.threadProperty={}
-        self.environment={
-        }
+
+        self.agentVarFunc = {}
+
+        self.agentFunc = {}
+        self.agentVar = {}
 
 
-        self.vars_ForDev = {}
-        self.funcs_forDev ={}
-
-        self.vars_Shared = {}
-        self.funcs_Shared = {}
-
-        self.varsFuncs_Temp = {"self":self}
+        self.environment = {"self":self}
 
         self.goal=""
 
 
+
+    # to get value from agentVar
+    def __getattr__(self, attr):
+        if attr in self.agentVar:
+            return attr.value
+
+        else:
+            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{attr}'")
+
+
+    ## the templete of an func for agents
+    class agentFuncTemplate:
+        def __init__(self, threadInstance, **kwargs):
+            self.threadInstance = threadInstance
+            self.name = "None"
+            self.tag = "func"
+            self.description = "nothing"
+            self.example = """
+            ## doing nothing
+            pass
+            """
+
+        def __call__(self, **kwargs):
+            self.run(**kwargs)
+
+        def run(self, **kwargs):
+            pass
+
+
+    ## the templete of an func for agents
+    class agentVarTemplete:
+        def __init__(self, threadInstance, **kwargs):
+            self.threadInstance = threadInstance
+            self.name = "None"
+            self.tag = "var"
+            self.description = "nothing"
+            self.value = None
+
+
+
+
+    def newAgentFunc(self, func):
+        args = inspect.getfullargspec(func).args
+        sourceCode=inspect.getsource(func)
+        name=func.__name__
+
+        newAgentVar=self.agentVarTemplete()
+
+
+        print("name:")
+        print(name)
+
+        print("arg:")
+        print(args)
+
+        print("sourceCode:")
+        print(sourceCode)
+
+
+    def new_agent_var(self, func):
+        args = inspect.getfullargspec(func).args
+        sourceCode=inspect.getsource(func)
+        name=func.__name__
+
+        print("name:")
+        print(name)
+
+        print("arg:")
+        print(args)
+
+        print("sourceCode:")
+        print(sourceCode)
+
+
     # to run the thread
     def MainThreadRun(self):
-        
+
         # start the code thread
         threadCode = threading.Thread(target=self.mainThreadActionFlowRun)
         threadCode.daemon = False
@@ -80,8 +151,7 @@ class MainThread():
         globals()[instanceName] = new_instance
 
     def execMode(self, code, mode="thread"):
-        exec(code, self.varsFuncs_Temp)
-
+        exec(code, self.environment)
 
     def mainThreadActionFlowRun(self):
 
@@ -147,7 +217,7 @@ class MainThread():
                     
 
 
-                    exec(action, self.varsFuncs_Temp)
+                    exec(action, self.environment)
                     self.actionFlow.actionOnGoing.task_done()
 
                     # STEP 4: load the action from the actionFlowCurrent to the actionFlowHistory
