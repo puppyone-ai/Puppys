@@ -11,7 +11,7 @@ XiaoMei = Puppy(name="XiaoMei")
 
 
 @XiaoMei.mainThread
-def actionFlow():
+def actionFlowPending():
 
     ## send me a message of hello after 1 minute.
     XiaoMei.do()

@@ -1,6 +1,6 @@
 ![alt text](/assets/PuppyAgentHorizon.png)
 
-*An open-source **Code-Based AI Agents** framework*
+*An open-source **Code-Native AI Agents** framework*
 
 <div align="center">
 
@@ -9,7 +9,7 @@
 
 <div align="center">
 
-**📃 [Document](https://mulberry-magician-e0a.notion.site/Puppys-document-83e2e55cfd27449589a6a721402ff4bc?pvs=4)**
+**📜 [Document](https://mulberry-magician-e0a.notion.site/Puppys-document-83e2e55cfd27449589a6a721402ff4bc?pvs=4)**
 &ensp;|&ensp;
 **🔌 [Install](https://mulberry-magician-e0a.notion.site/Install-453ccfa356a04eda865c68e489d0e6bf?pvs=4)**
 &ensp;|&ensp;
@@ -21,13 +21,6 @@
 * **Multi-Threads**: Puppys enable you to build an agent with multi-thread.
 * **Human-Agent Interacts**: Your agent will ask you when it cannot understand what you said.
 * **RAG**: Retriver is essential for agents. Puppys offers an advanced information retrive framework, making your agent smarter!
-
-
-
-
-
-
-
 
 
 
