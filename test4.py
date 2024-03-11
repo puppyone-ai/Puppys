@@ -50,6 +50,7 @@ class agentFuncTemplate:
         pass
 
 
+
 # This is an example of a function for agents
 class agentVarsTemplate:
     def __init__(self, threadInstance, **kwargs):
