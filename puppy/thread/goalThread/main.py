@@ -3,7 +3,7 @@ import threading
 from .actionFlow import ActionFlow
 from .actions import Actions
 from .knowledge import Knowledge
-#from ...publicFunction.actionDefault import ActionDefault
+#from ...publicFunc.default import ActionDefault
 
 
 
@@ -85,7 +85,7 @@ class GoalThread():
 
 
         # loading actions
-        from ...publicFunction.actionDefault import ActionDefault
+        from ...publicFunc.default import ActionDefault
 
         self.actionDefault = ActionDefault(self)
         self.sendMessageToHuman = self.actionDefault.sendMessageToHuman

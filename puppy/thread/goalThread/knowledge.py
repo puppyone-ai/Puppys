@@ -17,3 +17,5 @@ class Knowledge():
 
     def clearKnowledge(self):
         self.knowledge = []
+
+

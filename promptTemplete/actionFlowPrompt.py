@@ -281,7 +281,7 @@ ActionDo = PromptTemplate(
     You are allowed to write python code and use the given functions below. But make sure that you have imoprted the given package.
     The XXX.do() part means where you need to decide to write python code to achieve the action, no matter what the XXX is, it should be replaced by your output code.Don's be confused by the XXX, it's just a placeholder for your code. And it can be run whatever.
     Pay attention to name your parameter in your code. The naming convention in your code should not be arbitrary, like 'result'. It should reflect the property of the parameter.
-    Your customized functions and their examples are:
+    Your customized functions and their useCases are:
     {function_description_and_example}
 
     Here are the knowledge you have learned:{knowledge}
