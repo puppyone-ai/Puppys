@@ -3,7 +3,7 @@ import threading
 from .actionFlow import ActionFlow
 from .actions import Actions
 from .knowledge import Knowledge
-#from ...publicFunction.actionDefault import ActionDefault
+#from ...publicFunc.default import ActionDefault
 
 
 class MainThread():
@@ -66,13 +66,20 @@ class MainThread():
             self.value = None
 
 
+    # TODO
+    def addNewFunc(self, func):
+        pass
+
+    # TODO
+    def addNewVar(self, func):
+        pass
 
     def newAgentFunc(self, func):
         args = inspect.getfullargspec(func).args
         sourceCode=inspect.getsource(func)
         name=func.__name__
 
-        newAgentVar=self.agentVarTemplete()
+        newAgentFunc=self.agentFuncTemplete()
 
 
         print("name:")
@@ -159,7 +166,7 @@ class MainThread():
 
 
         # loading actions
-        from ...publicFunction.actionDefault import ActionDefault
+        from ...publicFunc.default import ActionDefault
 
         self.actionDefault = ActionDefault(self)
         self.sendMessageToHuman = self.actionDefault.sendMessageToHuman

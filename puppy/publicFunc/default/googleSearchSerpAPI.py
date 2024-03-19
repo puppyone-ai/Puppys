@@ -129,7 +129,7 @@ class GoogleSearchSerpy():
                     "phonetic": results["answer_box"]["phonetic"],
                     "word_type": results["answer_box"]["word_type"],
                     "definitions": results["answer_box"]["definitions"],
-                    "examples": results["answer_box"]["examples"],
+                    "useCases": results["answer_box"]["useCases"],
                     "extras": results["answer_box"]["extras"]
                 }
 
