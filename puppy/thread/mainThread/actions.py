@@ -132,10 +132,7 @@ class Actions():
         {self.thread_instance.actionflow.actionflow_pending_get_code()}
 
         And the current enviroment shown as Python code are(sometimes there is something important):
-        {self.thread_instance.environment}
-
-        Here are the knowledge you have learned:
-        {self.thread_instance.knowledge.getKnowledgeStr()}"""},
+        {self.thread_instance.environment}"""},
 
         
         # 4. justfy if the action is done or not
@@ -162,7 +159,7 @@ class Actions():
         return new_code
 
     
-    def do(self,temperature=0.1,max_tokens=4096,model="gpt-4-turbo-preview",api_key="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"):
+    def do(self,temperature=0.1,max_tokens=4096,model="gpt-4-turbo-preview",api_key="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"):
         os.environ["OPENAI_API_KEY"]=api_key
         """
         write code to achieve the action
@@ -202,7 +199,6 @@ class Actions():
             Your customized functions and their examples are:
             {self.thread_instance.functions_description_and_example}
 
-            Here are the knowledge you have learned:{self.thread_instance.knowledge.getKnowledgeStr()}
             
             Try to understand the meaning of each function and its parameter, and decide the best function and use the function for this step to accomplish the action. 
             For example: (current action: search the location of the NBA in 2019)
@@ -257,10 +253,10 @@ class Actions():
             print("################################################################################")
 
 
-            self.thread_instance.actionflow.actionflow_current_add_to_front(self.thread_instance.actionflow.decorate_actionflow_code_to_json(name=self.threadInstance.actionflow.actionflow_current_get_name, code=newCode, status="fixed"))
+            self.thread_instance.actionflow.actionflow_current_add_to_front(self.thread_instance.actionflow.decorate_actionflow_code_to_json(name=self.thread_instance.actionflow.actionflow_current_get_name, code=newCode, status="fixed"))
 
 
-    def reflect(self,temperature=0.1,max_tokens=4096,model_name="gpt-4-1106-preview",ApiKey="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"):
+    def reflect(self,temperature=0.1,max_tokens=4096,model_name="gpt-4-1106-preview",ApiKey="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"):
         os.environ["OPENAI_API_KEY"]=ApiKey
         """
         reflect if the action is done or not.
