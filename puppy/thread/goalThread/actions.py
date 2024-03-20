@@ -79,7 +79,7 @@ class Actions():
 
         client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", ApiKey))
         
-        self.threadInstance.functionsDescriptionAndExample= self.threadInstance.sendMessageToHuman.getDescriptionAndExample()
+        self.threadInstance.functionsDescriptionAndExample= self.threadInstance.sendMessageToHuman.get_description_and_example()
 
         # prompt for actionDo ***********************************************************************************************
         prompt=[
@@ -127,16 +127,16 @@ class Actions():
         {"role": "system", 
         "content":f"""
         You have an overall long-term goal: {self.threadInstance.goal},  now you need to write python code to finish your next action:
-        {self.threadInstance.actionFlow.actionflow_current_get_front()["action"]}
+        {self.threadInstance.actionflow.actionflow_current_get_front()["action"]}
 
         The code for historical actionflow shown as code are:
-        {self.threadInstance.actionFlow.actionflow_history_get_code()}
+        {self.threadInstance.actionflow.actionflow_history_get_code()}
                             
         user have already write some code for this action, but it's not finished. You should replace the XXX.do() part. Don't keep the .do() function after your response. The XXX is your name, and the .do() is an instruction of 'you must write code and put it here'.:
-        {self.threadInstance.actionFlow.actionflow_current_get_code()}
+        {self.threadInstance.actionflow.actionflow_current_get_code()}
                             
         The code of action in the future are(But you don't need to do this part now, just for your information)):
-        {self.threadInstance.actionFlow.actionflow_pending_get_code()}
+        {self.threadInstance.actionflow.actionflow_pending_get_code()}
 
         And the current enviroment shown as Python code are(sometimes there is something important):
         {self.threadInstance.environment}
@@ -148,7 +148,7 @@ class Actions():
         # 4. justfy if the action is done or not
         {"role": "user",
         "content":f"""
-        Now you need to write code to justify if the action of {self.threadInstance.actionFlow.actionflow_current_get_front()["action"]} is done or not. 
+        Now you need to write code to justify if the action of {self.threadInstance.actionflow.actionflow_current_get_front()["action"]} is done or not. 
         """}
         ]
 
@@ -194,12 +194,12 @@ class Actions():
         exec(continueAction, self.threadInstance.environment)
 
         if self.threadInstance.environment["finishedOrNot"]==True:
-            self.threadInstance.actionFlow.actionflow_current_JSON.pop(0)
+            self.threadInstance.actionflow.actionflow_current_JSON.pop(0)
 
         elif self.threadInstance.environment["finishedOrNot"]==False:
 
 
-            self.threadInstance.functionsDescriptionAndExample= self.threadInstance.sendMessageToHuman.getDescriptionAndExample()
+            self.threadInstance.functionsDescriptionAndExample= self.threadInstance.sendMessageToHuman.get_description_and_example()
 
             client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", ApiKey))
 
@@ -238,16 +238,16 @@ class Actions():
             {"role": "user", 
             "content":f"""
             You have an overall goal: {self.threadInstance.goal},  now you need to write python code to finish your next action:
-            {self.threadInstance.actionFlow.actionflow_current_get_front()["action"]}
+            {self.threadInstance.actionflow.actionflow_current_get_front()["action"]}
 
             The code for historical actionflow shown as code are:
-            {self.threadInstance.actionFlow.actionflow_history_get_code()}
+            {self.threadInstance.actionflow.actionflow_history_get_code()}
                                 
             user have already write some code for this action, but it's not finished. You should replace the XXX.do() part. Don't keep the .do() function after your response. The XXX is your name, and the .do() is an instruction of 'you must write code and put it here'.:
-            {self.threadInstance.actionFlow.actionflow_current_get_code()}
+            {self.threadInstance.actionflow.actionflow_current_get_code()}
                                 
             The code of action in the future are(But you don't need to do this part now, just for your information)):
-            {self.threadInstance.actionFlow.actionflow_pending_get_code()}
+            {self.threadInstance.actionflow.actionflow_pending_get_code()}
 
             And the current enviroment shown as Python code are(sometimes there is something important):
             {self.threadInstance.environment}"""},
@@ -256,7 +256,7 @@ class Actions():
             # 4. provide the code of the action
             {"role": "user",
             "content":f"""
-            Now you write code to achieve your action: {self.threadInstance.actionFlow.actionflow_current_get_front()["action"]}
+            Now you write code to achieve your action: {self.threadInstance.actionflow.actionflow_current_get_front()["action"]}
             DONT'T ASSUME you know the knowledge that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function, and you can show your thinking and reason in the comment. But don't write any code calling undefined functions in this case.
             make sure that the parameter in your respond code follow the type of the parameter in the function instruction. .
             You are NOT allowed to write {self.threadInstance.puppyName}.do() in your final response as code. When the {self.codeThreadInstance.puppyName}.do() appears, you HAVE TO change it to other code.
@@ -291,7 +291,7 @@ class Actions():
 
 
             ## TODO ERROR here
-            self.threadInstance.actionFlow.actionflow_current_add_to_front(self.threadInstance.actionFlow.decorate_actionflow_code_to_json(name=self.threadInstance.actionFlow.actionflow_current_get_name, code=newCode, status="fixed"))
+            self.threadInstance.actionflow.actionflow_current_add_to_front(self.threadInstance.actionflow.decorate_actionflow_code_to_json(name=self.threadInstance.actionflow.actionflow_current_get_name, code=newCode, status="fixed"))
 
             print("knowledge is",self.threadInstance.knowledge.getKnowledgeStr())
 

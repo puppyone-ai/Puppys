@@ -9,7 +9,7 @@ class Puppy(MainThread):
         self.puppyName=name
 
     def run(self):
-        self.MainThreadRun()
+        self.main_thread_run()
 
 
 

@@ -2,9 +2,9 @@ import pandas as pd
 from googleapiclient.discovery import build
 
 
-class SendMessageToHuman:
-    def __init__(self, threadInstance, **kwargs):
-        self.threadInstance = threadInstance
+class Send_message_to_human:
+    def __init__(self, thread_instance, **kwargs):
+        self.thread_instance = thread_instance
 
         self.name = "sendMessageToHuman"
         self.tag = "func"
@@ -17,36 +17,36 @@ class SendMessageToHuman:
         ## Ask the user about the phone number of his boss
         answer = self.sendMessageToHuman("\U0001F600: What's the phone number of your boss?")
         """
-        self.functionBeforeAction = []
-        self.functionAfterAction = []
-        self.allowedThread = ["mainThread"]
+        self.function_before_action = []
+        self.function_after_action = []
+        self.allowed_thread = ["main_thread"]
 
 
     def __call__(self, question=""):
         return self.run(question)
 
-    def getExample(self):
+    def get_example(self):
         return self.example
 
-    def getDescription(self):
+    def get_description(self):
         return self.description
 
-    def getDescriptionAndExample(self):
+    def get_description_and_example(self):
         return self.description + "\n" + self.example
 
-    def setQuestion(self, question):
+    def set_question(self, question):
         self.question = question
 
     def run(self, question=""):
         self.question = question
 
-        userInput = input(question + "\n" + "Your response:")
+        user_input = input(question + "\n" + "Your response:")
         print("\U0001F600: Sure, get it.")
 
-        chatHistory = "\n" + "your message:" + self.question + "\n" + "# User's response: " + userInput + "\n"
+        chat_history = "\n" + "your message:" + self.question + "\n" + "# User's response: " + user_input + "\n"
 
-        self.threadInstance.actionFlow.actionflow_current_get_front_add_code(chatHistory)
-        # self.threadInstance.knowledge.knowledge.append(chatHistory)
-        return userInput
+        self.thread_instance.actionflow.actionflow_current_get_front_add_code(chat_history)
+        # self.threadInstance.knowledge.knowledge.append(chat_history)
+        return user_input
 
 

@@ -1,6 +1,6 @@
 import inspect
 import threading
-from .actionflow import ActionFlow
+from .actionflow import Actionflow
 from .actions import Actions
 #from ...publicFunc.default import ActionDefault
 
@@ -8,17 +8,16 @@ from .actions import Actions
 class MainThread():
     def __init__(self):
         
-        self.currentThreadName="mainThread"
-        self.actionFlow=ActionFlow(self)
+        self.current_thread_name= "mainThread"
+        self.actionflow=Actionflow(self)
         self.actions=Actions(self)
-        self.knowledge=Knowledge(self)
 
-        self.threadProperty={}
+        self.thread_Property={}
 
-        self.agentVarFunc = {}
+        self.agent_var_func = {}
 
-        self.agentFunc = {}
-        self.agentVar = {}
+        self.agent_func = {}
+        self.agent_var = {}
 
 
         self.environment = {"self":self}
@@ -29,7 +28,7 @@ class MainThread():
 
     # to get value from agentVar
     def __getattr__(self, attr):
-        if attr in self.agentVar:
+        if attr in self.agent_var:
             return attr.value
 
         else:
@@ -37,9 +36,9 @@ class MainThread():
 
 
     ## the templete of an func for agents
-    class agentFuncTemplate:
-        def __init__(self, threadInstance, **kwargs):
-            self.threadInstance = threadInstance
+    class agent_func_template:
+        def __init__(self, thread_instance, **kwargs):
+            self.thread_instance = thread_instance
             self.name = "None"
             self.tag = "func"
             self.description = "nothing"
@@ -56,9 +55,9 @@ class MainThread():
 
 
     ## the templete of an func for agents
-    class agentVarTemplete:
-        def __init__(self, threadInstance, **kwargs):
-            self.threadInstance = threadInstance
+    class Agent_var_templete:
+        def __init__(self, thread_instance, **kwargs):
+            self.thread_instance = thread_instance
             self.name = "None"
             self.tag = "var"
             self.description = "nothing"
@@ -66,19 +65,19 @@ class MainThread():
 
 
     # TODO
-    def addNewFunc(self, func):
+    def add_new_func(self, func):
         pass
 
     # TODO
-    def addNewVar(self, func):
+    def add_new_var(self, func):
         pass
 
-    def newAgentFunc(self, func):
+    def new_agent_func(self, func):
         args = inspect.getfullargspec(func).args
-        sourceCode=inspect.getsource(func)
+        source_code=inspect.getsource(func)
         name=func.__name__
 
-        newAgentFunc=self.agentFuncTemplete()
+        newAgentFunc=self.agent_func_templateTemplete()
 
 
         print("name:")
@@ -87,13 +86,13 @@ class MainThread():
         print("arg:")
         print(args)
 
-        print("sourceCode:")
-        print(sourceCode)
+        print("source_code:")
+        print(source_code)
 
 
     def new_agent_var(self, func):
         args = inspect.getfullargspec(func).args
-        sourceCode=inspect.getsource(func)
+        source_code=inspect.getsource(func)
         name=func.__name__
 
         print("name:")
@@ -102,47 +101,47 @@ class MainThread():
         print("arg:")
         print(args)
 
-        print("sourceCode:")
-        print(sourceCode)
+        print("source_code:")
+        print(source_code)
 
 
     # to run the thread
-    def MainThreadRun(self):
+    def main_thread_run(self):
 
         # start the code thread
-        threadCode = threading.Thread(target=self.mainThreadActionFlowRun)
-        threadCode.daemon = False
-        threadCode.start()
+        thread_code = threading.Thread(target=self.main_thread_actionflow_run)
+        thread_code.daemon = False
+        thread_code.start()
         
 
         #self.codeThreadActionFlow.actionOnGoing.put(importTools)
 
 
         # end the code thread
-        threadCode.join()
+        thread_code.join()
 
     # for the wrapper of action
-    def mainThread(self, func):
+    def main_thread(self, func):
         def wrapper(self, *args, **kwargs):
             self.initialize()
             func(*args, **kwargs)
         
-        self.currentThreadName="mainThread"
-        sourseCode=inspect.getsource(func)
+        self.current_thread_name= "mainThread"
+        sourse_code=inspect.getsource(func)
 
         # if the function is action, initialize the actionFlow
-        funcName=func.__name__
-        if funcName == "actionFlowPending":
+        func_name=func.__name__
+        if func_name == "actionflow_pending":
 
             # get source code
-            self.actionFlow.initialize(sourseCode)
+            self.actionflow.initialize(sourse_code)
 
             print("\U0001F3B2 Initialize Done")
-            print("Initialized Function: "+funcName)
+            print("Initialized Function: "+func_name)
 
 
 
-        if funcName == "trigger":
+        if func_name == "trigger":
             # TODO
             pass
 
@@ -150,16 +149,16 @@ class MainThread():
         return wrapper
 
 
-    def createPuppyInstance(self, instanceName):
-        new_instance = Puppy(name=instanceName)
+    def create_puppy_instance(self, instance_name):
+        new_instance = Puppy(name=instance_name)
         # 将新创建的实例添加到globalVars字典中，使用instance_name作为键
 
-        globals()[instanceName] = new_instance
+        globals()[instance_name] = new_instance
 
-    def execMode(self, code, mode="thread"):
+    def exec_mode(self, code, mode="thread"):
         exec(code, self.environment)
 
-    def mainThreadActionFlowRun(self):
+    def main_thread_actionflow_run(self):
 
         # import tools, for agents
 
@@ -167,11 +166,11 @@ class MainThread():
         # loading actions
         from ...publicFunc.default import ActionDefault
 
-        self.actionDefault = ActionDefault(self)
-        self.sendMessageToHuman = self.actionDefault.sendMessageToHuman
+        self.action_default = ActionDefault(self)
+        self.sendMessageToHuman = self.action_default.sendMessageToHuman
 
 
-        self.actionFlow.actionflow_current_clear()
+        self.actionflow.actionflow_current_clear()
 
 
         #print(self.Vars)
@@ -179,42 +178,42 @@ class MainThread():
         print("\U0001F4E5 Import Done")
         # start the action flow
 
-        while self.actionFlow.actionflow_current_JSON ==[] and self.actionFlow.actionflow_pending_JSON !=[]:
+        while self.actionflow.actionflow_current_JSON ==[] and self.actionflow.actionflow_pending_JSON !=[]:
 
             print("\U0001F525 Action Start")
 
             # STEP 1: load the action from actionFlowPending to actionFlowCurrent
-            self.actionFlow.action_current_load()
+            self.actionflow.action_current_load()
 
             # STEP 2: delete the action from actionFlowPending
-            self.actionFlow.actionflow_pending_remove_front()
+            self.actionflow.actionflow_pending_remove_front()
 
             print("\U0001F51C ActionFlowPending:")
-            print(self.actionFlow.actionflow_pending_JSON)
+            print(self.actionflow.actionflow_pending_JSON)
             print("\U000025B6 ActionFlowCurrentJSON:")
-            print(self.actionFlow.actionflow_current_JSON)
+            print(self.actionflow.actionflow_current_JSON)
             print("\U0001F519 ActionFlowHistory:")
-            print(self.actionFlow.actionflow_history_JSON)
+            print(self.actionflow.actionflow_history_JSON)
 
-            while self.actionFlow.actionflow_current_JSON !=[]:
+            while self.actionflow.actionflow_current_JSON !=[]:
                 
                 # STEP 3.1: check if the action is fixed, semi-fixed, or changeable
-                if self.actionFlow.actionflow_current_get_front()["status"]== "fixed":
+                if self.actionflow.actionflow_current_get_front()["status"]== "fixed":
                     pass
 
-                elif self.actionFlow.actionflow_current_get_front()["status"]== "semi-fixed":
+                elif self.actionflow.actionflow_current_get_front()["status"]== "semi-fixed":
                     self.actions.do()
 
-                elif self.actionFlow.actionflow_current_get_front()["status"]== "changeable":
+                elif self.actionflow.actionflow_current_get_front()["status"]== "changeable":
                     pass
                 
                 # STEP 3.2 load the action from actionCurrent to actionOnGoing
-                if self.actionFlow.actionflow_current_JSON !=[]:
-                    self.actionFlow.action_current_execute()
+                if self.actionflow.actionflow_current_JSON !=[]:
+                    self.actionflow.action_current_execute()
                     
                 
                     # STEP 3.3: load the action from actionOngoing and execute the code, and determine if the action is hidden
-                    action = self.actionFlow.action_on_going.get()
+                    action = self.actionflow.action_on_going.get()
 
                     print("\n")
                     print("\U0001F697 Running Code ################################################################")
@@ -224,15 +223,15 @@ class MainThread():
 
 
                     exec(action, self.environment)
-                    self.actionFlow.action_on_going.task_done()
+                    self.actionflow.action_on_going.task_done()
 
                     # STEP 4: load the action from the actionFlowCurrent to the actionFlowHistory
-                    self.actionFlow.action_current_save()
+                    self.actionflow.action_current_save()
 
 
                     # STEP 5: remove the action from the actionFlowCurrent
-                    if self.actionFlow.actionflow_current_JSON !=[]:
-                        self.actionFlow.actionflow_current_remove_front()
+                    if self.actionflow.actionflow_current_JSON !=[]:
+                        self.actionflow.actionflow_current_remove_front()
                     
                     else:
                         pass
@@ -247,10 +246,10 @@ class Puppy(MainThread):
     def __init__(self, name="puppy"):
         
         super().__init__()
-        self.puppyName=name
+        self.puppy_name=name
 
     def run(self):
-        self.MainThreadRun()
+        self.main_thread_run()
 
 
 
