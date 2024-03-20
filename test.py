@@ -13,7 +13,7 @@ Xiao_Mei = Puppy(name="XiaoMei")
 @Xiao_Mei.main_thread
 def actionflow_pending():
 
-    ## send me a message of hello after 1 minute.
+    ## send me a message of hello, motherfucker after 10 seconds.
     Xiao_Mei.do()
 
 

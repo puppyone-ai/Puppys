@@ -66,7 +66,7 @@ class Actions():
     def think_keep_going_or_not(self):
         pass
     
-    def check_do(self, temperature=0.1, max_tokens=4096, model="gpt-4-turbo-preview", api_key="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"):
+    def check_do(self, temperature=0.1, max_tokens=4096, model="gpt-4-turbo-preview", api_key="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"):
         os.environ["OPENAI_API_KEY"]=api_key
         """
         write code to achieve the action
@@ -255,12 +255,6 @@ class Actions():
 
             self.thread_instance.actionflow.actionflow_current_add_to_front(self.thread_instance.actionflow.decorate_actionflow_code_to_json(name=self.thread_instance.actionflow.actionflow_current_get_name, code=newCode, status="fixed"))
 
-
-    def reflect(self,temperature=0.1,max_tokens=4096,model_name="gpt-4-1106-preview",ApiKey="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"):
-        os.environ["OPENAI_API_KEY"]=ApiKey
-        """
-        reflect if the action is done or not.
-        """
 
 
     def code_thread_do_check_code(self, code):
