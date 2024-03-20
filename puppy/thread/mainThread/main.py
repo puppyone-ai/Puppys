@@ -2,7 +2,6 @@ import inspect
 import threading
 from .actionFlow import ActionFlow
 from .actions import Actions
-from .knowledge import Knowledge
 #from ...publicFunc.default import ActionDefault
 
 
