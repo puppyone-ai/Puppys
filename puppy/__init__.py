@@ -1,5 +1,5 @@
 from .thread.mainThread.main import MainThread
-from .thread.goalThread.main import GoalThread
+
 
 
 class Puppy(MainThread):

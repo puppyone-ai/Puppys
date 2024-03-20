@@ -7,14 +7,14 @@
 from puppy import Puppy
 
 
-XiaoMei = Puppy(name="XiaoMei")
+Xiao_Mei = Puppy(name="XiaoMei")
 
 
-@XiaoMei.main_thread
-def actionFlowPending():
+@Xiao_Mei.main_thread
+def actionflow_pending():
 
     ## send me a message of hello after 1 minute.
-    XiaoMei.do()
+    Xiao_Mei.do()
 
 
-XiaoMei.run()
+Xiao_Mei.run()

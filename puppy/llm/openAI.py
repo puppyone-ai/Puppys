@@ -59,5 +59,5 @@ def OpenAIChat(prompt=[],
 if __name__ == "__main__":
     response = OpenAIChat(prompt=[{"role": "user", "content": "Introduce yourself, with 20 words"}],
                           printing=True, stream=True, emoji=True,
-                          api_key="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")
+                          api_key="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")
 
