@@ -1,5 +1,4 @@
 import os
-from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
 
 
@@ -37,7 +36,7 @@ class GPT():
         chat_model = ChatOpenAI()
         result=chat_model.invoke(self.text)
         return result
-    
+
 """
 if __name__ == "__main__":
     text = "how should I intall the package of openAI"

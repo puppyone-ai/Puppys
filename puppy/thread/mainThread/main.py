@@ -1,6 +1,6 @@
 import inspect
 import threading
-from .actionFlow import ActionFlow
+from .actionflow import ActionFlow
 from .actions import Actions
 #from ...publicFunc.default import ActionDefault
 
@@ -171,7 +171,7 @@ class MainThread():
         self.sendMessageToHuman = self.actionDefault.sendMessageToHuman
 
 
-        self.actionFlow.actionFlowCurrentClear()
+        self.actionFlow.actionflow_current_clear()
 
 
         #print(self.Vars)
@@ -179,42 +179,42 @@ class MainThread():
         print("\U0001F4E5 Import Done")
         # start the action flow
 
-        while self.actionFlow.actionFlowCurrentJSON ==[] and self.actionFlow.actionFlowPendingJSON !=[]:
+        while self.actionFlow.actionflow_current_JSON ==[] and self.actionFlow.actionflow_pending_JSON !=[]:
 
             print("\U0001F525 Action Start")
 
             # STEP 1: load the action from actionFlowPending to actionFlowCurrent
-            self.actionFlow.actionCurrentLoad()
+            self.actionFlow.action_current_load()
 
             # STEP 2: delete the action from actionFlowPending
-            self.actionFlow.actionFlowPendingRemoveFront()
+            self.actionFlow.actionflow_pending_remove_front()
 
             print("\U0001F51C ActionFlowPending:")
-            print(self.actionFlow.actionFlowPendingJSON)
+            print(self.actionFlow.actionflow_pending_JSON)
             print("\U000025B6 ActionFlowCurrentJSON:")
-            print(self.actionFlow.actionFlowCurrentJSON)
+            print(self.actionFlow.actionflow_current_JSON)
             print("\U0001F519 ActionFlowHistory:")
-            print(self.actionFlow.actionFlowHistoryJSON)
+            print(self.actionFlow.actionflow_history_JSON)
 
-            while self.actionFlow.actionFlowCurrentJSON !=[]:
+            while self.actionFlow.actionflow_current_JSON !=[]:
                 
                 # STEP 3.1: check if the action is fixed, semi-fixed, or changeable
-                if self.actionFlow.actionFlowCurrentGetFront()["status"]=="fixed":
+                if self.actionFlow.actionflow_current_get_front()["status"]== "fixed":
                     pass
 
-                elif self.actionFlow.actionFlowCurrentGetFront()["status"]=="semi-fixed":
+                elif self.actionFlow.actionflow_current_get_front()["status"]== "semi-fixed":
                     self.actions.do()
 
-                elif self.actionFlow.actionFlowCurrentGetFront()["status"]=="changeable":
+                elif self.actionFlow.actionflow_current_get_front()["status"]== "changeable":
                     pass
                 
                 # STEP 3.2 load the action from actionCurrent to actionOnGoing
-                if self.actionFlow.actionFlowCurrentJSON !=[]:
-                    self.actionFlow.actionCurrentExecute()
+                if self.actionFlow.actionflow_current_JSON !=[]:
+                    self.actionFlow.action_current_execute()
                     
                 
                     # STEP 3.3: load the action from actionOngoing and execute the code, and determine if the action is hidden
-                    action = self.actionFlow.actionOnGoing.get()
+                    action = self.actionFlow.action_on_going.get()
 
                     print("\n")
                     print("\U0001F697 Running Code ################################################################")
@@ -224,15 +224,15 @@ class MainThread():
 
 
                     exec(action, self.environment)
-                    self.actionFlow.actionOnGoing.task_done()
+                    self.actionFlow.action_on_going.task_done()
 
                     # STEP 4: load the action from the actionFlowCurrent to the actionFlowHistory
-                    self.actionFlow.actionCurrentSave()
+                    self.actionFlow.action_current_save()
 
 
                     # STEP 5: remove the action from the actionFlowCurrent
-                    if self.actionFlow.actionFlowCurrentJSON !=[]:
-                        self.actionFlow.actionFlowCurrentRemoveFront()
+                    if self.actionFlow.actionflow_current_JSON !=[]:
+                        self.actionFlow.actionflow_current_remove_front()
                     
                     else:
                         pass

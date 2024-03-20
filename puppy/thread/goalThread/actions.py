@@ -127,16 +127,16 @@ class Actions():
         {"role": "system", 
         "content":f"""
         You have an overall long-term goal: {self.threadInstance.goal},  now you need to write python code to finish your next action:
-        {self.threadInstance.actionFlow.actionFlowCurrentGetFront()["action"]}
+        {self.threadInstance.actionFlow.actionflow_current_get_front()["action"]}
 
         The code for historical actionflow shown as code are:
-        {self.threadInstance.actionFlow.actionFlowHistoryGetCode()}
+        {self.threadInstance.actionFlow.actionflow_history_get_code()}
                             
         user have already write some code for this action, but it's not finished. You should replace the XXX.do() part. Don't keep the .do() function after your response. The XXX is your name, and the .do() is an instruction of 'you must write code and put it here'.:
-        {self.threadInstance.actionFlow.actionFlowCurrentGetCode()}
+        {self.threadInstance.actionFlow.actionflow_current_get_code()}
                             
         The code of action in the future are(But you don't need to do this part now, just for your information)):
-        {self.threadInstance.actionFlow.actionFlowPendingGetCode()}
+        {self.threadInstance.actionFlow.actionflow_pending_get_code()}
 
         And the current enviroment shown as Python code are(sometimes there is something important):
         {self.threadInstance.environment}
@@ -148,7 +148,7 @@ class Actions():
         # 4. justfy if the action is done or not
         {"role": "user",
         "content":f"""
-        Now you need to write code to justify if the action of {self.threadInstance.actionFlow.actionFlowCurrentGetFront()["action"]} is done or not. 
+        Now you need to write code to justify if the action of {self.threadInstance.actionFlow.actionflow_current_get_front()["action"]} is done or not. 
         """}
         ]
 
@@ -194,7 +194,7 @@ class Actions():
         exec(continueAction, self.threadInstance.environment)
 
         if self.threadInstance.environment["finishedOrNot"]==True:
-            self.threadInstance.actionFlow.actionFlowCurrentJSON.pop(0)
+            self.threadInstance.actionFlow.actionflow_current_JSON.pop(0)
 
         elif self.threadInstance.environment["finishedOrNot"]==False:
 
@@ -238,16 +238,16 @@ class Actions():
             {"role": "user", 
             "content":f"""
             You have an overall goal: {self.threadInstance.goal},  now you need to write python code to finish your next action:
-            {self.threadInstance.actionFlow.actionFlowCurrentGetFront()["action"]}
+            {self.threadInstance.actionFlow.actionflow_current_get_front()["action"]}
 
             The code for historical actionflow shown as code are:
-            {self.threadInstance.actionFlow.actionFlowHistoryGetCode()}
+            {self.threadInstance.actionFlow.actionflow_history_get_code()}
                                 
             user have already write some code for this action, but it's not finished. You should replace the XXX.do() part. Don't keep the .do() function after your response. The XXX is your name, and the .do() is an instruction of 'you must write code and put it here'.:
-            {self.threadInstance.actionFlow.actionFlowCurrentGetCode()}
+            {self.threadInstance.actionFlow.actionflow_current_get_code()}
                                 
             The code of action in the future are(But you don't need to do this part now, just for your information)):
-            {self.threadInstance.actionFlow.actionFlowPendingGetCode()}
+            {self.threadInstance.actionFlow.actionflow_pending_get_code()}
 
             And the current enviroment shown as Python code are(sometimes there is something important):
             {self.threadInstance.environment}"""},
@@ -256,7 +256,7 @@ class Actions():
             # 4. provide the code of the action
             {"role": "user",
             "content":f"""
-            Now you write code to achieve your action: {self.threadInstance.actionFlow.actionFlowCurrentGetFront()["action"]}
+            Now you write code to achieve your action: {self.threadInstance.actionFlow.actionflow_current_get_front()["action"]}
             DONT'T ASSUME you know the knowledge that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function, and you can show your thinking and reason in the comment. But don't write any code calling undefined functions in this case.
             make sure that the parameter in your respond code follow the type of the parameter in the function instruction. .
             You are NOT allowed to write {self.threadInstance.puppyName}.do() in your final response as code. When the {self.codeThreadInstance.puppyName}.do() appears, you HAVE TO change it to other code.
@@ -291,7 +291,7 @@ class Actions():
 
 
             ## TODO ERROR here
-            self.threadInstance.actionFlow.actionFlowCurrentAddToFront(self.threadInstance.actionFlow.decorateActionFlowCodeToJSON(name=self.threadInstance.actionFlow.actionFlowCurrentGetName,code=newCode,status="fixed"))
+            self.threadInstance.actionFlow.actionflow_current_add_to_front(self.threadInstance.actionFlow.decorate_actionflow_code_to_json(name=self.threadInstance.actionFlow.actionflow_current_get_name, code=newCode, status="fixed"))
 
             print("knowledge is",self.threadInstance.knowledge.getKnowledgeStr())
 
@@ -309,11 +309,11 @@ class Actions():
         check if the code is valid
         """
 
-        actionFlowJSON,actionFlowPython=self.actionFlow.translatePython(code)
-        if actionFlowJSON[0]["action"]==self.actionFlow.actionFlowCurrentGetFront()[0]["action"]:
+        actionFlowJSON,actionFlowPython=self.actionFlow.translate_python(code)
+        if actionFlowJSON[0]["action"]==self.actionFlow.actionflow_current_get_front()[0]["action"]:
             actionJSON=True
 
-        if actionFlowPython[0]==self.actionFlow.actionFlowCurrentGetFront()[1]:
+        if actionFlowPython[0]==self.actionFlow.actionflow_current_get_front()[1]:
             actionPython=True
 
     def checkIfActionIsDone(self):
