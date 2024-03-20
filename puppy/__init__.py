@@ -6,7 +6,7 @@ class Puppy(MainThread):
     def __init__(self, name=""):
         
         super().__init__()
-        self.puppyName=name
+        self.puppy_name=name
 
     def run(self):
         self.main_thread_run()

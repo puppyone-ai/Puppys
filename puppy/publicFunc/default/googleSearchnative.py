@@ -5,11 +5,11 @@ from googleapiclient.discovery import build
 import pprint
 
 
-class GoogleSearchNative:
-    def __init__(self, ThreadInstance, search_content='', num=5, **kwargs):
-        self.ThreadInstance = ThreadInstance
+class Google_search_native:
+    def __init__(self, thread_instance, search_content='', num=5, **kwargs):
+        self.thread_instance = thread_instance
         
-        self.ActionName="googleSearchNative"
+        self.action_name= "googleSearchNative"
         self.tag = "func"
         self.description = "Serach Engine, use when you want to search something on google, return the title, link and snippet of the search result"
         self.example = """
@@ -29,10 +29,10 @@ class GoogleSearchNative:
     def cseId(self, my_cse_id):
         self.my_cse_id = my_cse_id
 
-    def getExample(self):
+    def get_example(self):
         return self.example
     
-    def getDescription(self):  
+    def get_description(self):
         return self.description
 
     def search(self,search_content=""):

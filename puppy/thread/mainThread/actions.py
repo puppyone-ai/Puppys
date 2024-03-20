@@ -17,51 +17,51 @@ class Actions():
     def action_add(self, name, code, function_before_action, function_after_action):
         action={"name":name,
                 "code":code,}
-        self.actionList.update(action)
+        self.action_list.update(action)
 
 
     # opreations for actions
     def action_get(self):
-        return self.actionList
+        return self.action_list
     
     # remove an action from the action list
     def action_remove(self, action):
-        self.actionList.pop(action)
+        self.action_list.pop(action)
 
 
     # clear the action list
     def action_clear(self):
-        self.actionList={}
+        self.action_list={}
     
     def add_new_action(self, action):
-        self.actionList.append(action)
+        self.action_list.append(action)
 
     def add_function_before_action_front(self, function, action):
-        for e in self.actionList:
+        for e in self.action_list:
             if e["action"]==action:
                 e["function_before_action"].insert(0,function)
     
     def add_function_before_action_end(self, function, action):
-        for e in self.actionList:
+        for e in self.action_list:
             if e["action"]==action:
                 e["function_before_action"].append(function)
 
     def add_function_after_action_front(self, function, action):
-        for e in self.actionList:
+        for e in self.action_list:
             if e["action"]==action:
                 e["function_after_action"].insert(0,function)
 
     def add_function_after_action_end(self, function, action):
-        for e in self.actionList:
+        for e in self.action_list:
             if e["action"]==action:
                 e["function_after_action"].append(function)
 
 
     def get_function_before_action(self, action):
-        return self.actionList[action]["function_before_action"]
+        return self.action_list[action]["function_before_action"]
     
     def get_function_after_action(self, action):
-        return self.actionList[action]["function_after_action"]
+        return self.action_list[action]["function_after_action"]
         
     def think_keep_going_or_not(self):
         pass
@@ -73,12 +73,12 @@ class Actions():
         """
 
         
-        self.thread_instance.functionsDescriptionAndExample= self.thread_instance.sendMessageToHuman.get_description_and_example()
+        self.thread_instance.functions_description_and_example= self.thread_instance.sendMessageToHuman.get_description_and_example()
 
         prompt=[
         # 1. define your agent type and name
         {"role": "system",
-        "content":f"""You are an AI code assistant agent called {self.thread_instance.puppyName}. 
+        "content":f"""You are an AI code assistant agent called {self.thread_instance.puppy_name}. 
         1. You always write Python code! You are really good at it. Your natural language output should be written as comment in python code. for example: # Hello, I am an assistant.
         2. DONT'T ASSUME you know any unclear knowledge or information that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function. Your code will be run imediately after you write it. If you assume any hypothetical function, the the system will crash.
         3. You need to justify if your current action has been achieved or not by history code, and decide to skip the current action or not.
@@ -178,7 +178,7 @@ class Actions():
 
         elif self.thread_instance.environment["finishedOrNot"]==False:
 
-            self.thread_instance.functionsDescriptionAndExample= self.thread_instance.sendMessageToHuman.get_description_and_example()
+            self.thread_instance.functions_description_and_example= self.thread_instance.sendMessageToHuman.get_description_and_example()
 
 
             # prompt for actionDo ***********************************************************************************************
@@ -186,7 +186,7 @@ class Actions():
             # 1. define your agent type and name
             {"role": "system", 
             "content": f"""
-            You are an AI code assistant agent called {self.thread_instance.puppyName}. 
+            You are an AI code assistant agent called {self.thread_instance.puppy_name}. 
             1. You always write Python code! You are really good at it. Your natural language output should be written as comment in python code. for example: # Hello, I am an assistant.
             2. DONT'T ASSUME you know any unclear knowledge or information that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function. Your code will be run imediately after you write it. If you assume any hypothetical function, the the system will crash.
             3. If you cannot do the action, you are allowed to send message to user for help.
@@ -200,7 +200,7 @@ class Actions():
             Pay attention to name your parameter in your code. The naming convention in your code should not be arbitrary, like 'result' or 'response'. It should reflect the property of the parameter.
             
             Your customized functions and their examples are:
-            {self.thread_instance.functionsDescriptionAndExample}
+            {self.thread_instance.functions_description_and_example}
 
             Here are the knowledge you have learned:{self.thread_instance.knowledge.getKnowledgeStr()}
             
@@ -236,7 +236,7 @@ class Actions():
             Now you write code to achieve your action: {self.thread_instance.actionflow.actionflow_current_get_front()["action"]}
             DONT'T ASSUME you know the knowledge that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function, and you can show your thinking and reason in the comment. But don't write any code calling undefined functions in this case.
             make sure that the parameter in your respond code follow the type of the parameter in the function instruction. .
-            You are NOT allowed to write {self.thread_instance.puppyName}.do() in your final response as code. When the {self.thread_instance.puppyName}.do() appears, you HAVE TO change it to other code.
+            You are NOT allowed to write {self.thread_instance.puppy_name}.do() in your final response as code. When the {self.thread_instance.puppy_name}.do() appears, you HAVE TO change it to other code.
             your response should be similiar with the example(ONLY CODE) and NOTHING ELSE.
             """}]
 
