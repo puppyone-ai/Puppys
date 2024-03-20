@@ -107,7 +107,7 @@ if __name__ == "__main__":
     @newAgentFunc
     def wakeMeUp(threadInstance,seconds):
         ## wake me up after seconds
-        print(threadInstance.actionFlow)
+        print(threadInstance.actionflow)
 
         ## wake me up after seconds
         time.sleep(seconds)

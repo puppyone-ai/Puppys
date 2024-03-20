@@ -1,12 +1,11 @@
 import os
-from langchain.chains import LLMChain
-
+from openai import OpenAI
 
 
 class GPT():
-    def __init__(self, codeThreadInstance, question='',**kwargs):
-        self.codeThreadInstance = codeThreadInstance
-        self.ActionName="GPT"
+    def __init__(self, thread_instance, question='', **kwargs):
+        self.thread_instance = thread_instance
+        self.action_name= "GPT"
         self.description = "Large Language Models, use it when you want to generate text based on the input text by GPT3.5 or GPT4"
         self.example = """
         ## get how to install the package of openAI by GPT4
@@ -19,13 +18,13 @@ class GPT():
         self.max_tokens = 4096
         self.temperature = 0.7
 
-    def getExample(self):
+    def get_example(self):
         return self.example
     
-    def getDescription(self):  
+    def get_description(self):
         return self.description
 
-    def modelName(self, model_name):
+    def model_name(self, model_name):
         self.model_name = model_name
 
     def apiKey(self, api_key):

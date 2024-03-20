@@ -1,8 +1,8 @@
 import queue
 
-class ActionFlow():
-    def __init__(self, codeThreadInstance): 
-        self.codeThreadInstance = codeThreadInstance
+class Actionflow():
+    def __init__(self, thread_instance):
+        self.thread_instance = thread_instance
 
         self.actionflow_all_JSON = []
         self.actionflow_history_JSON = []
@@ -134,8 +134,7 @@ class ActionFlow():
 
     def actionflow_history_get_front(self):
         return self.actionflow_history_JSON[0]
-    
-    ##
+
     def actionflow_history_add_to_front(self, actionFlowJSON):
         self.actionflow_history_JSON= actionFlowJSON + self.actionflow_history_JSON
         
