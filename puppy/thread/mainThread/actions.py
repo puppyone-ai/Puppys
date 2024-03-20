@@ -4,6 +4,7 @@ import os
 from halo import Halo
 from ...llm.openAI import OpenAIChat
 from ...llm.zhipu import ZhipuChat
+from ...llm.mllm import Chat
 
 
 class Actions():
@@ -66,8 +67,8 @@ class Actions():
     def think_keep_going_or_not(self):
         pass
     
-    def check_do(self, temperature=0.1, max_tokens=4096, model="gpt-4-turbo-preview", api_key="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"):
-        os.environ["OPENAI_API_KEY"]=api_key
+    def check_do(self):
+
         """
         write code to achieve the action
         """
@@ -145,12 +146,8 @@ class Actions():
         print("\n")
         print("\U00002705 Checking ********************************************************************")
 
-        new_code = OpenAIChat(prompt=prompt,
-                             model=model,
-                             temperature=temperature,
-                             api_key=api_key,
-                             max_tokens=max_tokens,
-                             printing=True, stream=True)
+        new_code = Chat(prompt=prompt,
+                        printing=True, emoji=True)
 
         new_code=new_code.replace("```python\n", "").replace("\n```", "")
 
