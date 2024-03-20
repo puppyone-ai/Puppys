@@ -45,7 +45,7 @@ class SendMessageToHuman:
 
         chatHistory = "\n" + "your message:" + self.question + "\n" + "# User's response: " + userInput + "\n"
 
-        self.threadInstance.actionFlow.actionFlowCurrentGetFrontAddCode(chatHistory)
+        self.threadInstance.actionFlow.actionflow_current_get_front_add_code(chatHistory)
         # self.threadInstance.knowledge.knowledge.append(chatHistory)
         return userInput
 
