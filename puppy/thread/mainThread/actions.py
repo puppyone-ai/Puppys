@@ -65,8 +65,7 @@ class Actions():
     def think_keep_going_or_not(self):
         pass
     
-    def check_do(self, temperature=0.1, max_tokens=4096, model="gpt-4-turbo-preview", api_key="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"):
-        os.environ["OPENAI_API_KEY"]=api_key
+    def check_do(self, temperature=0.1, max_tokens=4096, model="gpt-4-turbo-preview"):
 
         """
         write code to achieve the action
@@ -149,7 +148,7 @@ class Actions():
         new_code = OpenAIChat(prompt=prompt,
                              model=model,
                              temperature=temperature,
-                             api_key=api_key,
+                             api_key=os.environ["OPENAI_API_KEY"],
                              max_tokens=max_tokens,
                              printing=True, stream=True)
 
@@ -160,8 +159,8 @@ class Actions():
         return new_code
 
     
-    def do(self,temperature=0.1,max_tokens=4096,model="gpt-4-turbo-preview",api_key="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"):
-        os.environ["OPENAI_API_KEY"]=api_key
+    def do(self,temperature=0.1,max_tokens=4096,model="gpt-4-turbo-preview"):
+
         """
         write code to achieve the action
         """
@@ -245,7 +244,7 @@ class Actions():
             new_code=OpenAIChat(prompt=prompt,
                                model=model,
                                temperature=temperature,
-                               api_key=api_key,
+                               api_key=os.environ["OPENAI_API_KEY"],
                                 max_tokens=max_tokens,
                                printing=True, stream=True)
 
