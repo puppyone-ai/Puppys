@@ -109,7 +109,7 @@ class MainThread():
     def main_thread_run(self):
 
         # start the code thread
-        thread_code = threading.Thread(target=self.main_thread_actionflow_run)
+        thread_code = threading.Thread(target=self.mainthread_actionflow_run)
         thread_code.daemon = False
         thread_code.start()
         
@@ -158,7 +158,7 @@ class MainThread():
     def exec_mode(self, code, mode="thread"):
         exec(code, self.environment)
 
-    def main_thread_actionflow_run(self):
+    def mainthread_actionflow_run(self):
 
         # import tools, for agents
 
@@ -169,9 +169,7 @@ class MainThread():
         self.action_default = ActionDefault(self)
         self.sendMessageToHuman = self.action_default.sendMessageToHuman
 
-
         self.actionflow.actionflow_current_clear()
-
 
         #print(self.Vars)
 
@@ -211,7 +209,7 @@ class MainThread():
                 if self.actionflow.actionflow_current_JSON !=[]:
                     self.actionflow.action_current_execute()
                     
-                
+
                     # STEP 3.3: load the action from actionOngoing and execute the code, and determine if the action is hidden
                     action = self.actionflow.action_on_going.get()
 
