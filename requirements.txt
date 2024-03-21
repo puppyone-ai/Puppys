@@ -1,5 +1,6 @@
 google-api-python-client
-MinimalLLM@git+https://github.com/EvoEvolver/MinimalLLM
+MinimalLLM @ git+https://github.com/EvoEvolver/MinimalLLM
 openai
-
+zhipuai
 halo
+pandas

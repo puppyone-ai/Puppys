@@ -65,7 +65,8 @@ class Actions():
     def think_keep_going_or_not(self):
         pass
     
-    def check_do(self):
+    def check_do(self, temperature=0.1, max_tokens=4096, model="gpt-4-turbo-preview", api_key="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"):
+        os.environ["OPENAI_API_KEY"]=api_key
 
         """
         write code to achieve the action
@@ -144,10 +145,13 @@ class Actions():
         print("\n")
         print("\U00002705 Checking ********************************************************************")
 
-        print(prompt)
 
-        new_code = mllm_chat(prompt=prompt,
-                             printing=True, emoji=True)
+        new_code = OpenAIChat(prompt=prompt,
+                             model=model,
+                             temperature=temperature,
+                             api_key=api_key,
+                             max_tokens=max_tokens,
+                             printing=True, stream=True)
 
         new_code=new_code.replace("```python\n", "").replace("\n```", "")
 
@@ -238,19 +242,19 @@ class Actions():
             print("\n")
             print("\U0001F4A4 Action ######################################################################")
 
-            newCode=OpenAIChat(prompt=prompt,
+            new_code=OpenAIChat(prompt=prompt,
                                model=model,
                                temperature=temperature,
                                api_key=api_key,
                                 max_tokens=max_tokens,
                                printing=True, stream=True)
 
-            newCode=newCode.replace("```python\n", "").replace("\n```", "")
+            new_code=new_code.replace("```python\n", "").replace("\n```", "")
 
             print("################################################################################")
 
 
-            self.thread_instance.actionflow.actionflow_current_add_to_front(self.thread_instance.actionflow.decorate_actionflow_code_to_json(name=self.thread_instance.actionflow.actionflow_current_get_name, code=newCode, status="fixed"))
+            self.thread_instance.actionflow.actionflow_current_add_to_front(self.thread_instance.actionflow.decorate_actionflow_code_to_json(name=self.thread_instance.actionflow.actionflow_current_get_name, code=new_code, status="fixed"))
 
 
     def reflect(self,temperature=0.1,max_tokens=4096,model_name="gpt-4-1106-preview",ApiKey="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"):
