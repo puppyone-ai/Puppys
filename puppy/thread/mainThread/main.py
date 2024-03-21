@@ -109,12 +109,9 @@ class MainThread():
     def main_thread_run(self):
 
         # start the code thread
-        thread_code = threading.Thread(target=self.mainthread_actionflow_run)
+        thread_code = threading.Thread(target=self.mainthread_decisiontree)
         thread_code.daemon = False
         thread_code.start()
-        
-
-        #self.codeThreadActionFlow.actionOnGoing.put(importTools)
 
 
         # end the code thread
@@ -158,7 +155,7 @@ class MainThread():
     def exec_mode(self, code, mode="thread"):
         exec(code, self.environment)
 
-    def mainthread_actionflow_run(self):
+    def mainthread_decisiontree(self):
 
         # import tools, for agents
 

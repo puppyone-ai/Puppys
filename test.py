@@ -1,14 +1,12 @@
-## TODO
-
-"""
-设置 thread 之间的 communication
-"""
-
+import os
 from puppy import Puppy
 
 
-Xiao_Mei = Puppy(name="XiaoMei")
+# change the API key to your own
+os.environ["OPENAI_API_KEY"] = "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"
 
+
+Xiao_Mei = Puppy(name="XiaoMei")
 
 @Xiao_Mei.main_thread
 def actionflow_pending():
