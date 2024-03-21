@@ -2,6 +2,7 @@ from openai import OpenAI
 from halo import Halo
 import os
 
+# using OpenAI API model
 def OpenAIChat(prompt=[],
                temperature=0.1, max_tokens=4096, model="gpt-4-turbo-preview",
                api_key="",

@@ -2,6 +2,7 @@ from zhipuai import ZhipuAI
 from halo import Halo
 import os
 
+# using Zhipu API model
 def ZhipuChat(prompt=[],
               temperature=0.1, max_tokens=4096, model="glm-4",
               api_key="",
