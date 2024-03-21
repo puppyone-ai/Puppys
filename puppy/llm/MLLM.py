@@ -1,14 +1,13 @@
-from mllm import Chat
+from mllm import chat
 from halo import Halo
-import os
 
 
 def mllm_chat(prompt,
-              model="",
+              model=None,
               emoji=False, emoji_text="generating", spinner="moon",
               printing=False):
 
-    client = Chat()
+    client = chat.Chat()
 
     client += prompt
 
