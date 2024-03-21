@@ -1,10 +1,8 @@
-from openai import OpenAI
-from openai import OpenAI
 import os
 from halo import Halo
 from ...llm.openAI import OpenAIChat
 from ...llm.zhipu import ZhipuChat
-from ...llm.mllm import Chat
+from ...llm.MLLM import mllm_chat
 
 
 class Actions():
@@ -146,8 +144,10 @@ class Actions():
         print("\n")
         print("\U00002705 Checking ********************************************************************")
 
-        new_code = Chat(prompt=prompt,
-                        printing=True, emoji=True)
+        print(prompt)
+
+        new_code = mllm_chat(prompt=prompt,
+                             printing=True, emoji=True)
 
         new_code=new_code.replace("```python\n", "").replace("\n```", "")
 
