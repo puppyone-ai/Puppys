@@ -255,25 +255,3 @@ class Actions():
 
             self.thread_instance.actionflow.actionflow_current_add_to_front(self.thread_instance.actionflow.decorate_actionflow_code_to_json(name=self.thread_instance.actionflow.actionflow_current_get_name, code=new_code, status="fixed"))
 
-
-    def reflect(self,temperature=0.1,max_tokens=4096,model_name="gpt-4-1106-preview",ApiKey="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"):
-        os.environ["OPENAI_API_KEY"]=ApiKey
-        """
-        reflect if the action is done or not.
-        """
-
-
-    def code_thread_do_check_code(self, code):
-        """
-        check if the code is valid
-        """
-
-        actionflow_json,actionflow_python=self.actionflow.translate_python(code)
-        if actionflow_json[0]["action"]==self.actionflow.actionflow_current_get_front()[0]["action"]:
-            actionJSON=True
-
-        if actionflow_python[0]==self.actionflow.actionflow_current_get_front()[1]:
-            actionPython=True
-
-    def checkIfActionIsDone(self):
-        pass
