@@ -1,12 +1,10 @@
 from openai import OpenAI
-from halo import Halo
 import os
 
 # using OpenAI API model
 def OpenAIChat(prompt=[],
                temperature=0.1, max_tokens=4096, model="gpt-4-turbo-preview",
                api_key="",
-               emoji=False, emojiText = "generating", spinner = "moon",
                printing=False, stream=False
                ):
 
@@ -14,12 +12,7 @@ def OpenAIChat(prompt=[],
 
     client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", api_key))
 
-    if emoji == True:
-        spinner = Halo(text=emojiText, spinner=spinner)
-        spinner.start()
 
-    else:
-        pass
 
     completion = client.chat.completions.create(
         model=model,
@@ -30,11 +23,6 @@ def OpenAIChat(prompt=[],
         stream=stream,
     )
 
-    if emoji:
-        spinner.stop()
-
-    else:
-        pass
 
     if printing == True:
 
