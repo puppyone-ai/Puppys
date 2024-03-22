@@ -106,7 +106,7 @@ class MainThread():
 
 
     # to run the thread
-    def main_thread_run(self):
+    def mainthread_run(self):
 
         # start the code thread
         thread_code = threading.Thread(target=self.mainthread_decisiontree)
@@ -118,7 +118,7 @@ class MainThread():
         thread_code.join()
 
     # for the wrapper of action
-    def main_thread(self, func):
+    def mainthread(self, func):
         def wrapper(self, *args, **kwargs):
             self.initialize()
             func(*args, **kwargs)
@@ -244,7 +244,7 @@ class Puppy(MainThread):
         self.puppy_name=name
 
     def run(self):
-        self.main_thread_run()
+        self.mainthread_run()
 
 
 
