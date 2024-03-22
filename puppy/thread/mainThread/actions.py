@@ -1,5 +1,4 @@
 import os
-from halo import Halo
 from ...llm.openAI import OpenAIChat
 from ...llm.zhipu import ZhipuChat
 from ...llm.MLLM import mllm_chat
