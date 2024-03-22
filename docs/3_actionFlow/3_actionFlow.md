@@ -26,7 +26,7 @@ For example:
 Translate: **ActionFlow in Python code**
 
 ```python
-@puppy1.main_thread
+@puppy1.mainthread
 def actionFlow:
     ## search for the NBA game
     search_content = 'What NBA game is available'
