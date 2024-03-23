@@ -71,7 +71,7 @@ class Actions():
         """
 
         
-        self.thread_instance.functions_description_and_example= self.thread_instance.sendMessageToHuman.get_description_and_example()
+        self.thread_instance.functions_description_and_example= self.thread_instance.action_default.get_description_and_example()
 
         prompt=[
         # 1. define your agent type and name
@@ -174,7 +174,7 @@ class Actions():
 
         elif self.thread_instance.environment["finishedOrNot"]==False:
 
-            self.thread_instance.functions_description_and_example= self.thread_instance.sendMessageToHuman.get_description_and_example()
+            self.thread_instance.functions_description_and_example= self.thread_instance.action_default.get_description_and_example()
 
 
             # prompt for actionDo ***********************************************************************************************

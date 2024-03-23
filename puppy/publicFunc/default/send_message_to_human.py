@@ -15,7 +15,7 @@ class Send_message_to_human:
         """
         self.example = f"""
         ## Ask the user about the phone number of his boss
-        answer = self.sendMessageToHuman("\U0001F600: What's the phone number of your boss?")
+        answer = self.send_message_to_human("\U0001F600: What's the phone number of your boss?")
         """
         self.function_before_action = []
         self.function_after_action = []
