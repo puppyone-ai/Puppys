@@ -164,7 +164,8 @@ class MainThread():
         from ...publicFunc.default import ActionDefault
 
         self.action_default = ActionDefault(self)
-        self.sendMessageToHuman = self.action_default.sendMessageToHuman
+        self.send_message_to_human = self.action_default.send_message_to_human
+        self.gpt = self.action_default.gpt
 
         self.actionflow.actionflow_current_clear()
 

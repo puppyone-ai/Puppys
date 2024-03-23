@@ -11,11 +11,14 @@ Xiao_Mei = Puppy(name="XiaoMei")
 @Xiao_Mei.mainthread
 def actionflow_pending():
 
-    ## send me a message of hello, motherfucker after 10 seconds.
+    ## go to this website:https://news.ycombinator.com/ , save its HTML.
+    # you can do it via python packages
     Xiao_Mei.do()
+    print(HTML_text)
 
-    ## send the same message to me after 10 seconds
+    ## tell me what's the top 10 news and their urls based on the HTML @gpt
     Xiao_Mei.do()
 
 
 Xiao_Mei.run()
+

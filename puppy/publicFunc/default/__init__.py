@@ -6,8 +6,8 @@ class ActionDefault:
 
     def __init__(self, codeThreadInstance):
         self.codeThreadInstance = codeThreadInstance
-        self.sendMessageToHuman = Send_message_to_human(self.codeThreadInstance)
-        self.googleSearchNative = Google_search_native(self.codeThreadInstance)
+        self.send_message_to_human = Send_message_to_human(self.codeThreadInstance)
+        self.google_search_native = Google_search_native(self.codeThreadInstance)
         self.gpt = GPT(self.codeThreadInstance)
 
 
