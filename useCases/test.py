@@ -12,11 +12,10 @@ Xiao_Mei = Puppy(name="XiaoMei")
 def actionflow_pending():
 
     ## go to this website:https://news.ycombinator.com/ , save its HTML.
-    # you can do it via python packages
     Xiao_Mei.do()
     print(HTML_text)
 
-    ## tell me what's the top 10 news and their urls based on the HTML @gpt
+    ## tell me what's the top 10 news and their urls based on the HTML of HackerNews @gpt
     Xiao_Mei.do()
 
 
