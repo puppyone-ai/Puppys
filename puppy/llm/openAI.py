@@ -3,7 +3,7 @@ import os
 
 # using OpenAI API model
 def OpenAIChat(prompt=[],
-               temperature=0.1, max_tokens=4096, model="gpt-4-turbo-preview",
+               temperature=0.1, max_tokens=4096, model="gpt-4-0125-preview",
                api_key="",
                printing=False, stream=False
                ):

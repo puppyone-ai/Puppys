@@ -64,7 +64,7 @@ class Actions():
     def think_keep_going_or_not(self):
         pass
     
-    def check_do(self, temperature=0.1, max_tokens=4096, model="gpt-4-turbo-preview"):
+    def check_do(self, temperature=0.1, max_tokens=4096, model="gpt-4-0125-preview"):
 
         """
         write code to achieve the action
@@ -127,10 +127,7 @@ class Actions():
         {self.thread_instance.actionflow.actionflow_current_get_code()}
                             
         The code of action in the future are(But you don't need to do this part now, just for your information)):
-        {self.thread_instance.actionflow.actionflow_pending_get_code()}
-
-        And the current enviroment shown as Python code are(sometimes there is something important):
-        {self.thread_instance.environment}"""},
+        {self.thread_instance.actionflow.actionflow_pending_get_code()}"""},
 
         
         # 4. justfy if the action is done or not
@@ -139,6 +136,9 @@ class Actions():
         Now you need to write code to justify if the action of {self.thread_instance.actionflow.actionflow_current_get_front()["action"]} is done or not. 
         """}
         ]
+
+        print("*******checking prompt********")
+        print(prompt)
 
         print("\n")
         print("\U00002705 Checking ********************************************************************")
@@ -158,7 +158,7 @@ class Actions():
         return new_code
 
     
-    def do(self,temperature=0.1,max_tokens=4096,model="gpt-4-turbo-preview"):
+    def do(self,temperature=0.1,max_tokens=4096,model="gpt-4-0125-preview"):
 
         """
         write code to achieve the action
@@ -219,10 +219,7 @@ class Actions():
             {self.thread_instance.actionflow.actionflow_current_get_code()}
                                 
             The code of action in the future are(But you don't need to do this part now, just for your information)):
-            {self.thread_instance.actionflow.actionflow_pending_get_code()}
-
-            And the current enviroment shown as Python code are(sometimes there is something important):
-            {self.thread_instance.environment}"""},
+            {self.thread_instance.actionflow.actionflow_pending_get_code()}"""},
             
 
             # 4. provide the code of the action
@@ -239,6 +236,9 @@ class Actions():
 
             print("\n")
             print("\U0001F4A4 Action ######################################################################")
+
+            print("*******planning prompt********")
+            print(prompt)
 
             new_code=OpenAIChat(prompt=prompt,
                                model=model,

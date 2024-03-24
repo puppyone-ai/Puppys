@@ -14,7 +14,7 @@ class GPT():
         """
         
         self.apiKey = "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"
-        self.model_name = "gpt-4-1106-preview"
+        self.model_name = "gpt-3.5-turbo-0125"
         self.max_tokens = 4096
         self.temperature = 0.7
 
@@ -30,7 +30,7 @@ class GPT():
     def apiKey(self, api_key):
         self.apiKey = api_key
 
-    def run(self, prompt="", model="gpt-4-1106-preview", temperature=0.7, max_tokens=4096, **kwargs):
+    def run(self, prompt="", model="gpt-3.5-turbo-0125", temperature=0.7, max_tokens=4096, **kwargs):
 
         result = OpenAIChat(prompt=[{"role": "user",
                                 "content": prompt,}],
