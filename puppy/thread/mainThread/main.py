@@ -155,6 +155,30 @@ class MainThread():
     def exec_mode(self, code, mode="thread"):
         exec(code, self.environment)
 
+    def save_actionflow_history(self):
+        # save the actionflow_history
+        import os
+        from datetime import datetime
+        import json
+
+        # get date and time
+        now = datetime.now()
+        date_str = now.strftime("%Y-%m-%d_%H-%M-%S")
+
+        # create folder, if not exist
+        folder_path = "history"  # Corrected the folder name from 'histoty' to 'history'
+        os.makedirs(folder_path, exist_ok=True)
+
+        # create a new file
+        file_path = os.path.join(folder_path, f"history_{date_str}.txt")
+
+        # Directly convert the Python object to a JSON string
+        pretty_json = json.dumps(self.actionflow.actionflow_history_JSON, indent=4)
+
+        # Write the JSON string to a file
+        with open(file_path, "w") as file:
+            file.write(pretty_json)
+
     def mainthread_decisiontree(self):
 
         # import tools, for agents
@@ -236,6 +260,10 @@ class MainThread():
                     pass
 
         print("Done")
+
+        # save the actionflow_history to the folder of history
+
+        #self.save_actionflow_history()
 
 
 class Puppy(MainThread):

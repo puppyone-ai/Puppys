@@ -123,9 +123,6 @@ class Actions():
         The code for historical actionflow shown as code are:
         {self.thread_instance.actionflow.actionflow_history_get_code()}
                             
-        user have already write some code for this action, but it's not finished. You should replace the XXX.do() part. Don't keep the .do() function after your response. The XXX is your name, and the .do() is an instruction of 'you must write code and put it here'.:
-        {self.thread_instance.actionflow.actionflow_current_get_code()}
-                            
         The code of action in the future are(But you don't need to do this part now, just for your information)):
         {self.thread_instance.actionflow.actionflow_pending_get_code()}"""},
 
@@ -137,8 +134,8 @@ class Actions():
         """}
         ]
 
-        print("*******checking prompt********")
-        print(prompt)
+        #print("*******checking prompt********")
+        #print(prompt)
 
         print("\n")
         print("\U00002705 Checking ********************************************************************")
@@ -200,11 +197,11 @@ class Actions():
 
             
             Try to understand the meaning of each function and its parameter, and decide the best function and use the function for this step to accomplish the action. 
-            For example: (current action: search the location of the NBA in 2019)
+            For example: (current action: search the location of the NBA in 2019@ google search @zhihu search)
             response:
-            ## search the location of the NBA in 2019 @google search @zhihu search
             # Hello! to answer where is the NBA in 2019, I need to search the information about NBA in 2019. The function returns as a string.
-            location=google_search("Where is the NBA in 2019")"""},
+            location=google_search("Where is the NBA in 2019"
+            location= zhihu_search("Where is the NBA in 2019")"""},
 
             # 3. provide the goal, current action, code history, code future, enviroment, knowledge
             {"role": "user", 
@@ -237,8 +234,8 @@ class Actions():
             print("\n")
             print("\U0001F4A4 Action ######################################################################")
 
-            print("*******planning prompt********")
-            print(prompt)
+            #print("*******planning prompt********")
+            #print(prompt)
 
             new_code=OpenAIChat(prompt=prompt,
                                model=model,

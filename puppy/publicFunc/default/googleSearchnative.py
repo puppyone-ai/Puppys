@@ -9,7 +9,7 @@ class Google_search_native:
     def __init__(self, thread_instance, search_content='', num=5, **kwargs):
         self.thread_instance = thread_instance
         
-        self.action_name= "googleSearchNative"
+        self.name= "googleSearchNative"
         self.tag = "func"
         self.description = "Serach Engine, use when you want to search something on google, return the title, link and snippet of the search result"
         self.example = """
@@ -28,6 +28,9 @@ class Google_search_native:
 
     def cseId(self, my_cse_id):
         self.my_cse_id = my_cse_id
+
+    def get_name(self):
+        return self.name
 
     def get_example(self):
         return self.example

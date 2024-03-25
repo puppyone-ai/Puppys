@@ -14,9 +14,9 @@ class ActionDefault:
     def get_descriptions(self):
         functionsSimplified="""
         """
-        functionsSimplified+="1. AskHumanForHelp:" + Send_message_to_human(self.codeThreadInstance).get_description() + "\n"
-        functionsSimplified+="2. GoogleSearchNative:" + Google_search_native(self.codeThreadInstance).get_description() + "\n"
-        functionsSimplified+="3. GPT:" + GPT(self.codeThreadInstance).get_description() + "\n"
+        functionsSimplified+="1."+ Send_message_to_human(self.codeThreadInstance).get_name() + Send_message_to_human(self.codeThreadInstance).get_description() + "\n"
+        functionsSimplified+="2."+ Google_search_native(self.codeThreadInstance).get_name() + Google_search_native(self.codeThreadInstance).get_description() + "\n"
+        functionsSimplified+="3."+ GPT(self.codeThreadInstance).get_name() + GPT(self.codeThreadInstance).get_description() + "\n"
         return functionsSimplified
 
     def get_examples(self):
@@ -31,13 +31,13 @@ class ActionDefault:
         
         functionsDescriptionAndExample="""
         """
-        functionsDescriptionAndExample+="1. AskHumanForHelp:" + Send_message_to_human(self.codeThreadInstance).get_description() + "\n"
+        functionsDescriptionAndExample+="1."+ Send_message_to_human(self.codeThreadInstance).get_name() + Send_message_to_human(self.codeThreadInstance).get_description() + "\n"
         functionsDescriptionAndExample+= Send_message_to_human(self.codeThreadInstance).get_example() + "\n"
 
-        functionsDescriptionAndExample+="2. GoogleSearchNative:" + Google_search_native(self.codeThreadInstance).get_description() + "\n"
+        functionsDescriptionAndExample+="2." + Google_search_native(self.codeThreadInstance).get_name() + Google_search_native(self.codeThreadInstance).get_description() + "\n"
         functionsDescriptionAndExample+= Google_search_native(self.codeThreadInstance).get_example() + "\n"
 
-        functionsDescriptionAndExample+="3. GPT:" + GPT(self.codeThreadInstance).get_description() + "\n"
+        functionsDescriptionAndExample+="3."+ GPT(self.codeThreadInstance).get_name() + GPT(self.codeThreadInstance).get_description() + "\n"
         functionsDescriptionAndExample+= GPT(self.codeThreadInstance).get_example() + "\n"
         
         return functionsDescriptionAndExample
