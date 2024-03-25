@@ -25,6 +25,9 @@ class Send_message_to_human:
     def __call__(self, question=""):
         return self.run(question)
 
+    def get_name(self):
+        return self.name
+
     def get_example(self):
         return self.example
 
