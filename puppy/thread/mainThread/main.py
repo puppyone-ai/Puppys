@@ -233,20 +233,22 @@ class MainThread():
                     
 
                     # STEP 3.3: load the action from actionOngoing and execute the code, and determine if the action is hidden
-                    action = self.actionflow.action_on_going.get()
+                    action_code = self.actionflow.action_on_going.get()
 
                     print("\n")
                     print("\U0001F697 Running Code ################################################################")
-                    print(action)
+                    print(action_code)
                     print("################################################################################")
-                    
 
 
-                    exec(action, self.environment)
+                    exec(action_code, self.environment)
                     self.actionflow.action_on_going.task_done()
 
                     # STEP 4: load the action from the actionFlowCurrent to the actionFlowHistory
-                    self.actionflow.action_current_save()
+                    #self.actionflow.actionflow_history_JSON += self.actionflow.actionflow_current_JSON[0]
+                    #self.actionflow.actionflow_current_JSON.pop(0)
+
+                    #self.actionflow.action_current_save()
 
 
                     # STEP 5: remove the action from the actionFlowCurrent
