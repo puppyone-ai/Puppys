@@ -134,8 +134,8 @@ class Actions():
         """}
         ]
 
-        #print("*******checking prompt********")
-        #print(prompt)
+        print("*******checking prompt********")
+        print(prompt)
 
         print("\n")
         print("\U00002705 Checking ********************************************************************")
