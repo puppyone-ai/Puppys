@@ -1,8 +1,9 @@
 from puppy.llm.mllm_chat import m_chat
+from puppy.thread.mainThread.main import MainThread
 
 
 class Pipe:
-    def __init__(self, thread_instance,
+    def __init__(self, thread_instance: MainThread,
                  model: str = None,
                  # **kwargs
                  ) -> None:
