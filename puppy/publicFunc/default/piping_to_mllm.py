@@ -19,13 +19,13 @@ class Pipe:
     def get_name(self) -> str:
         return self.__class__.__name__
 
-    def get_example(self):
+    def get_example(self) -> str:
         return self.example
 
-    def get_description(self):
+    def get_description(self) -> str:
         return self.description
 
-    def run(self):
+    def run(self) -> str:
 
         result = m_chat(prompt=self.thread_instance)
 
