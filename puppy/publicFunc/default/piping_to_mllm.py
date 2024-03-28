@@ -1,4 +1,4 @@
-from puppy.llm.mllm_chat import m_chat
+from puppy.llm import m_chat
 from puppy.thread.mainThread.main import MainThread
 
 
