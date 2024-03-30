@@ -1,12 +1,10 @@
 from zhipuai import ZhipuAI
-from halo import Halo
 import os
 
 # using Zhipu API model
 def ZhipuChat(prompt=[],
               temperature=0.1, max_tokens=4096, model="glm-4",
               api_key="",
-              emoji=False, emojiText = "generating", spinner = "moon",
               printing=False, stream=False
               ):
 
@@ -14,12 +12,6 @@ def ZhipuChat(prompt=[],
 
     client = ZhipuAI(api_key=os.environ.get("ZHIPU_API_KEY", api_key))
 
-    if emoji == True:
-        spinner = Halo(text=emojiText, spinner=spinner)
-        spinner.start()
-
-    else:
-        pass
 
     completion = client.chat.completions.create(
         model=model,
@@ -28,12 +20,6 @@ def ZhipuChat(prompt=[],
         max_tokens=max_tokens,
         stream=stream,
     )
-
-    if emoji:
-        spinner.stop()
-
-    else:
-        pass
 
     if printing == True:
 
