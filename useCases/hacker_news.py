@@ -15,7 +15,7 @@ def actionflow_pending():
     Mei.do()
     print(HTML_text)
 
-    ## show the top 10 news and their urls based on the HTML @gpt, and send the message to the user
+    ## show the top 10 news name and their urls based on the HTML @gpt, and send the message to the user
     Mei.do()
     print(news_and_urls)
 
@@ -23,5 +23,4 @@ def actionflow_pending():
 Mei.run()
 
 #TODO
-# fixed the bug of actionflow_history
 # fixed the bug of saving actionflow_history

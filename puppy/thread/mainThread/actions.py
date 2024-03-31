@@ -116,7 +116,7 @@ class Actions():
         # 3. provide the goal, current action, code history, code future, enviroment, knowledge
         {"role": "system", 
         "content":f"""
-        You have an overall long-term goal: {self.thread_instance.goal},  now you need to write python code to finish your next action:
+        You have an overall long-term goal: {self.thread_instance.goal},  and your next action is:
         {self.thread_instance.actionflow.actionflow_current_get_front()["action"]}
 
         The code for historical actionflow shown as code are:
@@ -129,12 +129,13 @@ class Actions():
         # 4. justfy if the action is done or not
         {"role": "user",
         "content":f"""
-        Now you need to write code to justify if the action of {self.thread_instance.actionflow.actionflow_current_get_front()["action"]} is done or not. 
+        Now you need to write code to justify if the action of' {self.thread_instance.actionflow.actionflow_current_get_front()["action"]} 'is done or not. 
+        Your answer is:
         """}
         ]
 
-        print("*******checking prompt********")
-        print(prompt)
+        #print("*******checking prompt********")
+        #print(prompt)
 
         print("\n")
         print("\U00002705 Checking ********************************************************************")
