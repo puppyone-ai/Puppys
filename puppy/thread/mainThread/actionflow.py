@@ -1,4 +1,5 @@
 import queue
+import copy
 
 class Actionflow():
     def __init__(self, thread_instance):
@@ -179,9 +180,12 @@ class Actionflow():
     # operation for actionFlowCurrent
     def actionflow_current_get_code(self):
         return self.actionflow_current_JSON[0]["code"]
-    
+
+    # a deep copy of action's name
     def actionflow_current_get_name(self):
-        return self.actionflow_current_JSON[0]["action"]
+        action_dict = self.actionflow_current_JSON[0]["action"]
+        action_dict_deep_copy = copy.deepcopy(action_dict)
+        return action_dict_deep_copy
     
     def actionflow_current_get_front_add_code(self, code):
         self.actionflow_current_JSON[0]["code"]= self.actionflow_current_JSON[0]["code"] + "\n" + code
@@ -223,7 +227,7 @@ class Actionflow():
 
     # save the action from actionCurrent to actionFlowPending
     def action_current_save(self):
-        self.actionflow_history_add_to_front([self.actionflow_current_get_front()])
+        self.actionflow_history_add_to_end([self.actionflow_current_get_front()])
 
     # put the action from actionCurrent to actionOnGoing
     def action_current_execute(self):

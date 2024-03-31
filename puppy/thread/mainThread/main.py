@@ -145,13 +145,6 @@ class MainThread():
         # execute the function with wrapper
         return wrapper
 
-
-    def create_puppy_instance(self, instance_name):
-        new_instance = Puppy(name=instance_name)
-        # 将新创建的实例添加到globalVars字典中，使用instance_name作为键
-
-        globals()[instance_name] = new_instance
-
     def exec_mode(self, code, mode="thread"):
         exec(code, self.environment)
 
@@ -180,7 +173,6 @@ class MainThread():
             file.write(pretty_json)
 
     def mainthread_decisiontree(self):
-
         # import tools, for agents
 
 
@@ -248,7 +240,7 @@ class MainThread():
                     #self.actionflow.actionflow_history_JSON += self.actionflow.actionflow_current_JSON[0]
                     #self.actionflow.actionflow_current_JSON.pop(0)
 
-                    #self.actionflow.action_current_save()
+                    self.actionflow.action_current_save()
 
 
                     # STEP 5: remove the action from the actionFlowCurrent
@@ -262,6 +254,7 @@ class MainThread():
                     pass
 
         print("Done")
+        print(self.actionflow.actionflow_history_JSON)
 
         # save the actionflow_history to the folder of history
 
