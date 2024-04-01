@@ -1,14 +1,16 @@
 import sys
 import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 from puppy import Puppy
 
-Mei=Puppy(name="Mei")
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# Use mllm to change mode, example: Mei = Puppy(name="Mei", mllm=True), @mllm rather @gpt
+
+Mei = Puppy(name="Mei")
 
 
 # change the API key to your own
-os.environ["OPENAI_API_KEY"] = "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"
+# os.environ["OPENAI_API_KEY"] = "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"
 
 
 @Mei.mainthread

@@ -53,7 +53,7 @@ class ActionDefault:
         
         return functionsDescriptionAndExample
 
-    def get_info(self, example=True, description=True):
+    def get_info(self, description=True, example=True):
         functions_simplified = """
         """
         actions = [self.send_message_to_human, self.google_search_native, self.mllm, self.gpt]
