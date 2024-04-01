@@ -3,7 +3,6 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from puppy import Puppy
-from puppy import Puppy
 
 
 # change the API key to your own
@@ -15,7 +14,7 @@ Mei = Puppy(name="HackerNews_reporter")
 @Mei.mainthread
 def actionflow_pending():
 
-    ## go to this website:https://news.ycombinator.com/ , save its HTML. @python
+    ## go to this website: https://www.binance.com/en/landing/data,
     Mei.do()
     print(HTML_text)
 
