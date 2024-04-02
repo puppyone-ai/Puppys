@@ -14,7 +14,6 @@ class Actions():
     def action_add(self, name, code, function_before_action, function_after_action):
         action={"name":name,
                 "code":code,}
-        self.action_list.update(action)
 
 
     # opreations for actions

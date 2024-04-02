@@ -2,15 +2,23 @@ import inspect
 import threading
 from .actionflow import Actionflow
 from .actions import Actions
+from .actions_mllm import ActionsMLLM
 #from ...publicFunc.default import ActionDefault
+from .base import Thread
 
 
-class MainThread():
-    def __init__(self):
+class MainThread(Thread):
+    def __init__(self, mllm):
+
+        super().__init__()
         
         self.current_thread_name= "mainThread"
         self.actionflow=Actionflow(self)
-        self.actions=Actions(self)
+
+        if mllm:
+            self.actions=ActionsMLLM(self)
+        else:
+            self.actions=Actions(self)
 
         self.thread_Property={}
 
@@ -120,7 +128,7 @@ class MainThread():
     # for the wrapper of action
     def mainthread(self, func):
         def wrapper(self, *args, **kwargs):
-            self.initialize()
+            # self.initialize()
             func(*args, **kwargs)
         
         self.current_thread_name= "mainThread"
@@ -173,8 +181,8 @@ class MainThread():
             file.write(pretty_json)
 
     def mainthread_decisiontree(self):
-        # import tools, for agents
 
+        # import tools, for agents
 
         # loading actions
         from ...publicFunc.default import ActionDefault
@@ -237,8 +245,8 @@ class MainThread():
                     self.actionflow.action_on_going.task_done()
 
                     # STEP 4: load the action from the actionFlowCurrent to the actionFlowHistory
-                    #self.actionflow.actionflow_history_JSON += self.actionflow.actionflow_current_JSON[0]
-                    #self.actionflow.actionflow_current_JSON.pop(0)
+                    # self.actionflow.actionflow_history_JSON += self.actionflow.actionflow_current_JSON[0]
+                    # self.actionflow.actionflow_current_JSON.pop(0)
 
                     self.actionflow.action_current_save()
 
@@ -261,14 +269,14 @@ class MainThread():
         #self.save_actionflow_history()
 
 
-class Puppy(MainThread):
-    def __init__(self, name="puppy"):
-        
-        super().__init__()
-        self.puppy_name=name
-
-    def run(self):
-        self.mainthread_run()
+# class Puppy(MainThread):
+#     def __init__(self, name="puppy"):
+#
+#         super().__init__()
+#         self.puppy_name=name
+#
+#     def run(self):
+#         self.mainthread_run()
 
 
 
