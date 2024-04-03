@@ -1,8 +1,8 @@
 import os
-from ...llm.openAI import OpenAIChat
+from puppy.llm.openAI import OpenAIChat
 
 
-class GPT():
+class GPT:
     def __init__(self, thread_instance, question='', **kwargs):
         self.thread_instance = thread_instance
         self.name= "GPT"

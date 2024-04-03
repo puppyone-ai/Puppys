@@ -16,8 +16,8 @@ class MLLM:
         result = self.mllm.run(prompt=prompt) 
         
         ## query about some interesting question
-        prompt = f"What is the fastest animal?"
-        result = self.mllm.run(prompt=prompt) # you must add 'self.' in this func.
+        prompt = "do you know some interesting questions?"
+        result = self.mllm.run(prompt=prompt)
         """
 
         self.model = model
@@ -31,9 +31,10 @@ class MLLM:
     def get_description(self) -> str:
         return self.description
 
-    def run(self, prompt="") -> str:
+    @staticmethod
+    def run(prompt="") -> str:
 
-        result = m_chat(prompt=self.thread_instance)
+        result = m_chat(prompt=prompt)
 
         return result
 
