@@ -3,24 +3,24 @@ from mllm.provider_switch import set_default_to_anthropic, set_default_to_google
 
 
 def m_chat(prompt,
-           model: str = None,
-           printing: bool = False):
+           model: str = None, expensive: bool = False,
+           printing: bool = False) -> str:
 
     client = Chat()
 
-    match model:
-        case "gemini":
-            set_default_to_google()
-        case "gpt":
-            set_default_to_openai()
-        case "claude":
-            set_default_to_anthropic()
+    if model:
+
+        match model:
+            case "gemini":
+                set_default_to_google()
+            case "gpt":
+                set_default_to_openai()
+            case "claude":
+                set_default_to_anthropic()
 
     client += prompt
 
-    # Spinning until the message I/O
-
-    res = client.complete(model=model)
+    res = client.complete(model=model, expensive=expensive)
 
     # message I/O done
 

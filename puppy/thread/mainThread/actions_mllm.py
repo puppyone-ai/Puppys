@@ -1,19 +1,30 @@
 from .actions import Actions
 from puppy.llm import m_chat
+from .base import Thread
 
 
 class ActionsMLLM(Actions):
-    def __init__(self, thread_instance):
+
+    """
+    This class is inherited from Actions, and it is used to define the action of the agent, and the action is done by mllm.
+    """
+
+    def __init__(self, thread_instance: Thread,
+                 model: str = None, expensive: bool = False,
+                 check_prompt: bool = True, plan_prompt: bool = False):
         super().__init__(thread_instance)
+        self.model = model
+        self.expensive = expensive
+        self.check_prompt = check_prompt
+        self.plan_prompt = plan_prompt
 
-    def check_do(self, **kwargs):
+    def check_do(self, **kwargs) -> str:
 
         """
-        write code to achieve the action
-        :param **kwargs:
+        write code to check if the action is done
         """
 
-        self.thread_instance.functions_description_and_example = self.thread_instance.action_default.get_description_and_example()
+        # self.thread_instance.functions_description_and_example = self.thread_instance.action_default.get_description_and_example()
 
         prompts = [
 
@@ -21,11 +32,10 @@ class ActionsMLLM(Actions):
             f"""
         You are an AI code assistant agent called {self.thread_instance.puppy_name}. 
         1. You always write Python code! You are really good at it. Your natural language output should be written as comment in python code. for example: # Hello, I am an assistant.
-        2. DON'T ASSUME you know any unclear knowledge or information that you don't know. DON'T ASSUME that you have non-existent functions or hypothetical function. Your code will be run immediately after you write it. If you assume any hypothetical function, the the system will crash.
+        2. DON'T ASSUME you know any unclear knowledge or information that you don't know. DON'T ASSUME that you have non-existent functions or hypothetical function. Your code will be run immediately after you write it. If you assume any hypothetical function, the system will crash.
         3. You need to justify if your current action has been achieved or not by history code, and decide to skip the current action or not.
         4. You only need to decide if your current action has been achieved or not. You don't need to write code to achieve it.
-        """
-            ,
+        """,
 
             # 2. set the standard of if the action is done or not
             f"""
@@ -33,7 +43,7 @@ class ActionsMLLM(Actions):
         1. Done: That means you don't need to write code to achieve it again. The action history shows that you have already know what you want to know or have already achieve the action. In this case, you should write Python code to return Ture, and your generated code should be:
         finishedOrNot=True
 
-        2. Unfinished: That means you need to write code to achieve it again, or their is some unfinished action that you need to make . In this case, you should write Python code to return False, and the your generated code should be:
+        2. Unfinished: That means you need to write code to achieve it again, or there is some unfinished action that you need to make. In this case, you should write Python code to return False, and the your generated code should be:
         finishedOrNot=False
 
         for example:
@@ -54,9 +64,8 @@ class ActionsMLLM(Actions):
         # the result is "First death resulting from Coronavirus outside China reported."
 
         your response:
-        # I get what I should get, and I don't need to do anything else if their is no other action provide by human.
-        finishedOrNot=True"""
-            ,
+        # I get what I should get, and I don't need to do anything else if there is no other action provide by human.
+        finishedOrNot=True""",
             # 3. provide the goal, current action, code history, code future, environment, knowledge
 
             f"""
@@ -67,24 +76,24 @@ class ActionsMLLM(Actions):
         {self.thread_instance.actionflow.actionflow_history_get_code()}
 
         The code of action in the future are(But you don't need to do this part now, just for your information)):
-        {self.thread_instance.actionflow.actionflow_pending_get_code()}"""
-            ,
+        {self.thread_instance.actionflow.actionflow_pending_get_code()}""",
 
             # 4. justify if the action is done or not
             f"""
-        Now you need to write code to justify if the action of \
+        Now you need to write code to justify if the action of 
         {self.thread_instance.actionflow.actionflow_current_get_front()["action"]} is done or not. 
             """
             ]
         prompt = "".join(prompts)
 
-        print("*******checking prompt********")
-        print(prompt)
+        if self.check_prompt:
+            print("*******checking prompt with mllm********")
+            print(prompt)
 
         print("\n")
         print("\U00002705 Checking ********************************************************************")
 
-        new_code = m_chat(prompt=prompt, printing=True)
+        new_code = m_chat(prompt=prompt, model=self.model, expensive=self.expensive, printing=True)
 
         new_code = new_code.replace("```python\n", "").replace("\n```", "")
 
@@ -92,7 +101,7 @@ class ActionsMLLM(Actions):
 
         return new_code
 
-    def do(self, **kwargs):
+    def do(self, **kwargs) -> None:
 
         """
         write code to achieve the action
@@ -103,10 +112,10 @@ class ActionsMLLM(Actions):
         # executeCodeHidden(continue_action)
         exec(continue_action, self.thread_instance.environment)
 
-        if self.thread_instance.environment["finishedOrNot"] :
+        if self.thread_instance.environment["finishedOrNot"]:
             self.thread_instance.actionflow.actionflow_current_JSON.pop(0)
 
-        elif not self.thread_instance.environment["finishedOrNot"] :
+        elif not self.thread_instance.environment["finishedOrNot"]:
 
             # prompt for actionDo **************************************************************************************
             prompts = [
@@ -116,8 +125,7 @@ class ActionsMLLM(Actions):
         1. You always write Python code! You are really good at it. Your natural language output should be written as comment in python code. for example: # Hello, I am an assistant.
         2. DON'T ASSUME you know any unclear knowledge or information that you don't know. DON'T ASSUME that you have non-existent functions or hypothetical function. Your code will be run immediately after you write it. If you assume any hypothetical function, the the system will crash.
         3. If you cannot do the action, you are allowed to send message to user for help.
-        4. Your response cannot only be comment. You HAVE to write codes"""
-                ,
+        4. Your response cannot only be comment. You HAVE to write codes""",
 
                 # 2. provide the functions description and example, and knowledge
                 f"""
@@ -128,15 +136,13 @@ class ActionsMLLM(Actions):
         Your customized functions and their examples are:
         {self.thread_instance.functions_description_and_example}
 
-
         Try to understand the meaning of each function and its parameter, and decide the best function and use the function for this step to accomplish the action. 
         For example: (current action: search the location of the NBA in 2019@ google search @zhihu search)
         response:
         # Hello! to answer where is the NBA in 2019, I need to search the information about NBA in 2019. The function returns as a string.
         location=google_search("Where is the NBA in 2019"
         location= zhihu_search("Where is the NBA in 2019")
-                """
-                ,
+                """,
 
                 # 3. provide the goal, current action, code history, code future, environment, knowledge
                 f"""
@@ -150,8 +156,7 @@ class ActionsMLLM(Actions):
         {self.thread_instance.actionflow.actionflow_current_get_code()}
 
         The code of action in the future are(But you don't need to do this part now, just for your information)):
-        {self.thread_instance.actionflow.actionflow_pending_get_code()}"""
-                ,
+        {self.thread_instance.actionflow.actionflow_pending_get_code()}""",
 
                 # 4. provide the code of the action
                 f"""
@@ -169,10 +174,11 @@ class ActionsMLLM(Actions):
 
             prompt = "".join(prompts)
 
-            print("*******planning prompt********")
-            print(prompt)
+            if self.plan_prompt:
+                print("*******planning prompt with mllm********")
+                print(prompt)
 
-            new_code = m_chat(prompt=prompt, printing=True)
+            new_code = m_chat(prompt=prompt, model=self.model, expensive=self.expensive, printing=True)
 
             new_code = new_code.replace("```python\n", "").replace("\n```", "")
 

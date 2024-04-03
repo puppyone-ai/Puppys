@@ -69,14 +69,14 @@ class Actions():
         """
 
         
-        self.thread_instance.functions_description_and_example= self.thread_instance.action_default.get_description_and_example()
+        # self.thread_instance.functions_description_and_example= self.thread_instance.action_default.get_description_and_example()
 
         prompt=[
         # 1. define your agent type and name
         {"role": "system",
         "content":f"""You are an AI code assistant agent called {self.thread_instance.puppy_name}. 
         1. You always write Python code! You are really good at it. Your natural language output should be written as comment in python code. for example: # Hello, I am an assistant.
-        2. DONT'T ASSUME you know any unclear knowledge or information that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function. Your code will be run imediately after you write it. If you assume any hypothetical function, the the system will crash.
+        2. DONT'T ASSUME you know any unclear knowledge or information that you don't know. DON'T ASSUME that you have unexsited functions or hypothetical function. Your code will be run imediately after you write it. If you assume any hypothetical function, the system will crash.
         3. You need to justify if your current action has been achieved or not by history code, and decide to skip the current action or not.
         4. You only need to decide if your current action has been achieved or not. You don't need to write code to achieve it."""},
         
@@ -109,7 +109,7 @@ class Actions():
         # the result is "First death resulting from Coronavirus outside China reported."
 
         your response:
-        # I get what I should get, and I don't need to do anything else if their is no other action provide by human.
+        # I get what I should get, and I don't need to do anything else if there is no other action provide by human.
         finishedOrNot=True"""},
 
         # 3. provide the goal, current action, code history, code future, enviroment, knowledge
@@ -163,6 +163,8 @@ class Actions():
         continue_action= self.check_do()
         
         #executeCodeHidden(continue_action)
+
+        #deliver 'finishedOrNot' to the environment for verification of the final execution.
         exec(continue_action, self.thread_instance.environment)
 
         if self.thread_instance.environment["finishedOrNot"]==True:
@@ -170,7 +172,7 @@ class Actions():
 
         elif self.thread_instance.environment["finishedOrNot"]==False:
 
-            self.thread_instance.functions_description_and_example= self.thread_instance.action_default.get_description_and_example()
+            # self.thread_instance.functions_description_and_example= self.thread_instance.action_default.get_description_and_example()
 
 
             # prompt for actionDo ***********************************************************************************************

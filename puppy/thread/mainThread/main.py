@@ -61,7 +61,6 @@ class MainThread(Thread):
         def run(self, **kwargs):
             pass
 
-
     ## the templete of an func for agents
     class Agent_var_templete:
         def __init__(self, thread_instance, **kwargs):
@@ -187,9 +186,11 @@ class MainThread(Thread):
         # loading actions
         from ...publicFunc.default import ActionDefault
 
-        self.action_default = ActionDefault(self)
+        self.action_default = ActionDefault(code_thread_instance=self)
         self.send_message_to_human = self.action_default.send_message_to_human
         self.gpt = self.action_default.gpt
+        self.mllm = self.action_default.mllm
+        self.functions_description_and_example = self.action_default.get_info()
 
         self.actionflow.actionflow_current_clear()
 
@@ -198,7 +199,7 @@ class MainThread(Thread):
         print("\U0001F4E5 Import Done")
         # start the action flow
 
-        while self.actionflow.actionflow_current_JSON ==[] and self.actionflow.actionflow_pending_JSON !=[]:
+        while self.actionflow.actionflow_current_JSON == [] and self.actionflow.actionflow_pending_JSON != []:
 
             print("\U0001F525 Action Start")
 
@@ -215,22 +216,21 @@ class MainThread(Thread):
             print("\U0001F519 ActionFlowHistory:")
             print(self.actionflow.actionflow_history_JSON)
 
-            while self.actionflow.actionflow_current_JSON !=[]:
+            while self.actionflow.actionflow_current_JSON:
                 
                 # STEP 3.1: check if the action is fixed, semi-fixed, or changeable
-                if self.actionflow.actionflow_current_get_front()["status"]== "fixed":
+                if self.actionflow.actionflow_current_get_front()["status"] == "fixed":
                     pass
 
-                elif self.actionflow.actionflow_current_get_front()["status"]== "semi-fixed":
+                elif self.actionflow.actionflow_current_get_front()["status"] == "semi-fixed":
                     self.actions.do()
 
-                elif self.actionflow.actionflow_current_get_front()["status"]== "changeable":
+                elif self.actionflow.actionflow_current_get_front()["status"] == "changeable":
                     pass
                 
                 # STEP 3.2 load the action from actionCurrent to actionOnGoing
-                if self.actionflow.actionflow_current_JSON !=[]:
+                if self.actionflow.actionflow_current_JSON:
                     self.actionflow.action_current_execute()
-                    
 
                     # STEP 3.3: load the action from actionOngoing and execute the code, and determine if the action is hidden
                     action_code = self.actionflow.action_on_going.get()
@@ -239,7 +239,6 @@ class MainThread(Thread):
                     print("\U0001F697 Running Code ################################################################")
                     print(action_code)
                     print("################################################################################")
-
 
                     exec(action_code, self.environment)
                     self.actionflow.action_on_going.task_done()
@@ -250,9 +249,8 @@ class MainThread(Thread):
 
                     self.actionflow.action_current_save()
 
-
                     # STEP 5: remove the action from the actionFlowCurrent
-                    if self.actionflow.actionflow_current_JSON !=[]:
+                    if self.actionflow.actionflow_current_JSON:
                         self.actionflow.actionflow_current_remove_front()
                     
                     else:
