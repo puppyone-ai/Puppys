@@ -1,7 +1,6 @@
 from .thread.mainThread.main import MainThread
 
 
-
 class Puppy(MainThread):
     def __init__(self, name="", mllm=False):
         
