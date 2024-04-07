@@ -13,19 +13,20 @@ Mei = Puppy(name="Mei")
 # os.environ["OPENAI_API_KEY"] = "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"
 
 
-@Mei.mainthread
-def actionflow_pending():
+@Mei.construct
+def peep_hackernews():
 
     ## go to this website:https://news.ycombinator.com/ , save its HTML. @python
     Mei.do()
     print(HTML_text)
 
-    ## show the top 10 news name and their urls based on the HTML @mllm, and send the message to the user
+    ## show the top 10 news name and their urls based on the HTML @gpt, and send the message to the user
     Mei.do()
     print(news_and_urls)
 
 
 Mei.run()
+
 
 # TODO
 # fixed the bug of saving actionflow_history

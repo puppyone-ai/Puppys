@@ -2,7 +2,7 @@ from puppy.publicFunc.default.send_message_to_human import SendSendMessageToHuma
 from puppy.publicFunc.default.google_search_native import GoogleSearchNative
 from puppy.publicFunc.default.gpt import GPT
 from puppy.publicFunc.default.all_llm import MLLM
-from puppy.thread.mainThread.base import Thread
+from puppy.thread.mainThread.base import ThreadBase
 
 
 class ActionDefault:
@@ -17,7 +17,7 @@ class ActionDefault:
         if 'code_thread_instance' in kwargs:
             code_thread_instance = kwargs['code_thread_instance']
         else:
-            code_thread_instance = Thread()
+            code_thread_instance = ThreadBase()
 
         self.send_message_to_human = SendSendMessageToHuman(code_thread_instance)
         self.google_search_native = GoogleSearchNative(code_thread_instance)
@@ -59,8 +59,7 @@ class ActionDefault:
     #     return functionsDescriptionAndExample
 
     def get_info(self, description=True, example=True):
-        functions_simplified = """
-        """
+        functions_simplified = """"""
         actions = [self.send_message_to_human, self.google_search_native, self.mllm, self.gpt]
 
         information = ['name']
