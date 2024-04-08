@@ -24,7 +24,7 @@
 * **Human-Agent Interacts**: Your agent will ask you when it cannot understand what you said.
 * **tuning-machine-like agent**: program an agent by programming the agent's decision tree and its enviroment.
 
-<img src="./assets/divider.png" alt="Image">
+<img src="./assets/dividerBig.png" alt="Image">
 
 ### Building an agent just like building an Tuning machine
 
