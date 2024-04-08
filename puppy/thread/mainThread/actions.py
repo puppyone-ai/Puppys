@@ -14,21 +14,21 @@ class Actions:
         self.check_prompt = check_prompt
         self.plan_prompt = plan_prompt
 
-        self.action_list = []
+        self.actions_list = []
+
         if "source_code" in kwargs:
             self.pack(kwargs["source_code"])
 
         """
-        [{"comment": "",
-          "code": "Mei.do()",
-          "status": "changeable"}]
+        actions_list: [actions,actions,actions]
+        actions: [action,action,action]
+        [
+        {"comment": "", "comment+code": "Mei.do()", "status": "changeable"},
+        {"comment": "", "comment+code": "",         "status": ""}
+        ]
         """
-        # could consider introduce the func_name indexing in the future
 
-    def _new_action(self):
-        self.action_list.append({"comment": "",
-                                 "comment+code": "",
-                                 "status": ""})
+        # could consider introduce the func_name indexing in the future
 
     def pack(self, source_code: str) -> None:
 
@@ -43,107 +43,49 @@ class Actions:
         striped_lines = []
 
         for line in lines[2:]:  # [2:]filter decorator and function name
-            # print(line)
             line = line.strip()
             if line:
                 striped_lines.append(line)
-
-        # print(striped_lines)
 
         # load source code to action list sequentially
 
         for line in striped_lines:
 
             if '##' in line:
-                self._new_action()
+                self.actions_list.append([{"comment": "",
+                                         "comment+code": "",
+                                          "status": ""}])
 
                 # print(self.action_list[-1])
 
-                self.action_list[-1]["comment"] = line.split('##', 1)[1].strip()
-                self.action_list[-1]["comment+code"] += f'{line}\n'
+                self.actions_list[-1][0]["comment"] = line.split('##', 1)[1].strip()
+                self.actions_list[-1][0]["comment+code"] += f'{line}\n'
 
             else:
 
-                self.action_list[-1]["comment+code"] += line + '\n'
+                self.actions_list[-1][0]["comment+code"] += line + '\n'
 
         # verify the status of the action
 
-        for action in self.action_list:
+        for actions in self.actions_list:
+            for action in actions:
 
-            if ".do()" in action["comment+code"]:
-                if not action["comment"]:
-                    action["status"] = "changeable"
+                if ".do()" in action["comment+code"]:
+                    if not action["comment"]:
+                        action["status"] = "changeable"
+                    else:
+                        action["status"] = "semi-fixed"
+
                 else:
-                    action["status"] = "semi-fixed"
+                    action["status"] = "fixed"
 
-            else:
-                action["status"] = "fixed"
-
-        print(self.action_list)
-
-    # TODO
-    # add the func to manipulate the action list
-
-
-    # # add a new action to the action list
-    # def action_add(self, name, code, function_before_action, function_after_action):
-    #     action={"name":name,
-    #             "code":code,}
-    #
-    #
-    # # operations for actions
-    # def action_get(self):
-    #     return self.action_list
-    #
-    # # remove an action from the action list
-    # def action_remove(self, action):
-    #     self.action_list.pop(action)
-    #
-    #
-    # # clear the action list
-    # def action_clear(self):
-    #     self.action_list={}
-    #
-    # def add_new_action(self, action):
-    #     self.action_list.append(action)
-    #
-    # def add_function_before_action_front(self, function, action):
-    #     for e in self.action_list:
-    #         if e["action"]==action:
-    #             e["function_before_action"].insert(0,function)
-    #
-    # def add_function_before_action_end(self, function, action):
-    #     for e in self.action_list:
-    #         if e["action"]==action:
-    #             e["function_before_action"].append(function)
-    #
-    # def add_function_after_action_front(self, function, action):
-    #     for e in self.action_list:
-    #         if e["action"]==action:
-    #             e["function_after_action"].insert(0,function)
-    #
-    # def add_function_after_action_end(self, function, action):
-    #     for e in self.action_list:
-    #         if e["action"]==action:
-    #             e["function_after_action"].append(function)
-    #
-    #
-    # def get_function_before_action(self, action):
-    #     return self.action_list[action]["function_before_action"]
-    #
-    # def get_function_after_action(self, action):
-    #     return self.action_list[action]["function_after_action"]
-    #
-    # def think_keep_going_or_not(self):
-    #     pass
+        print(self.actions_list)
 
     def check_do(self, temperature=0.1, max_tokens=4096, model="gpt-4-0125-preview"):
 
         """
         write code to achieve the action
         """
-        
-        # self.thread_instance.functions_description_and_example= self.thread_instance.action_default.get_description_and_example()
 
         prompt=[
         # 1. define your agent type and name
@@ -213,15 +155,14 @@ class Actions:
         print("\n")
         print("\U00002705 Checking ********************************************************************")
 
-
         new_code = OpenAIChat(prompt=prompt,
-                             model=model,
-                             temperature=temperature,
-                             api_key=os.environ["OPENAI_API_KEY"],
-                             max_tokens=max_tokens,
-                             printing=True, stream=True)
+                              model=model,
+                              temperature=temperature,
+                              api_key=os.environ["OPENAI_API_KEY"],
+                              max_tokens=max_tokens,
+                              printing=True, stream=True)
 
-        new_code=new_code.replace("```python\n", "").replace("\n```", "")
+        new_code = new_code.replace("```python\n", "").replace("\n```", "")
 
         print("********************************************************************************")
 
@@ -236,10 +177,8 @@ class Actions:
         """
 
         continue_action = self.check_do()
-        
-        #executeCodeHidden(continue_action)
 
-        #deliver 'finishedOrNot' to the environment for verification of the final execution.
+        # deliver 'finishedOrNot' to the environment for verification of the final execution.
         exec(continue_action, self.thread_instance.environment)
 
         if self.thread_instance.environment["finishedOrNot"]:
@@ -248,10 +187,7 @@ class Actions:
 
         elif not self.thread_instance.environment["finishedOrNot"]:
 
-            # self.thread_instance.functions_description_and_example= self.thread_instance.action_default.get_description_and_example()
-
-
-            # prompt for actionDo ***********************************************************************************************
+            # prompt for actionDo **************************************************************************************
             prompt = [
             # 1. define your agent type and name
             {"role": "system", 
@@ -312,15 +248,16 @@ class Actions:
             print("\n")
             print("\U0001F4A4 Action ######################################################################")
 
-            # print("*******planning prompt********")
-            # print(prompt)
+            if self.plan_prompt:
+                print("*******planning prompt********")
+                print(prompt)
 
             new_code = OpenAIChat(prompt=prompt,
                                   model=model,
-                               temperature=temperature,
-                               api_key=os.environ["OPENAI_API_KEY"],
-                                max_tokens=max_tokens,
-                               printing=True, stream=True)
+                                  temperature=temperature,
+                                  api_key=os.environ["OPENAI_API_KEY"],
+                                  max_tokens=max_tokens,
+                                  printing=True, stream=True)
 
             new_code = new_code.replace("```python\n", "").replace("\n```", "")
 
