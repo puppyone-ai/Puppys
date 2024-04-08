@@ -18,12 +18,14 @@
 
 </div>
 
+---
+
 * **Code-Native**: Puppys is a code-native agent framework. Every dialog is code.
 * **Multi-Threads**: Puppys enable you to build an agent with multi-thread.
 * **Human-Agent Interacts**: Your agent will ask you when it cannot understand what you said.
 * **tuning-machine-like agent**: program an agent by programming the agent's decision tree and its enviroment.
 
-
+---
 ### Building an agent just like building an Tuning machine
 When programming an agent, what exactly are we programming? 
 
@@ -33,7 +35,10 @@ To enable the agent to make the correct decisions upon encountering a specific s
 <img src="./assets/tuning.png" alt="Image" width="400">
 </div>
 
-### Hybrid solution between Agent and RPA
+---
+
+### Hybrid solution of Agent and RPA
+
 **Agents** can do tasks by themselves and work in many situations, but only be able to solve very simple problems.
 **RPA** (Robotic Process Automation), on the other hand, can handle complex tasks but isn't very flexible. So, here is a question: **what if we make a hybrid agent that mix the advantages of agents and RPA?** Could this idea work?
 
@@ -43,6 +48,8 @@ Unlike previous agent frameworks, we placed the workflow within the environment,
 <div align="center">
 <img src="./assets/AgentRPA.png" alt="Image" width="500">
 </div>
+
+---
 
 ### Quick Start
 
