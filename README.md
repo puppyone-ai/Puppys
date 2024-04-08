@@ -49,11 +49,12 @@ Unlike previous agent frameworks, we placed the workflow within the environment,
 <img src="./assets/AgentRPA.png" alt="Image" width="500">
 </div>
 
+
 <img src="./assets/divider.png" alt="Image">
 
-### Quick Start
+### Quick Start & User Case
 
-1. *Hacker News Reporter*
+1. 📢 *Hacker News Reporter*
 
 ```
 import sys
