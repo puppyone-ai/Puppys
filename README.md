@@ -32,7 +32,7 @@ When programming an agent, what exactly are we programming?
 To enable the agent to make the correct decisions upon encountering a specific state, we should define its **finite state machine (decision tree)**, and we might also need to define the **environment (tape)** in which the agent operates.
 
 <div align="center">
-<img src="./assets/tuning.png" alt="Image" width="400">
+<img src="./assets/tuning.png" alt="Image" width="500">
 </div>
 
 <img src="./assets/divider.png" alt="Image">
@@ -46,7 +46,7 @@ Our solution is that, actionflow is as a list in the environment, which need to 
 Unlike previous agent frameworks, we placed the workflow within the environment, to be parsed by the decision tree, rather than a default flow.
 
 <div align="center">
-<img src="./assets/AgentRPA.png" alt="Image" width="500">
+<img src="./assets/AgentRPA.png" alt="Image" width="600">
 </div>
 
 
