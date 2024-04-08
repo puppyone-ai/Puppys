@@ -1,5 +1,5 @@
-![alt text](/assets/PuppyAgentHorizon.png)
 
+<img src="./assets/PuppyAgentHorizon.png" alt="Image">
 *An open-source **Code-Native AI Agents** framework*
 
 <div align="center">
@@ -23,8 +23,9 @@
 * **tuning-machine-like agent**: program an agent by programming the agent's decision tree and its enviroment.
 
 
-![alt text](/assets/tuning.png)
-
+<div align="center">
+<img src="./assets/tuning.png" alt="Image" width="500">
+</div>
 
 #### Quick Start
 
