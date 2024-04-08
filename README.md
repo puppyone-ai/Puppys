@@ -1,9 +1,8 @@
 
 <img src="./assets/PuppyAgentHorizon.png" alt="Image">
+<div align="center">
 
 *An open-source **Code-Native AI Agents** framework*
-
-<div align="center">
 
 [![Twitter Follow](https://img.shields.io/twitter/follow/PuppyAgentTech?label=PuppyAgent_Lab&style=social)](https://twitter.com/PuppyAgentTech) &ensp;
 </div>
@@ -18,24 +17,25 @@
 
 </div>
 
----
-
 * **Code-Native**: Puppys is a code-native agent framework. Every dialog is code.
 * **Multi-Threads**: Puppys enable you to build an agent with multi-thread.
 * **Human-Agent Interacts**: Your agent will ask you when it cannot understand what you said.
 * **tuning-machine-like agent**: program an agent by programming the agent's decision tree and its enviroment.
 
----
+<img src="./assets/divider.png" alt="Image">
+
 ### Building an agent just like building an Tuning machine
+
+
 When programming an agent, what exactly are we programming? 
 
 To enable the agent to make the correct decisions upon encountering a specific state, we should define its **finite state machine (decision tree)**, and we might also need to define the **environment (tape)** in which the agent operates.
 
 <div align="center">
-<img src="./assets/tuning.png" alt="Image" width="400">
+<img src="./assets/tuning.png" alt="Image" width="500">
 </div>
 
----
+<img src="./assets/divider.png" alt="Image">
 
 ### Hybrid solution of Agent and RPA
 
@@ -46,14 +46,15 @@ Our solution is that, actionflow is as a list in the environment, which need to 
 Unlike previous agent frameworks, we placed the workflow within the environment, to be parsed by the decision tree, rather than a default flow.
 
 <div align="center">
-<img src="./assets/AgentRPA.png" alt="Image" width="500">
+<img src="./assets/AgentRPA.png" alt="Image" width="600">
 </div>
 
----
 
-### Quick Start
+<img src="./assets/divider.png" alt="Image">
 
-1. *Hacker News Reporter*
+### Quick Start & User Case
+
+1. 📢 *Hacker News Reporter*
 
 ```
 import sys
