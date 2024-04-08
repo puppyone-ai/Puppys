@@ -1,5 +1,6 @@
 
 <img src="./assets/PuppyAgentHorizon.png" alt="Image">
+
 *An open-source **Code-Native AI Agents** framework*
 
 <div align="center">
@@ -23,11 +24,27 @@
 * **tuning-machine-like agent**: program an agent by programming the agent's decision tree and its enviroment.
 
 
+### Building an agent just like building an Tuning machine
+When programming an agent, what exactly are we programming? 
+
+To enable the agent to make the correct decisions upon encountering a specific state, we should define its **finite state machine (decision tree)**, and we might also need to define the **environment (tape)** in which the agent operates.
+
 <div align="center">
-<img src="./assets/tuning.png" alt="Image" width="500">
+<img src="./assets/tuning.png" alt="Image" width="400">
 </div>
 
-#### Quick Start
+### Hybrid solution between Agent and RPA
+**Agents** can do tasks by themselves and work in many situations, but only be able to solve very simple problems.
+**RPA** (Robotic Process Automation), on the other hand, can handle complex tasks but isn't very flexible. So, here is a question: **what if we make a hybrid agent that mix the advantages of agents and RPA?** Could this idea work?
+
+Our solution is that, actionflow is as a list in the environment, which need to be interpreted by a decision tree.
+Unlike previous agent frameworks, we placed the workflow within the environment, to be parsed by the decision tree, rather than a default flow.
+
+<div align="center">
+<img src="./assets/AgentRPA.png" alt="Image" width="500">
+</div>
+
+### Quick Start
 
 1. *Hacker News Reporter*
 
