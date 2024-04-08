@@ -1,5 +1,5 @@
 
-<img src="./assets/PuppyAgentHorizon.png" alt="Image">
+<img src="./assets/PuppyS Horizon.png" alt="Image">
 <div align="center">
 
 *An open-source **Code-Native AI Agents** framework*
