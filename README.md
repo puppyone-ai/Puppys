@@ -1,9 +1,8 @@
 
 <img src="./assets/PuppyAgentHorizon.png" alt="Image">
+<div align="center">
 
 *An open-source **Code-Native AI Agents** framework*
-
-<div align="center">
 
 [![Twitter Follow](https://img.shields.io/twitter/follow/PuppyAgentTech?label=PuppyAgent_Lab&style=social)](https://twitter.com/PuppyAgentTech) &ensp;
 </div>
