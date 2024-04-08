@@ -24,7 +24,7 @@
 * **Human-Agent Interacts**: Your agent will ask you when it cannot understand what you said.
 * **tuning-machine-like agent**: program an agent by programming the agent's decision tree and its enviroment.
 
-<img src="./assets/divider.png" alt="Image">
+<img src="./assets/dividerOrange.png" alt="Image">
 
 ### Building an agent just like building an Tuning machine
 
@@ -37,7 +37,7 @@ To enable the agent to make the correct decisions upon encountering a specific s
 <img src="./assets/tuning.png" alt="Image" width="500">
 </div>
 
-<img src="./assets/divider.png" alt="Image">
+<img src="./assets/dividerBlue.png" alt="Image">
 
 ### Hybrid solution of Agent and RPA
 
@@ -52,7 +52,7 @@ Unlike previous agent frameworks, we placed the workflow within the environment,
 </div>
 
 
-<img src="./assets/divider.png" alt="Image">
+<img src="./assets/dividerBlue.png" alt="Image">
 
 ### Quick Start & User Case
 
