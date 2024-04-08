@@ -3,9 +3,8 @@ import threading
 from .actionflow import Actionflow
 from .actions import Actions
 from .actions_mllm import ActionsMLLM
-#from ...publicFunc.default import ActionDefault
 from .base import ThreadBase
-from .Thread import MinimalThread
+from .thread import MinimalThread
 
 
 class MainThread(ThreadBase):
@@ -82,7 +81,6 @@ class MainThread(ThreadBase):
 
         newAgentFunc=self.agent_func_templateTemplete()
 
-
         print("name:")
         print(name)
 
@@ -117,34 +115,6 @@ class MainThread(ThreadBase):
         # end the code thread
         thread_code.join()
 
-    # # for the wrapper of action
-    # def mainthread(self, func):
-    #     def wrapper(self, *args, **kwargs):
-    #         # self.initialize()
-    #         func(*args, **kwargs)
-    #
-    #     self.current_thread_name= "mainThread"
-    #     source_code = inspect.getsource(func)
-    #
-    #     # if the function is action, initialize the actionFlow
-    #     func_name=func.__name__
-    #     if func_name == "actionflow_pending":
-    #
-    #         # get source code
-    #         self.actionflow.initialize(source_code)
-    #
-    #         print("\U0001F3B2 Initialize Done")
-    #         print("Initialized Function: "+func_name)
-    #
-    #
-    #
-    #     if func_name == "trigger":
-    #         # TODO
-    #         pass
-    #
-    #     # execute the function with wrapper
-    #     return wrapper
-
     # TODO
     def construct(self, func):
         def wrapper(*args, **kwargs):
@@ -157,7 +127,9 @@ class MainThread(ThreadBase):
         self.action_current = self.actionflow.action_current
 
         source_code = inspect.getsource(func)
-        self.actionflow.load_actions(Actions(source_code=source_code).action_list)
+        unloaded_actions = Actions(source_code=source_code).actions_list
+        for actions in unloaded_actions:
+            self.actionflow.actionflow_pending.append(actions)
 
         print("\U0001F3B2 Initialize Done")
         print("Initialized Function: " + func.__name__)
@@ -215,13 +187,7 @@ class MainThread(ThreadBase):
 
             print("\U0001F525 Action Start")
 
-            # # STEP 1: load the action from actionFlowPending to actionFlowCurrent
-            # self.actionflow.action_current_load()
-            #
-            # # STEP 2: delete the action from actionFlowPending
-            # self.actionflow.actionflow_pending_remove_front()
-
-            # STEP 1&2: load the action from actionFlowPending to actionFlowCurrent,
+            # STEP 1&2: load the action from action_flow_pending to action_flow_current,
             # and delete the action from actionFlowPending
 
             self.actionflow.actionflow_current.append(self.actionflow.actionflow_pending.pop(0))
@@ -233,11 +199,13 @@ class MainThread(ThreadBase):
             print("\U0001F519 ActionFlowHistory:")
             print(self.actionflow.actionflow_history)
 
+            # take out actions and process sequentially
+
             while self.actionflow.actionflow_current:
 
-                # STEP 3.1: check if the action is fixed, semi-fixed, or changeable
-
                 self.actions_current = self.actionflow.actionflow_current[0]
+
+                # STEP 3.1: check if the action is fixed, semi-fixed, or changeable
 
                 while self.actions_current:
 
@@ -252,15 +220,17 @@ class MainThread(ThreadBase):
                         case "semi-fixed":
                             self.actions.do()
 
+                    # TODO: finish the changeable mode
+
                         case "changeable":
                             pass
                 
-                    # STEP 3.2 load the action from actionCurrent to actionOnGoing
-                    # if self.actionflow.actionflow_current:
-                    #     self.actionflow.action_current_execute()
+                    # STEP 3.2 load the processed action into actionOnGoing
+
                     self.actionflow.action_on_going.put(action['comment+code'])
 
-                    # STEP 3.3: load the action from actionOngoing and execute the code, and determine if the action is hidden
+                    # STEP 3.3: load the action from actionOngoing and execute the code,
+                    # and determine if the action is hidden
                     action_code = self.actionflow.action_on_going.get()
 
                     print("\n")
@@ -292,20 +262,8 @@ class MainThread(ThreadBase):
         print("Done")
         print(self.actionflow.actionflow_history)
 
-        # save the actionflow_history to the folder of history
+        # TODO: save the actionflow_history to the folder of history
 
         #self.save_actionflow_history()
 
-
-# class Puppy(MainThread):
-#     def __init__(self, name="puppy"):
-#
-#         super().__init__()
-#         self.puppy_name=name
-#
-#     def run(self):
-#         self.mainthread_run()
-
-
-
-
+        # TODO: def do() for triggering fixed thread

@@ -8,11 +8,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 Mei = Puppy(name="Mei")
 
-
-# change the API key to your own
-# os.environ["OPENAI_API_KEY"] = "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"
-
-
 @Mei.construct
 def peep_hackernews():
 
@@ -26,6 +21,8 @@ def peep_hackernews():
 
 
 Mei.run()
+
+# peep_hackernews()
 
 
 # TODO
