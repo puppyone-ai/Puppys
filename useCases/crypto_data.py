@@ -9,19 +9,22 @@ from puppy import Puppy
 os.environ["OPENAI_API_KEY"] = "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"
 
 
-Mei = Puppy(name="HackerNews_reporter")
+Mei = Puppy(name="CryptoAnalysist")
 
 @Mei.mainthread
 def actionflow_pending():
 
-    ## go to this website: https://www.binance.com/en/landing/data,
+    ## today is 2024-Apr-12, please fetch YTD of BTC and ETH from Yahoo finance `yfinance` @python
     Mei.do()
-    print(HTML_text)
-
-    ## show the top 10 news and their urls based on the HTML @gpt, and send the message to the user
+    
+    ## save the data to a csv file @python
     Mei.do()
-    print(news_and_urls)
 
+    ## plot the price of BTC and ETH in the same graph @python
+    Mei.do()
+
+    ## calculate the correlation between BTC and ETH price and plot the function @python
+    Mei.do()
 
 Mei.run()
 
