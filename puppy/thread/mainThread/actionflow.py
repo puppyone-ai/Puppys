@@ -1,30 +1,31 @@
 import queue
+import copy
+from .base import Thread
 
-class Actionflow():
-    def __init__(self, thread_instance):
+
+class Actionflow:
+    def __init__(self, thread_instance: Thread):
         self.thread_instance = thread_instance
 
-        self.actionflow_all_JSON = []
+        # self.actionflow_all_JSON = []
         self.actionflow_history_JSON = []
-        self.actionflow_pending_JSON =[]
-        self.actionflow_current_JSON=[]
+        self.actionflow_pending_JSON = []
+        self.actionflow_current_JSON = []
         
         """
         actionFlowAllJSON: [{}]"""
 
-        self.action_on_going=queue.Queue()
+        self.action_on_going = queue.Queue()
     
-    def initialize(self, source_code):
-
+    def initialize(self, source_code: str):
 
         self.actionflow_history_JSON = []
         # updated the actionFlow JSON
         action_flow_initial_JSON, action_flow_initial_python=self.translate_python(source_code)
         self.actionflow_pending_add_to_front(action_flow_initial_JSON)
 
-
-    # return the actionFlowHistoryJSON and actionFlowHistoryPython by ## in the source code
-    def translate_python(self, sourceCode: str):
+    @staticmethod
+    def translate_python(source_code: str):
 
         """
         translate the source code to actionflow_json and actionflow_python
@@ -37,7 +38,7 @@ class Actionflow():
         actionflow_json=[]
         actionflow_python=[]
 
-        lines = sourceCode.split('\n')
+        lines = source_code.split('\n')
 
         ## deal with space in the head of the code
         comment_pos = None
@@ -64,7 +65,7 @@ class Actionflow():
                     adjusted_lines.append(line)
             adjusted_source_code = '\n'.join(adjusted_lines)
         else:
-            adjusted_source_code = sourceCode
+            adjusted_source_code = source_code
 
 
         ## return the actionflow_json
@@ -179,9 +180,12 @@ class Actionflow():
     # operation for actionFlowCurrent
     def actionflow_current_get_code(self):
         return self.actionflow_current_JSON[0]["code"]
-    
+
+    # a deep copy of action's name
     def actionflow_current_get_name(self):
-        return self.actionflow_current_JSON[0]["action"]
+        action_dict = self.actionflow_current_JSON[0]["action"]
+        action_dict_deep_copy = copy.deepcopy(action_dict)
+        return action_dict_deep_copy
     
     def actionflow_current_get_front_add_code(self, code):
         self.actionflow_current_JSON[0]["code"]= self.actionflow_current_JSON[0]["code"] + "\n" + code
@@ -223,7 +227,7 @@ class Actionflow():
 
     # save the action from actionCurrent to actionFlowPending
     def action_current_save(self):
-        self.actionflow_history_add_to_front([self.actionflow_current_get_front()])
+        self.actionflow_history_add_to_end([self.actionflow_current_get_front()])
 
     # put the action from actionCurrent to actionOnGoing
     def action_current_execute(self):

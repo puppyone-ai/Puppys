@@ -1,8 +1,8 @@
 import os
-from ...llm.openAI import OpenAIChat
+from puppy.llm.openAI import OpenAIChat
 
 
-class GPT():
+class GPT:
     def __init__(self, thread_instance, question='', **kwargs):
         self.thread_instance = thread_instance
         self.name= "GPT"
@@ -33,7 +33,7 @@ class GPT():
     def apiKey(self, api_key):
         self.apiKey = api_key
 
-    def run(self, prompt="", model="gpt-3.5-turbo-0125", temperature=0.7, max_tokens=4096, **kwargs):
+    def run(self, prompt="", model="gpt-3.5-turbo-0125", temperature=0.7, max_tokens=2048, **kwargs):
 
         result = OpenAIChat(prompt=[{"role": "user",
                                 "content": prompt,}],
