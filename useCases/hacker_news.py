@@ -10,7 +10,7 @@ Mei = Puppy(name="Mei")
 
 
 # change the API key to your own
-os.environ["OPENAI_API_KEY"] = "Your_OpenAI_Api_Key"
+os.environ["OPENAI_API_KEY"] = "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"
 
 
 @Mei.mainthread
