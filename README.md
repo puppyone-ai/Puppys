@@ -26,7 +26,7 @@
 
 <img src="./assets/dividerBlue.png" alt="Image">
 
-## Building an agent just like building an Tuning machine
+## Building an agent just like building a Tuning machine
 
 
 When programming an agent, what exactly are we programming? 
@@ -34,7 +34,7 @@ When programming an agent, what exactly are we programming?
 To enable the agent to make the correct decisions upon encountering a specific state, we should define its **finite state machine (decision tree)**, and we might also need to define the **environment (tape)** in which the agent operates.
 
 <div align="center">
-<img src="./assets/tuning.png" alt="Image" width="500">
+<img src="./assets/decisionTree&Enviroment.png" alt="Image" width="500">
 </div>
 
 
