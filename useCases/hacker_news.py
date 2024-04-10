@@ -1,10 +1,11 @@
 import sys
 import os
-from puppy import Puppy
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from puppy import Puppy
 # Use mllm to change mode, example: Mei = Puppy(name="Mei", mllm=True), @mllm rather @gpt
+
 
 Mei = Puppy(name="Mei")
 
