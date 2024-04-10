@@ -1,10 +1,10 @@
 import inspect
 import threading
-from .actionflow import Actionflow
-from .actions import Actions
-from .actions_mllm import ActionsMLLM
+# from .actionflow import Actionflow
+# from .actions import Actions
+# from .actions_mllm import ActionsMLLM
 from .base import ThreadBase
-from .thread import MinimalThread
+
 
 
 class MainThread(ThreadBase):
@@ -12,32 +12,37 @@ class MainThread(ThreadBase):
 
         super().__init__()
 
-        if mllm:
-            self.actions = ActionsMLLM(self)
-        else:
-            self.actions = Actions(thread_instance=self)
+        # if mllm:
+        #     self.Actions = ActionsMLLM
+        # else:
+        #     self.Actions = Actions
+
+        # if not mllm:
+        #     self.do = do_gpt
+        # else:
+        #     self.do = do_mllm
         
         # self.current_thread_name = "mainThread"
         # self.actionflow = Actionflow(self)
 
-        self.child_threads = {}
+        # self.child_threads = {}
 
         self.agent_var_func = {}
 
         self.agent_func = {}
         self.agent_var = {}
 
-        self.environment = {"self": self}
-
-        self.goal = ""
-
-    # to get value from agentVar
+        # self.environment = {"self": self}
+        #
+        # self.goal = ""    # to get value from agentVar
     def __getattr__(self, attr):
         if attr in self.agent_var:
             return attr.value
 
         else:
             raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{attr}'")
+
+
 
     ## the templete of an func for agents
     class agent_func_template:
@@ -115,26 +120,25 @@ class MainThread(ThreadBase):
         # end the code thread
         thread_code.join()
 
-    # TODO
-    def construct(self, func):
-        def wrapper(*args, **kwargs):
-
-            func(*args, **kwargs)
-
-        self.main_thread = MinimalThread()
-        self.actionflow = self.main_thread.actionflow
-        self.actions_current = self.actionflow.actions_current
-        self.action_current = self.actionflow.action_current
-
-        source_code = inspect.getsource(func)
-        unloaded_actions = Actions(source_code=source_code).actions_list
-        for actions in unloaded_actions:
-            self.actionflow.actionflow_pending.append(actions)
-
-        print("\U0001F3B2 Initialize Done")
-        print("Initialized Function: " + func.__name__)
-
-        return wrapper
+    # def construct(self, func):
+    #     def wrapper(*args, **kwargs):
+    #
+    #         func(*args, **kwargs)
+    #
+    #     self.main_thread = Minimalthread()
+    #     self.actionflow = self.main_thread.actionflow
+    #     self.actions_current = self.actionflow.actions_current
+    #     self.action_current = self.actionflow.action_current
+    #
+    #     source_code = inspect.getsource(func)
+    #     unloaded_actions = Actions(source_code=source_code).actions_list
+    #     for actions in unloaded_actions:
+    #         self.actionflow.pending.append(actions)
+    #
+    #     print("\U0001F3B2 Initialize Done")
+    #     print("Initialized Function: " + func.__name__)
+    #
+    #     return wrapper
 
     def exec_mode(self, code, mode="thread"):
         exec(code, self.environment)
@@ -157,113 +161,109 @@ class MainThread(ThreadBase):
         file_path = os.path.join(folder_path, f"history_{date_str}.txt")
 
         # Directly convert the Python object to a JSON string
-        pretty_json = json.dumps(self.actionflow.actionflow_history, indent=4)
+        pretty_json = json.dumps(self.actionflow.history, indent=4)
 
         # Write the JSON string to a file
         with open(file_path, "w") as file:
             file.write(pretty_json)
 
-    def mainthread_decisiontree(self):
+    # def mainthread_decisiontree(self):
+    #
+    #     # import tools, for agents
+    #
+    #     # loading actions
+    #     from ...publicFunc.default import ActionDefault
+    #
+    #     self.action_default = ActionDefault(code_thread_instance=self)
+    #     self.send_message_to_human = self.action_default.send_message_to_human
+    #     self.gpt = self.action_default.gpt
+    #     self.mllm = self.action_default.mllm
+    #     self.functions_description_and_example = self.action_default.get_info()
+    #
+    #     # self.actionflow.actionflow_current_clear()
+    #
+    #     #print(self.Vars)
+    #
+    #     print("\U0001F4E5 Import Done")
+    #     # start the action flow
+    #
+    #     while self.actionflow.current == [] and self.actionflow.pending != []:
+    #
+    #         print("\U0001F525 Action Start")
+    #
+    #         # STEP 1&2: load the action from action_flow_pending to action_flow_current,
+    #         # and delete the action from actionFlowPending
+    #
+    #         self.actionflow.current.append(self.actionflow.pending.pop(0))
+    #
+    #         print("\U0001F51C ActionFlowPending:")
+    #         print(self.actionflow.pending)
+    #         print("\U000025B6 ActionFlowCurrentJSON:")
+    #         print(self.actionflow.current)
+    #         print("\U0001F519 ActionFlowHistory:")
+    #         print(self.actionflow.history)
+    #
+    #         # take out actions and process sequentially
+    #
+    #         while self.actionflow.current:
+    #
+    #             self.actions_current = self.actionflow.current[0]
+    #
+    #             # STEP 3.1: check if the action is fixed, semi-fixed, or changeable
+    #
+    #             while self.actions_current:
+    #
+    #                 action = self.actions_current.pop(0)
+    #
+    #                 self.action_current = action
+    #
+    #                 match action["status"]:
+    #                     case "fixed":
+    #                         pass
+    #
+    #                     case "semi-fixed":
+    #                         self.actions.do()
+    #
+    #                 # TODO: finish the changeable mode
+    #
+    #                     case "changeable":
+    #                         pass
+    #
+    #                 # STEP 3.2 load the processed action into action_on_going
+    #
+    #                 self.actionflow.action_on_going.put(action['comment+code'])
+    #
+    #                 # STEP 3.3: load the action from action_on_going and execute the code,
+    #                 # and determine if the action is hidden
+    #                 action_code = self.actionflow.action_on_going.get()
+    #
+    #                 print("\n")
+    #                 print("\U0001F697 Running Code ################################################################")
+    #                 print(action_code)
+    #                 print("################################################################################")
+    #
+    #                 exec(action_code, self.environment)
+    #                 self.actionflow.action_on_going.task_done()
+    #
+    #                 # STEP 4: load the action from the actionFlowCurrent to the actionFlowHistory
+    #                 # self.actionflow.actionflow_history_JSON += self.actionflow.actionflow_current_JSON[0]
+    #                 # self.actionflow.actionflow_current_JSON.pop(0)
+    #
+    #                 # self.actionflow.action_current_save()
+    #                 self.actionflow.history.append(action)
+    #
+    #             # STEP 5: remove the action from the actionFlowCurrent
+    #             # if self.actionflow.actionflow_current:
+    #             #     self.actionflow.actionflow_current_remove_front()
+    #             self.actionflow.current.pop(0)
+    #
+    #             # else:
+    #             #     pass
+    #
+    #         # else:
+    #         #         pass
+    #
+    #     print("Done")
+    #     print(self.actionflow.history)
 
-        # import tools, for agents
 
-        # loading actions
-        from ...publicFunc.default import ActionDefault
-
-        self.action_default = ActionDefault(code_thread_instance=self)
-        self.send_message_to_human = self.action_default.send_message_to_human
-        self.gpt = self.action_default.gpt
-        self.mllm = self.action_default.mllm
-        self.functions_description_and_example = self.action_default.get_info()
-
-        # self.actionflow.actionflow_current_clear()
-
-        #print(self.Vars)
-
-        print("\U0001F4E5 Import Done")
-        # start the action flow
-
-        while self.actionflow.actionflow_current == [] and self.actionflow.actionflow_pending != []:
-
-            print("\U0001F525 Action Start")
-
-            # STEP 1&2: load the action from action_flow_pending to action_flow_current,
-            # and delete the action from actionFlowPending
-
-            self.actionflow.actionflow_current.append(self.actionflow.actionflow_pending.pop(0))
-
-            print("\U0001F51C ActionFlowPending:")
-            print(self.actionflow.actionflow_pending)
-            print("\U000025B6 ActionFlowCurrentJSON:")
-            print(self.actionflow.actionflow_current)
-            print("\U0001F519 ActionFlowHistory:")
-            print(self.actionflow.actionflow_history)
-
-            # take out actions and process sequentially
-
-            while self.actionflow.actionflow_current:
-
-                self.actions_current = self.actionflow.actionflow_current[0]
-
-                # STEP 3.1: check if the action is fixed, semi-fixed, or changeable
-
-                while self.actions_current:
-
-                    action = self.actions_current.pop(0)
-
-                    self.action_current = action
-
-                    match action["status"]:
-                        case "fixed":
-                            pass
-
-                        case "semi-fixed":
-                            self.actions.do()
-
-                    # TODO: finish the changeable mode
-
-                        case "changeable":
-                            pass
-                
-                    # STEP 3.2 load the processed action into actionOnGoing
-
-                    self.actionflow.action_on_going.put(action['comment+code'])
-
-                    # STEP 3.3: load the action from actionOngoing and execute the code,
-                    # and determine if the action is hidden
-                    action_code = self.actionflow.action_on_going.get()
-
-                    print("\n")
-                    print("\U0001F697 Running Code ################################################################")
-                    print(action_code)
-                    print("################################################################################")
-
-                    exec(action_code, self.environment)
-                    self.actionflow.action_on_going.task_done()
-
-                    # STEP 4: load the action from the actionFlowCurrent to the actionFlowHistory
-                    # self.actionflow.actionflow_history_JSON += self.actionflow.actionflow_current_JSON[0]
-                    # self.actionflow.actionflow_current_JSON.pop(0)
-
-                    # self.actionflow.action_current_save()
-                    self.actionflow.actionflow_history.append(action)
-
-                # STEP 5: remove the action from the actionFlowCurrent
-                # if self.actionflow.actionflow_current:
-                #     self.actionflow.actionflow_current_remove_front()
-                self.actionflow.actionflow_current.pop(0)
-
-                # else:
-                #     pass
-
-            # else:
-            #         pass
-
-        print("Done")
-        print(self.actionflow.actionflow_history)
-
-        # TODO: save the actionflow_history to the folder of history
-
-        #self.save_actionflow_history()
-
-        # TODO: def do() for triggering fixed thread

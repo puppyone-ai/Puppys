@@ -114,7 +114,7 @@ class ActionsMLLM(Actions):
         exec(continue_action, self.thread_instance.environment)
 
         if self.thread_instance.environment["finishedOrNot"]:
-            self.thread_instance.actionflow.actionflow_current.pop(0)
+            self.thread_instance.actionflow.current.pop(0)
 
         elif not self.thread_instance.environment["finishedOrNot"]:
 
