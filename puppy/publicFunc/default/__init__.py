@@ -1,7 +1,7 @@
 from puppy.publicFunc.default.send_message_to_human import SendSendMessageToHuman
 from puppy.publicFunc.default.google_search_native import GoogleSearchNative
 from puppy.publicFunc.default.gpt import GPT
-from puppy.publicFunc.default.all_llm import MLLM
+# from puppy.publicFunc.default.all_llm import MLLM
 from puppy.thread.mainThread.base import Thread
 
 
@@ -21,7 +21,7 @@ class ActionDefault:
 
         self.send_message_to_human = SendSendMessageToHuman(code_thread_instance)
         self.google_search_native = GoogleSearchNative(code_thread_instance)
-        self.mllm = MLLM(code_thread_instance)
+        # self.mllm = MLLM(code_thread_instance)
         self.gpt = GPT(code_thread_instance)
 
     # def get_descriptions(self):
@@ -61,7 +61,7 @@ class ActionDefault:
     def get_info(self, description=True, example=True):
         functions_simplified = """
         """
-        actions = [self.send_message_to_human, self.google_search_native, self.mllm, self.gpt]
+        actions = [self.send_message_to_human, self.google_search_native, self.gpt]
 
         information = ['name']
         if description:
