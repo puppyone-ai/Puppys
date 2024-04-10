@@ -2,8 +2,8 @@ import inspect
 import threading
 from .actionflow import Actionflow
 from .actions import Actions
-from .actions_mllm import ActionsMLLM
-#from ...publicFunc.default import ActionDefault
+# from .actions_mllm import ActionsMLLM
+# from ...publicFunc.default import ActionDefault
 from .base import Thread
 
 
@@ -16,7 +16,7 @@ class MainThread(Thread):
         self.actionflow=Actionflow(self)
 
         if mllm:
-            self.actions=ActionsMLLM(self)
+            pass
         else:
             self.actions=Actions(self)
 
@@ -189,7 +189,7 @@ class MainThread(Thread):
         self.action_default = ActionDefault(code_thread_instance=self)
         self.send_message_to_human = self.action_default.send_message_to_human
         self.gpt = self.action_default.gpt
-        self.mllm = self.action_default.mllm
+        # self.mllm = self.action_default.mllm
         self.functions_description_and_example = self.action_default.get_info()
 
         self.actionflow.actionflow_current_clear()
