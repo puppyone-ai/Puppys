@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: README Document
+    url: https://github.com/PuppyAgent/Puppys/blob/main/README.md
+    about: Please ask and answer questions here.
+  - name: Concept Handbook
+    url: https://www.notion.so/Puppys-Document-83e2e55cfd27449589a6a721402ff4bc
+    about: Key concepts on the design of AI agent.
