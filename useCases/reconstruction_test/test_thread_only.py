@@ -3,7 +3,6 @@ from puppy.thread.mainThread.thread import Thread
 
 hacker_news = Thread()
 
-
 @hacker_news.parse_and_load
 def pending():
 
@@ -47,7 +46,7 @@ hacker_news.run()
 #
 #
 #
-# hacker_news._enviroment.actionflow.pending.append()
+# hacker_news._enviroment.actionflow_pending.append()
 #
 #
 #

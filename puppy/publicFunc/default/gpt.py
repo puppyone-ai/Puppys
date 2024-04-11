@@ -15,8 +15,7 @@ class GPT:
         prompt = f"How should I install the package of openAI, based on the document of its website HTML: {self.html}"
         result=self.gpt.run(prompt=prompt)
         """
-        
-        # self.apiKey = "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"
+
         # self.model_name = "gpt-3.5-turbo-0125"
         # self.max_tokens = 4096
         # self.temperature = 0.7
@@ -55,11 +54,6 @@ class GPT:
 if __name__ == "__main__":
     text = "how should I install the package of openAI"
 
-    # ApiKey="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"
-    # os.environ["OPENAI_API_KEY"]=ApiKey
-
     # GPT = GPT()
     results = GPT().run(prompt=text)
     print(results)
-
-

@@ -20,10 +20,11 @@ class SendSendMessageToHuman:
         self.function_before_action = []
         self.function_after_action = []
         self.allowed_thread = ["main_thread"]
-
+        self.question = ""
 
     def __call__(self, question=""):
-        return self.run(question)
+        self.question = question
+        return self.run(self.question)
 
     def get_name(self):
         return self.name
@@ -41,8 +42,8 @@ class SendSendMessageToHuman:
         self.question = question
 
     def run(self, question=""):
-        self.question = question
 
+        self.question = question
         user_input = input(question + "\n" + "Your response:")
         print("\U0001F600: Sure, get it.")
 
