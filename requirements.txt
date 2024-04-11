@@ -3,3 +3,4 @@ MinimalLLM @ git+https://github.com/EvoEvolver/MinimalLLM
 openai
 pandas
 zhipuai
+zhipuai
