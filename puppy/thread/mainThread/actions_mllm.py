@@ -1,6 +1,6 @@
 from .actions import Actions
-from puppy.llm import m_chat
-from .base import Thread
+from puppy.llm.mllm_chat import m_chat
+from .base import ThreadBase
 
 
 class ActionsMLLM(Actions):
@@ -9,14 +9,15 @@ class ActionsMLLM(Actions):
     This class is inherited from Actions, and it is used to define the action of the agent, and the action is done by mllm.
     """
 
-    def __init__(self, thread_instance: Thread,
+    def __init__(self, thread_instance: ThreadBase,
                  model: str = None, expensive: bool = False,
                  check_prompt: bool = True, plan_prompt: bool = False):
-        super().__init__(thread_instance)
+
+        super().__init__(thread_instance,
+                         check_prompt=check_prompt, plan_prompt=plan_prompt)
+
         self.model = model
         self.expensive = expensive
-        self.check_prompt = check_prompt
-        self.plan_prompt = plan_prompt
 
     def check_do(self, **kwargs) -> str:
 
@@ -113,7 +114,7 @@ class ActionsMLLM(Actions):
         exec(continue_action, self.thread_instance.environment)
 
         if self.thread_instance.environment["finishedOrNot"]:
-            self.thread_instance.actionflow.actionflow_current_JSON.pop(0)
+            self.thread_instance.actionflow_current.pop(0)
 
         elif not self.thread_instance.environment["finishedOrNot"]:
 
@@ -130,7 +131,7 @@ class ActionsMLLM(Actions):
                 # 2. provide the functions description and example, and knowledge
                 f"""
         You are allowed to use the given functions below. But make sure that you have imported the given package.
-        There maybe XXX.do() appearing, The XXX is your name, and the .do() is an instruction of 'you must write code and put it here'.
+        There maybe {self.thread_instance.puppy_name}.do() appearing, The space of {self.thread_instance.puppy_name}.do() is where you must write code and replace, and Never (do not) replace the code except the {self.thread_instance.puppy_name}.do() part.
         Pay attention to name your parameter in your code. The naming convention in your code should not be arbitrary, like 'result' or 'response'. It should reflect the property of the parameter.
 
         Your customized functions and their examples are:
@@ -152,7 +153,7 @@ class ActionsMLLM(Actions):
         The code for historical actionflow shown as code are:
         {self.thread_instance.actionflow.actionflow_history_get_code()}
 
-        user have already write some code for this action, but it's not finished. You should replace the XXX.do() part. Don't keep the .do() function after your response. The XXX is your name, and the .do() is an instruction of 'you must write code and put it here'.:
+        user have already write some code for this action, but it's not finished. You should replace the {self.thread_instance.puppy_name}.do() part. Don't keep {self.thread_instance.puppy_name} or .do() within function after your response. The {self.thread_instance.puppy_name} is your name, and the {self.thread_instance.puppy_name} .do() is an instruction of 'you must write code and put it here'.:
         {self.thread_instance.actionflow.actionflow_current_get_code()}
 
         The code of action in the future are(But you don't need to do this part now, just for your information)):
