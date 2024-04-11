@@ -1,79 +1,83 @@
-from collections import deque
+from .base import ThreadBase
+
 
 class Actions:
-    def __init__(self, source_code: str = "", llm: str = 'gpt', **kwargs):
-
-        self.actions_list = deque()
-        self.llm = llm
+    def __init__(self, **kwargs):
 
         if "thread_instance" in kwargs:
             thread_instance = kwargs["thread_instance"]
             self.thread_instance = thread_instance
 
-        self._parse_func_code_into_actions(source_code)
-        self._check_status()
-
-        """
-        ActionList: [action,action,action]
-
-        [
-        {"name": "", "code": "Mei.do()", "status": "changeable"，“llm”: "gpt"},
-        {"name": "", "code": "",         "status": "",           “llm”:      }
-        ]
-        """
+        self.name = ""
+        self.status = ""
+        self.code = ""
 
         # could consider introduce the func_name indexing in the future
+    def __str__(self):
+        return f'{self.name} : {self.status} /n {self.code}'
 
-    #TODO: abstract the parser to convert the source code to diverse properties
+    def __getitem__(self, item):
+        return getattr(self, item)
 
-    def _parse_func_code_into_actions(self, source_code: str) -> None:
+    def __setitem__(self, key, value):
+        setattr(self, key, value)
 
-        """
-        Load the action from source code so that we could trigger it in actionflow
-        """
 
-        # clean source code
+# TODO: abstract the parser to convert the source code to diverse properties
+def parse_func_code(source_code: str, thread_instance: ThreadBase = None) -> []:
 
-        lines = source_code.split('\n')
+    """
+    Load the action from source code so that we could trigger it in actionflow
+    """
 
-        striped_lines = []
+    # clean source code
 
-        for line in lines[2:]:  # [2:]filter decorator and function name
-            line = line.strip()
-            if line:
-                striped_lines.append(line)
+    lines = source_code.split('\n')
 
-        # print('striped_lines:')
-        # print(striped_lines)
+    striped_lines = []
 
-        # load source code to action list sequentially
+    for line in lines[2:]:  # [2:]filter decorator and function name
+        line = line.strip()
+        if line:
+            striped_lines.append(line)
 
-        for line in striped_lines:
+    # print('striped_lines:')
+    # print(striped_lines)
 
-            if '##' in line:
-                self.actions_list.append({"name": "",
-                                         "code": "",
-                                          "status": "",
-                                          "llm": self.llm})
+    # load source code to action list sequentially
 
-                self.actions_list[-1]["name"] = line.split('##', 1)[1].strip()
-                self.actions_list[-1]["code"] += f'{line}\n'
+    actions_list = []
 
+    for line in striped_lines:
+
+        if '##' in line:
+            if thread_instance:
+                actions_list.append(Actions(thread_instance=thread_instance))
             else:
+                actions_list.append(Actions())
 
-                self.actions_list[-1]["code"] += line + '\n'
+            actions_list[-1]["name"] = line.split('##', 1)[1].strip()
+            actions_list[-1]["code"] += f'{line}\n'
 
-    # verify the status of the action
-    def _check_status(self) -> None:
+        else:
 
-        for action in self.actions_list:
+            actions_list[-1]["code"] += line + '\n'
 
-                if ".do()" in action["code"]:
+    for actions in actions_list:
+        _check_status(actions)
 
-                    if not action["name"]:
-                        action["status"] = "changeable"
-                    else:
-                        action["status"] = "semi-fixed"
+    return actions_list
 
-                else:
-                    action["status"] = "fixed"
+
+# verify the status of the action
+def _check_status(actions) -> None:
+
+        if ".do()" in actions["code"]:
+
+            if not actions["name"]:
+                actions["status"] = "changeable"
+            else:
+                actions["status"] = "semi-fixed"
+
+        else:
+            actions["status"] = "fixed"

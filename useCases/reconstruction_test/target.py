@@ -7,6 +7,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # Use mllm to change mode, example: Mei = Puppy(name="Mei", mllm=True), @mllm rather @gpt
 
 hacker_news = main_thread
+
 @hacker_news.actionflow
 def pending():
 
@@ -15,16 +16,16 @@ def pending():
     """
 
     ## go to this website:https://news.ycombinator.com/ , save its HTML. @python
-    Mei.do()
+    Mei.reforge()
     print(HTML_text)
 
     ## show the top 10 news name and their urls based on the HTML @gpt, and send the message to the user
-    Mei.do()
+    Mei.reforge()
     print(news_and_urls)
 
 hacker_news.run()
 
-hacker_news.actionflow.pending=[{name:,code:,status:,}]
+hacker_news.actionflow_pending=[{name:,code:,status:,}]
 
 @hacker_news.create_function
 def callPeople():
@@ -44,7 +45,7 @@ def my_task():
 def find_hottest():
 
     ## define the hottes 2 news based on the news.
-    Mei.do()
+    Mei.reforge()
 
 @Mei.peep_hackernews
 def find_hottest_hackernews():
@@ -54,10 +55,10 @@ def find_hottest_hackernews():
 
     ## Read the hackernews and show the top 10 news name and their urls based on the HTML
 
-    Mei.do()
+    Mei.reforge()
 
     ## define the hottes 2 news based on the news.
-    Mei.do()
+    Mei.reforge()
 
 main_thread.run()
 
@@ -66,7 +67,7 @@ def browser_news():
 
     ## open the browser and search for the news
     Mei.read_hackernews()
-    Mei.do()
+    Mei.reforge()
 
     ## checke evry news and deliver the news to the user
     print(news)
@@ -77,7 +78,7 @@ Mei.run(thread = 'broswer_hacknews')
 def check_resturaunts():
 
     ## check the resturaunt which is selling the pizza
-    Mei.do()
+    Mei.reforge()
     print(pizza)
 
 @Mei.food_delivery
@@ -87,7 +88,7 @@ def order_pizza():
     check_resturaunts()
 
     ## order the pizza
-    Mei.do()
+    Mei.reforge()
     print(order)
 
 Mei.run(thread = 'peep_hacknews')

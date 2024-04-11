@@ -5,25 +5,29 @@ from puppy.publicFunc.default.all_llm import MLLM
 from puppy.thread.mainThread.base import ThreadBase
 
 
-class ActionDefault:
+class FunctionsDefault:
 
-    #TODO: Use path to coollect all the default actions, and optimise connection logic during thread init.
+    # TODO: Search path to collect all the default funcs
+    def __init__(self, thread_instance: ThreadBase = ThreadBase()):
 
-    def __init__(self, **kwargs):
+        self.thread_instance = thread_instance
 
-        if 'code_thread_instance' in kwargs:
-            code_thread_instance = kwargs['code_thread_instance']
-        else:
-            code_thread_instance = ThreadBase()
+        self.default_funcs = [SendSendMessageToHuman, GoogleSearchNative, GPT, MLLM]
 
-        self.send_message_to_human = SendSendMessageToHuman(code_thread_instance)
-        self.google_search_native = GoogleSearchNative(code_thread_instance)
-        self.mllm = MLLM(code_thread_instance)
-        self.gpt = GPT(code_thread_instance)
+        # self.send_message_to_human = SendSendMessageToHuman(code_thread_instance)
+        # self.google_search_native = GoogleSearchNative(code_thread_instance)
+        # self.mllm = MLLM(code_thread_instance)
+        # self.gpt = GPT(code_thread_instance)
 
-    def get_info(self, description=True, example=True):
+        self.installed_funcs = [func(self) for func in self.default_funcs]
+        print(self.installed_funcs)
+
+        for func in self.installed_funcs:
+            setattr(self.thread_instance, getattr(func, 'name'), func)
+
+    def get_infos(self, description=True, example=True):
         functions_simplified = """"""
-        actions = [self.send_message_to_human, self.google_search_native, self.mllm, self.gpt]
+        # actions = [self.send_message_to_human, self.google_search_native, self.mllm, self.gpt]
 
         information = ['name']
         if description:
@@ -31,7 +35,7 @@ class ActionDefault:
         if example:
             information.append('example')
 
-        for n, action in enumerate(actions, start=1):
+        for n, action in enumerate(self.installed_funcs, start=1):
             functions_simplified += f"\n\t\t{n}."
             for info in information:
                 if info == 'name':
@@ -43,4 +47,4 @@ class ActionDefault:
 
 
 # if __name__ == "__main__":
-#     print(ActionDefault().get_info())
+#     print(FunctionsDefault().get_infos())

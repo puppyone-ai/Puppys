@@ -110,15 +110,15 @@ class MainThread(ThreadBase):
         print(source_code)
 
     # to run the thread
-    def mainthread_run(self):
-
-        # start the code thread
-        thread_code = threading.Thread(target=self.mainthread_decisiontree)
-        thread_code.daemon = False
-        thread_code.start()
-
-        # end the code thread
-        thread_code.join()
+    # def mainthread_run(self):
+    #
+    #     # start the code thread
+    #     thread_code = threading.Thread(target=self.mainthread_decisiontree)
+    #     thread_code.daemon = False
+    #     thread_code.start()
+    #
+    #     # end the code thread
+    #     thread_code.join()
 
     # def construct(self, func):
     #     def wrapper(*args, **kwargs):
@@ -133,7 +133,7 @@ class MainThread(ThreadBase):
     #     source_code = inspect.getsource(func)
     #     unloaded_actions = Actions(source_code=source_code).actions_list
     #     for actions in unloaded_actions:
-    #         self.actionflow.pending.append(actions)
+    #         self.actionflow_pending.append(actions)
     #
     #     print("\U0001F3B2 Initialize Done")
     #     print("Initialized Function: " + func.__name__)
@@ -161,7 +161,7 @@ class MainThread(ThreadBase):
         file_path = os.path.join(folder_path, f"history_{date_str}.txt")
 
         # Directly convert the Python object to a JSON string
-        pretty_json = json.dumps(self.actionflow.history, indent=4)
+        pretty_json = json.dumps(self.actionflow_history, indent=4)
 
         # Write the JSON string to a file
         with open(file_path, "w") as file:
@@ -187,27 +187,27 @@ class MainThread(ThreadBase):
     #     print("\U0001F4E5 Import Done")
     #     # start the action flow
     #
-    #     while self.actionflow.current == [] and self.actionflow.pending != []:
+    #     while self.actionflow_current == [] and self.actionflow_pending != []:
     #
     #         print("\U0001F525 Action Start")
     #
     #         # STEP 1&2: load the action from action_flow_pending to action_flow_current,
     #         # and delete the action from actionFlowPending
     #
-    #         self.actionflow.current.append(self.actionflow.pending.pop(0))
+    #         self.actionflow_current.append(self.actionflow_pending.pop(0))
     #
     #         print("\U0001F51C ActionFlowPending:")
-    #         print(self.actionflow.pending)
+    #         print(self.actionflow_pending)
     #         print("\U000025B6 ActionFlowCurrentJSON:")
-    #         print(self.actionflow.current)
+    #         print(self.actionflow_current)
     #         print("\U0001F519 ActionFlowHistory:")
-    #         print(self.actionflow.history)
+    #         print(self.actionflow_history)
     #
     #         # take out actions and process sequentially
     #
-    #         while self.actionflow.current:
+    #         while self.actionflow_current:
     #
-    #             self.actions_current = self.actionflow.current[0]
+    #             self.actions_current = self.actionflow_current[0]
     #
     #             # STEP 3.1: check if the action is fixed, semi-fixed, or changeable
     #
@@ -223,8 +223,6 @@ class MainThread(ThreadBase):
     #
     #                     case "semi-fixed":
     #                         self.actions.do()
-    #
-    #                 # TODO: finish the changeable mode
     #
     #                     case "changeable":
     #                         pass
@@ -250,12 +248,12 @@ class MainThread(ThreadBase):
     #                 # self.actionflow.actionflow_current_JSON.pop(0)
     #
     #                 # self.actionflow.action_current_save()
-    #                 self.actionflow.history.append(action)
+    #                 self.actionflow_history.append(action)
     #
     #             # STEP 5: remove the action from the actionFlowCurrent
     #             # if self.actionflow.actionflow_current:
     #             #     self.actionflow.actionflow_current_remove_front()
-    #             self.actionflow.current.pop(0)
+    #             self.actionflow_current.pop(0)
     #
     #             # else:
     #             #     pass
@@ -264,6 +262,6 @@ class MainThread(ThreadBase):
     #         #         pass
     #
     #     print("Done")
-    #     print(self.actionflow.history)
+    #     print(self.actionflow_history)
 
 
