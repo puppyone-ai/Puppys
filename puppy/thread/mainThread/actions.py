@@ -24,7 +24,7 @@ class Actions:
 
 
 # TODO: abstract the parser to convert the source code to diverse properties
-def parse_func_code(source_code: str, thread_instance: ThreadBase = None) -> []:
+def parse_code2list(source_code: str, thread_instance: ThreadBase = None) -> []:
 
     """
     Load the action from source code so that we could trigger it in actionflow

@@ -2,7 +2,7 @@ import queue
 
 from .base import ThreadBase
 from .actionflow import Actionflow
-from .actions import Actions, parse_func_code
+from .actions import Actions, parse_code2list
 from puppy.publicFunc.default import FunctionsDefault
 from puppy.thread.mainThread.do import check, reforge
 
@@ -55,7 +55,7 @@ class Thread(ThreadBase):
             func(*args, **kwargs)
 
         source_code = inspect.getsource(func)
-        parsed_actions = parse_func_code(source_code, thread_instance=self)
+        parsed_actions = parse_code2list(source_code, thread_instance=self)
 
         for actions in parsed_actions:
             self.actionflow_pending.append(actions)
@@ -129,7 +129,7 @@ class Thread(ThreadBase):
         check(thread_instance=self, actions=actions, check_prompt=False)
         # n = 0
 
-        if self.exec_environment["finishedOrNot"]:
+        if self.exec_environment["finishedOrNot"] == True:
 
             print("\n")
             print("\U0001F697 Running Code ################################################################")

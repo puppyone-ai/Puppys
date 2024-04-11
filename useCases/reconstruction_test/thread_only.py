@@ -1,5 +1,3 @@
-
-
 from puppy.thread.mainThread.thread import Thread
 import sys
 import os
@@ -21,3 +19,4 @@ def pending():
     print(news_and_urls)
 
 hacker_news.run()
+
