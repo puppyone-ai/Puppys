@@ -2,7 +2,7 @@ import os
 from puppy.llm.openAI import OpenAIChat
 
 
-def check(thread_instance, action, check_prompt=False):
+def check(thread_instance, action, show_prompt=False):
 
     """
     write code to achieve the action
@@ -56,10 +56,10 @@ def check(thread_instance, action, check_prompt=False):
     {action.name}
 
     The code for historical actionflow shown as code are:
-    {thread_instance.actionflow.history_list.get_code()}
+    {thread_instance.actionflow.history_list.get_code_all()}
 
     The code of action in the future are(But you don't need to do this part now, just for your information)):
-    {thread_instance.actionflow.pending_list.get_code()}"""},
+    {thread_instance.actionflow.pending_list.get_code_all()}"""},
 
         # 4. justify if the action is done or not
         {"role": "user",
@@ -69,7 +69,7 @@ def check(thread_instance, action, check_prompt=False):
     """}
     ]
 
-    if check_prompt:
+    if show_prompt:
         print("*******checking prompt********")
         print(prompt)
 
@@ -91,7 +91,7 @@ def check(thread_instance, action, check_prompt=False):
     print("********************************************************************************")
 
 
-def reforge(thread_instance, action, plan_prompt=False):
+def archieve(thread_instance, action, show_prompt=False):
 
     """
     write code to achieve the action
@@ -133,13 +133,13 @@ def reforge(thread_instance, action, plan_prompt=False):
     {action.name}
 
     The code for historical actionflow shown as code are:
-    {thread_instance.actionflow.history_list.get_code()}
+    {thread_instance.actionflow.history_list.get_code_all()}
 
     user have already write some code for this action, but it's not finished. You should replace the XXX.do() part. Don't keep the .do() function after your response. The XXX is your name, and the .do() is an instruction of 'you must write code and put it here'.:
     {action.code}
 
     The code of action in the future are(But you don't need to do this part now, just for your information)):
-    {thread_instance.actionflow.pending_list.get_code()}"""},
+    {thread_instance.actionflow.pending_list.get_code_all()}"""},
 
         # 4. provide the code of the action
         {"role": "user",
@@ -156,7 +156,7 @@ def reforge(thread_instance, action, plan_prompt=False):
     print("\n")
     print("\U0001F4A4 Action ######################################################################")
 
-    if plan_prompt:
+    if show_prompt:
         print("*******planning prompt********")
         print(prompt)
 

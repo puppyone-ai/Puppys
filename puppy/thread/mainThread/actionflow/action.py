@@ -1,4 +1,6 @@
-from .base import ThreadBase
+
+
+from puppy.thread.mainThread.base import ThreadBase
 
 
 class Action:
@@ -9,12 +11,20 @@ class Action:
             self.thread_instance = thread_instance
 
         self.name = ""
-        self.status = ""
         self.code = ""
+        self.status = ""
 
         # could consider introduce the func_name indexing in the future
     def __str__(self):
         return f'{self.name} : {self.status} /n {self.code}'
+
+    def __call__(self, *args, **kwargs):
+        overall_dict={"name":self.name,
+                      "code":self.code,
+                      "status":self.status}
+
+        return overall_dict
+
 
 
 # TODO: abstract the parser to convert the source code to diverse properties
