@@ -5,11 +5,12 @@ from .action import Action
 
 class DefaultActionflow:
     def __init__(self, thread_instance: ThreadBase = None):
-        pass
-        # self.pending = Actionflow(iterable=[], thread_instance=thread_instance)
-        # self.current = Actionflow(iterable=[], thread_instance=thread_instance)
-        # self.history = Actionflow(iterable=[], thread_instance=thread_instance)
-        # self.on_going = queue.Queue()
+        self.pending_list = Actionflow(iterable=[], thread_instance=thread_instance)
+        self.current_list = Actionflow(iterable=[], thread_instance=thread_instance)
+        self.history_list = Actionflow(iterable=[], thread_instance=thread_instance)
+        self.on_going = queue.Queue()
+
+    # def __getattribute__(self, item):
 
 
 class Actionflow(list):
@@ -38,7 +39,7 @@ class Actionflow(list):
         code = ""
 
         for action in self:
-            code += action["code"] + "\n"
+            code += action.code + "\n"
 
         return code
 

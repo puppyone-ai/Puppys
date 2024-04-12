@@ -53,18 +53,18 @@ def check(thread_instance, action, check_prompt=False):
         {"role": "system",
          "content": f"""
     You have an overall long-term goal: {thread_instance.goal},  and your next action is:
-    {action["name"]}
+    {action.name}
 
     The code for historical actionflow shown as code are:
-    {thread_instance.actionflow_history.get_code()}
+    {thread_instance.actionflow.history_list.get_code()}
 
     The code of action in the future are(But you don't need to do this part now, just for your information)):
-    {thread_instance.actionflow.pending.get_code()}"""},
+    {thread_instance.actionflow.pending_list.get_code()}"""},
 
         # 4. justify if the action is done or not
         {"role": "user",
          "content": f"""
-    Now you need to write code to justify if the action of' {action['code']} 'is done or not. 
+    Now you need to write code to justify if the action of' {action.code} 'is done or not. 
     Your answer is:
     """}
     ]
@@ -130,21 +130,21 @@ def reforge(thread_instance, action, plan_prompt=False):
         {"role": "user",
          "content": f"""
     You have an overall goal: {thread_instance.goal},  now you need to write python code to finish your next action:
-    {action['name']}
+    {action.name}
 
     The code for historical actionflow shown as code are:
-    {thread_instance.actionflow_history.get_code()}
+    {thread_instance.actionflow.history_list.get_code()}
 
     user have already write some code for this action, but it's not finished. You should replace the XXX.do() part. Don't keep the .do() function after your response. The XXX is your name, and the .do() is an instruction of 'you must write code and put it here'.:
-    {action['code']}
+    {action.code}
 
     The code of action in the future are(But you don't need to do this part now, just for your information)):
-    {thread_instance.actionflow_pending.get_code()}"""},
+    {thread_instance.actionflow.pending_list.get_code()}"""},
 
         # 4. provide the code of the action
         {"role": "user",
          "content": f"""
-    Now you write code to achieve your action: {action['name']}
+    Now you write code to achieve your action: {action.name}
     DON'T ASSUME you know the knowledge that you don't know. DON'T ASSUME that you have non-existent functions or hypothetical function, and you can show your thinking and reason in the comment. But don't write any code calling undefined functions in this case.
     make sure that the parameter in your respond code follow the type of the parameter in the function instruction. .
     You are NOT allowed to write {thread_instance.puppy_name}.do() in your final response as code. When the {thread_instance.puppy_name}.do() appears, you HAVE TO change it to other code.
@@ -171,4 +171,4 @@ def reforge(thread_instance, action, plan_prompt=False):
 
     print("################################################################################")
 
-    action["code"] = new_code
+    action.code = new_code
