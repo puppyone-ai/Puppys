@@ -19,4 +19,3 @@ def pending():
     print(news_and_urls)
 
 hacker_news.run()
-

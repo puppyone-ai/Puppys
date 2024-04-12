@@ -1,6 +1,15 @@
 import queue
 from .base import ThreadBase
-from .actions import Actions
+from .action import Action
+
+
+class DefaultActionflow:
+    def __init__(self, thread_instance: ThreadBase = None):
+        pass
+        # self.pending = Actionflow(iterable=[], thread_instance=thread_instance)
+        # self.current = Actionflow(iterable=[], thread_instance=thread_instance)
+        # self.history = Actionflow(iterable=[], thread_instance=thread_instance)
+        # self.on_going = queue.Queue()
 
 
 class Actionflow(list):
@@ -13,23 +22,23 @@ class Actionflow(list):
             self.thread_instance = thread_instance
 
         """
-        action: Actions
+        action: action
         actionflow: [A,A,A]
         on_going: (A)
         """
 
-    def put_actions(self, actions: Actions) -> None:
-        return self.append(actions)
+    def put_action(self, action: Action) -> None:
+        return self.append(action)
 
-    def pop_actions(self) -> Actions:
+    def pop_action(self) -> Action:
         return self.pop(0)
 
     def get_code(self):
 
         code = ""
 
-        for actions in self:
-            code += actions["code"] + "\n"
+        for action in self:
+            code += action["code"] + "\n"
 
         return code
 
