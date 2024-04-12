@@ -39,10 +39,7 @@ class Thread(ThreadBase):
 
     def _build_default_actionflow(self) -> None:
 
-        self.actionflow_pending = Actionflow(iterable=[], thread_instance=self)
-        self.actionflow_current = Actionflow(iterable=[], thread_instance=self)
-        self.actionflow_history = Actionflow(iterable=[], thread_instance=self)
-        self.action_on_going = queue.Queue()
+        self.actionflow = DefaultActionflow(thread_instance=self)
 
     def _import_default_funcs(self) -> None:
 
@@ -57,7 +54,7 @@ class Thread(ThreadBase):
         parsed_action = parse_code2list(source_code, thread_instance=self)
 
         for action in parsed_action:
-            self.actionflow_pending.append(action)
+            self.actionflow.pending_list.append(action)
 
         print("\U0001F3B2 Initialize Done")
         print("Initialized Function: " + func.__name__)
@@ -73,53 +70,53 @@ class Thread(ThreadBase):
         print("\U0001F4E5 Import Done")
         # start the action flow
 
-        while self.actionflow_pending:
+        while self.actionflow.pending_list:
 
             print("\U0001F525 Action Start")
 
             # STEP 1: take out the action from ActionFlowPending and put into ActionFlowCurrent
 
-            action = self.actionflow_pending.pop_action()
+            action = self.actionflow.pending_list.pop_action()
 
-            self.actionflow_current.put_action(action)
+            self.actionflow.current_list.put_action(action)
 
             print("\U0001F51C ActionFlowPending:")
-            print(self.actionflow_pending)
+            print(self.actionflow.pending_list)
             print("\U000025B6 ActionFlowCurrent:")
-            print(self.actionflow_current)
+            print(self.actionflow.current_list)
             print("\U0001F519 ActionFlowHistory:")
-            print(self.actionflow_history)
+            print(self.actionflow.history_list)
 
             # STEP 2:take out action from ActionFlowCurrent put into ActionOnGoing sequentially
 
-            while self.actionflow_current:
+            while self.actionflow.current_list:
 
-                # STEP 2.1: load the action to action_on_going (for scalability in the future version)
+                # STEP 2.1: load the action to ActionOnGoing (for scalability in the future version)
 
-                action = self.actionflow_current.pop_action()
+                action = self.actionflow.current_list.pop_action()
 
-                self.action_on_going.put(action)
+                self.actionflow.on_going.put(action)
 
-                action = self.action_on_going.get()
+                action = self.actionflow.on_going.get()
 
                 # STEP 3.1: check if the action is fixed, semi-fixed, or changeable
-                if action["status"] == "fixed":
+                if action.status == "fixed":
                     pass
 
-                elif action["status"] == "semi-fixed":
+                elif action.status == "semi-fixed":
                     self.do(action)
 
                 # TODO: finish the changeable mode
-                elif action["status"] == "changeable":
+                elif action.status == "changeable":
                     pass
 
                 # STEP 4: load the action from the actionFlowCurrent to the actionFlowHistory
-                self.actionflow_history.put_action(action)
+                self.actionflow.history_list.put_action(action)
 
         print("Done")
-        print(self.actionflow_history)
+        print(self.actionflow.history_list)
 
-        # TODO: save the actionflow_history to the folder of history
+        # TODO: save the actionflow.history_list to the folder of history
 
         # self.save_actionflow_history()
 
@@ -132,12 +129,12 @@ class Thread(ThreadBase):
 
             print("\n")
             print("\U0001F697 Running Code ################################################################")
-            print(action["code"])
+            print(action.code)
             print("################################################################################")
 
-            exec(action["code"], self.exec_environment)
+            exec(action.code, self.exec_environment)
 
-            action["status"] = "done"
+            action.status = "done"
 
             return
 

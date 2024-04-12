@@ -16,12 +16,6 @@ class Action:
     def __str__(self):
         return f'{self.name} : {self.status} /n {self.code}'
 
-    def __getitem__(self, item):
-        return getattr(self, item)
-
-    def __setitem__(self, key, value):
-        setattr(self, key, value)
-
 
 # TODO: abstract the parser to convert the source code to diverse properties
 def parse_code2list(source_code: str, thread_instance: ThreadBase = None) -> []:
@@ -56,12 +50,12 @@ def parse_code2list(source_code: str, thread_instance: ThreadBase = None) -> []:
             else:
                 action_list.append(Action())
 
-            action_list[-1]["name"] = line.split('##', 1)[1].strip()
-            action_list[-1]["code"] += f'{line}\n'
+            action_list[-1].name = line.split('##', 1)[1].strip()
+            action_list[-1].code += f'{line}\n'
 
         else:
 
-            action_list[-1]["code"] += line + '\n'
+            action_list[-1].code += line + '\n'
 
     for action in action_list:
         _check_status(action)
@@ -72,12 +66,13 @@ def parse_code2list(source_code: str, thread_instance: ThreadBase = None) -> []:
 # verify the status of the action
 def _check_status(action) -> None:
 
-        if ".do()" in action["code"]:
+    if ".do()" in action.code:
 
-            if not action["name"]:
-                action["status"] = "changeable"
-            else:
-                action["status"] = "semi-fixed"
-
+        if not action.code:
+            action.status = "changeable"
         else:
-            action["status"] = "fixed"
+            action.status = "semi-fixed"
+
+    else:
+        action.status = "fixed"
+
