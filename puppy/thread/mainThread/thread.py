@@ -1,8 +1,8 @@
 import queue
 
 from .base import ThreadBase
-from .actionflow import Actionflow
-from .actions import Actions, parse_code2list
+from .actionflow import DefaultActionflow, Actionflow
+from .action import Action, parse_code2list
 from puppy.publicFunc.default import FunctionsDefault
 from puppy.thread.mainThread.do import check, reforge
 
@@ -32,8 +32,8 @@ class Thread(ThreadBase):
         # initialize the actionflow
         self._build_default_actionflow()
 
-        # import default actions into the thread
-        self._import_default_actions()
+        # import default funcs into the thread
+        self._import_default_funcs()
 
         print('initialized thread done')
 
@@ -42,12 +42,11 @@ class Thread(ThreadBase):
         self.actionflow_pending = Actionflow(iterable=[], thread_instance=self)
         self.actionflow_current = Actionflow(iterable=[], thread_instance=self)
         self.actionflow_history = Actionflow(iterable=[], thread_instance=self)
-        self.actions_on_going = queue.Queue()
+        self.action_on_going = queue.Queue()
 
-    def _import_default_actions(self) -> None:
+    def _import_default_funcs(self) -> None:
 
-        actions_default = FunctionsDefault(thread_instance=self)
-        self.functions_description_and_example = actions_default.get_infos()
+        self.functions_description_and_example = FunctionsDefault(thread_instance=self).get_infos()
 
     def parse_and_load(self, func) -> callable:
         def wrapper(*args, **kwargs):
@@ -55,10 +54,10 @@ class Thread(ThreadBase):
             func(*args, **kwargs)
 
         source_code = inspect.getsource(func)
-        parsed_actions = parse_code2list(source_code, thread_instance=self)
+        parsed_action = parse_code2list(source_code, thread_instance=self)
 
-        for actions in parsed_actions:
-            self.actionflow_pending.append(actions)
+        for action in parsed_action:
+            self.actionflow_pending.append(action)
 
         print("\U0001F3B2 Initialize Done")
         print("Initialized Function: " + func.__name__)
@@ -67,9 +66,9 @@ class Thread(ThreadBase):
 
     # TODO: re-organize the mainthread_decisiontree into thread and queue
 
-    def mainthread_decisiontree(self) -> None:
+    def default_decisiontree(self) -> None:
 
-        # loading actions
+        # loading action
 
         print("\U0001F4E5 Import Done")
         # start the action flow
@@ -80,9 +79,9 @@ class Thread(ThreadBase):
 
             # STEP 1: take out the action from ActionFlowPending and put into ActionFlowCurrent
 
-            actions = self.actionflow_pending.pop_actions()
+            action = self.actionflow_pending.pop_action()
 
-            self.actionflow_current.put_actions(actions)
+            self.actionflow_current.put_action(action)
 
             print("\U0001F51C ActionFlowPending:")
             print(self.actionflow_pending)
@@ -91,31 +90,31 @@ class Thread(ThreadBase):
             print("\U0001F519 ActionFlowHistory:")
             print(self.actionflow_history)
 
-            # STEP 2:take out actions from ActionFlowCurrent put into ActionOnGoing sequentially
+            # STEP 2:take out action from ActionFlowCurrent put into ActionOnGoing sequentially
 
             while self.actionflow_current:
 
-                # STEP 2.1: load the actions to action_on_going (for scalability in the future version)
+                # STEP 2.1: load the action to action_on_going (for scalability in the future version)
 
-                actions = self.actionflow_current.pop_actions()
+                action = self.actionflow_current.pop_action()
 
-                self.actions_on_going.put(actions)
+                self.action_on_going.put(action)
 
-                actions = self.actions_on_going.get()
+                action = self.action_on_going.get()
 
                 # STEP 3.1: check if the action is fixed, semi-fixed, or changeable
-                if actions["status"] == "fixed":
+                if action["status"] == "fixed":
                     pass
 
-                elif actions["status"] == "semi-fixed":
-                    self.do(actions)
+                elif action["status"] == "semi-fixed":
+                    self.do(action)
 
                 # TODO: finish the changeable mode
-                elif actions["status"] == "changeable":
+                elif action["status"] == "changeable":
                     pass
 
                 # STEP 4: load the action from the actionFlowCurrent to the actionFlowHistory
-                self.actionflow_history.put_actions(actions)
+                self.actionflow_history.put_action(action)
 
         print("Done")
         print(self.actionflow_history)
@@ -124,33 +123,33 @@ class Thread(ThreadBase):
 
         # self.save_actionflow_history()
 
-    def do(self, actions) -> None:
+    def do(self, action) -> None:
 
-        check(thread_instance=self, actions=actions, check_prompt=False)
+        check(thread_instance=self, action=action, check_prompt=False)
         # n = 0
 
         if self.exec_environment["finishedOrNot"] == True:
 
             print("\n")
             print("\U0001F697 Running Code ################################################################")
-            print(actions["code"])
+            print(action["code"])
             print("################################################################################")
 
-            exec(actions["code"], self.exec_environment)
+            exec(action["code"], self.exec_environment)
 
-            actions["status"] = "done"
+            action["status"] = "done"
 
             return
 
         else:
             # n += 1
-            # print(f'reforging actions:{actions["name"]}, {n} times')
-            reforge(thread_instance=self, actions=actions, plan_prompt=False)
-            self.do(actions)
+            # print(f'reforging action:{action["name"]}, {n} times')
+            reforge(thread_instance=self, action=action, plan_prompt=False)
+            self.do(action)
 
     def run(self) -> None:
         # start the code thread
-        thread_code = threading.Thread(target=self.mainthread_decisiontree)
+        thread_code = threading.Thread(target=self.default_decisiontree)
         thread_code.daemon = False
         thread_code.start()
 

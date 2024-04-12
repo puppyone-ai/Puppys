@@ -1,7 +1,7 @@
 from .base import ThreadBase
 
 
-class Actions:
+class Action:
     def __init__(self, **kwargs):
 
         if "thread_instance" in kwargs:
@@ -46,38 +46,38 @@ def parse_code2list(source_code: str, thread_instance: ThreadBase = None) -> []:
 
     # load source code to action list sequentially
 
-    actions_list = []
+    action_list = []
 
     for line in striped_lines:
 
         if '##' in line:
             if thread_instance:
-                actions_list.append(Actions(thread_instance=thread_instance))
+                action_list.append(Action(thread_instance=thread_instance))
             else:
-                actions_list.append(Actions())
+                action_list.append(Action())
 
-            actions_list[-1]["name"] = line.split('##', 1)[1].strip()
-            actions_list[-1]["code"] += f'{line}\n'
+            action_list[-1]["name"] = line.split('##', 1)[1].strip()
+            action_list[-1]["code"] += f'{line}\n'
 
         else:
 
-            actions_list[-1]["code"] += line + '\n'
+            action_list[-1]["code"] += line + '\n'
 
-    for actions in actions_list:
-        _check_status(actions)
+    for action in action_list:
+        _check_status(action)
 
-    return actions_list
+    return action_list
 
 
 # verify the status of the action
-def _check_status(actions) -> None:
+def _check_status(action) -> None:
 
-        if ".do()" in actions["code"]:
+        if ".do()" in action["code"]:
 
-            if not actions["name"]:
-                actions["status"] = "changeable"
+            if not action["name"]:
+                action["status"] = "changeable"
             else:
-                actions["status"] = "semi-fixed"
+                action["status"] = "semi-fixed"
 
         else:
-            actions["status"] = "fixed"
+            action["status"] = "fixed"
