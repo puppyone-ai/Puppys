@@ -47,7 +47,6 @@ class Actionflow_list(list):
             code += action.code + "\n"
 
         return code
-'''
+
     def __str__(self):
-        return f'{[str(action) for action in self]}'
-'''
+        return f"[{', '.join(str(action) for action in self)}]"
