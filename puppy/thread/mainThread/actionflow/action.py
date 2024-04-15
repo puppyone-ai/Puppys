@@ -16,10 +16,10 @@ class Action:
 
         # could consider introduce the func_name indexing in the future
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'({self.status}){self.name}'
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs) -> dict:
         overall_dict = {"name": self.name,
                         "code": self.code,
                         "status": self.status}
@@ -28,7 +28,7 @@ class Action:
 
 
 # TODO: abstract the parser to convert the source code to diverse properties
-def parse_code2list(source_code: str, thread_instance: ThreadBase = None) -> []:
+def parse_code2list(source_code: str, thread_instance: ThreadBase = None) -> list:
 
     """
     Load the action from source code so that we could trigger it in actionflow

@@ -12,14 +12,14 @@ class Actionflow:
         self.on_going = queue.Queue()
 
     # get all actionflow cleared
-    def clear_all(self):
+    def clear_all(self) -> None:
         self.pending_list.clear()
         self.current_list.clear()
         self.history_list.clear()
         self.on_going = queue.Queue()
 
     # as a shortcut to print actionflow when running
-    def view(self):
+    def view(self) -> None:
         print(f"\n\u2699 Actionflow ")
         print(f"################################################################################")
         print("\nPending:")  # \U0001F51C
@@ -41,7 +41,7 @@ class ActionflowList(list):
             self.thread_instance = thread_instance
 
     # print the actionflow
-    def __str__(self):
+    def __str__(self) -> str:
         newline = '\n'
         return f"{newline.join(str(action) for action in self)}"
 

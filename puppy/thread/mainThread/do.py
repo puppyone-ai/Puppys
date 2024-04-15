@@ -2,7 +2,7 @@ import os
 from puppy.llm.openAI import OpenAIChat
 
 
-def check(thread_instance, action, show_prompt=False):
+def check(thread_instance, action, show_prompt=False) -> None:
 
     """
     write code to achieve the action
@@ -88,7 +88,7 @@ def check(thread_instance, action, show_prompt=False):
     exec(new_code, thread_instance.exec_environment)
 
 
-def achieve(thread_instance, action, show_prompt=False):
+def achieve(thread_instance, action, show_prompt=False) -> None:
 
     """
     write code to achieve the action

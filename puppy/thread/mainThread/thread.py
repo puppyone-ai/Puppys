@@ -30,7 +30,7 @@ class Thread(ThreadBase):
         print(f"{self.thread_name}: Initialize and Done \U0001F3B2")
 
     # naming the thread with args
-    def _naming(self, **kwargs):
+    def _naming(self, **kwargs) -> None:
         # if 'puppy' in kwargs:
         #     self.puppy = kwargs['puppy']
         #     self.puppy_name = self.puppy.puppy_name
