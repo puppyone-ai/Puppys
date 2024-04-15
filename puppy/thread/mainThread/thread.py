@@ -29,7 +29,8 @@ class Thread(ThreadBase):
 
         print(f"{self.thread_name}: Initialize and Done \U0001F3B2")
 
-    def _naming(self, **kwargs):
+    # naming the thread with args
+    def _naming(self, **kwargs) -> None:
         # if 'puppy' in kwargs:
         #     self.puppy = kwargs['puppy']
         #     self.puppy_name = self.puppy.puppy_name
@@ -45,12 +46,13 @@ class Thread(ThreadBase):
             self.thread_name = "Ur Thread"
             print(f'Created a thread !')
 
-    # build the actionflow
+    # build the actionflow under the thread
     def _build_default_actionflow(self) -> None:
 
         self.actionflow = Actionflow(thread_instance=self)
         print(f'{self.thread_name}: Build the actionflow!')
 
+    # import default funcs into the thread and get the description and example
     def _import_default_funcs_and_infos(self) -> None:
 
         self.funcs_default = FunctionsDefault(thread_instance=self)
@@ -59,13 +61,14 @@ class Thread(ThreadBase):
 
         self.functions_description_and_example = self.funcs_default.get_infos()
 
+    # parse the code and load the action to the actionflow.pending_list
     def parse_and_load(self, func) -> callable:
 
         def wrapper(*args, **kwargs):
 
             func(*args, **kwargs)
 
-        print("\n\U0001F525 Parsing the code---------------------------------------------------------------------------------")
+        print("\n\U0001F525 Parsing the code-------------------------------------------------------------------------")
 
         source_code = inspect.getsource(func)
         parsed_action = parse_code2list(source_code, thread_instance=self)
@@ -84,7 +87,7 @@ class Thread(ThreadBase):
 
         while self.actionflow.pending_list:
 
-            print("\n\U0001F525 Actionflow Run ---------------------------------------------------------------------------------")
+            print("\n\U0001F525 Actionflow Run ----------------------------------------------------------------------")
 
             # STEP 1: take out the action from ActionFlowPending and put into ActionFlowCurrent
 
@@ -92,14 +95,13 @@ class Thread(ThreadBase):
 
             self.actionflow.current_list.put_action(action)
 
-            # STEP 2:take out action from ActionFlowCurrent put into ActionOnGoing sequentially
+            # STEP 2: pop out action from ActionFlowCurrent put into ActionOnGoing and run
 
             while self.actionflow.current_list:
 
                 # STEP 2.1: load the action to ActionOnGoing (for scalability in the future version)
 
-                # print the actionflow
-                self.actionflow.view()
+                self.actionflow.view()  # print the actionflow
 
                 action = self.actionflow.current_list.pop_action()
 
@@ -110,9 +112,8 @@ class Thread(ThreadBase):
                 print("\n\U0001F4A4 Action Code")
                 print("################################################################################")
                 print(action.code)
-                # print("################################################################################")
 
-                # STEP 3.1: check if the action is fixed, semi-fixed, or changeable
+                # STEP 2.2: check if the action is fixed, semi-fixed, or changeable, and run sequentially
                 if action.status == "fixed":
                     exec(action.code, self.exec_environment)
                     self.actionflow.history_list.put_action(action)
@@ -124,7 +125,7 @@ class Thread(ThreadBase):
                 elif action.status == "changeable":
                     pass
 
-        print("Done")
+        print("\n\U0001F525 Actionflow Done -------------------------------------------------------------------------")
         print(self.actionflow.history_list)
 
         # TODO: save the actionflow.history_list to the folder of history
@@ -161,4 +162,4 @@ class Thread(ThreadBase):
         # end the code thread
         thread_code.join()
 
-    # TODO: add wrapper to modify the property of the thread ,including create_function, add_vars
+    # TODO: add decorator to manipulate the property of the thread ,including create_function, add_vars
