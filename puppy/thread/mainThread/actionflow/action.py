@@ -19,12 +19,11 @@ class Action:
         return f'{self.name} : {self.status} /n {self.code}'
 
     def __call__(self, *args, **kwargs):
-        overall_dict={"name":self.name,
-                      "code":self.code,
-                      "status":self.status}
+        overall_dict = {"name": self.name,
+                        "code": self.code,
+                        "status": self.status}
 
         return overall_dict
-
 
 
 # TODO: abstract the parser to convert the source code to diverse properties
@@ -85,4 +84,3 @@ def _check_status(action) -> None:
 
     else:
         action.status = "fixed"
-

@@ -91,7 +91,7 @@ def check(thread_instance, action, show_prompt=False):
     print("********************************************************************************")
 
 
-def archieve(thread_instance, action, show_prompt=False):
+def achieve(thread_instance, action, show_prompt=False):
 
     """
     write code to achieve the action
