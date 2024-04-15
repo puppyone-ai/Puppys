@@ -14,6 +14,22 @@ class Thread(ThreadBase):
 
         super().__init__()
 
+        # naming the thread
+        self._naming(**kwargs)
+
+        # set the env of the thread
+        self.goal = ""
+        self.exec_environment = {"self": self}
+
+        # install the actionflow
+        self._build_default_actionflow()
+
+        # import default funcs into the thread and get the description and example
+        self._import_default_funcs_and_infos()
+
+        print(f"{self.thread_name}: Initialize and Done \U0001F3B2")
+
+    def _naming(self, **kwargs):
         # if 'puppy' in kwargs:
         #     self.puppy = kwargs['puppy']
         #     self.puppy_name = self.puppy.puppy_name
@@ -21,19 +37,13 @@ class Thread(ThreadBase):
         self.puppy_name = "Mei"  # the name is essential in the prompt
 
         #
-        # if 'task' in kwargs:
-        #     self.thread_name = kwargs['task']
+        if 'name' in kwargs:
+            self.thread_name = kwargs['name']
+            print(f'Created a thread as {self.thread_name}! ')
 
-        self.goal = ""
-        self.exec_environment = {"self": self}
-
-        # initialize the actionflow
-        self._build_default_actionflow()
-
-        # import default funcs into the thread
-        self._import_default_funcs()
-
-        print('initialized thread done')
+        else:
+            self.thread_name = "Ur Thread"
+            print(f'Created a thread !')
 
     # build the actionflow
     def _build_default_actionflow(self) -> None:
