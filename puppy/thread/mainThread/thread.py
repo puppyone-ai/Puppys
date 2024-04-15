@@ -49,10 +49,15 @@ class Thread(ThreadBase):
     def _build_default_actionflow(self) -> None:
 
         self.actionflow = Actionflow(thread_instance=self)
+        print(f'{self.thread_name}: Build the actionflow!')
 
-    def _import_default_funcs(self) -> None:
+    def _import_default_funcs_and_infos(self) -> None:
 
-        self.functions_description_and_example = FunctionsDefault(thread_instance=self).get_infos()
+        self.funcs_default = FunctionsDefault(thread_instance=self)
+
+        print(f'{self.thread_name}: Installed all default tools!')
+
+        self.functions_description_and_example = self.funcs_default.get_infos()
 
     def parse_and_load(self, func) -> callable:
 
@@ -64,6 +69,8 @@ class Thread(ThreadBase):
 
         source_code = inspect.getsource(func)
         parsed_action = parse_code2list(source_code, thread_instance=self)
+
+        self.actionflow.clear_all()
 
         for action in parsed_action:
             self.actionflow.pending_list.append(action)
