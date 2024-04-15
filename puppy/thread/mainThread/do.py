@@ -73,8 +73,7 @@ def check(thread_instance, action, show_prompt=False):
         print("*******checking prompt********")
         print(prompt)
 
-    print("\n")
-    print("\U00002705 Checking ********************************************************************")
+    print("\n\U00002705 Checking Code ##############################################################")
 
     new_code = OpenAIChat(prompt=prompt,
                           model="gpt-4-0125-preview",
@@ -88,10 +87,10 @@ def check(thread_instance, action, show_prompt=False):
     # deliver 'finishedOrNot' to the environment for verification of the final execution.
     exec(new_code, thread_instance.exec_environment)
 
-    print("********************************************************************************")
+    # print("################################################################################")
 
 
-def archieve(thread_instance, action, show_prompt=False):
+def achieve(thread_instance, action, show_prompt=False):
 
     """
     write code to achieve the action
@@ -153,8 +152,7 @@ def archieve(thread_instance, action, show_prompt=False):
 
     # prompt finished *****************************************************************************************
 
-    print("\n")
-    print("\U0001F4A4 Action ######################################################################")
+    print("\n\U0001F697 Running Code ################################################################")
 
     if show_prompt:
         print("*******planning prompt********")
@@ -169,6 +167,6 @@ def archieve(thread_instance, action, show_prompt=False):
 
     new_code = new_code.replace("```python\n", "").replace("\n```", "")
 
-    print("################################################################################")
+    # print("################################################################################")
 
     action.code = new_code

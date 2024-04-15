@@ -2,7 +2,7 @@ from .base import ThreadBase
 from puppy.thread.mainThread.actionflow.actionflow import Actionflow
 from puppy.thread.mainThread.actionflow.action import parse_code2list
 from puppy.publicFunc.default import FunctionsDefault
-from puppy.thread.mainThread.do import check, archieve
+from puppy.thread.mainThread.do import check, achieve
 
 import inspect
 import threading
@@ -14,6 +14,22 @@ class Thread(ThreadBase):
 
         super().__init__()
 
+        # naming the thread
+        self._naming(**kwargs)
+
+        # set the env of the thread
+        self.goal = ""
+        self.exec_environment = {"self": self}
+
+        # install the actionflow
+        self._build_default_actionflow()
+
+        # import default funcs into the thread and get the description and example
+        self._import_default_funcs_and_infos()
+
+        print(f"{self.thread_name}: Initialize and Done \U0001F3B2")
+
+    def _naming(self, **kwargs):
         # if 'puppy' in kwargs:
         #     self.puppy = kwargs['puppy']
         #     self.puppy_name = self.puppy.puppy_name
@@ -21,57 +37,54 @@ class Thread(ThreadBase):
         self.puppy_name = "Mei"  # the name is essential in the prompt
 
         #
-        # if 'task' in kwargs:
-        #     self.thread_name = kwargs['task']
+        if 'name' in kwargs:
+            self.thread_name = kwargs['name']
+            print(f'Created a thread as {self.thread_name}! ')
 
-        self.goal = ""
-        self.exec_environment = {"self": self}
-
-        # initialize the actionflow
-        self._build_default_actionflow()
-
-        # import default funcs into the thread
-        self._import_default_funcs()
-
-        print('initialized thread done')
+        else:
+            self.thread_name = "Ur Thread"
+            print(f'Created a thread !')
 
     # build the actionflow
     def _build_default_actionflow(self) -> None:
 
         self.actionflow = Actionflow(thread_instance=self)
+        print(f'{self.thread_name}: Build the actionflow!')
 
-    def _import_default_funcs(self) -> None:
+    def _import_default_funcs_and_infos(self) -> None:
 
-        self.functions_description_and_example = FunctionsDefault(thread_instance=self).get_infos()
+        self.funcs_default = FunctionsDefault(thread_instance=self)
+
+        print(f'{self.thread_name}: Installed all default tools!')
+
+        self.functions_description_and_example = self.funcs_default.get_infos()
 
     def parse_and_load(self, func) -> callable:
+
         def wrapper(*args, **kwargs):
 
             func(*args, **kwargs)
 
+        print("\n\U0001F525 Parsing the code---------------------------------------------------------------------------------")
+
         source_code = inspect.getsource(func)
         parsed_action = parse_code2list(source_code, thread_instance=self)
+
+        self.actionflow.clear_all()
 
         for action in parsed_action:
             self.actionflow.pending_list.append(action)
 
-        print("\U0001F3B2 Initialize Done")
-        print("Initialized Function: " + func.__name__)
-
         return wrapper
 
-    # TODO: re-organize the mainthread_decisiontree into thread and queue
-
+    # set the default decision tree for run the actionflow
     def default_decisiontree(self) -> None:
 
-        # loading action
-
-        print("\U0001F4E5 Import Done")
-        # start the action flow
+        # start the actionflow
 
         while self.actionflow.pending_list:
 
-            print("\U0001F525 Action Start")
+            print("\n\U0001F525 Actionflow Run ---------------------------------------------------------------------------------")
 
             # STEP 1: take out the action from ActionFlowPending and put into ActionFlowCurrent
 
@@ -79,24 +92,25 @@ class Thread(ThreadBase):
 
             self.actionflow.current_list.put_action(action)
 
-            print("\U0001F51C ActionFlowPending:")
-            print(self.actionflow.pending_list)
-            print("\U000025B6 ActionFlowCurrent:")
-            print(self.actionflow.current_list)
-            print("\U0001F519 ActionFlowHistory:")
-            print(self.actionflow.history_list)
-
             # STEP 2:take out action from ActionFlowCurrent put into ActionOnGoing sequentially
 
             while self.actionflow.current_list:
 
                 # STEP 2.1: load the action to ActionOnGoing (for scalability in the future version)
 
+                # print the actionflow
+                self.actionflow.view()
+
                 action = self.actionflow.current_list.pop_action()
 
                 self.actionflow.on_going.put(action)
 
                 action = self.actionflow.on_going.get()
+
+                print("\n\U0001F4A4 Action Code")
+                print("################################################################################")
+                print(action.code)
+                # print("################################################################################")
 
                 # STEP 3.1: check if the action is fixed, semi-fixed, or changeable
                 if action.status == "fixed":
@@ -110,7 +124,6 @@ class Thread(ThreadBase):
                 elif action.status == "changeable":
                     pass
 
-
         print("Done")
         print(self.actionflow.history_list)
 
@@ -122,27 +135,22 @@ class Thread(ThreadBase):
 
         self.exec_environment["finishedOrNot"] = False
 
-        # try action till this action has been achieved
-        while self.exec_environment["finishedOrNot"] != True:
+        check(thread_instance=self, action=action, show_prompt=False)
 
-            print("\n")
-            print("\U0001F697 Running Code ################################################################")
-            print(action.code)
-            print("################################################################################")
+        # try action till this action has been achieved
+        while self.exec_environment["finishedOrNot"] is not True:
 
             # generate and write the code that can achieve the given action
-            archieve(thread_instance=self, action=action, show_prompt=True)
+            achieve(thread_instance=self, action=action, show_prompt=False)
 
             # execute the generated code
-            exec(action.code , self.exec_environment)
+            exec(action.code, self.exec_environment)
 
             # save the ran code to the actionflow_history
             self.actionflow.history_list.put_action(action)
 
             # check the action, return 'finishOrNot= True / False'
-            check(thread_instance=self, action=action, show_prompt=True)
-
-
+            check(thread_instance=self, action=action, show_prompt=False)
 
     def run(self) -> None:
         # start the code thread

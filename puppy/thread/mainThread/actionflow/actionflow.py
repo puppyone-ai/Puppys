@@ -1,19 +1,36 @@
 import queue
 from puppy.thread.mainThread.base import ThreadBase
 from puppy.thread.mainThread.actionflow.action import Action
-import copy
+
 
 # the main class of Actionflow
 class Actionflow:
     def __init__(self, thread_instance: ThreadBase = None):
-        self.pending_list = Actionflow_list(iterable=[], thread_instance=thread_instance)
-        self.current_list = Actionflow_list(iterable=[], thread_instance=thread_instance)
-        self.history_list = Actionflow_list(iterable=[], thread_instance=thread_instance)
+        self.pending_list = ActionflowList(iterable=[], thread_instance=thread_instance)
+        self.current_list = ActionflowList(iterable=[], thread_instance=thread_instance)
+        self.history_list = ActionflowList(iterable=[], thread_instance=thread_instance)
         self.on_going = queue.Queue()
+
+    def clear_all(self):
+        self.pending_list.clear()
+        self.current_list.clear()
+        self.history_list.clear()
+        self.on_going = queue.Queue()
+
+    def view(self):
+        print(f"\n\u2699 Actionflow ")
+        print(f"################################################################################")
+        print("\nPending:")  # \U0001F51C
+        print(self.pending_list)
+        print("\nCurrent:")  # \U000025B6
+        print(self.current_list)
+        print("\nHistory:")  # \U0001F519
+        print(self.history_list)
+        # print("################################################################################")
 
 
 # the base class of actionflow
-class Actionflow_list(list):
+class ActionflowList(list):
     def __init__(self, iterable, thread_instance: ThreadBase = None):
 
         transformed = [str(item) for item in iterable]
@@ -31,7 +48,7 @@ class Actionflow_list(list):
         return self[num]
 
     # TODO providing an index to put the action here
-    # add an aciton to the end of the list
+    # add an action to the end of the list
     def put_action(self, action: Action) -> None:
         return self.append(action)
 
@@ -41,13 +58,8 @@ class Actionflow_list(list):
 
     # get all action's code in the actionflow
     def get_code_all(self):
+        return "".join(action.code + "\n" for action in self)
 
-        code = ""
-        for action in self:
-            code += action.code + "\n"
-
-        return code
-'''
     def __str__(self):
-        return f'{[str(action) for action in self]}'
-'''
+        newline = '\n'
+        return f"{newline.join(str(action) for action in self)}"
