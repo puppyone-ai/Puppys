@@ -45,9 +45,12 @@ class Thread(ThreadBase):
         self.functions_description_and_example = FunctionsDefault(thread_instance=self).get_infos()
 
     def parse_and_load(self, func) -> callable:
+
         def wrapper(*args, **kwargs):
 
             func(*args, **kwargs)
+
+        print("\n\U0001F525 Parsing the code---------------------------------------------------------------------------------")
 
         source_code = inspect.getsource(func)
         parsed_action = parse_code2list(source_code, thread_instance=self)
@@ -55,23 +58,16 @@ class Thread(ThreadBase):
         for action in parsed_action:
             self.actionflow.pending_list.append(action)
 
-        print("\U0001F3B2 Initialize Done")
-        print("Initialized Function: " + func.__name__)
-
         return wrapper
 
-    # TODO: re-organize the mainthread_decisiontree into thread and queue
-
+    # set the default decision tree for run the actionflow
     def default_decisiontree(self) -> None:
 
-        # loading action
-
-        print("\U0001F4E5 Import Done")
-        # start the action flow
+        # start the actionflow
 
         while self.actionflow.pending_list:
 
-            print("\U0001F525 Action Start")
+            print("\n\U0001F525 Actionflow Run ---------------------------------------------------------------------------------")
 
             # STEP 1: take out the action from ActionFlowPending and put into ActionFlowCurrent
 
@@ -79,24 +75,25 @@ class Thread(ThreadBase):
 
             self.actionflow.current_list.put_action(action)
 
-            print("\U0001F51C ActionFlowPending:")
-            print(self.actionflow.pending_list)
-            print("\U000025B6 ActionFlowCurrent:")
-            print(self.actionflow.current_list)
-            print("\U0001F519 ActionFlowHistory:")
-            print(self.actionflow.history_list)
-
             # STEP 2:take out action from ActionFlowCurrent put into ActionOnGoing sequentially
 
             while self.actionflow.current_list:
 
                 # STEP 2.1: load the action to ActionOnGoing (for scalability in the future version)
 
+                # print the actionflow
+                self.actionflow.view()
+
                 action = self.actionflow.current_list.pop_action()
 
                 self.actionflow.on_going.put(action)
 
                 action = self.actionflow.on_going.get()
+
+                print("\n\U0001F4A4 Action Code")
+                print("################################################################################")
+                print(action.code)
+                # print("################################################################################")
 
                 # STEP 3.1: check if the action is fixed, semi-fixed, or changeable
                 if action.status == "fixed":
@@ -121,16 +118,13 @@ class Thread(ThreadBase):
 
         self.exec_environment["finishedOrNot"] = False
 
+        check(thread_instance=self, action=action, show_prompt=False)
+
         # try action till this action has been achieved
         while self.exec_environment["finishedOrNot"] is not True:
 
-            print("\n")
-            print("\U0001F697 Running Code ################################################################")
-            print(action.code)
-            print("################################################################################")
-
             # generate and write the code that can achieve the given action
-            achieve(thread_instance=self, action=action, show_prompt=True)
+            achieve(thread_instance=self, action=action, show_prompt=False)
 
             # execute the generated code
             exec(action.code, self.exec_environment)
@@ -139,7 +133,7 @@ class Thread(ThreadBase):
             self.actionflow.history_list.put_action(action)
 
             # check the action, return 'finishOrNot= True / False'
-            check(thread_instance=self, action=action, show_prompt=True)
+            check(thread_instance=self, action=action, show_prompt=False)
 
     def run(self) -> None:
         # start the code thread

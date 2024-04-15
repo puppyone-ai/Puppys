@@ -16,7 +16,7 @@ class Action:
 
         # could consider introduce the func_name indexing in the future
     def __str__(self):
-        return f'{self.name} : {self.status} /n {self.code}'
+        return f'({self.status}){self.name}'
 
     def __call__(self, *args, **kwargs):
         overall_dict = {"name": self.name,

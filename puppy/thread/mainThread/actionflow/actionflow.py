@@ -11,6 +11,23 @@ class Actionflow:
         self.history_list = ActionflowList(iterable=[], thread_instance=thread_instance)
         self.on_going = queue.Queue()
 
+    def clear_all(self):
+        self.pending_list.clear()
+        self.current_list.clear()
+        self.history_list.clear()
+        self.on_going = queue.Queue()
+
+    def view(self):
+        print(f"\n\u2699 Actionflow ")
+        print(f"################################################################################")
+        print("\nPending:")  # \U0001F51C
+        print(self.pending_list)
+        print("\nCurrent:")  # \U000025B6
+        print(self.current_list)
+        print("\nHistory:")  # \U0001F519
+        print(self.history_list)
+        # print("################################################################################")
+
 
 # the base class of actionflow
 class ActionflowList(list):
@@ -41,12 +58,8 @@ class ActionflowList(list):
 
     # get all action's code in the actionflow
     def get_code_all(self):
-
-        code = ""
-        for action in self:
-            code += action.code + "\n"
-
-        return code
+        return "".join(action.code + "\n" for action in self)
 
     def __str__(self):
-        return f"[{', '.join(str(action) for action in self)}]"
+        newline = '\n'
+        return f"{newline.join(str(action) for action in self)}"
