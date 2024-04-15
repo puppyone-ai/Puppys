@@ -20,7 +20,8 @@ class FunctionsDefault:
         for func in self.installed_funcs:
             setattr(self.thread_instance, getattr(func, 'name'), func)
 
-    def get_infos(self, description=True, example=True):
+    # generate the information of the installed funcs
+    def get_infos(self, description=True, example=True) -> str:
         functions_simplified = """"""
 
         information = ['name']
