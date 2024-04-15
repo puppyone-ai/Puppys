@@ -6,7 +6,6 @@ from puppy.publicFunc.default.all_llm import MLLM
 from puppy.thread.mainThread.base import ThreadBase
 
 
-
 class FunctionsDefault:
 
     # TODO: Search path to collect all the default funcs
@@ -17,7 +16,6 @@ class FunctionsDefault:
         self.default_funcs = [SendSendMessageToHuman, GoogleSearchNative, GPT, MLLM]
 
         self.installed_funcs = [func(self) for func in self.default_funcs]
-        print(self.installed_funcs)
 
         for func in self.installed_funcs:
             setattr(self.thread_instance, getattr(func, 'name'), func)
