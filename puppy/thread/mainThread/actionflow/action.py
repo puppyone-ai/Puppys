@@ -15,6 +15,7 @@ class Action:
         self.status = ""
 
         # could consider introduce the func_name indexing in the future
+
     def __str__(self):
         return f'({self.status}){self.name}'
 
@@ -43,9 +44,6 @@ def parse_code2list(source_code: str, thread_instance: ThreadBase = None) -> []:
         line = line.strip()
         if line:
             striped_lines.append(line)
-
-    # print('striped_lines:')
-    # print(striped_lines)
 
     # load source code to action list sequentially
 

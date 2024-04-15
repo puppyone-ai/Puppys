@@ -87,8 +87,6 @@ def check(thread_instance, action, show_prompt=False):
     # deliver 'finishedOrNot' to the environment for verification of the final execution.
     exec(new_code, thread_instance.exec_environment)
 
-    # print("################################################################################")
-
 
 def achieve(thread_instance, action, show_prompt=False):
 
@@ -166,7 +164,5 @@ def achieve(thread_instance, action, show_prompt=False):
                           printing=True, stream=True)
 
     new_code = new_code.replace("```python\n", "").replace("\n```", "")
-
-    # print("################################################################################")
 
     action.code = new_code
