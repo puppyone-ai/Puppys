@@ -1,19 +1,19 @@
 import queue
 from puppy.thread.mainThread.base import ThreadBase
 from puppy.thread.mainThread.actionflow.action import Action
-import copy
+
 
 # the main class of Actionflow
 class Actionflow:
     def __init__(self, thread_instance: ThreadBase = None):
-        self.pending_list = Actionflow_list(iterable=[], thread_instance=thread_instance)
-        self.current_list = Actionflow_list(iterable=[], thread_instance=thread_instance)
-        self.history_list = Actionflow_list(iterable=[], thread_instance=thread_instance)
+        self.pending_list = ActionflowList(iterable=[], thread_instance=thread_instance)
+        self.current_list = ActionflowList(iterable=[], thread_instance=thread_instance)
+        self.history_list = ActionflowList(iterable=[], thread_instance=thread_instance)
         self.on_going = queue.Queue()
 
 
 # the base class of actionflow
-class Actionflow_list(list):
+class ActionflowList(list):
     def __init__(self, iterable, thread_instance: ThreadBase = None):
 
         transformed = [str(item) for item in iterable]
@@ -31,7 +31,7 @@ class Actionflow_list(list):
         return self[num]
 
     # TODO providing an index to put the action here
-    # add an aciton to the end of the list
+    # add an action to the end of the list
     def put_action(self, action: Action) -> None:
         return self.append(action)
 

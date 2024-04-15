@@ -2,7 +2,7 @@ from .base import ThreadBase
 from puppy.thread.mainThread.actionflow.actionflow import Actionflow
 from puppy.thread.mainThread.actionflow.action import parse_code2list
 from puppy.publicFunc.default import FunctionsDefault
-from puppy.thread.mainThread.do import check, archieve
+from puppy.thread.mainThread.do import check, achieve
 
 import inspect
 import threading
@@ -110,7 +110,6 @@ class Thread(ThreadBase):
                 elif action.status == "changeable":
                     pass
 
-
         print("Done")
         print(self.actionflow.history_list)
 
@@ -123,7 +122,7 @@ class Thread(ThreadBase):
         self.exec_environment["finishedOrNot"] = False
 
         # try action till this action has been achieved
-        while self.exec_environment["finishedOrNot"] != True:
+        while self.exec_environment["finishedOrNot"] is not True:
 
             print("\n")
             print("\U0001F697 Running Code ################################################################")
@@ -131,18 +130,16 @@ class Thread(ThreadBase):
             print("################################################################################")
 
             # generate and write the code that can achieve the given action
-            archieve(thread_instance=self, action=action, show_prompt=True)
+            achieve(thread_instance=self, action=action, show_prompt=True)
 
             # execute the generated code
-            exec(action.code , self.exec_environment)
+            exec(action.code, self.exec_environment)
 
             # save the ran code to the actionflow_history
             self.actionflow.history_list.put_action(action)
 
             # check the action, return 'finishOrNot= True / False'
             check(thread_instance=self, action=action, show_prompt=True)
-
-
 
     def run(self) -> None:
         # start the code thread
