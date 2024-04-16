@@ -84,8 +84,6 @@ class Thread(ThreadBase):
     # set the default decision tree for run the actionflow
     def default_decisiontree(self) -> None:
 
-        self.action = None
-
         # start the actionflow
 
         while self.actionflow.pending_list:
@@ -94,9 +92,9 @@ class Thread(ThreadBase):
 
             # STEP 1: take out the action from ActionFlowPending and put into ActionFlowCurrent
 
-            self.action = self.actionflow.pending_list.pop_action()
+            action = self.actionflow.pending_list.pop_action()
 
-            self.actionflow.current_list.put_action(self.action)
+            self.actionflow.current_list.put_action(action)
 
             # STEP 2: pop out action from ActionFlowCurrent put into ActionOnGoing and run
 
@@ -106,30 +104,30 @@ class Thread(ThreadBase):
 
                 self.actionflow.view()  # print the actionflow
 
-                self.action = self.actionflow.current_list.pop_action()
+                action = self.actionflow.current_list.pop_action()
 
-                self.actionflow.on_going.put(self.action)
+                self.actionflow.on_going.put(action)
 
-                self.action = self.actionflow.on_going.get()
+                action = self.actionflow.on_going.get()
 
                 print("\n\U0001F4A4 Action Code")
                 print("################################################################################")
-                print(self.action.code)
+                print(action.code)
 
                 # STEP 2.2: check if the action is fixed, semi-fixed, or changeable, and run sequentially
-                if self.action.status == "fixed":
-                    exec(self.action.code, self.exec_environment)
-                    self.actionflow.history_list.put_action(self.action)
+                if action.status == "fixed":
+                    exec(action.code, self.exec_environment)
+                    self.actionflow.history_list.put_action(action)
 
-                elif self.action.status == "semi-fixed":
-                    self._do(self.action)
+                elif action.status == "semi-fixed":
+                    self._doing_action = action
+                    self._do(action)
 
                 # TODO: finish the changeable mode
-                elif self.action.status == "changeable":
+                elif action.status == "changeable":
                     pass
 
-        print("\n\U0001F525 Actionflow Done -------------------------------------------------------------------------")
-        print(self.actionflow.history_list)
+        # print(self.actionflow.history_list)
 
         # TODO: save the actionflow.history_list to the folder of history
 

@@ -56,10 +56,10 @@ def check(thread_instance, action, show_prompt=False) -> None:
     {action.name}
 
     The code for historical actionflow shown as code are:
-    {thread_instance.actionflow.history_list.read_code()}
+    {thread_instance.actionflow.get_code(history=True)}
 
     The code of action in the future are(But you don't need to do this part now, just for your information)):
-    {thread_instance.actionflow.current_list.read_code()+thread_instance.actionflow.pending_list.read_code()}"""},
+    {thread_instance.actionflow.get_code(pending=True, current=True)}"""},
 
         # 4. justify if the action is done or not
         {"role": "user",
@@ -130,13 +130,13 @@ def achieve(thread_instance, action, show_prompt=False) -> None:
     {action.name}
 
     The code for historical actionflow shown as code are:
-    {thread_instance.actionflow.history_list.read_code()}
+    {thread_instance.actionflow.get_code(history=True)}
 
     user have already write some code for this action, but it's not finished. You should replace the XXX.do() part. Don't keep the .do() function after your response. The XXX is your name, and the .do() is an instruction of 'you must write code and put it here'.:
     {action.code}
 
     The code of action in the future are(But you don't need to do this part now, just for your information)):
-    {thread_instance.actionflow.current_list.read_code()+thread_instance.actionflow.pending_list.read_code()}"""},
+    {thread_instance.actionflow.get_code(pending=True, current=True)}"""},
 
         # 4. provide the code of the action
         {"role": "user",
