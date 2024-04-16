@@ -79,7 +79,7 @@ class Thread(ThreadBase):
         for action in parsed_action:
             self.actionflow.pending_list.append(action)
 
-        return wrapper
+        return
 
     # set the default decision tree for run the actionflow
     def default_decisiontree(self) -> None:
@@ -120,7 +120,7 @@ class Thread(ThreadBase):
                     self.actionflow.history_list.put_action(action)
 
                 elif action.status == "semi-fixed":
-                    self._doing_action = action
+                    self.doing_action = action
                     self._do(action)
 
                 # TODO: finish the changeable mode

@@ -37,6 +37,6 @@ class SendSendMessageToHuman:
 
         chat_history = "\n" + "your message:" + self.question + "\n" + "# User's response: " + user_input + "\n"
 
-        self.thread_instance._doing_action.code += chat_history
+        self.thread_instance.doing_action.code += chat_history
 
         return user_input
