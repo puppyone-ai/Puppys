@@ -45,13 +45,9 @@ class ActionflowList(list):
         newline = '\n'
         return f"{newline.join(str(action) for action in self)}"
 
-    # get the actionflow itself
-    def get(self):
-        return self
-
     # get the action in a list, default setting: -1 is the latest
     def get_action(self, num=-1) -> Action:
-        return self[num]
+        return self.pop(num)
 
     # add an action to the end of the list
     def put_action(self, action: Action) -> None:
@@ -62,5 +58,7 @@ class ActionflowList(list):
         return self.pop(0)
 
     # get all action's code in the actionflow
-    def get_code_all(self):
+    def read_code(self) -> str:
         return "".join(action.code + "\n" for action in self)
+
+
