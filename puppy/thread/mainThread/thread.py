@@ -4,6 +4,7 @@ from puppy.thread.mainThread.actionflow.action import parse_code2list
 from puppy.publicFunc.default import FunctionsDefault
 from puppy.thread.mainThread.do import check, achieve
 
+import copy
 import inspect
 import threading
 
@@ -71,7 +72,7 @@ class Thread(ThreadBase):
         print("\n\U0001F525 Parsing the code-------------------------------------------------------------------------")
 
         source_code = inspect.getsource(func)
-        parsed_action = parse_code2list(source_code, thread_instance=self)
+        parsed_action = parse_code2list(source_code)
 
         self.actionflow.clear_all()
 
@@ -83,6 +84,8 @@ class Thread(ThreadBase):
     # set the default decision tree for run the actionflow
     def default_decisiontree(self) -> None:
 
+        self.action = None
+
         # start the actionflow
 
         while self.actionflow.pending_list:
@@ -91,9 +94,9 @@ class Thread(ThreadBase):
 
             # STEP 1: take out the action from ActionFlowPending and put into ActionFlowCurrent
 
-            action = self.actionflow.pending_list.pop_action()
+            self.action = self.actionflow.pending_list.pop_action()
 
-            self.actionflow.current_list.put_action(action)
+            self.actionflow.current_list.put_action(self.action)
 
             # STEP 2: pop out action from ActionFlowCurrent put into ActionOnGoing and run
 
@@ -103,26 +106,26 @@ class Thread(ThreadBase):
 
                 self.actionflow.view()  # print the actionflow
 
-                action = self.actionflow.current_list.pop_action()
+                self.action = self.actionflow.current_list.pop_action()
 
-                self.actionflow.on_going.put(action)
+                self.actionflow.on_going.put(self.action)
 
-                action = self.actionflow.on_going.get()
+                self.action = self.actionflow.on_going.get()
 
                 print("\n\U0001F4A4 Action Code")
                 print("################################################################################")
-                print(action.code)
+                print(self.action.code)
 
                 # STEP 2.2: check if the action is fixed, semi-fixed, or changeable, and run sequentially
-                if action.status == "fixed":
-                    exec(action.code, self.exec_environment)
-                    self.actionflow.history_list.put_action(action)
+                if self.action.status == "fixed":
+                    exec(self.action.code, self.exec_environment)
+                    self.actionflow.history_list.put_action(self.action)
 
-                elif action.status == "semi-fixed":
-                    self.do(action)
+                elif self.action.status == "semi-fixed":
+                    self._do(self.action)
 
                 # TODO: finish the changeable mode
-                elif action.status == "changeable":
+                elif self.action.status == "changeable":
                     pass
 
         print("\n\U0001F525 Actionflow Done -------------------------------------------------------------------------")
@@ -132,7 +135,7 @@ class Thread(ThreadBase):
 
         # self.save_actionflow_history()
 
-    def do(self, action) -> None:
+    def _do(self, action) -> None:
 
         self.exec_environment["finishedOrNot"] = False
 
@@ -148,7 +151,8 @@ class Thread(ThreadBase):
             exec(action.code, self.exec_environment)
 
             # save the ran code to the actionflow_history
-            self.actionflow.history_list.put_action(action)
+            exec_action = copy.deepcopy(action)
+            self.actionflow.history_list.put_action(exec_action)
 
             # check the action, return 'finishOrNot= True / False'
             check(thread_instance=self, action=action, show_prompt=False)

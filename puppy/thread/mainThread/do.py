@@ -25,7 +25,7 @@ def check(thread_instance, action, show_prompt=False) -> None:
     1. Done: That means you don't need to write code to achieve it again. The action history shows that you have already know what you want to know or have already achieve the action. In this case, you should write Python code to return Ture, and your generated code should be:
     finishedOrNot=True
 
-    2. Unfinished: That means you need to write code to achieve it again, or their is some unfinished action that you need to make . In this case, you should write Python code to return False, and the your generated code should be:
+    2. Unfinished: That means you need to write code to achieve it again, or there are some unfinished actions that you need to make . In this case, you should write Python code to return False, and the your generated code should be:
     finishedOrNot=False
 
     for example:
@@ -56,10 +56,10 @@ def check(thread_instance, action, show_prompt=False) -> None:
     {action.name}
 
     The code for historical actionflow shown as code are:
-    {thread_instance.actionflow.history_list.get_code_all()}
+    {thread_instance.actionflow.history_list.read_code()}
 
     The code of action in the future are(But you don't need to do this part now, just for your information)):
-    {thread_instance.actionflow.pending_list.get_code_all()}"""},
+    {thread_instance.actionflow.current_list.read_code()+thread_instance.actionflow.pending_list.read_code()}"""},
 
         # 4. justify if the action is done or not
         {"role": "user",
@@ -130,13 +130,13 @@ def achieve(thread_instance, action, show_prompt=False) -> None:
     {action.name}
 
     The code for historical actionflow shown as code are:
-    {thread_instance.actionflow.history_list.get_code_all()}
+    {thread_instance.actionflow.history_list.read_code()}
 
     user have already write some code for this action, but it's not finished. You should replace the XXX.do() part. Don't keep the .do() function after your response. The XXX is your name, and the .do() is an instruction of 'you must write code and put it here'.:
     {action.code}
 
     The code of action in the future are(But you don't need to do this part now, just for your information)):
-    {thread_instance.actionflow.pending_list.get_code_all()}"""},
+    {thread_instance.actionflow.current_list.read_code()+thread_instance.actionflow.pending_list.read_code()}"""},
 
         # 4. provide the code of the action
         {"role": "user",

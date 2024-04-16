@@ -1,20 +1,14 @@
-
-
 from puppy.thread.mainThread.base import ThreadBase
 
 
 class Action:
     def __init__(self, **kwargs):
 
-        if "thread_instance" in kwargs:
-            thread_instance = kwargs["thread_instance"]
-            self.thread_instance = thread_instance
-
         self.name = ""
         self.code = ""
         self.status = ""
 
-        # could consider introduce the func_name indexing in the future
+        # Could consider introduce the front-end func_name as indexing in the future
 
     def __str__(self) -> str:
         return f'({self.status}){self.name}'
@@ -28,7 +22,7 @@ class Action:
 
 
 # TODO: abstract the parser to convert the source code to diverse properties
-def parse_code2list(source_code: str, thread_instance: ThreadBase = None) -> list:
+def parse_code2list(source_code: str) -> list:
 
     """
     Load the action from source code so that we could trigger it in actionflow
@@ -52,10 +46,7 @@ def parse_code2list(source_code: str, thread_instance: ThreadBase = None) -> lis
     for line in striped_lines:
 
         if '##' in line:
-            if thread_instance:
-                action_list.append(Action(thread_instance=thread_instance))
-            else:
-                action_list.append(Action())
+            action_list.append(Action())
 
             action_list[-1].name = line.split('##', 1)[1].strip()
             action_list[-1].code += f'{line}\n'

@@ -15,7 +15,7 @@ class FunctionsDefault:
 
         self.default_funcs = [SendSendMessageToHuman, GoogleSearchNative, GPT, MLLM]
 
-        self.installed_funcs = [func(self) for func in self.default_funcs]
+        self.installed_funcs = [func(self.thread_instance) for func in self.default_funcs]
 
         for func in self.installed_funcs:
             setattr(self.thread_instance, getattr(func, 'name'), func)
