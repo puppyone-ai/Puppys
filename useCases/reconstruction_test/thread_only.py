@@ -1,5 +1,3 @@
-
-
 from puppy.thread.mainThread.thread import Thread
 import sys
 import os

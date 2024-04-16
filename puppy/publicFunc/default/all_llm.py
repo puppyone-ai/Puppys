@@ -1,15 +1,16 @@
-from puppy.llm import m_chat
-from puppy.thread.mainThread.base import Thread
+from puppy.llm.mllm_chat import m_chat
+from puppy.thread.mainThread.base import ThreadBase
 
 
 class MLLM:
-    def __init__(self, thread_instance: Thread,
+    def __init__(self, thread_instance: ThreadBase,
                  model: str = None,
                  # **kwargs
                  ) -> None:
+
         self.name = "mllm"
         self.thread_instance = thread_instance
-        self.description = "Large Language Models, use it when you want to generate text based on the input text by large language models, you must add 'self.mllm' in this func."
+        self.description = "Organize your question as a str variable prompt, and use it to generate answer based on the question."
         self.example = """
         ## get how to install the package of openAI by GPT4
         prompt = f"How should I install the package of openAI, based on the document of its website HTML: {self.html}"
