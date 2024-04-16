@@ -30,6 +30,8 @@ class Thread(ThreadBase):
 
         print(f"{self.thread_name}: Initialize and Done \U0001F3B2")
 
+
+
     # naming the thread with args
     def _naming(self, **kwargs) -> None:
         # if 'puppy' in kwargs:
@@ -47,11 +49,15 @@ class Thread(ThreadBase):
             self.thread_name = "Ur Thread"
             print(f'Created a thread !')
 
+
+
     # build the actionflow under the thread
     def _build_default_actionflow(self) -> None:
 
         self.actionflow = Actionflow(thread_instance=self)
         print(f'{self.thread_name}: Build the actionflow!')
+
+
 
     # import default funcs into the thread and get the description and example
     def _import_default_funcs_and_infos(self) -> None:
@@ -61,6 +67,8 @@ class Thread(ThreadBase):
         print(f'{self.thread_name}: Installed all default tools!')
 
         self.functions_description_and_example = self.funcs_default.get_infos()
+
+
 
     # parse the code and load the action to the actionflow.pending_list
     def parse_and_load(self, func) -> callable:
@@ -80,6 +88,8 @@ class Thread(ThreadBase):
             self.actionflow.pending_list.append(action)
 
         return wrapper
+
+
 
     # set the default decision tree for run the actionflow
     def default_decisiontree(self) -> None:
@@ -127,11 +137,37 @@ class Thread(ThreadBase):
                 elif action.status == "changeable":
                     pass
 
-        # print(self.actionflow.history_list)
 
-        # TODO: save the actionflow.history_list to the folder of history
 
-        # self.save_actionflow_history()
+        print(self.actionflow.history_list)
+
+        self.save_actionflow_history()
+
+    # save the actionflow.history to a file
+    def save_actionflow_history(self):
+        # save the actionflow_history
+        import os
+        from datetime import datetime
+        import json
+
+        # get date and time
+        now = datetime.now()
+        date_str = now.strftime("%Y-%m-%d_%H-%M-%S")
+
+        # create folder, if not exist
+        folder_path = "user_case_history"  # Corrected the folder name from 'histoty' to 'history'
+        os.makedirs(folder_path, exist_ok=True)
+
+        # create a new file
+        file_path = os.path.join(folder_path, f"user_case_history_{date_str}.txt")
+
+        # Directly convert the Python object to a JSON string
+        list = self.actionflow.history_list.get()
+
+        # Write the JSON string to a file
+        with open(file_path, "w") as file:
+            file.write(str(list))
+
 
     def _do(self, action) -> None:
 
