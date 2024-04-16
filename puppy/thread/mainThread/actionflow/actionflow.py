@@ -3,7 +3,7 @@ from puppy.thread.mainThread.base import ThreadBase
 from puppy.thread.mainThread.actionflow.action import Action
 
 
-# the main class of Actionflow
+# the intermediate env for governing the actionflow in the thread
 class Actionflow:
     def __init__(self, thread_instance: ThreadBase = None):
         self.pending_list = ActionflowList(iterable=[], thread_instance=thread_instance)
@@ -29,6 +29,16 @@ class Actionflow:
         print("\nHistory:")  # \U0001F519
         print(self.history_list)
 
+    def get_code(self, pending : bool = False, current : bool = False, history : bool = False) -> str:
+        res = ""
+        if pending:
+            res += "".join(action.code for action in self.pending_list)
+        if current:
+            res += "".join(action.code for action in self.current_list)
+        if history:
+            res += "".join(action.code for action in self.history_list)
+        return res
+
 
 # the base class of actionflow
 class ActionflowList(list):
@@ -45,20 +55,10 @@ class ActionflowList(list):
         newline = '\n'
         return f"{newline.join(str(action) for action in self)}"
 
-    # get the action in a list, default setting: -1 is the latest
-    def get_action(self, num=-1) -> Action:
-        return self.pop(num)
-
     # add an action to the end of the list
     def put_action(self, action: Action) -> None:
         return self.append(action)
 
-    # get and remove the latest action
+    # pop an action from the start of list
     def pop_action(self) -> Action:
         return self.pop(0)
-
-    # get all action's code in the actionflow
-    def read_code(self) -> str:
-        return "".join(action.code + "\n" for action in self)
-
-
