@@ -1,3 +1,4 @@
+import copy
 import queue
 from puppy.thread.mainThread.base import ThreadBase
 from puppy.thread.mainThread.actionflow.action import Action
@@ -62,3 +63,9 @@ class ActionflowList(list):
     # pop an action from the start of list
     def pop_action(self) -> Action:
         return self.pop(0)
+
+    def get(self) -> list:
+        list=[]
+        for action in self:
+            list.append(action.get())
+        return list

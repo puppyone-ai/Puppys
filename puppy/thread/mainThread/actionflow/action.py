@@ -20,6 +20,13 @@ class Action:
 
         return overall_dict
 
+    def get(self) -> dict:
+        overall_dict = {"name": self.name,
+                        "code": self.code,
+                        "status": self.status}
+
+        return overall_dict
+
 
 # TODO: abstract the parser to convert the source code to diverse properties
 def parse_code2list(source_code: str) -> list:

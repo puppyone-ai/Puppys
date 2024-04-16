@@ -2,3 +2,4 @@
 **/__pycache__
 .idea
 **/.llm_cache
+**/.user_case_history
