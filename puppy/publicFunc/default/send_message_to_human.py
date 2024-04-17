@@ -1,5 +1,4 @@
-# import pandas as pd
-# from googleapiclient.discovery import build
+from puppy.thread.mainThread.std import recover_stdout
 
 
 class SendSendMessageToHuman:
@@ -32,11 +31,11 @@ class SendSendMessageToHuman:
     def run(self, question=""):
 
         self.question = question
-        user_input = input(question + "\n" + "Your response:")
-        print("\U0001F600: Sure, get it.")
+
+        with recover_stdout():
+            user_input = input(question + "\n" + "Your response:")
+            print("\U0001F600: Sure, get it.")
 
         chat_history = "\n" + "your message:" + self.question + "\n" + "# User's response: " + user_input + "\n"
 
         self.thread_instance.doing_action.code += chat_history
-
-        return user_input
