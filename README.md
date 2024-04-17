@@ -22,7 +22,7 @@
 * **Code-Native**: Puppys is a code-native agent framework. Every dialog is code.
 * **Multi-Threads**: Puppys enable you to build an agent with multi-thread.
 * **Human-Agent Interacts**: Your agent will ask you when it cannot understand what you said.
-* **tuning-machine-like agent**: program an agent by programming the agent's decision tree and its enviroment.
+* **turing-machine-like agent**: program an agent by programming the agent's decision tree and its environment.
 
 <img src="./assets/dividerBlue.png" alt="Image">
 
@@ -38,7 +38,7 @@ Unlike previous agent frameworks, we placed the workflow within the environment,
 <img src="./assets/AgentRPA.png" alt="Image" width="600">
 </div>
 
-## Building an agent just like building a Tuning machine
+## Building an agent just like building a Turing machine
 
 
 When programming an agent, what exactly are we programming? 
