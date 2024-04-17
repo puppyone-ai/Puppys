@@ -3,10 +3,12 @@ from puppy.thread.mainThread.actionflow.actionflow import Actionflow
 from puppy.thread.mainThread.actionflow.action import parse_code2list
 from puppy.publicFunc.default import FunctionsDefault
 from puppy.thread.mainThread.do import check, achieve
+from puppy.thread.mainThread.std import redirected_stdout
 
 import copy
 import inspect
 import threading
+import io
 
 
 # TODO: Merge the essential elements between original MainThread and Thread
@@ -21,6 +23,9 @@ class Thread(ThreadBase):
         # set the env of the thread
         self.goal = ""
         self.exec_environment = {"self": self}
+
+        # create a buffer
+        self.buffer = io.StringIO()
 
         # install the actionflow
         self._build_default_actionflow()
@@ -87,7 +92,7 @@ class Thread(ThreadBase):
         for action in parsed_action:
             self.actionflow.pending_list.append(action)
 
-        return wrapper
+        return
 
 
 
@@ -130,7 +135,7 @@ class Thread(ThreadBase):
                     self.actionflow.history_list.put_action(action)
 
                 elif action.status == "semi-fixed":
-                    self._doing_action = action
+                    self.doing_action = action
                     self._do(action)
 
                 # TODO: finish the changeable mode
@@ -181,8 +186,9 @@ class Thread(ThreadBase):
             # generate and write the code that can achieve the given action
             achieve(thread_instance=self, action=action, show_prompt=False)
 
-            # execute the generated code
-            exec(action.code, self.exec_environment)
+            # execute the generated code in thread's environment and redirect the stdout to the buffer
+            with redirected_stdout(self.buffer):
+                exec(action.code, self.exec_environment)
 
             # save the ran code to the actionflow_history
             exec_action = copy.deepcopy(action)
