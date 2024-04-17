@@ -125,9 +125,6 @@ class Thread(ThreadBase):
 
                 action = self.actionflow.on_going.get()
 
-                print("\n\U0001F4A4 Action Code")
-                print("################################################################################")
-                print(action.code)
 
                 # STEP 2.2: check if the action is fixed, semi-fixed, or changeable, and run sequentially
                 if action.status == "fixed":
@@ -144,7 +141,6 @@ class Thread(ThreadBase):
 
 
 
-        print(self.actionflow.history_list)
 
         self.save_actionflow_history()
 

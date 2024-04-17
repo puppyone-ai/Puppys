@@ -2,7 +2,6 @@ from puppy.publicFunc.default.send_message_to_human import SendSendMessageToHuma
 from puppy.publicFunc.default.google_search_native import GoogleSearchNative
 from puppy.publicFunc.default.gpt import GPT
 
-from puppy.publicFunc.default.all_llm import MLLM
 from puppy.thread.mainThread.base import ThreadBase
 
 
@@ -13,7 +12,7 @@ class FunctionsDefault:
 
         self.thread_instance = thread_instance
 
-        self.default_funcs = [SendSendMessageToHuman, GoogleSearchNative, GPT, MLLM]
+        self.default_funcs = [SendSendMessageToHuman, GoogleSearchNative, GPT]
 
         self.installed_funcs = [func(self.thread_instance) for func in self.default_funcs]
 
