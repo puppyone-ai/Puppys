@@ -76,7 +76,7 @@ def check(thread_instance, action, show_prompt=False) -> None:
     print("\n\U00002705 Checking Code ##############################################################")
 
     new_code = open_ai_chat(prompt=prompt,
-                            model="gpt-4-0125-preview",
+                            model="gpt-4-turbo",
                             temperature=0.1,
                             api_key=os.environ["OPENAI_API_KEY"],
                             max_tokens=4096,
@@ -157,7 +157,7 @@ def achieve(thread_instance, action, show_prompt=False) -> None:
         print(prompt)
 
     new_code = open_ai_chat(prompt=prompt,
-                            model="gpt-4-0125-preview",
+                            model="gpt-4-turbo",
                             temperature=0.1,
                             api_key=os.environ["OPENAI_API_KEY"],
                             max_tokens=4096,

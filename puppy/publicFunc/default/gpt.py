@@ -1,6 +1,6 @@
 import os
 from puppy.llm.openAI import open_ai_chat
-from puppy.thread.mainThread.base import ThreadBase
+from puppy.thread.base import ThreadBase
 
 
 class GPT:

@@ -1,9 +1,9 @@
 from .base import ThreadBase
-from puppy.thread.mainThread.actionflow.actionflow import Actionflow
-from puppy.thread.mainThread.actionflow.action import parse_code2list
+from puppy.thread.actionflow.actionflow import Actionflow
+from puppy.thread.actionflow.action import parse_code2list
 from puppy.publicFunc.default import FunctionsDefault
-from puppy.thread.mainThread.do import check, achieve
-from puppy.thread.mainThread.std import redirected_stdout
+from puppy.thread.do import check, achieve
+from puppy.utils.std import redirected_stdout
 
 
 # TODO: Merge the essential elements between original MainThread and Thread
@@ -146,7 +146,7 @@ class Thread(ThreadBase):
         file_path = os.path.join(folder_path, f"user_case_history_{date_str}.txt")
 
         # Directly convert the Python object to a JSON string
-        history = self.actionflow.history_list.get()
+        history = self.actionflow.history_list.read
 
         # Write the JSON string to a file
         with open(file_path, "w") as file:

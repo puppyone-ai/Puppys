@@ -1,8 +1,7 @@
-from puppy.thread.mainThread.base import ThreadBase
-
-
 class Action:
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
+
+        super().__init__()
 
         self.name = ""
         self.code = ""
@@ -10,22 +9,9 @@ class Action:
 
         # Could consider introduce the front-end func_name as indexing in the future
 
-    def __str__(self) -> str:
-        return f'({self.status}){self.name}'
-
-    def __call__(self, *args, **kwargs) -> dict:
-        overall_dict = {"name": self.name,
-                        "code": self.code,
-                        "status": self.status}
-
-        return overall_dict
-
-    def get(self) -> dict:
-        overall_dict = {"name": self.name,
-                        "code": self.code,
-                        "status": self.status}
-
-        return overall_dict
+    @property
+    def read(self) -> dict:  # action()
+        return vars(self)
 
 
 # TODO: abstract the parser to convert the source code to diverse properties
