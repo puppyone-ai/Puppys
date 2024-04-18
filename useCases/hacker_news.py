@@ -1,4 +1,4 @@
-from puppy.thread.thread import Thread
+from puppy.thread.main import Thread
 import sys
 import os
 
@@ -7,15 +7,19 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 hacker_news = Thread()
 
+
+
 @hacker_news.parse_and_load
 def pending():
 
-    ## go to this website:https://news.ycombinator.com/ , save its HTML. @python
+    ## go to https://news.ycombinator.com/, save its HTML
     hacker_news.do()
-    print(HTML_text)
 
-    ## show the top 10 news name and their urls based on the HTML @gpt, and send the message to the user
+    ## and send the top 10 news as a message to the user @ python &GPT
     hacker_news.do()
-    print(news_and_urls)
+
+    ## pick the news that related to Large Language Models, summerize all the news, and show it to me
+    hacker_news.do()
+
 
 hacker_news.run()

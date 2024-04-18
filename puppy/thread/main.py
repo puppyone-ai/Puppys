@@ -31,6 +31,7 @@ class Thread(ThreadBase):
 
         print(f"{self.thread_name}: Initialize and Done \U0001F3B2")
 
+
     # naming the thread with args
     def _naming(self, **kwargs) -> None:
         # if 'puppy' in kwargs:
@@ -83,6 +84,7 @@ class Thread(ThreadBase):
             self.actionflow.pending_list.append(action)
 
         return
+
 
     # set the default decision tree for run the actionflow
     def default_decisiontree(self) -> None:
@@ -175,6 +177,7 @@ class Thread(ThreadBase):
 
             # check the action, return 'finishOrNot= True / False'
             check(thread_instance=self, action=action, show_prompt=False)
+
 
     def run(self) -> None:
         # start the code thread
