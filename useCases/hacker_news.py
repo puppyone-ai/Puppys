@@ -1,6 +1,4 @@
-
-
-from puppy.thread.mainThread.thread import Thread
+from puppy.thread.thread import Thread
 import sys
 import os
 
