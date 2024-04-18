@@ -10,7 +10,7 @@ class Action:
         # Could consider introduce the front-end func_name as indexing in the future
 
     @property
-    def read(self) -> dict:  # action()
+    def read(self) -> dict:
         return vars(self)
 
 
