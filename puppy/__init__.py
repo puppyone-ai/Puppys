@@ -1,4 +1,4 @@
-from puppy.thread.thread import Thread
+from puppy.thread.main import Thread
 
 
 class Puppy:

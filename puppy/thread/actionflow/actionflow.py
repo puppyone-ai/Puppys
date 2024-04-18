@@ -8,7 +8,7 @@ class Actionflow:
     def __init__(self, thread_instance: ThreadBase = None):
 
         if thread_instance:
-            self.threa_instance = thread_instance
+            self.thread_instance = thread_instance
 
         self.pending_list = ActionflowList(iterable=[], thread_instance=thread_instance)
         self.current_list = ActionflowList(iterable=[], thread_instance=thread_instance)
