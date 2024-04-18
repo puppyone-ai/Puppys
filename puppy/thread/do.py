@@ -1,5 +1,5 @@
 import os
-from puppy.llm.openAI import OpenAIChat
+from puppy.llm.openAI import open_ai_chat
 
 
 def check(thread_instance, action, show_prompt=False) -> None:
@@ -75,12 +75,12 @@ def check(thread_instance, action, show_prompt=False) -> None:
 
     print("\n\U00002705 Checking Code ##############################################################")
 
-    new_code = OpenAIChat(prompt=prompt,
-                          model="gpt-4-0125-preview",
-                          temperature=0.1,
-                          api_key=os.environ["OPENAI_API_KEY"],
-                          max_tokens=4096,
-                          printing=True, stream=True)
+    new_code = open_ai_chat(prompt=prompt,
+                            model="gpt-4-turbo",
+                            temperature=0.1,
+                            api_key=os.environ["OPENAI_API_KEY"],
+                            max_tokens=4096,
+                            printing=True, stream=True)
 
     new_code = new_code.replace("```python\n", "").replace("\n```", "")
 
@@ -156,12 +156,12 @@ def achieve(thread_instance, action, show_prompt=False) -> None:
         print("*******planning prompt********")
         print(prompt)
 
-    new_code = OpenAIChat(prompt=prompt,
-                          model="gpt-4-0125-preview",
-                          temperature=0.1,
-                          api_key=os.environ["OPENAI_API_KEY"],
-                          max_tokens=4096,
-                          printing=True, stream=True)
+    new_code = open_ai_chat(prompt=prompt,
+                            model="gpt-4-turbo",
+                            temperature=0.1,
+                            api_key=os.environ["OPENAI_API_KEY"],
+                            max_tokens=4096,
+                            printing=True, stream=True)
 
     new_code = new_code.replace("```python\n", "").replace("\n```", "")
 
