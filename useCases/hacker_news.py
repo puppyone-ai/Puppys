@@ -9,8 +9,8 @@ hacker_news = Thread()
 
 
 
-@hacker_news.actionflow.pending_list.initialize
-def pending():
+@hacker_news.actionflow.update
+def pending_list():
 
     ## go to https://news.ycombinator.com/, save its HTML
     hacker_news.do()
