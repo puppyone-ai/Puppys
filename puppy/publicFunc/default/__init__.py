@@ -2,7 +2,7 @@ from puppy.publicFunc.default.send_message_to_human import SendSendMessageToHuma
 from puppy.publicFunc.default.google_search_native import GoogleSearchNative
 from puppy.publicFunc.default.gpt import GPT
 
-from puppy.thread.mainThread.base import ThreadBase
+from puppy.thread.base import ThreadBase
 
 
 class FunctionsDefault:

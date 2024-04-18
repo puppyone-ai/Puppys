@@ -1,4 +1,4 @@
-from puppy.thread.mainThread.std import recover_stdout
+from puppy.utils.std import recover_stdout
 
 
 class SendSendMessageToHuman:
