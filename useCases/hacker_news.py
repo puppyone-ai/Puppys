@@ -9,13 +9,13 @@ hacker_news = Thread()
 
 
 
-@hacker_news.parse_and_load
+@hacker_news.actionflow.pending_list.initialize
 def pending():
 
     ## go to https://news.ycombinator.com/, save its HTML
     hacker_news.do()
 
-    ## and send the top 10 news as a message to the user @ python &GPT
+    ## show the top 10 news and send message to the user GPT
     hacker_news.do()
 
     ## pick the news that related to Large Language Models, summerize all the news, and show it to me

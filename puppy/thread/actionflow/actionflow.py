@@ -1,7 +1,7 @@
 import queue
 from puppy.thread.base import ThreadBase
 from puppy.thread.actionflow.action import Action
-
+from puppy.thread.actionflow.action import parse_code2list
 
 # the intermediate env for governing the actionflow in the thread
 class Actionflow:
@@ -58,14 +58,38 @@ class ActionflowList(list):
         newline = '\n'
         return f"{newline.join(str(action.read) for action in self)}"
 
+
     # add an action to the end of the list
     def put_action(self, action: Action) -> None:
         return self.append(action)
+
 
     # pop an action from the start of list
     def pop_action(self) -> Action:
         return self.pop(0)
 
+
     @property
     def read(self) -> list:
         return [action.read for action in self]
+
+
+
+    def initialize(self, func) -> None:
+
+        def wrapper(*args, **kwargs):
+            func(*args, **kwargs)
+
+        print("\n\U0001F525 Parsing the code-------------------------------------------------------------------------")
+
+        import inspect
+
+        source_code = inspect.getsource(func)
+        parsed_action = parse_code2list(source_code)
+
+        self.clear()
+
+        for action in parsed_action:
+            self.append(action)
+
+        return

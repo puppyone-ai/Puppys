@@ -64,27 +64,6 @@ class Thread(ThreadBase):
 
         self.functions_description_and_example = self.funcs_default.get_infos()
 
-    # parse the code and load the action to the actionflow.pending_list
-    def parse_and_load(self, func) -> None:
-
-        def wrapper(*args, **kwargs):
-
-            func(*args, **kwargs)
-
-        print("\n\U0001F525 Parsing the code-------------------------------------------------------------------------")
-
-        import inspect
-
-        source_code = inspect.getsource(func)
-        parsed_action = parse_code2list(source_code)
-
-        self.actionflow.clear_all()
-
-        for action in parsed_action:
-            self.actionflow.pending_list.append(action)
-
-        return
-
 
     # set the default decision tree for run the actionflow
     def default_decisiontree(self) -> None:
