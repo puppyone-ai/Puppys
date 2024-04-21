@@ -1,15 +1,14 @@
-from abc import ABC, abstractmethod
 
 
-class EnvBase:
+class BaseEnv:
 
     def __init__(self,
                  name: str = "",
                  description: str = '',
                  visibility: bool = False,
+                 **kwargs
 
                  ):
-
         # the name of this environment var
         self.name = name
 
@@ -28,6 +27,7 @@ class EnvBase:
             "tag": "class",
             "description": self.description}
 
+    # show the env inside
     def expose(self):
         vars_dict = vars(self)
         view_dict = {}
@@ -42,29 +42,12 @@ class EnvBase:
 
         return view_dict
 
-    def new_env(self, cls):
-
-        name = cls.__name__
-        instance = cls()
-        setattr(self, name, instance)  # Create instance and set it as an attribute
+    def create_env(self, **kwargs):
+        return BaseEnv(**kwargs)
 
 
 if __name__ == "__main__":
-    Thread = EnvBase()
+    Building = BaseEnv()
+    Building.floor_1=Building.create_env(visibility =  True)
 
-    print(Thread.name)
-    Thread._take = EnvBase(visibility=True)
-
-
-    @Thread.new_env
-    class CCC:
-        def __init__(self):
-            print("CCC")
-            self.visibility = True
-            self.overview = {
-                "the only one element": "Ture"
-            }
-
-
-    print(Thread.CCC)
-    print(Thread.expose())
+    print(Building.expose())
