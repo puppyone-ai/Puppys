@@ -1,30 +1,25 @@
+from puppy.thread.main import Thread
 import sys
 import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-from puppy import Puppy
-from puppy import Puppy
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Use mllm to change mode, example: Mei = Puppy(name="Mei", mllm=True), @mllm rather @gpt
 
-Mei = Puppy(name="Mei")
-
-
-# change the API key to your own
-os.environ["OPENAI_API_KEY"] = "Your_OpenAI_Api_Key"
+hacker_news = Thread()
 
 
-@Mei.mainthread
-def actionflow_pending():
 
-    ## go to this website: "https://https://news.ycombinator.com/news/" , save its HTML. @python
-    Mei.do()
-    print(HTML_text)
+@hacker_news.actionflow.update
+def pending_list():
 
-    ## save the top 10 news name and their urls based on the HTML @gpt, and send the result to me
-    Mei.do()
+    ## go to https://news.ycombinator.com/, save its HTML
+    hacker_news.do()
+
+    ## show the top 10 news and send message to the user GPT
+    hacker_news.do()
+
+    ## pick the news that related to Large Language Models, summerize all the news, and show it to me
+    hacker_news.do()
 
 
-Mei.run()
+hacker_news.run()

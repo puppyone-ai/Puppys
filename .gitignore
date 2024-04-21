@@ -1,4 +1,5 @@
 .DS_store
 **/__pycache__
 .idea
-Pipfile
+**/.llm_cache
+/useCases/user_case_history/

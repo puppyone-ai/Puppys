@@ -1,18 +1,17 @@
 from openai import OpenAI
 import os
 
+
 # using OpenAI API model
-def OpenAIChat(prompt=[],
-               temperature=0.1, max_tokens=4096, model="gpt-4-0125-preview",
-               api_key="",
-               printing=False, stream=False
-               ):
+def open_ai_chat(prompt,
+                 temperature=0.1, max_tokens=4096, model="gpt-4-0125-preview",
+                 api_key="",
+                 printing=False, stream=False
+                 ):
 
     os.environ["OPENAI_API_KEY"] = api_key
 
     client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", api_key))
-
-
 
     completion = client.chat.completions.create(
         model=model,
@@ -23,15 +22,14 @@ def OpenAIChat(prompt=[],
         stream=stream,
     )
 
+    if printing is True:
 
-    if printing == True:
-
-        if stream == False:
+        if stream is False:
             print(completion.choices[0].message.content)
             print("\n")
             return completion.choices[0].message.content
 
-        elif stream == True:
+        elif stream is True:
             finalResponse=""
             for chunk in completion:
                 if chunk.choices[0].delta.content is not None:
@@ -46,7 +44,7 @@ def OpenAIChat(prompt=[],
 
 
 if __name__ == "__main__":
-    response = OpenAIChat(prompt=[{"role": "user", "content": "Introduce yourself, with 20 words"}],
-                          printing=True, stream=True, emoji=True,
-                          api_key=os.environ["OPENAI_API_KEY"])
+    response = open_ai_chat(prompt=[{"role": "user", "content": "Introduce yourself, with 20 words"}],
+                            printing=True, stream=True,
+                            api_key=os.environ["OPENAI_API_KEY"])
 
