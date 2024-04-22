@@ -1,17 +1,17 @@
-from puppy.environment.base import BaseEnv
+from puppy.environment.base import EnvBase
 
 
 # the decorator that wraps a function
 
 def new_func(func):
-    class FuncBase(BaseEnv):
-        def __init__(self, func, EnvInstance = None):
+    class FuncBase(EnvBase):
+        def __init__(self, env_instance=None):
 
             super().__init__()
 
             self.func = func
 
-            self.EnvInstance = EnvInstance
+            self.EnvInstance = env_instance
 
             self.name = func.__name__
 
@@ -23,7 +23,6 @@ def new_func(func):
 
             self.visibility = True
 
-
         def __call__(self, *args, **kwargs):
 
             return self.run(*args, **kwargs)
@@ -32,9 +31,9 @@ def new_func(func):
 
             return self.func(self.EnvInstance, *args, **kwargs)
 
-    def wrapper(EnvInstance):
+    def wrapper(env_instance):
 
-        return FuncBase(func, EnvInstance)
+        return FuncBase(func, env_instance)
 
     return wrapper
 
@@ -55,8 +54,7 @@ def send_message_to_human():
     # print(env.expose())
 
 
-
-EnvVars=BaseEnv(name="building", visibility=True)
+EnvVars = EnvBase(name="building", visibility=True)
 
 EnvVars.ok = send_message_to_human(EnvVars)  # 实例化FuncBase
 
