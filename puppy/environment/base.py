@@ -1,6 +1,10 @@
 from puppy.thread.base import ThreadBase
 
 
+def new_env(*args, **kwargs):
+    return EnvBase(*args, **kwargs)
+
+
 class EnvBase:
 
     def __init__(self,
@@ -8,6 +12,7 @@ class EnvBase:
                  intro: str = '',
                  # detail: str = '',
                  visibility: bool = False,
+                 parent=None,
                  **kwargs
                  ):
 
@@ -29,16 +34,10 @@ class EnvBase:
         # if this var is default visible for .expose() or not
         self.visibility = visibility
 
-        # the thread instance that this env var belongs to
-        if 'thread_instance' in kwargs and 'parent_env' in kwargs:
-            raise ValueError("You can't assign both thread_instance and parent_env to the same env var.")
-
-        else:
-            if 'thread_instance' in kwargs:
-                self.parent = kwargs['thread_instance']
-
-            elif 'parent_env' in kwargs:
-                self.parent = kwargs['parent_env']
+        # the parental instance that this env var connected from
+        if parent:
+            self.parent = parent
+            setattr(parent, name, self)
 
     # show the env inside
     def expose(self):
@@ -55,13 +54,26 @@ class EnvBase:
 
         return view_dict
 
-    def new_env(self, **kwargs):
+    def create_new_env(self, *args, **kwargs):
 
-        return EnvBase(**kwargs, parent_env=self)
+        instance = EnvBase(*args, **kwargs, parent=self)
+        setattr(self, kwargs['name'], instance)
+
+    def __getattribute__(self, item):
+        try:
+            return super().__getattribute__(item)
+        except AttributeError as e:
+            print(f"Error: {e}")
+            return None
 
 
 if __name__ == "__main__":
     Building = EnvBase()
-    Building.floor_1 = Building.new_env(visibility=True)
+
+    Building.floor_1 = new_env(visibility=True, parent=Building, name='floor_1', intro='The first floor of the building')
+
+    # Building.create_new_env(name='floor_1', visibility=True)
+
+    print(Building.floor_1.name)
 
     print(Building.expose())
