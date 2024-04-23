@@ -1,8 +1,4 @@
-from puppy.thread.base import ThreadBase
-
-
-def new_env(*args, **kwargs):
-    return EnvBase(*args, **kwargs)
+from __future__ import annotations
 
 
 class EnvBase:
@@ -10,7 +6,6 @@ class EnvBase:
     def __init__(self,
                  name: str = "",
                  intro: str = '',
-                 # detail: str = '',
                  visibility: bool = False,
                  parent=None,
                  **kwargs
@@ -22,13 +17,7 @@ class EnvBase:
         # description of this environment var
         self.intro = intro
 
-        # the overview of the env var
-        self.detail = {
-            "name": self.name,
-            "tag": "env",
-            "intro": self.intro}
-
-        # sort the env vars
+        # the tag of this environment var
         self.tag = []
 
         # if this var is default visible for .expose() or not
@@ -38,6 +27,14 @@ class EnvBase:
         if parent:
             self.parent = parent
             setattr(parent, name, self)
+
+    # overview of this env
+    @property
+    def detail(self):
+        return {
+            "name": self.name,
+            "tag": "env",
+            "intro": self.intro}
 
     # show the env inside
     def expose(self):
@@ -54,10 +51,19 @@ class EnvBase:
 
         return view_dict
 
+    # Monkey Patching
+    # create a new env instance in this env instance
     def create_new_env(self, *args, **kwargs):
 
         instance = EnvBase(*args, **kwargs, parent=self)
         setattr(self, kwargs['name'], instance)
+
+    # Monkey Patching
+    # add an existed env instance into this env instance
+    def add_new_env(self, EnvExample : EnvBase):
+        instance = EnvExample
+        setattr(self, EnvExample.name, instance)
+
 
     def __getattribute__(self, item):
         try:
@@ -67,25 +73,36 @@ class EnvBase:
             return None
 
 
+
 if __name__ == "__main__":
-    Building = EnvBase()
+    """
+    Three method that can create a new env in an env:
+    """
 
-    # Building.floor_1 = new_env(visibility=True, parent=Building, name='floor_1', intro='The first floor of the building')
+    # method 1 (with 'add_new_env' monkey patching)
+    building = EnvBase()
 
-    Building.create_new_env(name='floor_1', visibility=True)
+    floor_1 = EnvBase(name='floor_1', visibility=True)
 
-    Building.floor_1.create_new_env(name='floor_2', visibility=True)
+    building.add_new_env(floor_1)
 
-    Building.floor_1.create_new_env(name='room_1', visibility=True)
-    Building.floor_1.create_new_env(name='room_2', visibility=True)
+    print(building.expose())
 
-    floor_2 = new_env(name='floor_2', visibility=True, parent=Building.floor_1)
-    floor_3 = new_env(name='floor_3', visibility=True, parent=floor_2)
-    # floor_3 = new_env(name='floor_3', visibility=True, parent=Building.floor_1.floor_2)
 
-    # print(Building.floor_1.name)
-    #
-    # print(Building.expose())
-    # print(Building.floor_1.expose())
-    # print(Building.floor_1.floor_2.expose())
-    print(floor_3.parent.parent.room_1.expose())
+    ## method 2 (with 'create_new_env' monkey patching)
+    building = EnvBase()
+
+    building.create_new_env(name='floor_1', visibility=True)
+
+    print(building.expose())
+
+
+    ## method 3 (Recommended, define a env method in a class)
+    class Building(EnvBase):
+        def __init__(self):
+            super().__init__(name='Building', visibility=True)
+
+            self.floor_1 = EnvBase(name='floor_1', visibility=True)
+
+    building = Building()
+    print(building.expose())
