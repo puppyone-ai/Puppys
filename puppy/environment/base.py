@@ -1,4 +1,3 @@
-from puppy.thread.base import ThreadBase
 
 
 def new_env(*args, **kwargs):
@@ -38,6 +37,9 @@ class EnvBase:
         if parent:
             self.parent = parent
             setattr(parent, name, self)
+
+        else:
+            raise ValueError("The parent of this env var is not defined")
 
     # show the env inside
     def expose(self):
