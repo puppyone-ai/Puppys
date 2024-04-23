@@ -56,11 +56,14 @@ class EnvBase:
 
         return view_dict
 
+    # use to create a sub env var under this env node
     def create_new_env(self, *args, **kwargs):
 
         instance = EnvBase(*args, **kwargs, parent=self)
         setattr(self, kwargs['name'], instance)
 
+    # introduce the __getattribute__ method of super() to rewrite the __dict__ of current instance
+    # to avoid the unresolved reference warning for dynamic attributes created
     def __getattribute__(self, item):
         try:
             return super().__getattribute__(item)

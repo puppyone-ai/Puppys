@@ -158,7 +158,6 @@ class Thread(ThreadBase):
             # check the action, return 'finishOrNot= True / False'
             check(thread_instance=self, action=action, show_prompt=False)
 
-
     def run(self) -> None:
         # start the code thread
         import threading
