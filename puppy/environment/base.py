@@ -70,10 +70,22 @@ class EnvBase:
 if __name__ == "__main__":
     Building = EnvBase()
 
-    Building.floor_1 = new_env(visibility=True, parent=Building, name='floor_1', intro='The first floor of the building')
+    # Building.floor_1 = new_env(visibility=True, parent=Building, name='floor_1', intro='The first floor of the building')
 
-    # Building.create_new_env(name='floor_1', visibility=True)
+    Building.create_new_env(name='floor_1', visibility=True)
 
-    print(Building.floor_1.name)
+    Building.floor_1.create_new_env(name='floor_2', visibility=True)
 
-    print(Building.expose())
+    Building.floor_1.create_new_env(name='room_1', visibility=True)
+    Building.floor_1.create_new_env(name='room_2', visibility=True)
+
+    floor_2 = new_env(name='floor_2', visibility=True, parent=Building.floor_1)
+    floor_3 = new_env(name='floor_3', visibility=True, parent=floor_2)
+    # floor_3 = new_env(name='floor_3', visibility=True, parent=Building.floor_1.floor_2)
+
+    # print(Building.floor_1.name)
+    #
+    # print(Building.expose())
+    # print(Building.floor_1.expose())
+    # print(Building.floor_1.floor_2.expose())
+    print(floor_3.parent.parent.room_1.expose())
