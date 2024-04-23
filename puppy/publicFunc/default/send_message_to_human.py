@@ -38,7 +38,7 @@ class SendSendMessageToHuman(FuncBase):
             user_input = input(question + "\n" + "Your response:")
             print("\U0001F600: Sure, get it.")
 
-        chat_history = "\n" + "your message:" + self.question + "\n" + "# User's response: " + user_input + "\n"
+        chat_history = "\n" + "# Above code have some issue about:" + self.question + "\n" + "# Instruction for the issue as: " + user_input + "\n"
+
 
         self.thread_instance.doing_action.code += chat_history
-

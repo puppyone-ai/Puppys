@@ -1,3 +1,4 @@
+
 from __future__ import annotations
 
 
@@ -28,6 +29,7 @@ class EnvBase:
             self.parent = parent
             setattr(parent, name, self)
 
+
     # overview of this env
     @property
     def detail(self):
@@ -50,6 +52,7 @@ class EnvBase:
                 view_dict.update({var: vars_dict[var].detail})
 
         return view_dict
+
 
     # Monkey Patching
     # create a new env instance in this env instance
@@ -103,6 +106,7 @@ if __name__ == "__main__":
             super().__init__(name='Building', visibility=True)
 
             self.floor_1 = EnvBase(name='floor_1', visibility=True)
+
 
     building = Building()
     print(building.expose())
