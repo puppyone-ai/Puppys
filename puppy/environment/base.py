@@ -37,6 +37,7 @@ class EnvBase:
             "intro": self.intro}
 
     # show the env inside
+    @property
     def expose(self):
         vars_dict = vars(self)
         view_dict = {}
