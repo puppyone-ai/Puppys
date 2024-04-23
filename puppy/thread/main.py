@@ -1,9 +1,8 @@
 from .base import ThreadBase
 from puppy.thread.actionflow.actionflow import Actionflow
-from puppy.thread.actionflow.action import parse_code2list
-from puppy.publicFunc.default import FunctionsDefault
 from puppy.thread.do import check, achieve
 from puppy.utils.std import redirected_stdout
+from puppy.toolBox.default import ToolBox
 
 
 class Thread(ThreadBase):
@@ -26,8 +25,6 @@ class Thread(ThreadBase):
         # install the actionflow
         self._build_default_actionflow()
 
-        # import default funcs into the thread and get the description and example
-        self._import_default_funcs_and_infos()
 
         print(f"{self.thread_name}: Initialize and Done \U0001F3B2")
 
@@ -54,17 +51,13 @@ class Thread(ThreadBase):
         self.actionflow = Actionflow(thread_instance=self)
         print(f'{self.thread_name}: Build the actionflow!')
 
-    # import default funcs into the thread and get the description and example
-    def _import_default_funcs_and_infos(self) -> None:
-
-        self.funcs_default = FunctionsDefault(thread_instance=self)
-
-        print(f'{self.thread_name}: Installed all default tools!')
-
-        self.functions_description_and_example = self.funcs_default.get_infos()
 
     # set the default decision tree for run the actionflow
     def default_decisiontree(self) -> None:
+
+        # import the toolbox as an env_var that involves all of default functions
+        self.tool_box=ToolBox(thread_instance=self)
+        self.tool_box.visibility = True
 
         # start the actionflow
 

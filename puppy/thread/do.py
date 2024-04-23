@@ -122,7 +122,7 @@ def achieve(thread_instance, action, show_prompt=False) -> Action:
     Pay attention to name your parameter in your code. The naming convention in your code should not be arbitrary, like 'result' or 'response'. It should reflect the property of the parameter.
 
     Your customized functions and their examples are:
-    {thread_instance.functions_description_and_example}
+    {thread_instance.tool_box.expose}
 
     Try to understand the meaning of each function and its parameter, and decide the best function and use the function for this step to accomplish the action. 
     For example: (current action: search the location of the NBA in 2019@ google search @zhihu search)
