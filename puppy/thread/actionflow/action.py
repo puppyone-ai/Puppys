@@ -28,8 +28,7 @@ def parse_code2list(source_code: str) -> list:
     striped_lines = []
 
     for line in lines[2:]:  # [2:]filter decorator and function name
-        line = line.strip()
-        if line:
+        if line.strip():
             striped_lines.append(line)
 
     # load source code to action list sequentially

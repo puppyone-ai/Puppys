@@ -1,17 +1,33 @@
 import os
 from puppy.llm.openAI import open_ai_chat
+from puppy.thread.actionflow.action import Action
+
+
+# provide the goal, current action, code history, code future, environment, knowledge
+def sense(thread_instance) -> str:
+
+    return f"""
+    You have an overall long-term goal: {thread_instance.goal},  and your current action is:
+    {thread_instance.attention.name}
+
+    The code for historical actionflow shown as code are:
+    {thread_instance.actionflow.get_code(history=True)}
+
+    The code of action in the future are(But you don't need to do this part now, just for your information)):
+    {thread_instance.actionflow.get_code(pending=True, current=True)}"""
 
 
 def check(thread_instance, action, show_prompt=False) -> None:
 
     """
-    write code to achieve the action
+    check the action and write corresponding code
     """
 
     prompt = [
         # 1. define your agent type and name
         {"role": "system",
-         "content": f"""You are an AI code assistant agent called {thread_instance.puppy_name}. 
+         "content": f"""
+    You are an AI code assistant agent called {thread_instance.puppy_name}. 
     1. You always write Python code! You are really good at it. Your natural language output should be written as comment in python code. for example: # Hello, I am an assistant.
     2. DON'T ASSUME you know any unclear knowledge or information that you don't know. DON'T ASSUME that you have non-existent functions or hypothetical function. Your code will be run immediately after you write it. If you assume any hypothetical function, the system will crash.
     3. You need to justify if your current action has been achieved or not by history code, and decide to skip the current action or not.
@@ -20,7 +36,6 @@ def check(thread_instance, action, show_prompt=False) -> None:
         # 2. set the standard of if the action is done or not
         {"role": "system",
          "content": f"""
-
     You justify if your current action is done or not, you have two choices:
     1. Done: That means you don't need to write code to achieve it again. The action history shows that you have already know what you want to know or have already achieve the action. In this case, you should write Python code to return Ture, and your generated code should be:
     finishedOrNot=True
@@ -52,26 +67,20 @@ def check(thread_instance, action, show_prompt=False) -> None:
         # 3. provide the goal, current action, code history, code future, environment, knowledge
         {"role": "system",
          "content": f"""
-    You have an overall long-term goal: {thread_instance.goal},  and your next action is:
-    {action.name}
-
-    The code for historical actionflow shown as code are:
-    {thread_instance.actionflow.get_code(history=True)}
-
-    The code of action in the future are(But you don't need to do this part now, just for your information)):
-    {thread_instance.actionflow.get_code(pending=True, current=True)}"""},
+    {sense(thread_instance)}"""},
 
         # 4. justify if the action is done or not
         {"role": "user",
          "content": f"""
-    Now you need to write code to justify if the action of' {action.code} 'is done or not. 
+    Now you need to write code to justify if the action is done or not: \n{action.code}
     Your answer is:
     """}
     ]
 
     if show_prompt:
-        print("*******checking prompt********")
-        print(prompt)
+        print("\t*******checking prompt********")
+        for chunk in prompt:
+            print(chunk['content'])
 
     print("\n\U00002705 Checking Code ##############################################################")
 
@@ -88,7 +97,7 @@ def check(thread_instance, action, show_prompt=False) -> None:
     exec(new_code, thread_instance.exec_environment)
 
 
-def achieve(thread_instance, action, show_prompt=False) -> None:
+def achieve(thread_instance, action, show_prompt=False) -> Action:
 
     """
     write code to achieve the action
@@ -124,23 +133,15 @@ def achieve(thread_instance, action, show_prompt=False) -> None:
 
         # 3. provide the goal, current action, code history, code future, environment, knowledge
 
-        {"role": "user",
+        {"role": "system",
          "content": f"""
-    You have an overall goal: {thread_instance.goal},  now you need to write python code to finish your next action:
-    {action.name}
-
-    The code for historical actionflow shown as code are:
-    {thread_instance.actionflow.get_code(history=True)}
-
-    user have already write some code for this action, but it's not finished. You should replace the XXX.do() part. Don't keep the .do() function after your response. The XXX is your name, and the .do() is an instruction of 'you must write code and put it here'.:
-    {action.code}
-
-    The code of action in the future are(But you don't need to do this part now, just for your information)):
-    {thread_instance.actionflow.get_code(pending=True, current=True)}"""},
+    {sense(thread_instance)}"""},
 
         # 4. provide the code of the action
         {"role": "user",
          "content": f"""
+    user have already write some code for this action, but it's not finished. You should replace the XXX.do() part. Don't keep the .do() function after your response. The XXX is your name, and the .do() is an instruction of 'you must write code and put it here'.:
+    \n{action.code}
     Now you write code to achieve your action: {action.name}
     DON'T ASSUME you know the knowledge that you don't know. DON'T ASSUME that you have non-existent functions or hypothetical function, and you can show your thinking and reason in the comment. But don't write any code calling undefined functions in this case.
     make sure that the parameter in your respond code follow the type of the parameter in the function instruction. .
@@ -153,8 +154,9 @@ def achieve(thread_instance, action, show_prompt=False) -> None:
     print("\n\U0001F697 Running Code ################################################################")
 
     if show_prompt:
-        print("*******planning prompt********")
-        print(prompt)
+        print("\t*******planning prompt********")
+        for chunk in prompt:
+            print(chunk['content'])
 
     new_code = open_ai_chat(prompt=prompt,
                             model="gpt-4-turbo",
@@ -165,4 +167,9 @@ def achieve(thread_instance, action, show_prompt=False) -> None:
 
     new_code = new_code.replace("```python\n", "").replace("\n```", "")
 
-    action.code = new_code
+    plan = Action()
+    plan.name = action.name
+    plan.code = new_code
+    plan.status = "fixed"
+
+    return plan
