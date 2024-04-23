@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+
 class EnvBase:
 
     def __init__(self,
@@ -16,13 +17,7 @@ class EnvBase:
         # description of this environment var
         self.intro = intro
 
-        # the overview of the env var
-        self.detail = {
-            "name": self.name,
-            "tag": "env",
-            "intro": self.intro}
-
-        # sort the env vars
+        # the tag of this environment var
         self.tag = []
 
         # if this var is default visible for .expose() or not
@@ -32,6 +27,14 @@ class EnvBase:
         if parent:
             self.parent = parent
             setattr(parent, name, self)
+
+    # overview of this env
+    @property
+    def detail(self):
+        return {
+            "name": self.name,
+            "tag": "env",
+            "intro": self.intro}
 
     # show the env inside
     def expose(self):
@@ -71,7 +74,6 @@ class EnvBase:
 
 
 
-
 if __name__ == "__main__":
     """
     Three method that can create a new env in an env:
@@ -94,6 +96,7 @@ if __name__ == "__main__":
 
     print(building.expose())
 
+
     ## method 3 (Recommended, define a env method in a class)
     class Building(EnvBase):
         def __init__(self):
@@ -101,5 +104,5 @@ if __name__ == "__main__":
 
             self.floor_1 = EnvBase(name='floor_1', visibility=True)
 
-    building=Building()
+    building = Building()
     print(building.expose())
