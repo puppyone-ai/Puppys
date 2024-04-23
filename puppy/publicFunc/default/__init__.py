@@ -3,6 +3,7 @@ from puppy.publicFunc.default.google_search_native import GoogleSearchNative
 from puppy.publicFunc.default.gpt import GPT
 
 from puppy.thread.base import ThreadBase
+from puppy.environment.base import EnvBase
 
 
 class FunctionsDefault:
@@ -40,5 +41,25 @@ class FunctionsDefault:
         return functions_simplified
 
 
-# if __name__ == "__main__":
-#     print(FunctionsDefault().get_infos())
+
+if __name__ == "__main__":
+    class ToolBox(EnvBase):
+        def __init__(self,thread_instance=ThreadBase()):
+            super().__init__(name='ToolBox',
+                             intro="a Tool Box that full of default functions",
+                             visibility=False)
+
+            self.thread_instance = thread_instance
+
+            self.gpt = GPT(thread_instance=self.thread_instance)
+
+            self.send_message_to_human = SendSendMessageToHuman(thread_instance=self.thread_instance)
+
+            self.google_search_native = GoogleSearchNative(thread_instance=self.thread_instance)
+
+    tool_box=ToolBox(thread_instance=ThreadBase())
+
+    print(tool_box.expose())
+
+
+

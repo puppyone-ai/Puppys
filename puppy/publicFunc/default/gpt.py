@@ -1,20 +1,25 @@
 import os
 from puppy.llm.openAI import open_ai_chat
 from puppy.thread.base import ThreadBase
+from puppy.environment.func import FuncBase
 
 
-class GPT:
-    def __init__(self, thread_instance: ThreadBase = ThreadBase(),
-                 # , question='', **kwargs
-                 ):
+
+class GPT(FuncBase):
+    def __init__(self, thread_instance: ThreadBase = ThreadBase(),):
+
+        super().__init__()
         self.thread_instance = thread_instance
         self.name = "gpt"
-        self.description = "Large Language Models, use it when you want to generate text based on the input text by GPT3.5 or GPT4"
-        self.example = """
+        self.intro = """
+        Large Language Models, use it when you want to generate text based on the input text by GPT3.5 or GPT4.
+        
+        For example:
         ## get how to install the package of openAI by GPT4
         prompt = f"How should I install the package of openAI, based on the document of its website HTML: {self.html}"
-        result=self.gpt.run(prompt=prompt)
+        result=self.gpt(prompt=prompt)
         """
+
 
     @staticmethod
     def run(prompt="", model="gpt-3.5-turbo-0125", temperature=0.7, max_tokens=2048,
@@ -35,6 +40,6 @@ class GPT:
 if __name__ == "__main__":
     text = "how should I install the package of openAI"
 
-    # GPT = GPT()
-    results = GPT().run(prompt=text)
-    print(results)
+    gpt = GPT()
+
+    print(gpt(prompt=text))

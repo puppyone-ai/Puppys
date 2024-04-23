@@ -1,24 +1,26 @@
 from puppy.utils.std import recover_stdout
+from puppy.thread.base import ThreadBase
+from puppy.environment.func import FuncBase
 
 
-class SendSendMessageToHuman:
-    def __init__(self, thread_instance):
+class SendSendMessageToHuman(FuncBase):
+    def __init__(self, thread_instance: ThreadBase = ThreadBase()):
+        super().__init__()
+
         self.thread_instance = thread_instance
 
         self.name = "send_message_to_human"
         self.tag = "func"
-        self.description = """Use it when you have no idea how to achieve an action based on the current information knowledge, or functions. or you want to convey a message to the user
+        self.intro = """
+        Use it when you have no idea how to achieve an action based on the current information knowledge, or functions. or you want to convey a message to the user
         If you feel confused about any knowledge that are essential for following actions. You can stop keeping going and only ask human for help. You don't need to finish all the actions in one time.
         use emoji to make the conversation more interesting. For example, happy/ sad/ sorry/ angry/ question/ etc.
         You must add the "self" before each function.
-        """
-        self.example = f"""
+        
+        for example:
         ## Ask the user about the phone number of his boss
         answer = self.send_message_to_human("\U0001F600: What's the phone number of your boss?")
         """
-        # self.function_before_action = []
-        # self.function_after_action = []
-        # self.allowed_thread = ["main_thread"]
         self.question = ""
 
     def __call__(self, question=""):
