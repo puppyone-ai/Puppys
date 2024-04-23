@@ -1,4 +1,8 @@
-from __future__ import annotations
+from puppy.thread.base import ThreadBase
+
+
+def new_env(*args, **kwargs):
+    return EnvBase(*args, **kwargs)
 
 
 class EnvBase:

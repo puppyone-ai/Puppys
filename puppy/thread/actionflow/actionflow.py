@@ -10,6 +10,7 @@ class Actionflow:
 
         if thread_instance:
             self.thread_instance = thread_instance
+            self.thread_instance.doing_action = None
 
         self.pending_list = ActionflowList(name="pending_list", iterable=[], thread_instance=thread_instance)
         self.current_list = ActionflowList(name="current_list", iterable=[], thread_instance=thread_instance)
@@ -25,6 +26,7 @@ class Actionflow:
 
         print("\n\U0001F525 Parsing the code-------------------------------------------------------------------------")
 
+        # retrieve the thread goal description from the docstring of func
         import inspect
 
         source_code = inspect.getsource(func)
@@ -66,14 +68,39 @@ class Actionflow:
         print(self.history_list)
 
     def get_code(self, pending: bool = False, current: bool = False, history: bool = False) -> str:
-        res = ""
+        res = '''\n'''
         if pending:
-            res += "".join(action.code for action in self.pending_list)
+            res += "\n".join(action.code for action in self.pending_list)
         if current:
-            res += "".join(action.code for action in self.current_list)
+            res += "\n".join(action.code for action in self.current_list)
         if history:
-            res += "".join(action.code for action in self.history_list)
-        return res
+            res += "\n".join(action.code for action in self.history_list)
+
+        return res if res else "No code found"
+
+    # save the actionflow.history to a file
+    def save_actionflow_history(self):
+        # save the actionflow_history
+        import os
+        from datetime import datetime
+
+        # get date and time
+        now = datetime.now()
+        date_str = now.strftime("%Y-%m-%d_%H-%M-%S")
+
+        # create folder, if not exist
+        folder_path = "user_case_history"
+        os.makedirs(folder_path, exist_ok=True)
+
+        # create a new file
+        file_path = os.path.join(folder_path, f"user_case_history_{date_str}.txt")
+
+        # Directly convert the Python object to a JSON string
+        history = self.history_list.read
+
+        # Write the JSON string to a file
+        with open(file_path, "w") as file:
+            file.write(str(history))
 
 
 # the base class of actionflow

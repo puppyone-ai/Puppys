@@ -13,7 +13,7 @@ class FunctionsDefault:
 
         self.thread_instance = thread_instance
 
-        self.default_funcs = [SendSendMessageToHuman, GoogleSearchNative, GPT]
+        self.default_funcs = [SendSendMessageToHuman, GPT]
 
         self.installed_funcs = [func(self.thread_instance) for func in self.default_funcs]
 
