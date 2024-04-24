@@ -1,6 +1,6 @@
-from puppy.publicFunc.default.send_message_to_human import SendSendMessageToHuman
-from puppy.publicFunc.default.google_search_native import GoogleSearchNative
-from puppy.publicFunc.default.gpt import GPT
+from puppy.toolBox.default.send_message_to_human import SendSendMessageToHuman
+from puppy.toolBox.default.google_search_native import GoogleSearchNative
+from puppy.toolBox.default.gpt import GPT
 
 from puppy.thread.base import ThreadBase
 from puppy.environment.base import EnvBase
@@ -13,7 +13,7 @@ class FunctionsDefault:
 
         self.thread_instance = thread_instance
 
-        self.default_funcs = [SendSendMessageToHuman, GoogleSearchNative, GPT]
+        self.default_funcs = [SendSendMessageToHuman, GPT]
 
         self.installed_funcs = [func(self.thread_instance) for func in self.default_funcs]
 
@@ -42,24 +42,27 @@ class FunctionsDefault:
 
 
 
+
+class ToolBox(EnvBase):
+    def __init__(self,thread_instance=ThreadBase()):
+        super().__init__(name='ToolBox',
+                         intro="a Tool Box that full of default functions",
+                         visibility=False)
+
+        self.thread_instance = thread_instance
+
+        self.gpt = GPT(thread_instance=self.thread_instance)
+
+        self.send_message_to_human = SendSendMessageToHuman(thread_instance=self.thread_instance)
+
+        self.google_search_native = GoogleSearchNative(thread_instance=self.thread_instance)
+
+
+
 if __name__ == "__main__":
-    class ToolBox(EnvBase):
-        def __init__(self,thread_instance=ThreadBase()):
-            super().__init__(name='ToolBox',
-                             intro="a Tool Box that full of default functions",
-                             visibility=False)
-
-            self.thread_instance = thread_instance
-
-            self.gpt = GPT(thread_instance=self.thread_instance)
-
-            self.send_message_to_human = SendSendMessageToHuman(thread_instance=self.thread_instance)
-
-            self.google_search_native = GoogleSearchNative(thread_instance=self.thread_instance)
-
     tool_box=ToolBox(thread_instance=ThreadBase())
 
-    print(tool_box.expose())
+    print(tool_box.expose)
 
 
 

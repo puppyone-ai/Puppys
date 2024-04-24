@@ -1,4 +1,8 @@
-from __future__ import annotations
+from puppy.thread.base import ThreadBase
+
+
+def new_env(*args, **kwargs):
+    return EnvBase(*args, **kwargs)
 
 
 class EnvBase:
@@ -37,6 +41,7 @@ class EnvBase:
             "intro": self.intro}
 
     # show the env inside
+    @property
     def expose(self):
         vars_dict = vars(self)
         view_dict = {}
