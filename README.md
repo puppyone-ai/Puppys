@@ -26,14 +26,17 @@
 
 <div align="center">
 
-<img src="./assets/dividerBlue.png" alt="Image">
-
 **🔥 Version 0.0.2: What's New**
+
 </div>
 
-* **Updated EnvBase**: Now, you can only create environment variables using the provided grammar.
-* **Updated FuncBase**: Functions must be created using the provided grammar.
-* **Changed Function Import Method in Threads**: Improved the method for importing functions into threads.
+> 1. **Updated EnvBase**: Now, you can only create environment variables using the provided grammar.
+>
+> 2. **Updated FuncBase**: Functions must be created using the provided grammar.
+> 
+> 3. **Changed Function Import Method in Threads**: Improved the method for importing functions into threads.
+> 
+> 4. **Fixed bugs**: Fixed the bug of user cases.
 
 <img src="./assets/dividerBlue.png" alt="Image">
 
