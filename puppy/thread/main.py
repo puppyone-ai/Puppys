@@ -25,7 +25,6 @@ class Thread(ThreadBase):
         # install the actionflow
         self._build_default_actionflow()
 
-
         print(f"{self.thread_name}: Initialize and Done \U0001F3B2")
 
     # naming the thread with args
@@ -51,12 +50,11 @@ class Thread(ThreadBase):
         self.actionflow = Actionflow(thread_instance=self)
         print(f'{self.thread_name}: Build the actionflow!')
 
-
     # set the default decision tree for run the actionflow
     def default_decisiontree(self) -> None:
 
-        # import the toolbox as an env_var that involves all of default functions
-        self.tool_box=ToolBox(thread_instance=self)
+        # import the toolbox as an env_var that involves all default functions
+        self.tool_box = ToolBox(thread_instance=self)
         self.tool_box.visibility = True
 
         # start the actionflow
@@ -104,25 +102,25 @@ class Thread(ThreadBase):
 
         self.exec_environment["finishedOrNot"] = False
 
-        check(thread_instance=self, action=attention, show_prompt=True)
+        check(thread_instance=self, action=attention, show_prompt=False)
 
         # try action till this action has been achieved
         while self.exec_environment["finishedOrNot"] is not True:
 
             # generate and write the code that can achieve the given action
-            plan = achieve(thread_instance=self, action=attention, show_prompt=True)
+            plan = achieve(thread_instance=self, action=attention, show_prompt=False)
 
             # execute the generated code in thread's environment and redirect the stdout to the buffer
             with redirected_stdout(self.buffer):
                 exec(plan.code, self.exec_environment)
 
+            self.actionflow.history_list.put_action(plan)
             # save the ran code to the actionflow_history
             # import copy
             # exec_action = copy.deepcopy(attention)
 
             # check the action, return 'finishOrNot= True / False'
-            check(thread_instance=self, action=attention, show_prompt=True)
-            self.commend = ''
+            check(thread_instance=self, action=attention, show_prompt=False)
 
     def run(self) -> None:
         # start the code thread
