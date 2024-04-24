@@ -19,19 +19,21 @@
 
 </div>
 
-* **Code-Native**: Puppys is a code-native agent framework. Every dialog is code.
+* **Code-Native**: Puppys is a code-native agent framework. Every agent's action is code.
 * **Multi-Threads**: Puppys enable you to build an agent with multi-thread.
 * **Human-Agent Interacts**: Your agent will ask you when it cannot understand what you said.
 * **turing-machine-like agent**: program an agent by programming the agent's decision tree and its environment.
 
 <div align="center">
 
-**🔥 Version 0.0.2: What's New**
+**-------------  🔥 Version 0.0.2 (24-April-2024):  -------------**
+
 </div>
 
-* **Updated EnvBase**: Now, you can only create environment variables using the provided grammar.
-* **Updated FuncBase**: Functions must be created using the provided grammar.
-* **Changed Function Import Method in Threads**: Improved the method for importing functions into threads.
+1. **Updated EnvBase**: Now, you can only create environment variables using the provided grammar.
+2. **Updated FuncBase**: Functions must be created using the provided grammar.
+3. **Changed Function Import Method in Threads**: Improved the method for importing functions into threads.
+4. **Fixed bugs**: Fixed the bug of user cases.
 
 <img src="./assets/dividerBlue.png" alt="Image">
 
