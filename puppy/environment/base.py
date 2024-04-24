@@ -1,8 +1,4 @@
-from puppy.thread.base import ThreadBase
-
-
-def new_env(*args, **kwargs):
-    return EnvBase(*args, **kwargs)
+from __future__ import annotations
 
 
 class EnvBase:
@@ -69,14 +65,12 @@ class EnvBase:
         instance = EnvExample
         setattr(self, EnvExample.name, instance)
 
-
     def __getattribute__(self, item):
         try:
             return super().__getattribute__(item)
         except AttributeError as e:
             print(f"Error: {e}")
             return None
-
 
 
 if __name__ == "__main__":
