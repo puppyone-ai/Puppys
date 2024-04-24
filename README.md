@@ -30,13 +30,10 @@
 
 </div>
 
-> 1. **Updated EnvBase**: Now, you can only create environment variables using the provided grammar.
->
-> 2. **Updated FuncBase**: Functions must be created using the provided grammar.
-> 
-> 3. **Changed Function Import Method in Threads**: Improved the method for importing functions into threads.
-> 
-> 4. **Fixed bugs**: Fixed the bug of user cases.
+1. **Updated EnvBase**: Now, you can only create environment variables using the provided grammar.
+2. **Updated FuncBase**: Functions must be created using the provided grammar.
+3. **Changed Function Import Method in Threads**: Improved the method for importing functions into threads.
+4. **Fixed bugs**: Fixed the bug of user cases.
 
 <img src="./assets/dividerBlue.png" alt="Image">
 
