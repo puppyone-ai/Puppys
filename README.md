@@ -26,6 +26,8 @@
 
 <div align="center">
 
+<img src="./assets/dividerBlue.png" alt="Image">
+
 **🔥 Version 0.0.2: What's New**
 </div>
 
