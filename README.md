@@ -19,7 +19,7 @@
 
 </div>
 
-* **Code-Native**: Puppys is a code-native agent framework. Every dialog is code.
+* **Code-Native**: Puppys is a code-native agent framework. Every agent's action is code.
 * **Multi-Threads**: Puppys enable you to build an agent with multi-thread.
 * **Human-Agent Interacts**: Your agent will ask you when it cannot understand what you said.
 * **turing-machine-like agent**: program an agent by programming the agent's decision tree and its environment.
