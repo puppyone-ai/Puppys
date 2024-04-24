@@ -24,6 +24,15 @@
 * **Human-Agent Interacts**: Your agent will ask you when it cannot understand what you said.
 * **turing-machine-like agent**: program an agent by programming the agent's decision tree and its environment.
 
+<div align="center">
+
+**🔥 Version 0.0.2: What's New**
+</div>
+
+* **Updated EnvBase**: Now, you can only create environment variables using the provided grammar.
+* **Updated FuncBase**: Functions must be created using the provided grammar.
+* **Changed Function Import Method in Threads**: Improved the method for importing functions into threads.
+
 <img src="./assets/dividerBlue.png" alt="Image">
 
 ## Hybrid solution of Agent and RPA
@@ -58,31 +67,23 @@ To enable the agent to make the correct decisions upon encountering a specific s
 1. 📢 *Hacker News Reporter*
 
 ```
+from puppy.thread.main import Thread
 import sys
 import os
-from puppy import Puppy
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+os.environ['OPENAI_API_KEY'] = 'your_api_key_here'
 
-# The name of agent is Mei
-Mei = Puppy(name="Mei")
+hacker_news = Thread()
 
+@hacker_news.actionflow.update
+def pending_list():
 
-# change the API key to your own
-os.environ["OPENAI_API_KEY"] = "Your_OpenAI_API_Key"
+    ## go to https://news.ycombinator.com/, save its HTML
+    hacker_news.do()
 
-
-# define the agent's main thread's actionflow
-@Mei.mainthread
-def actionflow_pending():
-
-    ## go to this website: "https://https://news.ycombinator.com/news/" , save its HTML. @python
-    Mei.do()
-    print(HTML_text)
-
-    ## save the top 10 news name and their urls based on the HTML @gpt, and send the result to me
-    Mei.do()
+    ## show the top 10 news @GPT and send message to the user
+    hacker_news.do()
 
 
-Mei.run()
+hacker_news.run()
 ```
