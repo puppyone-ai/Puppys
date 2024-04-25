@@ -6,6 +6,17 @@ class Action(EnvBase):
 
         super().__init__(*args, **kwargs)
 
+        """
+        { 
+            "EnvBase": { 
+                "name": "", 
+                "intro": "",  
+                "tag": "env", 
+                "__visibility": False @visible
+            } 
+        } 
+        """
+
         self.name = ""
         self.code = ""
         self.status = ""

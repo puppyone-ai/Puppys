@@ -116,6 +116,21 @@ class ActionflowList(list, EnvBase):
         else:
             list.__init__(self, [])
 
+        """
+        { 
+            "EnvBase": { 
+                "name": "", 
+                "intro": "",  
+                "tag": "env", 
+                "__visibility": False @visible
+            } 
+        } 
+        """
+
+        self.tag = "actionflow_list"
+
+        self.visible = True
+
     # print the actionflow
     def __str__(self) -> str:
         newline = '\n'

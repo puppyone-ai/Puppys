@@ -7,6 +7,19 @@ class GPT(FuncBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        """
+        { 
+            "EnvBase": { 
+                "name": "", 
+                "intro": "",  
+                "tag": "func", 
+                "env_instance": None, 
+                "func": None, 
+                "__visibility": True @visible
+            } 
+        } 
+        """
+
         self.name = "gpt"
         self.intro = """
         Large Language Models, use it when you want to generate text based on the input text by GPT3.5 or GPT4.

@@ -6,6 +6,19 @@ from googleapiclient.discovery import build
 class GoogleSearchNative(FuncBase):
     def __init__(self, search_content='', num=5, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        """
+        { 
+            "EnvBase": { 
+                "name": "", 
+                "intro": "",  
+                "tag": "func", 
+                "env_instance": None, 
+                "func": None, 
+                "__visibility": True @visible
+            } 
+        } 
+        """
         
         self.name = "googleSearchNative"
         self.intro = """

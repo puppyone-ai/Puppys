@@ -6,6 +6,19 @@ class SendSendMessageToHuman(FuncBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        """
+        { 
+            "EnvBase": { 
+                "name": "", 
+                "intro": "",  
+                "tag": "func", 
+                "env_instance": None, 
+                "func": None, 
+                "__visibility": True @visible
+            } 
+        } 
+        """
+
         self.name = "send_message_to_human"
         self.intro = """
         Use it when you have no idea how to achieve an action based on the current information knowledge, or functions. or you want to convey a message to the user
