@@ -8,6 +8,17 @@ from puppy.utils.parse import parse_code2list
 class Actionflow:
     def __init__(self, thread_instance: ThreadBase = None):
 
+        """
+        {
+            "EnvBase": {
+                "name": "",
+                "intro": "",
+                "tag": "env",
+                "__visibility": False @visible
+            }
+        }
+        """
+
         if thread_instance:
             self.thread_instance = thread_instance
             self.thread_instance.doing_action = None
@@ -109,23 +120,24 @@ class Actionflow:
 # the base class of actionflow
 class ActionflowList(list, EnvBase):
     def __init__(self, iterable=None, *args, **kwargs):
+
+        """
+        {
+            "EnvBase": {
+                "name": "",
+                "intro": "",
+                "tag": "env",
+                "__visibility": False @visible
+            }
+        }
+        """
+
         EnvBase.__init__(self, *args, **kwargs)
 
         if iterable:
             list.__init__(self, iterable)
         else:
             list.__init__(self, [])
-
-        """
-        { 
-            "EnvBase": { 
-                "name": "", 
-                "intro": "", 
-                "tag": "env", 
-                "__visibility": False @visible
-            } 
-        } 
-        """
 
         self.tag = "actionflow_list"
 

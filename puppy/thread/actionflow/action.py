@@ -4,18 +4,18 @@ from puppy.environment.base import EnvBase
 class Action(EnvBase):
     def __init__(self, *args, **kwargs):
 
-        super().__init__(*args, **kwargs)
-
         """
-        { 
-            "EnvBase": { 
-                "name": "", 
-                "intro": "", 
-                "tag": "env", 
+        {
+            "EnvBase": {
+                "name": "",
+                "intro": "",
+                "tag": "env",
                 "__visibility": False @visible
-            } 
-        } 
+            }
+        }
         """
+
+        super().__init__(*args, **kwargs)
 
         self.name = ""
         self.code = ""
