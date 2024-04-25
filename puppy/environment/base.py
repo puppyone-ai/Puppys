@@ -7,7 +7,7 @@ class EnvBase:
                  name: str = "",
                  intro: str = '',
                  visibility: bool = False,
-                 **kwargs
+                 *args, **kwargs
                  ):
 
         # the name of this environment var
@@ -38,11 +38,10 @@ class EnvBase:
 
         for var in vars_dict:
             # get the value of the var, if it doesn't exist, return True
-            if getattr(vars_dict[var], 'visibility', False) is False:
-                pass
 
-            elif getattr(vars_dict[var], 'visibility', False) is True:
-                view_dict.update({var: vars_dict[var].detail})
+            if getattr(vars_dict[var], 'visibility', True) is True:
+                detail = {var: vars_dict[var].detail} if hasattr(vars_dict[var], 'detail') else {var: vars_dict[var]}
+                view_dict.update(detail)
 
         return view_dict
 

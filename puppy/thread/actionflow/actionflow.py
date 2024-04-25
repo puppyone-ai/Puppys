@@ -1,7 +1,7 @@
 import queue
 from puppy.thread.base import ThreadBase
 from puppy.thread.actionflow.action import Action
-from puppy.thread.actionflow.action import parse_code2list
+from puppy.utils.parse import parse_code2list
 
 
 # the intermediate env for governing the actionflow in the thread
@@ -118,7 +118,7 @@ class ActionflowList(list):
     # print the actionflow
     def __str__(self) -> str:
         newline = '\n'
-        return f"{newline.join(str(action.read) for action in self)}"
+        return f"{newline.join(str(action.expose) for action in self)}"
 
     # add an action to the end of the list
     def put_action(self, action: Action) -> None:
@@ -130,7 +130,7 @@ class ActionflowList(list):
 
     @property
     def read(self) -> list:
-        return [action.read for action in self]
+        return [action.expose for action in self]
 
     def update(self, func) -> None:
 

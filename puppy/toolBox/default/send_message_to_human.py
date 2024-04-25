@@ -3,8 +3,8 @@ from puppy.utils.std import recover_stdout
 
 
 class SendSendMessageToHuman(FuncBase):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         self.name = "send_message_to_human"
         self.intro = """

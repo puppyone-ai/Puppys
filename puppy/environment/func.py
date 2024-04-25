@@ -2,8 +2,8 @@ from puppy.environment.base import EnvBase
 
 
 class FuncBase(EnvBase):
-    def __init__(self, env_instance=None, func=None, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, env_instance=None, func=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         self.env_instance = env_instance
         self.tag = "func"
