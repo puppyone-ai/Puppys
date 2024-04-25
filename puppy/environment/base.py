@@ -7,7 +7,6 @@ class EnvBase:
                  name: str = "",
                  intro: str = '',
                  visibility: bool = False,
-                 parent=None,
                  **kwargs
                  ):
 
@@ -18,22 +17,17 @@ class EnvBase:
         self.intro = intro
 
         # the tag of this environment var
-        self.tag = []
+        self.tag = 'env'
 
         # if this var is default visible for .expose() or not
         self.visibility = visibility
-
-        # the parental instance that this env var connected from
-        if parent:
-            self.parent = parent
-            setattr(parent, name, self)
 
     # overview of this env
     @property
     def detail(self):
         return {
             "name": self.name,
-            "tag": "env",
+            "tag": self.tag,
             "intro": self.intro}
 
     # show the env inside
@@ -61,9 +55,9 @@ class EnvBase:
 
     # Monkey Patching
     # add an existed env instance into this env instance
-    def add_new_env(self, EnvExample : EnvBase):
-        instance = EnvExample
-        setattr(self, EnvExample.name, instance)
+    def add_new_env(self, env_example: EnvBase):
+        instance = env_example
+        setattr(self, env_example.name, instance)
 
     def __getattribute__(self, item):
         try:
@@ -85,18 +79,16 @@ if __name__ == "__main__":
 
     building.add_new_env(floor_1)
 
-    print(building.expose())
-
+    print(building.expose)
 
     ## method 2 (with 'create_new_env' monkey patching)
     building = EnvBase()
 
     building.create_new_env(name='floor_1', visibility=True)
 
-    print(building.expose())
+    print(building.expose)
 
-
-    ## method 3 (Recommended, define a env method in a class)
+    ## method 3 (Recommended, define an env method in a class)
     class Building(EnvBase):
         def __init__(self):
             super().__init__(name='Building', visibility=True)
@@ -104,4 +96,4 @@ if __name__ == "__main__":
             self.floor_1 = EnvBase(name='floor_1', visibility=True)
 
     building = Building()
-    print(building.expose())
+    print(building.expose)
