@@ -1,12 +1,24 @@
 from puppy.environment.func import FuncBase
-from puppy.thread.base import ThreadBase
 from googleapiclient.discovery import build
 # import pprint
 
 
 class GoogleSearchNative(FuncBase):
-    def __init__(self, search_content='', num=5, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, search_content='', num=5, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        """
+        { 
+            "EnvBase": { 
+                "name": "", 
+                "intro": "", 
+                "tag": "func", 
+                "env_instance": None, 
+                "func": None, 
+                "__visibility": True @visible
+            } 
+        } 
+        """
         
         self.name = "googleSearchNative"
         self.intro = """

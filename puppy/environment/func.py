@@ -2,13 +2,26 @@ from puppy.environment.base import EnvBase
 
 
 class FuncBase(EnvBase):
-    def __init__(self, env_instance=None, func=None, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, env_instance=None, func=None, *args, **kwargs):
 
-        self.env_instance = env_instance
+        super().__init__(*args, **kwargs)
+
+        """
+        { 
+            "EnvBase": { 
+                "name": "", 
+                "intro": "", 
+                "tag": "env", 
+                "__visibility": False @visible
+            } 
+        } 
+        """
+
         self.tag = "func"
-        self.visibility = True
+        self.env_instance = env_instance
         self.func = func
+
+        self.visible = True
 
     def __call__(self, *args, **kwargs):
         return self.func(*args, **kwargs)

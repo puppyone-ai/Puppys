@@ -5,9 +5,9 @@ class EnvBase:
 
     def __init__(self,
                  name: str = "",
-                 intro: str = '',
-                 visibility: bool = False,
-                 **kwargs
+                 intro: str = "",
+                 visible: bool = None,
+                 *args, **kwargs
                  ):
 
         # the name of this environment var
@@ -17,32 +17,38 @@ class EnvBase:
         self.intro = intro
 
         # the tag of this environment var
-        self.tag = 'env'
+        self.tag = "env"
 
         # if this var is default visible for .expose() or not
-        self.visibility = visibility
+        self.__visibility = visible if visible is not None else False
+
+    @property
+    def visible(self):
+        return self.__visibility
+
+    @visible.setter
+    def visible(self, value):
+        self.__visibility = value
 
     # overview of this env
     @property
     def detail(self):
-        return {
-            "name": self.name,
-            "tag": self.tag,
-            "intro": self.intro}
+        return vars(self)
 
     # show the env inside
     @property
     def expose(self):
-        vars_dict = vars(self)
+
         view_dict = {}
 
-        for var in vars_dict:
-            # get the value of the var, if it doesn't exist, return True
-            if getattr(vars_dict[var], 'visibility', False) is False:
-                pass
+        for key, value in self.detail.items():
 
-            elif getattr(vars_dict[var], 'visibility', False) is True:
-                view_dict.update({var: vars_dict[var].detail})
+            if key.startswith(f"_EnvBase") is False:  # only expose non-private attributes
+
+                if isinstance(value, EnvBase) is False:  # if the attribute is not an env instance
+                    view_dict.update({key: value})
+                else:
+                    view_dict.update({key: value.expose})
 
         return view_dict
 
@@ -73,27 +79,27 @@ if __name__ == "__main__":
     """
 
     # method 1 (with 'add_new_env' monkey patching)
-    building = EnvBase()
+    building = EnvBase(name='building', visible=True)
 
-    floor_1 = EnvBase(name='floor_1', visibility=True)
+    floor_1 = EnvBase(name='floor_1', visible=True)
 
     building.add_new_env(floor_1)
 
     print(building.expose)
 
     ## method 2 (with 'create_new_env' monkey patching)
-    building = EnvBase()
+    building = EnvBase(name='building', visible=True)
 
-    building.create_new_env(name='floor_1', visibility=True)
+    building.create_new_env(name='floor_1', visible=True)
 
     print(building.expose)
 
     ## method 3 (Recommended, define an env method in a class)
     class Building(EnvBase):
-        def __init__(self):
-            super().__init__(name='Building', visibility=True)
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
 
-            self.floor_1 = EnvBase(name='floor_1', visibility=True)
+            self.floor_1 = EnvBase(name='floor_1', visible=True)
 
-    building = Building()
+    building = Building(name='building', visible=True)
     print(building.expose)

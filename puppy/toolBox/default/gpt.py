@@ -4,8 +4,21 @@ from puppy.environment.func import FuncBase
 
 
 class GPT(FuncBase):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        """
+        { 
+            "EnvBase": { 
+                "name": "", 
+                "intro": "", 
+                "tag": "func", 
+                "env_instance": None, 
+                "func": None, 
+                "__visibility": True @visible
+            } 
+        } 
+        """
 
         self.name = "gpt"
         self.intro = """
