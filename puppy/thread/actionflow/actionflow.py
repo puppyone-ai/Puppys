@@ -1,4 +1,4 @@
-import queue
+from puppy.environment.base import EnvBase
 from puppy.thread.base import ThreadBase
 from puppy.thread.actionflow.action import Action
 from puppy.utils.parse import parse_code2list
@@ -12,13 +12,16 @@ class Actionflow:
             self.thread_instance = thread_instance
             self.thread_instance.doing_action = None
 
-        self.pending_list = ActionflowList(name="pending_list", iterable=[], thread_instance=thread_instance)
-        self.current_list = ActionflowList(name="current_list", iterable=[], thread_instance=thread_instance)
-        self.history_list = ActionflowList(name="history_list", iterable=[], thread_instance=thread_instance)
+        self.pending_list = ActionflowList(name="pending_list")
+        self.current_list = ActionflowList(name="current_list")
+        self.history_list = ActionflowList(name="history_list")
+
+        import queue
         self.on_going = queue.Queue()
 
         self.flow_list = ["pending_list", "current_list", "history_list", "on_going"]
 
+    # (decorator) use to update the specific actionflow list
     def update(self, func) -> None:
 
         def wrapper(*args, **kwargs):
@@ -104,16 +107,14 @@ class Actionflow:
 
 
 # the base class of actionflow
-class ActionflowList(list):
-    def __init__(self, name, iterable, thread_instance: ThreadBase = None):
+class ActionflowList(list, EnvBase):
+    def __init__(self, iterable=None, *args, **kwargs):
+        EnvBase.__init__(self, *args, **kwargs)
 
-        transformed = [str(item) for item in iterable]
-        super().__init__(transformed)
-
-        if thread_instance:
-            self.thread_instance = thread_instance
-
-        self.name = name
+        if iterable:
+            list.__init__(self, iterable)
+        else:
+            list.__init__(self, [])
 
     # print the actionflow
     def __str__(self) -> str:
