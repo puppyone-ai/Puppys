@@ -3,6 +3,8 @@ from puppy.thread.base import ThreadBase
 from puppy.thread.actionflow.action import Action
 from puppy.utils.parse import parse_code2list
 
+import queue
+
 
 # the intermediate env for governing the actionflow in the thread
 class Actionflow:
@@ -21,18 +23,16 @@ class Actionflow:
 
         if thread_instance:
             self.thread_instance = thread_instance
-            self.thread_instance.doing_action = None
 
         self.pending_list = ActionflowList(name="pending_list")
         self.current_list = ActionflowList(name="current_list")
         self.history_list = ActionflowList(name="history_list")
 
-        import queue
         self.on_going = queue.Queue()
 
         self.flow_list = ["pending_list", "current_list", "history_list", "on_going"]
 
-    # (decorator) use to update the specific actionflow list
+    # (decorator) Use to update the specific actionflow list
     def update(self, func) -> None:
 
         def wrapper(*args, **kwargs):
@@ -75,11 +75,12 @@ class Actionflow:
     def view(self) -> None:
         print(f"\n\u2699 Actionflow ################################################################################")
         print("\nPending:")  # \U0001F51C
-        print(self.pending_list)
+        # print(self.pending_list)
+        print(self.pending_list.read)
         print("\nCurrent:")  # \U000025B6
-        print(self.current_list)
+        print(self.current_list.read)
         print("\nHistory:")  # \U0001F519
-        print(self.history_list)
+        print(self.history_list.read)
 
     def get_code(self, pending: bool = False, current: bool = False, history: bool = False) -> str:
         res = '''\n'''
@@ -127,7 +128,7 @@ class ActionflowList(list, EnvBase):
                 "name": "",
                 "intro": "",
                 "tag": "env",
-                "__visibility": False @visible
+                "__visibility": False
             }
         }
         """
@@ -143,11 +144,6 @@ class ActionflowList(list, EnvBase):
 
         self.visible = True
 
-    # print the actionflow
-    def __str__(self) -> str:
-        newline = '\n'
-        return f"{newline.join(str(action.expose) for action in self)}"
-
     # add an action to the end of the list
     def put_action(self, action: Action) -> None:
         return self.append(action)
@@ -158,8 +154,9 @@ class ActionflowList(list, EnvBase):
 
     @property
     def read(self) -> list:
-        return [action.expose for action in self]
+        return {action.name: action.expose for action in self}
 
+    # (decorator) Use to update the specific actionflow list
     def update(self, func) -> None:
 
         def wrapper(*args, **kwargs):

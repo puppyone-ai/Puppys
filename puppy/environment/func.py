@@ -10,7 +10,7 @@ class FuncBase(EnvBase):
                 "name": "",
                 "intro": "",
                 "tag": "env",
-                "__visibility": False @visible
+                "__visibility": False
             }
         }
         """
@@ -18,10 +18,27 @@ class FuncBase(EnvBase):
         super().__init__(*args, **kwargs)
 
         self.tag = "func"
-        self.env_instance = env_instance
-        self.func = func
+
+        self.__env_instance = env_instance
+        self.__func = func
 
         self.visible = True
+
+    @property
+    def func(self):
+        return self.__func
+
+    @func.setter
+    def func(self, value):
+        self.__func = value
+
+    @property
+    def env_instance(self):
+        return self.__env_instance
+
+    @env_instance.setter
+    def env_instance(self, value):
+        self.__env_instance = value
 
     def __call__(self, *args, **kwargs):
         return self.func(*args, **kwargs)

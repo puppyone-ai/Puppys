@@ -12,9 +12,9 @@ class GoogleSearchNative(FuncBase):
                 "name": "",
                 "intro": "",
                 "tag": "func",
-                "env_instance": None,
-                "func": None,
-                "__visibility": True @visible
+                "__env_instance": None,
+                "__func": None,
+                "__visibility": True
             }
         }
         """
