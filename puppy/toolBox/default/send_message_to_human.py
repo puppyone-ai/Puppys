@@ -10,7 +10,7 @@ class SendSendMessageToHuman(FuncBase):
         { 
             "EnvBase": { 
                 "name": "", 
-                "intro": "",  
+                "intro": "", 
                 "tag": "func", 
                 "env_instance": None, 
                 "func": None, 

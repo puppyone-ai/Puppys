@@ -120,7 +120,7 @@ class ActionflowList(list, EnvBase):
         { 
             "EnvBase": { 
                 "name": "", 
-                "intro": "",  
+                "intro": "", 
                 "tag": "env", 
                 "__visibility": False @visible
             } 
