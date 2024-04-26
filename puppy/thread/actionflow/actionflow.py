@@ -8,7 +8,7 @@ import queue
 
 # the intermediate env for governing the actionflow in the thread
 class Actionflow(EnvBase):
-    def __init__(self, thread_instance: ThreadBase = ThreadBase()):
+    def __init__(self, thread_instance: ThreadBase = ThreadBase(), **kwargs):
 
         """
         {
@@ -21,11 +21,15 @@ class Actionflow(EnvBase):
         }
         """
 
+        super().__init__(name="actionflow",
+                         intro="an actionflow that governs all actionflow_list in the thread",
+                         visible=False, **kwargs)
+
         self.__thread_instance = thread_instance
 
-        self.pending_list = ActionflowList(name="pending_list")
-        self.current_list = ActionflowList(name="current_list")
-        self.history_list = ActionflowList(name="history_list")
+        self.pending_list = ActionflowList(name="pending_list", intro="a list of pending actions", visible=True)
+        self.current_list = ActionflowList(name="current_list", intro="a list of current actions", visible=True)
+        self.history_list = ActionflowList(name="history_list", intro="a list of history actions", visible=True)
 
         self.on_going = queue.Queue()
 
@@ -170,7 +174,7 @@ class ActionflowList(list, EnvBase):
         return self.pop(0)
 
     @property
-    def read(self) -> list:
+    def read(self) -> dict:
         return {action.name: action.expose for action in self}
 
     # (decorator) Use to update the specific actionflow list

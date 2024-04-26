@@ -22,8 +22,8 @@ class Thread(ThreadBase):
         self.exec_environment = {"self": self}
         self.buffer = io.StringIO()
 
-        # install the actionflow
-        self._build_default_actionflow()
+        # import the actionflow as an env_var that running all actions
+        self.actionflow = Actionflow(thread_instance=self)
 
         print(f"{self.thread_name}: Initialize and Done \U0001F3B2")
 
@@ -44,18 +44,11 @@ class Thread(ThreadBase):
             self.thread_name = "Ur Thread"
             print(f'Created a thread !')
 
-    # build the actionflow under the thread
-    def _build_default_actionflow(self) -> None:
-
-        self.actionflow = Actionflow(thread_instance=self)
-        print(f'{self.thread_name}: Build the actionflow!')
-
     # set the default decision tree for run the actionflow
     def default_decisiontree(self) -> None:
 
         # import the toolbox as an env_var that involves all default functions
         self.tool_box = ToolBox(thread_instance=self)
-        self.tool_box.visibility = True
 
         # start the actionflow
 
@@ -115,9 +108,6 @@ class Thread(ThreadBase):
                 exec(plan.code, self.exec_environment)
 
             self.actionflow.history_list.put_action(plan)
-            # save the ran code to the actionflow_history
-            # import copy
-            # exec_action = copy.deepcopy(attention)
 
             # check the action, return 'finishOrNot= True / False'
             check(thread_instance=self, action=attention, show_prompt=False)

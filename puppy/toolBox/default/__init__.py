@@ -56,6 +56,3 @@ if __name__ == "__main__":
     tool_box = ToolBox(thread_instance=ThreadBase())
 
     print(tool_box.expose)
-
-
-
