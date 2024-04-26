@@ -75,7 +75,7 @@ class Thread(ThreadBase):
 
                 # STEP 2.1: load the action to ActionOnGoing (for scalability in the future version)
 
-                self.actionflow.view()  # print the actionflow
+                self.actionflow.show_status()  # print the actionflow
 
                 action = self.actionflow.current_list.pop_action()
 
