@@ -30,12 +30,28 @@ class EnvBase:
     def visible(self, value):
         self.__visibility = value
 
-    # overview of this env
+    """
+    vars(self): (current level) all 
+    self.detail: (current level) non-private 
+    self.expose: (hierarchy) non-private 
+    """
+
+    # show non-private attributes under this env
     @property
     def detail(self):
-        return vars(self)
 
-    # show the env inside
+        non_private_dict = {}
+
+        mro_classes = self.__class__.__mro__
+
+        for key, value in vars(self).items():
+
+            if not any(key.startswith('_' + cls.__name__ + '__') for cls in mro_classes):  # to filter all private
+                non_private_dict.update({key: value})
+
+        return non_private_dict
+
+    # recursively show non-private attributes under this env
     @property
     def expose(self):
 
@@ -43,12 +59,10 @@ class EnvBase:
 
         for key, value in self.detail.items():
 
-            if key.startswith(f"_EnvBase") is False:  # only expose non-private attributes
-
-                if isinstance(value, EnvBase) is False:  # if the attribute is not an env instance
-                    view_dict.update({key: value})
-                else:
-                    view_dict.update({key: value.expose})
+            if isinstance(value, EnvBase) is False:  # if target is an env or default var
+                view_dict.update({key: value})
+            else:
+                view_dict.update({key: value.expose})
 
         return view_dict
 
@@ -64,13 +78,6 @@ class EnvBase:
     def add_new_env(self, env_example: EnvBase):
         instance = env_example
         setattr(self, env_example.name, instance)
-
-    def __getattribute__(self, item):
-        try:
-            return super().__getattribute__(item)
-        except AttributeError as e:
-            print(f"Error: {e}")
-            return None
 
 
 if __name__ == "__main__":

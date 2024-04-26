@@ -9,23 +9,45 @@ from puppy.environment.base import EnvBase
 
 class ToolBox(EnvBase):
     def __init__(self, thread_instance=ThreadBase(), **kwargs):
-        super().__init__(name='ToolBox',
+
+        """
+        {
+            "EnvBase": {
+                "name": "",
+                "intro": "",
+                "tag": "env",
+                "__visibility": False
+            }
+        }
+        """
+
+        super().__init__(name='tool_box',
                          intro="a Tool Box that full of default functions",
-                         visibility=False, **kwargs)
+                         visibile=False, **kwargs)
 
-        self.thread_instance = thread_instance
+        self.__thread_instance = thread_instance
 
-        for blueprint in [GPT, GoogleSearchNative, SendSendMessageToHuman]:
-            tool = blueprint(env_instance=self)
-            self.add(tool)
+        # deliver the tool box as a variable under the exec_environment of the thread
+        self.thread_instance.exec_environment['tool_box'] = self
+
+        # for blueprint in [GPT, GoogleSearchNative, SendSendMessageToHuman]:
+        #     tool = blueprint(env_instance=self)
+        #     self.add(tool)
+
+        # TODO: Search path to collect all the default funcs
+        self.add(GPT(env_instance=self))
+        self.add(GoogleSearchNative(env_instance=self))
+        self.add(SendSendMessageToHuman(env_instance=self, thread_instance=self.thread_instance))
+
+
+    @property
+    def thread_instance(self):
+        return self.__thread_instance
 
     def add(self, tool):
 
         setattr(self, tool.name, tool)
-
-        if not isinstance(self, ThreadBase):
-            tool.thread_instance = self.thread_instance
-            setattr(tool.thread_instance, tool.name, tool)
+        setattr(self.thread_instance, tool.name, tool)
 
 
 if __name__ == "__main__":
