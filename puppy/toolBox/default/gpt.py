@@ -1,15 +1,26 @@
 import os
 from puppy.llm.openAI import open_ai_chat
-from puppy.thread.base import ThreadBase
 from puppy.environment.func import FuncBase
 
 
-
 class GPT(FuncBase):
-    def __init__(self, thread_instance: ThreadBase = ThreadBase(),):
+    def __init__(self, *args, **kwargs):
 
-        super().__init__()
-        self.thread_instance = thread_instance
+        """
+        {
+            "FuncBase": {
+                "name": "",
+                "intro": "",
+                "tag": "func",
+                "__env_instance": None,
+                "__func": None,
+                "__visibility": True
+            }
+        }
+        """
+
+        super().__init__(*args, **kwargs)
+
         self.name = "gpt"
         self.intro = """
         Large Language Models, use it when you want to generate text based on the input text by GPT3.5 or GPT4.
@@ -20,21 +31,20 @@ class GPT(FuncBase):
         result=self.gpt(prompt=prompt)
         """
 
+        self.func = gpt
 
-    @staticmethod
-    def run(prompt="", model="gpt-3.5-turbo-0125", temperature=0.7, max_tokens=2048,
-            # **kwargs
-            ):
 
-        result = open_ai_chat(prompt=[{"role": "user",
-                                     "content": prompt}],
-                              model=model,
-                              temperature=temperature,
-                              api_key=os.environ["OPENAI_API_KEY"],
-                              max_tokens=max_tokens,
-                              printing=True, stream=True)
+def gpt(prompt="", model="gpt-3.5-turbo-0125", temperature=0.7, max_tokens=2048):
 
-        return result
+    result = open_ai_chat(prompt=[{"role": "user",
+                                   "content": prompt}],
+                          model=model,
+                          temperature=temperature,
+                          api_key=os.environ["OPENAI_API_KEY"],
+                          max_tokens=max_tokens,
+                          printing=True, stream=True)
+
+    return result
 
 
 if __name__ == "__main__":
