@@ -7,8 +7,8 @@ import queue
 
 
 # the intermediate env for governing the actionflow in the thread
-class Actionflow:
-    def __init__(self, thread_instance: ThreadBase = None):
+class Actionflow(EnvBase):
+    def __init__(self, thread_instance: ThreadBase = ThreadBase(), **kwargs):
 
         """
         {
@@ -16,21 +16,32 @@ class Actionflow:
                 "name": "",
                 "intro": "",
                 "tag": "env",
-                "__visibility": False @visible
+                "__visibility": False
             }
         }
         """
 
-        if thread_instance:
-            self.thread_instance = thread_instance
+        super().__init__(name="actionflow",
+                         intro="an actionflow that governs all actionflow_list in the thread",
+                         visible=False, **kwargs)
 
-        self.pending_list = ActionflowList(name="pending_list")
-        self.current_list = ActionflowList(name="current_list")
-        self.history_list = ActionflowList(name="history_list")
+        self.__thread_instance = thread_instance
+
+        self.pending_list = ActionflowList(name="pending_list", intro="a list of pending actions", visible=True)
+        self.current_list = ActionflowList(name="current_list", intro="a list of current actions", visible=True)
+        self.history_list = ActionflowList(name="history_list", intro="a list of history actions", visible=True)
 
         self.on_going = queue.Queue()
 
-        self.flow_list = ["pending_list", "current_list", "history_list", "on_going"]
+    @property
+    def flow_dict(self):
+        flow_dict = {}
+
+        for key, value in self.detail.items():
+            if isinstance(value, ActionflowList):
+                flow_dict.update({key: value})
+
+        return flow_dict
 
     # (decorator) Use to update the specific actionflow list
     def update(self, func) -> None:
@@ -47,7 +58,7 @@ class Actionflow:
         parsed_action = parse_code2list(source_code)
         func_name = func.__name__
 
-        if func_name in self.flow_list:
+        if func_name in self.flow_dict:
             if func_name == "pending_list":
                 for action in parsed_action:
                     self.pending_list.append(action)
@@ -66,16 +77,18 @@ class Actionflow:
 
     # get all actionflow cleared
     def clear_all(self) -> None:
-        self.pending_list.clear()
-        self.current_list.clear()
-        self.history_list.clear()
+
+        # clear all actionflow_list
+        for flow in self.flow_list:
+            flow.clear()
+
+        # clear the on_going
         self.on_going = queue.Queue()
 
     # as a shortcut to print actionflow when running
-    def view(self) -> None:
+    def show_status(self) -> None:
         print(f"\n\u2699 Actionflow ################################################################################")
         print("\nPending:")  # \U0001F51C
-        # print(self.pending_list)
         print(self.pending_list.read)
         print("\nCurrent:")  # \U000025B6
         print(self.current_list.read)
@@ -113,9 +126,17 @@ class Actionflow:
         # Directly convert the Python object to a JSON string
         history = self.history_list.read
 
-        # Write the JSON string to a file
+        # Write the JSON string to a file as agent log
+
+        import json
+
         with open(file_path, "w") as file:
-            file.write(str(history))
+
+            try:
+                json.dump(history, file, indent=4)
+
+            except ValueError as e:
+                print(e)
 
 
 # the base class of actionflow
@@ -153,7 +174,7 @@ class ActionflowList(list, EnvBase):
         return self.pop(0)
 
     @property
-    def read(self) -> list:
+    def read(self) -> dict:
         return {action.name: action.expose for action in self}
 
     # (decorator) Use to update the specific actionflow list
