@@ -7,8 +7,10 @@ from puppy.environment.base import EnvBase
 
 # TODO: Search path to collect all the default funcs
 
+# the default tool box that contains all the default functions
+# use to manage all tools under a thread
 class ToolBox(EnvBase):
-    def __init__(self, thread_instance=ThreadBase(), **kwargs):
+    def __init__(self, thread_instance: ThreadBase = ThreadBase(), **kwargs):
 
         """
         {
@@ -39,11 +41,11 @@ class ToolBox(EnvBase):
         self.add(GoogleSearchNative(env_instance=self))
         self.add(SendSendMessageToHuman(env_instance=self, thread_instance=self.thread_instance))
 
-
     @property
     def thread_instance(self):
         return self.__thread_instance
 
+    # to add an extra tool to the tool box
     def add(self, tool):
 
         setattr(self, tool.name, tool)
@@ -54,6 +56,3 @@ if __name__ == "__main__":
     tool_box = ToolBox(thread_instance=ThreadBase())
 
     print(tool_box.expose)
-
-
-

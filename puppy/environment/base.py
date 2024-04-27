@@ -79,6 +79,13 @@ class EnvBase:
         instance = env_example
         setattr(self, env_example.name, instance)
 
+    # resolve the warning for dynamic attribute access
+    def __getattribute__(self, item):
+        try:
+            return super().__getattribute__(item)
+        except AttributeError as e:
+            print(e)
+
 
 if __name__ == "__main__":
     """
