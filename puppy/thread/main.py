@@ -2,7 +2,7 @@ from .base import ThreadBase
 from puppy.thread.actionflow.actionflow import Actionflow
 from puppy.thread.do import check, achieve
 from puppy.utils.std import redirected_stdout
-from puppy.toolBox.default import ToolBox
+from puppy.toolBox import ToolBox
 
 
 class Thread(ThreadBase):
