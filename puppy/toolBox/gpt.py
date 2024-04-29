@@ -34,7 +34,7 @@ class GPT(FuncBase):
         self.func = gpt
 
 
-def gpt(prompt="", model="gpt-3.5-turbo-0125", temperature=0.7, max_tokens=2048):
+def gpt(prompt, model="gpt-3.5-turbo-0125", temperature=0.7, max_tokens=2048):
 
     result = open_ai_chat(prompt=[{"role": "user",
                                    "content": prompt}],
@@ -52,4 +52,4 @@ if __name__ == "__main__":
 
     gpt = GPT()
 
-    print(gpt(prompt=text))
+    print(gpt.run(text))

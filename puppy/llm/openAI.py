@@ -9,8 +9,6 @@ def open_ai_chat(prompt,
                  printing=False, stream=False
                  ):
 
-    os.environ["OPENAI_API_KEY"] = api_key
-
     client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", api_key))
 
     completion = client.chat.completions.create(

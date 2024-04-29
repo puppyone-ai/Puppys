@@ -1,8 +1,13 @@
+from __future__ import annotations
 from puppy.environment.base import EnvBase
 
 
 class FuncBase(EnvBase):
-    def __init__(self, env_instance=None, func=None, *args, **kwargs):
+
+    def __init__(self,
+                 env_instance: EnvBase = None,
+                 func=None,
+                 *args, **kwargs):
 
         """
         {
@@ -20,7 +25,12 @@ class FuncBase(EnvBase):
         self.tag = "func"
 
         self.__env_instance = env_instance
+
         self.__func = func
+
+        if func:
+            self.name = func.__name__
+            self.intro = func.__doc__
 
         self.visible = True
 
@@ -41,24 +51,17 @@ class FuncBase(EnvBase):
         self.__env_instance = value
 
     def __call__(self, *args, **kwargs):
-        return self.func(*args, **kwargs)
+        return self.__func(*args, **kwargs)
 
     def run(self, *args, **kwargs):
-        self.func(*args, **kwargs)
+        return self.__func(*args, **kwargs)
 
 
 # (decorator) Rapidly create a new func instance under the env instance
 def new_func(env_instance=None):
 
     def wrapper(func):
-        class FuncExample(FuncBase):
-            def __init__(self):
-                super().__init__(env_instance)
-                self.func = func
-                self.name = func.__name__
-                self.intro = func.__doc__
-
-        return FuncExample()
+        return FuncBase(env_instance=env_instance, func=func)
 
     return wrapper
 
@@ -84,6 +87,6 @@ if __name__ == "__main__":
         print("全体起立向我看齐，我宣布个事儿，我是个傻逼！")
 
 
-    EnvVars.send_message = send_message_to_human()
+    EnvVars.send_message = send_message_to_human
 
-    EnvVars.send_message()
+    EnvVars.send_message.run()

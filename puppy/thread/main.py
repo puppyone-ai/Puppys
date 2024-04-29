@@ -25,6 +25,9 @@ class Thread(ThreadBase):
         # import the actionflow as an env_var that running all actions
         self.actionflow = Actionflow(thread_instance=self)
 
+        # import the toolbox as an env_var that involves all default functions
+        self.tool_box = ToolBox(thread_instance=self)
+
         print(f"{self.thread_name}: Initialize and Done \U0001F3B2")
 
     # naming the thread with args
@@ -46,9 +49,6 @@ class Thread(ThreadBase):
 
     # set the default decision tree for run the actionflow
     def default_decisiontree(self) -> None:
-
-        # import the toolbox as an env_var that involves all default functions
-        self.tool_box = ToolBox(thread_instance=self)
 
         # start the actionflow
 

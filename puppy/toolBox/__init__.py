@@ -1,5 +1,5 @@
-from puppy.toolBox.send_message_to_human import SendSendMessageToHuman
-from puppy.toolBox.google_search_native import GoogleSearchNative
+from puppy.toolBox.send_message_to_human import SendMessageToHuman
+from puppy.toolBox.search_native import SearchNative
 from puppy.toolBox.gpt import GPT
 from puppy.thread.base import ThreadBase
 from puppy.environment.base import EnvBase
@@ -38,8 +38,8 @@ class ToolBox(EnvBase):
 
         # TODO: Search path to collect all the default funcs
         self.add(GPT(env_instance=self))
-        self.add(GoogleSearchNative(env_instance=self))
-        self.add(SendSendMessageToHuman(env_instance=self, thread_instance=self.thread_instance))
+        self.add(SearchNative(env_instance=self))
+        self.add(SendMessageToHuman(env_instance=self, thread_instance=self.thread_instance))
 
     @property
     def thread_instance(self):

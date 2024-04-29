@@ -2,7 +2,7 @@ from puppy.environment.func import FuncBase
 from puppy.utils.std import recover_stdout
 
 
-class SendSendMessageToHuman(FuncBase):
+class SendMessageToHuman(FuncBase):
     def __init__(self, thread_instance=None, *args, **kwargs):
 
         """
@@ -31,37 +31,29 @@ class SendSendMessageToHuman(FuncBase):
         ## Ask the user about the phone number of his boss
         answer = self.send_message_to_human("\U0001F600: What's the phone number of your boss?")
         """
-        self.func = self.run
-
-        self.__question = ""
+        self.func = self.send_message_to_human
 
         self.__thread_instance = thread_instance
 
-    @property
-    def question(self):
-        return self.__question
-
-    @question.setter
-    def question(self, value):
-        self.__question = value
-
-    def __call__(self, question=None):
-        if question:
-            self.question = question
-        return self.run()
-
-    def set_question(self, question):
-        self.question = question
-
-    def run(self, question=None):
-
-        if question is not None:
-            self.question = question
+    def send_message_to_human(self, question):
 
         with recover_stdout():
-            user_input = input(self.question + "\n" + "Your response:")
+            user_input = input(question + "\n" + "Your response:")
             print("\U0001F600: Sure, get it.")
 
-        chat_history = "\n" + "your message:" + self.question + "\n" + "# User's response: " + user_input + "\n"
+        chat_history = "\n" + "your message:" + question + "\n" + "# User's response: " + user_input + "\n"
 
+        # TODO: creat a thread to modify the attention code
         self.__thread_instance.attention.code += chat_history
+
+
+if __name__ == "__main__":
+    text = "how should I install the package of openAI"
+
+    from puppy.thread.base import ThreadBase
+
+    thread = ThreadBase()
+
+    sender = SendMessageToHuman(thread_instance=thread)
+
+    sender.run(text)
