@@ -28,7 +28,7 @@ class GoogleSearchNative(FuncBase):
         for example:
         ## search the result via googlesearch
         search_content = "how should I intall the package of openAI"
-        searchResults = self.GoogleSearchNative.run(search_content)
+        searchResults = googleSearchNative.run(search_content)
         """
 
         self.search_content = search_content
