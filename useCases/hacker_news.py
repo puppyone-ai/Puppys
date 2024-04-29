@@ -19,5 +19,4 @@ def pending_list():
     ## pick the news that related to Large Language Models, summerize all the news, and show it to me
     hacker_news.do()
 
-
 hacker_news.run()
