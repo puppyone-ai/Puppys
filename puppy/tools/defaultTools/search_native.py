@@ -1,8 +1,7 @@
 import os
 import requests
-
+from openai import OpenAI
 from puppy.environment.func import FuncBase
-from puppy.llm.perplexity import perplexity_search
 
 
 class SearchNative(FuncBase):
@@ -23,7 +22,44 @@ class SearchNative(FuncBase):
 
         super().__init__(*args, **kwargs)
 
-        self.func = perplexity_search
+        self.func = self.perplexity_search
+
+    @staticmethod
+    def perplexity_search(query):
+
+        """
+        Search Engine, use it when you want to search some actual information online"
+
+        for example:
+        ## search the result via search engine
+        query = "how should I install the package of openAI"
+        information = SearchNative(query)
+        """
+
+        messages = [
+            {
+                "role": "system",
+                "content": (
+                    "You are an artificial intelligence assistant and you need to "
+                    "engage in a helpful, detailed, polite conversation with a user."
+                ),
+            },
+            {
+                "role": "user",
+                "content": (
+                    f"{query}"
+                ),
+            },
+        ]
+
+        client = OpenAI(api_key=os.environ['PERPLEXITY_API_KEY'], base_url="https://api.perplexity.ai")
+
+        # chat completion without streaming
+        response = client.chat.completions.create(
+            model="mistral-7b-instruct",
+            messages=messages,
+        )
+        return response.choices[0].message.content
 
     @staticmethod
     def google_search(query):
