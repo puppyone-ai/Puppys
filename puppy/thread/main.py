@@ -2,7 +2,7 @@ from .base import ThreadBase
 from puppy.thread.actionflow.actionflow import Actionflow
 from puppy.thread.do import check, achieve
 from puppy.utils.std import redirected_stdout
-from puppy.toolBox.default import ToolBox
+from puppy.tools.usable_tools import UsableTools
 
 
 class Thread(ThreadBase):
@@ -24,6 +24,9 @@ class Thread(ThreadBase):
 
         # import the actionflow as an env_var that running all actions
         self.actionflow = Actionflow(thread_instance=self)
+
+        # import the toolbox as an env_var that involves all default functions
+        self.tool_box = UsableTools(thread_instance=self)
 
         print(f"{self.thread_name}: Initialize and Done \U0001F3B2")
 
@@ -47,8 +50,9 @@ class Thread(ThreadBase):
     # set the default decision tree for run the actionflow
     def default_decisiontree(self) -> None:
 
-        # import the toolbox as an env_var that involves all default functions
-        self.tool_box = ToolBox(thread_instance=self)
+        # load tools
+        for tool in self.tool_box.default_tools:
+            self.tool_box.load_tool(tool(thread_instance=self))
 
         # start the actionflow
 
@@ -101,16 +105,16 @@ class Thread(ThreadBase):
         while self.exec_environment["finishedOrNot"] is not True:
 
             # generate and write the code that can achieve the given action
-            plan = achieve(thread_instance=self, action=attention, show_prompt=False)
+            action_plan = achieve(thread_instance=self, action=attention, show_prompt=False)
 
             # execute the generated code in thread's environment and redirect the stdout to the buffer
             with redirected_stdout(self.buffer):
-                exec(plan.code, self.exec_environment)
+                exec(action_plan.code, self.exec_environment)
 
-            self.actionflow.history_list.put_action(plan)
+            self.actionflow.history_list.put_action(action_plan)
 
             # check the action, return 'finishOrNot= True / False'
-            check(thread_instance=self, action=attention, show_prompt=False)
+            check(thread_instance=self, action=action_plan, show_prompt=False)
 
     def run(self) -> None:
         # start the code thread

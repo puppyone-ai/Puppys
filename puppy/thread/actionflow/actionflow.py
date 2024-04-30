@@ -79,8 +79,9 @@ class Actionflow(EnvBase):
     def clear_all(self) -> None:
 
         # clear all actionflow_list
-        for flow in self.flow_list:
-            flow.clear()
+        for flow in self.detail:
+            if isinstance(flow, ActionflowList):
+                flow.clear()
 
         # clear the on_going
         self.on_going = queue.Queue()

@@ -1,8 +1,13 @@
+from __future__ import annotations
 from puppy.environment.base import EnvBase
 
 
 class FuncBase(EnvBase):
-    def __init__(self, env_instance=None, func=None, *args, **kwargs):
+
+    def __init__(self,
+                 env_instance: EnvBase = None,
+                 func=None,
+                 *args, **kwargs):
 
         """
         {
@@ -19,10 +24,34 @@ class FuncBase(EnvBase):
 
         self.tag = "func"
 
-        self.__env_instance = env_instance
-        self.__func = func
+        self.env_instance = env_instance
+
+        self.func = func
 
         self.visible = True
+
+        self.__name = None
+        self.__intro = None
+
+    @property
+    def name(self):
+        # return getattr(self, '__name', self.func.__name__)
+
+        return self.__name
+
+    @name.setter
+    def name(self, value):
+        self.__name = value
+
+    @property
+    def intro(self):
+        # return getattr(self, '__intro', self.func.__doc__)
+
+        return self.__intro
+
+    @intro.setter
+    def intro(self, value):
+        self.__intro = value
 
     @property
     def func(self):
@@ -40,25 +69,15 @@ class FuncBase(EnvBase):
     def env_instance(self, value):
         self.__env_instance = value
 
-    def __call__(self, *args, **kwargs):
-        return self.func(*args, **kwargs)
-
     def run(self, *args, **kwargs):
-        self.func(*args, **kwargs)
+        return self.func(*args, **kwargs)
 
 
 # (decorator) Rapidly create a new func instance under the env instance
 def new_func(env_instance=None):
 
     def wrapper(func):
-        class FuncExample(FuncBase):
-            def __init__(self):
-                super().__init__(env_instance)
-                self.func = func
-                self.name = func.__name__
-                self.intro = func.__doc__
-
-        return FuncExample()
+        return FuncBase(env_instance=env_instance, func=func, name=func.__name__, intro=func.__doc__)
 
     return wrapper
 
@@ -84,6 +103,6 @@ if __name__ == "__main__":
         print("全体起立向我看齐，我宣布个事儿，我是个傻逼！")
 
 
-    EnvVars.send_message = send_message_to_human()
+    EnvVars.send_message = send_message_to_human
 
-    EnvVars.send_message()
+    EnvVars.send_message.run()

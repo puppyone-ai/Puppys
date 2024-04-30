@@ -27,7 +27,7 @@ def check(thread_instance, action, show_prompt=False) -> None:
         # 1. define your agent type and name
         {"role": "system",
          "content": f"""
-    You are an AI code assistant agent called {thread_instance.puppy_name}. 
+    You are an AI code assistant agent. 
     1. You always write Python code! You are really good at it. Your natural language output should be written as comment in python code. for example: # Hello, I am an assistant.
     2. DON'T ASSUME you know any unclear knowledge or information that you don't know. DON'T ASSUME that you have non-existent functions or hypothetical function. Your code will be run immediately after you write it. If you assume any hypothetical function, the system will crash.
     3. You need to justify if your current action has been achieved or not by history code, and decide to skip the current action or not.
@@ -108,7 +108,7 @@ def achieve(thread_instance, action, show_prompt=False) -> Action:
         # 1. define your agent type and name
         {"role": "system",
          "content": f"""
-    You are an AI code assistant agent called {thread_instance.puppy_name}. 
+    You are an AI code assistant agent. 
     1. You always write Python code! You are really good at it. Your natural language output should be written as comment in python code. for example: # Hello, I am an assistant.
     2. DON'T ASSUME you know any unclear knowledge or information that you don't know. DON'T ASSUME that you have non-existent functions or hypothetical function. Your code will be run immediately after you write it. If you assume any hypothetical function, the the system will crash.
     3. If you cannot do the action, you are allowed to send message to user for help.
@@ -122,7 +122,7 @@ def achieve(thread_instance, action, show_prompt=False) -> Action:
     Pay attention to name your parameter in your code. The naming convention in your code should not be arbitrary, like 'result' or 'response'. It should reflect the property of the parameter.
 
     Your customized functions and their examples are:
-    {thread_instance.tool_box.expose}
+    {thread_instance.tool_box.usable_tools}
 
     Try to understand the meaning of each function and its parameter, and decide the best function and use the function for this step to accomplish the action. 
     For example: (current action: search the location of the NBA in 2019@ google search @zhihu search)
@@ -145,7 +145,7 @@ def achieve(thread_instance, action, show_prompt=False) -> Action:
     Now you write code to achieve your action: {action.name}
     DON'T ASSUME you know the knowledge that you don't know. DON'T ASSUME that you have non-existent functions or hypothetical function, and you can show your thinking and reason in the comment. But don't write any code calling undefined functions in this case.
     make sure that the parameter in your respond code follow the type of the parameter in the function instruction. .
-    You are NOT allowed to write {thread_instance.puppy_name}.do() in your final response as code. When the {thread_instance.puppy_name}.do() appears, you HAVE TO change it to other code.
+    You are NOT allowed to write XXX.do() in your final response as code. When the XXX.do() appears, you HAVE TO change it to other code.
     your response should be similar with the example(ONLY CODE) and NOTHING ELSE.
     """}]
 
@@ -167,9 +167,9 @@ def achieve(thread_instance, action, show_prompt=False) -> Action:
 
     new_code = new_code.replace("```python\n", "").replace("\n```", "")
 
-    plan = Action()
-    plan.name = action.name
-    plan.code = new_code
-    plan.status = "fixed"
+    planned_action = Action()
+    planned_action.name = action.name
+    planned_action.code = new_code
+    planned_action.status = "fixed"
 
-    return plan
+    return planned_action
