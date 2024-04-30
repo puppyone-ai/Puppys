@@ -1,7 +1,7 @@
+from puppy.environment.func import FuncBase
+from openai import OpenAI
 import os
 import requests
-from openai import OpenAI
-from puppy.environment.func import FuncBase
 
 
 class SearchNative(FuncBase):
@@ -22,19 +22,19 @@ class SearchNative(FuncBase):
 
         super().__init__(*args, **kwargs)
 
-        self.func = self.perplexity_search
-
-    @staticmethod
-    def perplexity_search(query):
-
-        """
-        Search Engine, use it when you want to search some actual information online"
+        self.name = "search_native"
+        self.func = self.search_native
+        self.intro = """
+        Search Engine, use it when you want to search something from perplexity online
 
         for example:
-        ## search the result via search engine
+        ## search the query
         query = "how should I install the package of openAI"
-        information = SearchNative(query)
+        searchResults = search_native(query)
         """
+
+    @staticmethod
+    def search_native(query):
 
         messages = [
             {
@@ -61,29 +61,20 @@ class SearchNative(FuncBase):
         )
         return response.choices[0].message.content
 
-    @staticmethod
-    def google_search(query):
-
-        """
-        Search Engine, use it when you want to search something from perplexity online
-
-        for example:
-        ## search the query
-        search_content = "how should I install the package of openAI"
-        searchResults = google_search(search_content)
-        """
-
-        url = "https://www.googleapis.com/customsearch/v1"
-        params = {"q": query,
-                  "key": os.environ['GCP_API_KEY'],
-                  "cx": os.environ['CSE_ID'],
-                  }
-        print(params)
-        response = requests.get(url, params=params)
-        print(response.status_code)
-        if response.status_code != 200:
-            raise Exception(f"Failed to get the search result from google, status code: {response.status_code}")
-        return response.json()
+    # @staticmethod
+    # def google_search(query):
+    #
+    #     url = "https://www.googleapis.com/customsearch/v1"
+    #     params = {"q": query,
+    #               "key": os.environ['GCP_API_KEY'],
+    #               "cx": os.environ['CSE_ID'],
+    #               }
+    #     print(params)
+    #     response = requests.get(url, params=params)
+    #     print(response.status_code)
+    #     if response.status_code != 200:
+    #         raise Exception(f"Failed to get the search result from google, status code: {response.status_code}")
+    #     return response.json()
 
 
 if __name__ == "__main__":

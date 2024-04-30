@@ -26,20 +26,18 @@ class FuncBase(EnvBase):
 
         self.env_instance = env_instance
 
-        if func:
-            self.func = func
-            self.__name = func.__name__
-            self.__intro = func.__doc__
-
-        else:
-            self.__name = ""
-            self.__intro = ""
+        self.func = func
 
         self.visible = True
 
+        self.__name = None
+        self.__intro = None
+
     @property
     def name(self):
-        return self.__name if self.__name else self.func.__name__
+        # return getattr(self, '__name', self.func.__name__)
+
+        return self.__name
 
     @name.setter
     def name(self, value):
@@ -47,7 +45,9 @@ class FuncBase(EnvBase):
 
     @property
     def intro(self):
-        return self.__intro if self.__intro else self.func.__doc__
+        # return getattr(self, '__intro', self.func.__doc__)
+
+        return self.__intro
 
     @intro.setter
     def intro(self, value):
@@ -69,18 +69,15 @@ class FuncBase(EnvBase):
     def env_instance(self, value):
         self.__env_instance = value
 
-    def __call__(self, *args, **kwargs):
-        return self.__func(*args, **kwargs)
-
     def run(self, *args, **kwargs):
-        return self.__func(*args, **kwargs)
+        return self.func(*args, **kwargs)
 
 
 # (decorator) Rapidly create a new func instance under the env instance
 def new_func(env_instance=None):
 
     def wrapper(func):
-        return FuncBase(env_instance=env_instance, func=func)
+        return FuncBase(env_instance=env_instance, func=func, name=func.__name__, intro=func.__doc__)
 
     return wrapper
 

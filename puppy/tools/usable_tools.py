@@ -51,23 +51,13 @@ class UsableTools(EnvBase):
 
         self.usable_tools_dict.update({tool.name: tool.intro})
 
-        if isinstance(self.thread_instance.exec_environment, dict):
-            self.__thread_instance.exec_environment.update({tool.name: tool.func})
-
-        else:
-            import inspect
-            func_code = inspect.getsource(tool.func)
-            exec(func_code, self.__thread_instance.exec_environment)
+        self.__thread_instance.exec_environment.update({tool.name: tool.func})
 
     def remove_tool(self, name):
 
         self.usable_tools_dict.pop(name)
 
-        if isinstance(self.thread_instance.exec_environment, dict):
-            self.thread_instance.exec_environment.pop(name)
-        else:
-            delete_code = f"del {name}"
-            exec(delete_code, self.thread_instance.exec_environment)
+        self.thread_instance.exec_environment.pop(name)
 
 
 if __name__ == "__main__":
