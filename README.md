@@ -26,14 +26,13 @@
 
 <div align="center">
 
-**-------------  🔥 Version 0.0.2 (24-April-2024):  -------------**
+**-------------  🔥 Version 0.0.21 (30-April-2024):  -------------**
 
 </div>
 
-1. **Updated EnvBase**: Now, you can only create environment variables using the provided grammar.
-2. **Updated FuncBase**: Functions must be created using the provided grammar.
-3. **Changed Function Import Method in Threads**: Improved the method for importing functions into threads.
-4. **Fixed bugs**: Fixed the bug of user cases.
+1. **Updated FuncBase**: An easier way to create your func in agent's env
+2. **Redisigned tool_box**: usable_tools is a default env in thread.
+2. **Fixed bugs**: Fixed the bug of prompt and the func of 'send_message_to_human'
 
 <img src="./assets/dividerBlue.png" alt="Image">
 
