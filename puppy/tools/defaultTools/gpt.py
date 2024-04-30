@@ -4,6 +4,7 @@ from puppy.environment.func import FuncBase
 
 
 class GPT(FuncBase):
+
     def __init__(self, *args, **kwargs):
 
         """
@@ -28,7 +29,7 @@ class GPT(FuncBase):
         For example:
         ## get how to install the package of openAI by GPT4
         prompt = f"How should I install the package of openAI, based on the document of its website HTML: {self.html}"
-        result=self.gpt(prompt=prompt)
+        result = gpt(prompt=prompt)
         """
 
         self.func = gpt

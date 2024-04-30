@@ -5,6 +5,15 @@ import os
 
 def perplexity_search(query):
 
+    """
+    Search Engine, use it when you want to search something on google, return the title, link and snippet of the search result"
+
+    for example:
+    ## search the result via search engine
+    query = "how should I install the package of openAI"
+    searchResults = SearchNative(query)
+    """
+
     messages = [
         {
             "role": "system",

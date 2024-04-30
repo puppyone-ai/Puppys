@@ -3,10 +3,6 @@ from puppy.thread.actionflow.actionflow import Actionflow
 from puppy.thread.do import check, achieve
 from puppy.utils.std import redirected_stdout
 from puppy.tools.usable_tools import UsableTools
-from puppy.tools.defaultTools.gpt_new import GPT
-from puppy.tools.defaultTools.google_search_native import GoogleSearchNative
-from puppy.tools.defaultTools.send_message_to_human import SendSendMessageToHuman
-import io
 
 
 class Thread(ThreadBase):
@@ -30,7 +26,7 @@ class Thread(ThreadBase):
         self.actionflow = Actionflow(thread_instance=self)
 
         # import the toolbox as an env_var that involves all default functions
-        self.tool_box = ToolBox(thread_instance=self)
+        self.tool_box = UsableTools(thread_instance=self)
 
         print(f"{self.thread_name}: Initialize and Done \U0001F3B2")
 
@@ -54,13 +50,9 @@ class Thread(ThreadBase):
     # set the default decision tree for run the actionflow
     def default_decisiontree(self) -> None:
 
-        # import the toolbox as an env_var that involves all default functions
-        self.tool_box = UsableTools(thread_instance=self)
-
         # load tools
-        self.tool_box.load_tools(GPT())
-        self.tool_box.load_tools(SendSendMessageToHuman())
-        #self.tool_box.load_tools(self.google_search_native)
+        for tool in self.tool_box.default_tools:
+            self.tool_box.load_tool(tool(thread_instance=self))
 
         # start the actionflow
 
@@ -122,7 +114,7 @@ class Thread(ThreadBase):
             self.actionflow.history_list.put_action(action_plan)
 
             # check the action, return 'finishOrNot= True / False'
-            check(thread_instance=self, action=attention, show_prompt=False)
+            check(thread_instance=self, action=action_plan, show_prompt=False)
 
     def run(self) -> None:
         # start the code thread

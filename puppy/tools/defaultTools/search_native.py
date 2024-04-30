@@ -29,12 +29,12 @@ class SearchNative(FuncBase):
     def google_search(query):
 
         """
-                Search Engine, use it when you want to search something on google, return the title, link and snippet of the search result"
+        Search Engine, use it when you want to search something from perplexity online
 
-                for example:
-                ## search the result via googlesearch
-                search_content = "how should I install the package of openAI"
-                searchResults = self.GoogleSearchNative.run(search_content)
+        for example:
+        ## search the query
+        search_content = "how should I install the package of openAI"
+        searchResults = google_search(search_content)
         """
 
         url = "https://www.googleapis.com/customsearch/v1"

@@ -24,15 +24,34 @@ class FuncBase(EnvBase):
 
         self.tag = "func"
 
-        self.__env_instance = env_instance
-
-        self.__func = func
+        self.env_instance = env_instance
 
         if func:
-            self.name = func.__name__
-            self.intro = func.__doc__
+            self.func = func
+            self.__name = func.__name__
+            self.__intro = func.__doc__
+
+        else:
+            self.__name = ""
+            self.__intro = ""
 
         self.visible = True
+
+    @property
+    def name(self):
+        return self.__name if self.__name else self.func.__name__
+
+    @name.setter
+    def name(self, value):
+        self.__name = value
+
+    @property
+    def intro(self):
+        return self.__intro if self.__intro else self.func.__doc__
+
+    @intro.setter
+    def intro(self, value):
+        self.__intro = value
 
     @property
     def func(self):
