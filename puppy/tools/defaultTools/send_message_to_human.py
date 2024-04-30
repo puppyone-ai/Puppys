@@ -29,7 +29,7 @@ class SendMessageToHuman(FuncBase):
         
         for example:
         ## Ask the user about the phone number of his boss
-        answer = self.send_message_to_human("\U0001F600: What's the phone number of your boss?")
+        answer = send_message_to_human("\U0001F600: What's the phone number of your boss?")
         """
         self.func = self.send_message_to_human
 
