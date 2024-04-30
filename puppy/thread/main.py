@@ -105,7 +105,7 @@ class Thread(ThreadBase):
         while self.exec_environment["finishedOrNot"] is not True:
 
             # generate and write the code that can achieve the given action
-            action_plan = achieve(thread_instance=self, action=attention, show_prompt=True)
+            action_plan = achieve(thread_instance=self, action=attention, show_prompt=False)
 
             # execute the generated code in thread's environment and redirect the stdout to the buffer
             with redirected_stdout(self.buffer):
