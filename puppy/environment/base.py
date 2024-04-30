@@ -64,6 +64,12 @@ class EnvBase:
             else:
                 view_dict.update({key: value.expose})
 
+        # TODO: rewrite the output format as json
+
+        # import json
+        #
+        # return json.dumps(view_dict, indent=4)
+
         return view_dict
 
     # Monkey Patching
@@ -80,11 +86,11 @@ class EnvBase:
         setattr(self, env_example.name, instance)
 
     # resolve the warning for dynamic attribute access
-    def __getattribute__(self, item):
-        try:
-            return super().__getattribute__(item)
-        except AttributeError as e:
-            print(e)
+    # def __getattribute__(self, item):
+    #     try:
+    #         return super().__getattribute__(item)
+    #     except AttributeError as e:
+    #         print(e)
 
 
 if __name__ == "__main__":
