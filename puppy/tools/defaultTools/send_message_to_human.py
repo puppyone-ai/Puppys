@@ -44,7 +44,7 @@ class SendMessageToHuman(FuncBase):
         chat_history = "\n" + "your message:" + question + "\n" + "# User's response: " + user_input + "\n"
 
         # TODO: creat a thread to modify the attention code
-        self.__thread_instance.attention.code += chat_history
+        self.__thread_instance.action_attention.code += chat_history
 
 
 if __name__ == "__main__":

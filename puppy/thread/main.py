@@ -15,7 +15,7 @@ class Thread(ThreadBase):
 
         # set the  of the thread
         self.goal = ""
-        self.attention = None
+        self.action_attention = None
 
         # create a buffer and exec_environment for the thread
         import io
@@ -86,8 +86,8 @@ class Thread(ThreadBase):
                     self.actionflow.history_list.put_action(action)
 
                 elif action.status == "semi-fixed":
-                    self.attention = action
-                    self._do(self.attention)
+                    self.action_attention = action
+                    self._do(self.action_attention)
 
                 # TODO: finish the changeable mode
                 elif action.status == "changeable":

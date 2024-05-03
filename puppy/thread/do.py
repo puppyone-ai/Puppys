@@ -8,7 +8,7 @@ def sense(thread_instance) -> str:
 
     return f"""
     You have an overall long-term goal: {thread_instance.goal},  and your current action is:
-    {thread_instance.attention.name}
+    {thread_instance.action_attention.name}
 
     The code for historical actionflow shown as code are:
     {thread_instance.actionflow.get_code(history=True)}
@@ -167,9 +167,9 @@ def achieve(thread_instance, action, show_prompt=False) -> Action:
 
     new_code = new_code.replace("```python\n", "").replace("\n```", "")
 
-    planned_action = Action()
-    planned_action.name = action.name
-    planned_action.code = new_code
-    planned_action.status = "fixed"
+    action_plan = Action()
+    action_plan.name = action.name
+    action_plan.code = new_code
+    action_plan.status = "fixed"
 
-    return planned_action
+    return action_plan
