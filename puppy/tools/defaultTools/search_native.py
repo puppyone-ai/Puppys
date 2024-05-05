@@ -25,7 +25,7 @@ class SearchNative(FuncBase):
         self.name = "search_native"
         self.func = self.search_native
         self.intro = """
-        Search Engine, use it when you want to search something from perplexity online
+        Search Engine, use it when you want to search something from websites.
 
         for example:
         ## search the query

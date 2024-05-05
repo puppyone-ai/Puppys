@@ -1,6 +1,6 @@
 from .base import ThreadBase
 from puppy.thread.actionflow.actionflow import Actionflow
-from puppy.thread.do import check, achieve
+from puppy.thread.do import check, achieve, conceive
 from puppy.utils.std import redirected_stdout
 from puppy.tools.usable_tools import UsableTools
 
@@ -36,7 +36,7 @@ class Thread(ThreadBase):
         #     self.puppy = kwargs['puppy']
         #     self.puppy_name = self.puppy.puppy_name
         # else:
-        self.puppy_name = "Mei"  # the name is essential in the prompt
+        # self.puppy_name = "Mei"  # the name is essential in the prompt
 
         #
         if 'name' in kwargs:
@@ -86,23 +86,29 @@ class Thread(ThreadBase):
                     self.actionflow.history_list.put_action(action)
 
                 elif action.status == "semi-fixed":
-                    self.action_attention = action
+                    self.action_attention = action  # set the action to attention
                     self._do(self.action_attention)
 
                 # TODO: finish the changeable mode
                 elif action.status == "changeable":
-                    pass
+                    actions_conceive = conceive(thread_instance=self, action=action, seed_num=1, show_prompt=True)
+                    for action in actions_conceive:
+                        self.action_attention = action
+                        self._do(self.action_attention)
 
         self.actionflow.save_actionflow_history()
 
-    def _do(self, attention) -> None:
+    def _do(self, attention, iterate_limit: int = 0) -> None:
 
         self.exec_environment["finishedOrNot"] = False
 
-        check(thread_instance=self, action=attention, show_prompt=False)
+        # check(thread_instance=self, action=attention, show_prompt=False)
 
         # try action till this action has been achieved
-        while self.exec_environment["finishedOrNot"] is not True:
+
+        cnt = 0
+
+        while self.exec_environment["finishedOrNot"] is not True and (cnt < iterate_limit or iterate_limit == 0):
 
             # generate and write the code that can achieve the given action
             action_plan = achieve(thread_instance=self, action=attention, show_prompt=False)
@@ -115,6 +121,8 @@ class Thread(ThreadBase):
 
             # check the action, return 'finishOrNot= True / False'
             check(thread_instance=self, action=action_plan, show_prompt=False)
+
+            cnt += 1
 
     def run(self) -> None:
         # start the code thread

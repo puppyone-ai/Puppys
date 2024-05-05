@@ -1,6 +1,7 @@
 import os
 from puppy.llm.openAI import open_ai_chat
 from puppy.thread.actionflow.action import Action
+from puppy.thread.base import ThreadBase
 
 
 # provide the goal, current action, code history, code future, environment, knowledge
@@ -17,7 +18,100 @@ def sense(thread_instance) -> str:
     {thread_instance.actionflow.get_code(pending=True, current=True)}"""
 
 
-def check(thread_instance, action, show_prompt=False) -> None:
+def conceive(thread_instance: ThreadBase, action: Action, seed_num: int = 3,  show_prompt: bool = False) -> list:
+
+    """
+    let the agent dice a random action according to the goal
+    """
+
+    prompt = [
+        # 1. define your agent type and name
+        {"role": "system",
+         "content": f"""
+    You are an AI code assistant agent. 
+    You always plan with natural language output, for example: Hello, I am an assistant.
+    If you cannot understand the goal, you are allowed to send message to user for help.
+    """},
+
+        # 2. provide the example
+        {"role": "system",
+         "content": """
+        For example:
+        
+        {
+        "goal": "prepare a meal",
+        
+        "historical action":"
+        ## Decide what to have for dinner and list the needed ingredients.
+        menu = "Spaghetti Carbonara"
+        ingredients = ["spaghetti", "bacon", "eggs", "parmesan cheese"]"
+
+        "YOUR RESPONSE":"
+        ## Buy the ingredients and then wash, cut, and prepare them.
+        print("Buying ingredients:", ingredients)
+        print("Washing and cutting ingredients.")
+        "
+        
+        "The action in the future":"
+        ## Cook the prepared ingredients according to the recipe, and then serve the meal.
+        print("Cooking", prepared_ingredients)
+        print("Dinner is ready and served!")"
+        }
+        
+        YOUR RESPONSE:
+        Buy the ingredients and then wash, cut, and prepare them.
+        """},
+
+        # 3. provide the goal, current action, code history, code future, environment, knowledge
+        # {"role": "system",
+        #  "content": f"""
+        # {{
+        # "goal": {thread_instance.goal},
+        # "historical action":{thread_instance.action_attention.name}
+        # "The action in the future":{thread_instance.actionflow.pending_list[0].name if thread_instance.actionflow.pending_list else "None"})
+        #  }}"""},
+        {"role": "system",
+         "content": f"""
+        {sense(thread_instance)}"""},
+
+
+        # 4. conceive the action
+        {"role": "user",
+         "content": f"""
+         your text should be similar with the example(ONLY TEXT) and NOTHING ELSE.
+        Now you write text to plan your next action,don't write any code in this case.
+
+        response:
+        """}]
+
+    print("\n⚖️ Conceive Action ################################################################")
+
+    if show_prompt:
+        print("\t*******Conceiving prompt********")
+        for chunk in prompt:
+            print(chunk['content'])
+
+    res = []
+
+    for i in range(seed_num):
+
+        new_act = open_ai_chat(prompt=prompt,
+                                model="gpt-4-turbo",
+                                temperature=0.1,
+                                api_key=os.environ["OPENAI_API_KEY"],
+                                max_tokens=4096,
+                                printing=True, stream=True)
+
+        action_conceived = Action()
+        action_conceived.name = new_act
+        action_conceived.status = "semi-fixed"
+
+        res += [action_conceived]
+
+    return res
+
+
+def check(thread_instance: ThreadBase, action: Action, show_prompt: bool = False) -> None:
 
     """
     check the action and write corresponding code
@@ -97,7 +191,7 @@ def check(thread_instance, action, show_prompt=False) -> None:
     exec(new_code, thread_instance.exec_environment)
 
 
-def achieve(thread_instance, action, show_prompt=False) -> Action:
+def achieve(thread_instance: ThreadBase, action: Action, show_prompt: bool = False) -> Action:
 
     """
     write code to achieve the action
@@ -144,7 +238,7 @@ def achieve(thread_instance, action, show_prompt=False) -> Action:
     \n{action.code}
     Now you write code to achieve your action: {action.name}
     DON'T ASSUME you know the knowledge that you don't know. DON'T ASSUME that you have non-existent functions or hypothetical function, and you can show your thinking and reason in the comment. But don't write any code calling undefined functions in this case.
-    make sure that the parameter in your respond code follow the type of the parameter in the function instruction. .
+    make sure that the parameter in your respond code follow the type of the parameter in the function instruction.
     You are NOT allowed to write XXX.do() in your final response as code. When the XXX.do() appears, you HAVE TO change it to other code.
     your response should be similar with the example(ONLY CODE) and NOTHING ELSE.
     """}]
