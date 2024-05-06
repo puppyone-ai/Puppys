@@ -1,9 +1,9 @@
 openai
 zhipuai
+google-api-python-client
 # MinimalLLM @ git+https://github.com/EvoEvolver/MinimalLLM
 
 pandas
 python-dotenv
-
+html2text
 requests
-google-api-python-client

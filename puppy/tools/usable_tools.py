@@ -1,6 +1,7 @@
 from puppy.tools.defaultTools.send_message_to_human import SendMessageToHuman
 from puppy.tools.defaultTools.search_native import SearchNative
 from puppy.tools.defaultTools.gpt import GPT
+from puppy.tools.defaultTools.html2markdown import HTML2Markdown
 from puppy.thread.base import ThreadBase
 from puppy.environment.base import EnvBase
 
@@ -33,7 +34,7 @@ class UsableTools(EnvBase):
         self.usable_tools_dict = {}
 
         # the default tools
-        self.default_tools = [GPT, SearchNative, SendMessageToHuman]
+        self.default_tools = [GPT, SearchNative, SendMessageToHuman, HTML2Markdown]
 
         # TODO: Search path to collect all the default funcs
 
