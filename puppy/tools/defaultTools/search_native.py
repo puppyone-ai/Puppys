@@ -25,7 +25,8 @@ class SearchNative(FuncBase):
         self.name = "search_native"
         self.func = self.search_native
         self.intro = """
-        Search Engine, use it when you want to search something from websites.
+        Search Engine, use it when you want to search something from websites with a SPECIFIC QUESTION.
+        The result will be text-based answer with citations.
 
         for example:
         ## search the query
@@ -40,8 +41,8 @@ class SearchNative(FuncBase):
             {
                 "role": "system",
                 "content": (
-                    "You are an artificial intelligence assistant and you need to "
-                    "engage in a helpful, detailed, polite conversation with a user."
+                    """You are an artificial intelligence assistant and you need to 
+                    engage in a helpful, detailed, polite conversation with a user."""
                 ),
             },
             {
