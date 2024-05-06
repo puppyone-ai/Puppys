@@ -1,5 +1,2 @@
-google-api-python-client
-MinimalLLM @ git+https://github.com/EvoEvolver/MinimalLLM
 openai
-pandas
 zhipuai

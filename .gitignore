@@ -3,3 +3,4 @@
 .idea
 **/.llm_cache
 /useCases/user_case_history/
+.env

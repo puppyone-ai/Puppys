@@ -1,12 +1,10 @@
 from .base import ThreadBase
 from puppy.thread.actionflow.actionflow import Actionflow
-from puppy.thread.actionflow.action import parse_code2list
-from puppy.publicFunc.default import FunctionsDefault
 from puppy.thread.do import check, achieve
 from puppy.utils.std import redirected_stdout
+from puppy.tools.usable_tools import UsableTools
 
 
-# TODO: Merge the essential elements between original MainThread and Thread
 class Thread(ThreadBase):
     def __init__(self, **kwargs):
 
@@ -15,22 +13,22 @@ class Thread(ThreadBase):
         # naming the thread
         self._naming(**kwargs)
 
-        # set the env of the thread
+        # set the  of the thread
         self.goal = ""
-        self.exec_environment = {"self": self}
+        self.attention = None
 
-        # create a buffer
+        # create a buffer and exec_environment for the thread
         import io
+        self.exec_environment = {"self": self}
         self.buffer = io.StringIO()
 
-        # install the actionflow
-        self._build_default_actionflow()
+        # import the actionflow as an env_var that running all actions
+        self.actionflow = Actionflow(thread_instance=self)
 
-        # import default funcs into the thread and get the description and example
-        self._import_default_funcs_and_infos()
+        # import the toolbox as an env_var that involves all default functions
+        self.tool_box = UsableTools(thread_instance=self)
 
         print(f"{self.thread_name}: Initialize and Done \U0001F3B2")
-
 
     # naming the thread with args
     def _naming(self, **kwargs) -> None:
@@ -49,24 +47,12 @@ class Thread(ThreadBase):
             self.thread_name = "Ur Thread"
             print(f'Created a thread !')
 
-    # build the actionflow under the thread
-    def _build_default_actionflow(self) -> None:
-
-        self.actionflow = Actionflow(thread_instance=self)
-        print(f'{self.thread_name}: Build the actionflow!')
-
-    # import default funcs into the thread and get the description and example
-    def _import_default_funcs_and_infos(self) -> None:
-
-        self.funcs_default = FunctionsDefault(thread_instance=self)
-
-        print(f'{self.thread_name}: Installed all default tools!')
-
-        self.functions_description_and_example = self.funcs_default.get_infos()
-
-
     # set the default decision tree for run the actionflow
     def default_decisiontree(self) -> None:
+
+        # load tools
+        for tool in self.tool_box.default_tools:
+            self.tool_box.load_tool(tool(thread_instance=self))
 
         # start the actionflow
 
@@ -86,7 +72,7 @@ class Thread(ThreadBase):
 
                 # STEP 2.1: load the action to ActionOnGoing (for scalability in the future version)
 
-                self.actionflow.view()  # print the actionflow
+                self.actionflow.show_status()  # print the actionflow
 
                 action = self.actionflow.current_list.pop_action()
 
@@ -100,63 +86,35 @@ class Thread(ThreadBase):
                     self.actionflow.history_list.put_action(action)
 
                 elif action.status == "semi-fixed":
-                    self.doing_action = action
-                    self._do(action)
+                    self.attention = action
+                    self._do(self.attention)
 
                 # TODO: finish the changeable mode
                 elif action.status == "changeable":
                     pass
 
-        self.save_actionflow_history()
+        self.actionflow.save_actionflow_history()
 
-    # save the actionflow.history to a file
-    def save_actionflow_history(self):
-        # save the actionflow_history
-        import os
-        from datetime import datetime
-
-        # get date and time
-        now = datetime.now()
-        date_str = now.strftime("%Y-%m-%d_%H-%M-%S")
-
-        # create folder, if not exist
-        folder_path = "user_case_history"
-        os.makedirs(folder_path, exist_ok=True)
-
-        # create a new file
-        file_path = os.path.join(folder_path, f"user_case_history_{date_str}.txt")
-
-        # Directly convert the Python object to a JSON string
-        history = self.actionflow.history_list.read
-
-        # Write the JSON string to a file
-        with open(file_path, "w") as file:
-            file.write(str(history))
-
-    def _do(self, action) -> None:
+    def _do(self, attention) -> None:
 
         self.exec_environment["finishedOrNot"] = False
 
-        check(thread_instance=self, action=action, show_prompt=False)
+        check(thread_instance=self, action=attention, show_prompt=False)
 
         # try action till this action has been achieved
         while self.exec_environment["finishedOrNot"] is not True:
 
             # generate and write the code that can achieve the given action
-            achieve(thread_instance=self, action=action, show_prompt=False)
+            action_plan = achieve(thread_instance=self, action=attention, show_prompt=False)
 
             # execute the generated code in thread's environment and redirect the stdout to the buffer
             with redirected_stdout(self.buffer):
-                exec(action.code, self.exec_environment)
+                exec(action_plan.code, self.exec_environment)
 
-            # save the ran code to the actionflow_history
-            import copy
-            exec_action = copy.deepcopy(action)
-            self.actionflow.history_list.put_action(exec_action)
+            self.actionflow.history_list.put_action(action_plan)
 
             # check the action, return 'finishOrNot= True / False'
-            check(thread_instance=self, action=action, show_prompt=False)
-
+            check(thread_instance=self, action=action_plan, show_prompt=False)
 
     def run(self) -> None:
         # start the code thread
@@ -167,5 +125,3 @@ class Thread(ThreadBase):
 
         # end the code thread
         thread_code.join()
-
-    # TODO: add decorator to manipulate the property of the thread ,including create_function, add_vars
