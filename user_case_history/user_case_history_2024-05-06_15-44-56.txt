@@ -1,0 +1,23 @@
+{
+    "go to https://news.ycombinator.com/, save its HTML @python": {
+        "name": "go to https://news.ycombinator.com/, save its HTML @python",
+        "intro": "",
+        "tag": "action",
+        "code": "import requests\n\n# Fetching the HTML content of Hacker News\nresponse = requests.get(\"https://news.ycombinator.com/\")\nhacker_news_html = response.text",
+        "status": "fixed"
+    },
+    "show the top 10 news @GPT and send message to the user": {
+        "name": "show the top 10 news @GPT and send message to the user",
+        "intro": "",
+        "tag": "action",
+        "code": "# Generating a prompt to get the top 10 news from the Hacker News HTML content using GPT\nprompt = \"Based on the following HTML content from Hacker News, extract and summarize the top 10 news stories: \" + hacker_news_html\ntop_10_news = gpt(prompt=prompt)\n\n# Sending the top 10 news to the user\nsend_message_to_human(\"\ud83d\udcf0 Here are the top 10 news stories from Hacker News: \" + top_10_news)",
+        "status": "fixed"
+    },
+    "pick the news that related to Large Language Models, summerize all the news, and show it to me": {
+        "name": "pick the news that related to Large Language Models, summerize all the news, and show it to me",
+        "intro": "",
+        "tag": "action",
+        "code": "# First, I need to generate a prompt to search for news related to Large Language Models using the GPT function.\nprompt_for_related_news = \"Based on the following HTML content from Hacker News, extract news stories related to Large Language Models: \" + hacker_news_html\n\n# Using the gpt function to get news related to Large Language Models.\nrelated_news = gpt(prompt=prompt_for_related_news)\n\n# Now, I will summarize the related news using the GPT function again.\nprompt_for_summary = \"Summarize the following news stories related to Large Language Models: \" + related_news\nsummarized_news = gpt(prompt=prompt_for_summary)\n\n# Finally, I will send the summarized news to the user.\nsend_message_to_human(\"\ud83d\udcf0 Here is the summary of news related to Large Language Models: \" + summarized_news)",
+        "status": "fixed"
+    }
+}

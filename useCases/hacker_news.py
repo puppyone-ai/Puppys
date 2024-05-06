@@ -1,9 +1,9 @@
-from puppy.thread.main import Thread
 import sys
 import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from puppy.thread.main import Thread
 
 hacker_news = Thread()
 
