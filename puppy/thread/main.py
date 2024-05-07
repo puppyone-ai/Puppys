@@ -1,6 +1,6 @@
 from .base import ThreadBase
 from puppy.thread.actionflow.actionflow import Actionflow
-from puppy.thread.do import check, achieve, conceive
+from puppy.thread.do import check, achieve, develop
 from puppy.utils.std import redirected_stdout
 from puppy.tools.usable_tools import UsableTools
 
@@ -91,10 +91,9 @@ class Thread(ThreadBase):
 
                 # TODO: finish the changeable mode
                 elif action.status == "changeable":
-                    actions_conceive = conceive(thread_instance=self, action=action, seed_num=1, show_prompt=True)
-                    for action in actions_conceive:
-                        self.action_attention = action
-                        self._do(self.action_attention)
+                    action_developed = develop(thread_instance=self, action=action, show_prompt=True)
+                    self.action_attention = action_developed
+                    self._do(self.action_attention)
 
         self.actionflow.save_actionflow_history()
 

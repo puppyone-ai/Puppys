@@ -43,11 +43,13 @@ def parse_code2list(source_code: str) -> list:
 # verify the status of the action
 def _check_status(action) -> None:
 
-    if action.name == '':
-        action.status = "changeable"
+    if ".do()" in action.code:
 
-    elif ".do()" in action.code:
-        action.status = "semi-fixed"
+        if action.name == '':
+            action.status = "changeable"
+
+        else:
+            action.status = "semi-fixed"
 
     else:
         action.status = "fixed"

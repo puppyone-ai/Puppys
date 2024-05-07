@@ -18,20 +18,22 @@ def sense(thread_instance) -> str:
     {thread_instance.actionflow.get_code(pending=True, current=True)}"""
 
 
-def conceive(thread_instance: ThreadBase, action: Action, seed_num: int = 3,  show_prompt: bool = False) -> list:
+def develop(thread_instance: ThreadBase, action: Action, show_prompt: bool = False) -> Action:
 
     """
-    let the agent dice a random action according to the goal
+    let the agent conceive some thoughts to define the action so that it could be achieved.
+    seed_num: the number of the conceived actions
     """
 
     prompt = [
         # 1. define your agent type and name
         {"role": "system",
          "content": f"""
-    You are an AI code assistant agent. 
-    You always plan with natural language output, for example: Hello, I am an assistant.
-    If you cannot understand the goal, you are allowed to send message to user for help.
-    """},
+        You are an AI code assistant agent. All the plan must be executable Python code.
+        You always plan with natural language output, for example: Hello, I am an assistant.
+        If you cannot understand the goal, you are allowed to send message to user for help.
+        """},
+
 
         # 2. provide the example
         {"role": "system",
@@ -43,7 +45,7 @@ def conceive(thread_instance: ThreadBase, action: Action, seed_num: int = 3,  sh
         
         "historical action":"
         ## Decide what to have for dinner and list the needed ingredients.
-        menu = "Spaghetti Carbonara"
+        menu = "Spaghetti Carbonate"
         ingredients = ["spaghetti", "bacon", "eggs", "parmesan cheese"]"
 
         "YOUR RESPONSE":"
@@ -63,13 +65,6 @@ def conceive(thread_instance: ThreadBase, action: Action, seed_num: int = 3,  sh
         """},
 
         # 3. provide the goal, current action, code history, code future, environment, knowledge
-        # {"role": "system",
-        #  "content": f"""
-        # {{
-        # "goal": {thread_instance.goal},
-        # "historical action":{thread_instance.action_attention.name}
-        # "The action in the future":{thread_instance.actionflow.pending_list[0].name if thread_instance.actionflow.pending_list else "None"})
-        #  }}"""},
         {"role": "system",
          "content": f"""
         {sense(thread_instance)}"""},
@@ -84,31 +79,26 @@ def conceive(thread_instance: ThreadBase, action: Action, seed_num: int = 3,  sh
         response:
         """}]
 
-    print("\n⚖️ Conceive Action ################################################################")
+    print("\n⚖️ Develop Action ################################################################")
 
     if show_prompt:
-        print("\t*******Conceiving prompt********")
+        print("\t*******Developing prompt********")
         for chunk in prompt:
             print(chunk['content'])
 
-    res = []
+    new_act = open_ai_chat(prompt=prompt,
+                           model="gpt-4-turbo",
+                           temperature=0.1,
+                           api_key=os.environ["OPENAI_API_KEY"],
+                           max_tokens=4096,
+                           printing=True, stream=True)
 
-    for i in range(seed_num):
+    action_developed = Action()
+    action_developed.name = new_act
+    action_developed.code = action.code
+    action_developed.status = "semi-fixed"
 
-        new_act = open_ai_chat(prompt=prompt,
-                                model="gpt-4-turbo",
-                                temperature=0.1,
-                                api_key=os.environ["OPENAI_API_KEY"],
-                                max_tokens=4096,
-                                printing=True, stream=True)
-
-        action_conceived = Action()
-        action_conceived.name = new_act
-        action_conceived.status = "semi-fixed"
-
-        res += [action_conceived]
-
-    return res
+    return action_developed
 
 
 def check(thread_instance: ThreadBase, action: Action, show_prompt: bool = False) -> None:

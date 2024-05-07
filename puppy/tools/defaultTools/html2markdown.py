@@ -17,15 +17,19 @@ class HTML2Markdown(FuncBase):
                     }
                 }
         """
+
         super().__init__(*args, **kwargs)
 
         self.name = "html2markdown"
         self.func = self.html2markdown
         self.intro = """
-        Script formatting, use it when you want to transform the format from html to markdown.
+        Script reformatting, use it when you want to transform the format of a script from html to markdown.
 
         For example:
         ## transform the html content to markdown
+        
+        {
+        "code":"
         html_content = \"\"\"
         <div>
             <h1>Welcome to My Website</h1>
@@ -36,7 +40,16 @@ class HTML2Markdown(FuncBase):
             </ul>
         </div>
         \"\"\"
-        markdown = html2markdown(html_content)
+        markdown = html2markdown(html_content)",
+        "result":"
+        # Welcome to My Website
+
+        This is a sample paragraph with [a link](https://example.com) and some **bold text**.
+        
+          * List item one
+          * List item two
+        "
+        }
         """
 
     @staticmethod
@@ -62,7 +75,14 @@ class HTML2Markdown(FuncBase):
 if __name__ == "__main__":
     # HTML 字符串
     html = """
-    <p>Hello, <b>world</b>!</p>
+    <div>
+            <h1>Welcome to My Website</h1>
+            <p>This is a sample paragraph with <a href="https://example.com">a link</a> and some <strong>bold text</strong>.</p>
+            <ul>
+                <li>List item one</li>
+                <li>List item two</li>
+            </ul>
+        </div>
     """
     html2markdown = HTML2Markdown()
     print(html2markdown.run(html))

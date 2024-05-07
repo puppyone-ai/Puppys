@@ -10,7 +10,7 @@ hacker_news = Thread()
 @hacker_news.actionflow.update
 def pending_list():
 
-    ## go to https://news.ycombinator.com/, save its HTML @python
+    ## go to https://news.ycombinator.com/, save its HTML as markdown @html2markdown
     hacker_news.do()
 
     ## show the top 10 news @GPT and send message to the user
