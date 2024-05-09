@@ -17,7 +17,6 @@ class Action(EnvBase):
 
         super().__init__(*args, **kwargs)
 
-        # self.name = ""
         self.tag = "action"
 
         self.code = ""
