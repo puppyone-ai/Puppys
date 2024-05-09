@@ -1,6 +1,6 @@
 from .base import ThreadBase
 from puppy.thread.actionflow.actionflow import Actionflow
-from puppy.thread.do import check, achieve, develop
+from puppy.thread.do import refine, check, achieve
 from puppy.utils.std import redirected_stdout
 from puppy.tools.usable_tools import UsableTools
 
@@ -15,7 +15,7 @@ class Thread(ThreadBase):
 
         # set the  of the thread
         self.goal = ""
-        self.action_attention = None
+        self.action_tracked = None
 
         # create a buffer and exec_environment for the thread
         import io
@@ -86,28 +86,23 @@ class Thread(ThreadBase):
                     self.actionflow.history_list.put_action(action)
 
                 elif action.status == "semi-fixed":
-                    self.action_attention = action  # set the action to attention
-                    self._do(self.action_attention)
+                    self.action_tracked = action  # set the action to attention
+                    self._do(self.action_tracked)
 
-                # TODO: finish the changeable mode
                 elif action.status == "changeable":
-                    action_developed = develop(thread_instance=self, action=action, show_prompt=True)
-                    self.action_attention = action_developed
-                    self._do(self.action_attention)
+                    action_refined = refine(thread_instance=self, action=action, show_prompt=True)
+                    self.action_tracked = action_refined
+                    self._do(self.action_tracked)
 
         self.actionflow.save_actionflow_history()
 
-    def _do(self, attention, iterate_limit: int = 0) -> None:
+    def _do(self, attention) -> None:
 
         self.exec_environment["finishedOrNot"] = False
 
-        # check(thread_instance=self, action=attention, show_prompt=False)
-
         # try action till this action has been achieved
 
-        cnt = 0
-
-        while self.exec_environment["finishedOrNot"] is not True and (cnt < iterate_limit or iterate_limit == 0):
+        while self.exec_environment["finishedOrNot"] is not True :
 
             # generate and write the code that can achieve the given action
             action_plan = achieve(thread_instance=self, action=attention, show_prompt=False)
@@ -120,8 +115,6 @@ class Thread(ThreadBase):
 
             # check the action, return 'finishOrNot= True / False'
             check(thread_instance=self, action=action_plan, show_prompt=False)
-
-            cnt += 1
 
     def run(self) -> None:
         # start the code thread

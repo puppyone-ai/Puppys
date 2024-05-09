@@ -9,7 +9,7 @@ def sense(thread_instance) -> str:
 
     return f"""
     You have an overall long-term goal: {thread_instance.goal},  and your current action is:
-    {thread_instance.action_attention.name}
+    {thread_instance.action_tracked.name}
 
     The code for historical actionflow shown as code are:
     {thread_instance.actionflow.get_code(history=True)}
@@ -18,7 +18,7 @@ def sense(thread_instance) -> str:
     {thread_instance.actionflow.get_code(pending=True, current=True)}"""
 
 
-def develop(thread_instance: ThreadBase, action: Action, show_prompt: bool = False) -> Action:
+def refine(thread_instance: ThreadBase, action: Action, show_prompt: bool = False) -> Action:
 
     """
     let the agent conceive some thoughts to define the action so that it could be achieved.
@@ -79,10 +79,10 @@ def develop(thread_instance: ThreadBase, action: Action, show_prompt: bool = Fal
         response:
         """}]
 
-    print("\n⚖️ Develop Action ################################################################")
+    print("\n⚖️ Refine Action ################################################################")
 
     if show_prompt:
-        print("\t*******Developing prompt********")
+        print("\t*******Refining prompt********")
         for chunk in prompt:
             print(chunk['content'])
 
@@ -93,12 +93,12 @@ def develop(thread_instance: ThreadBase, action: Action, show_prompt: bool = Fal
                            max_tokens=4096,
                            printing=True, stream=True)
 
-    action_developed = Action()
-    action_developed.name = new_act
-    action_developed.code = action.code
-    action_developed.status = "semi-fixed"
+    action_refined = Action()
+    action_refined.name = new_act
+    action_refined.code = action.code
+    action_refined.status = "semi-fixed"
 
-    return action_developed
+    return action_refined
 
 
 def check(thread_instance: ThreadBase, action: Action, show_prompt: bool = False) -> None:
