@@ -1,6 +1,6 @@
 from .base import ThreadBase
 from puppy.thread.actionflow.actionflow import Actionflow
-from puppy.thread.do import check, achieve
+from puppy.thread.do import refine, check, achieve
 from puppy.utils.std import redirected_stdout
 from puppy.tools.usable_tools import UsableTools
 
@@ -15,7 +15,7 @@ class Thread(ThreadBase):
 
         # set the  of the thread
         self.goal = ""
-        self.attention = None
+        self.action_tracked = None
 
         # create a buffer and exec_environment for the thread
         import io
@@ -36,7 +36,7 @@ class Thread(ThreadBase):
         #     self.puppy = kwargs['puppy']
         #     self.puppy_name = self.puppy.puppy_name
         # else:
-        self.puppy_name = "Mei"  # the name is essential in the prompt
+        # self.puppy_name = "Mei"  # the name is essential in the prompt
 
         #
         if 'name' in kwargs:
@@ -86,12 +86,13 @@ class Thread(ThreadBase):
                     self.actionflow.history_list.put_action(action)
 
                 elif action.status == "semi-fixed":
-                    self.attention = action
-                    self._do(self.attention)
+                    self.action_tracked = action  # set the action to attention
+                    self._do(self.action_tracked)
 
-                # TODO: finish the changeable mode
                 elif action.status == "changeable":
-                    pass
+                    action_refined = refine(thread_instance=self, action=action, show_prompt=True)
+                    self.action_tracked = action_refined
+                    self._do(self.action_tracked)
 
         self.actionflow.save_actionflow_history()
 
@@ -99,10 +100,9 @@ class Thread(ThreadBase):
 
         self.exec_environment["finishedOrNot"] = False
 
-        check(thread_instance=self, action=attention, show_prompt=False)
-
         # try action till this action has been achieved
-        while self.exec_environment["finishedOrNot"] is not True:
+
+        while self.exec_environment["finishedOrNot"] is not True :
 
             # generate and write the code that can achieve the given action
             action_plan = achieve(thread_instance=self, action=attention, show_prompt=False)
