@@ -1,4 +1,5 @@
-openai
+openai>=1.0.0
+litellm
 zhipuai
 google-api-python-client
 
