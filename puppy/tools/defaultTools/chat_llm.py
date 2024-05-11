@@ -1,9 +1,10 @@
 from puppy.environment.func import FuncBase
 from puppy.llm.openAI import open_ai_chat
 import os
+from litellm import completion
 
 
-class GPT(FuncBase):
+class ChatLLM(FuncBase):
 
     def __init__(self, *args, **kwargs):
 
@@ -22,34 +23,34 @@ class GPT(FuncBase):
 
         super().__init__(*args, **kwargs)
 
-        self.name = "gpt"
-        self.func = self.gpt
+        self.name = "chat_llm"
+        self.func = self.chat_llm
         self.intro = """
-        Large Language Models, use it when you want to generate text based on the input text by GPT3.5 or GPT4.
+        Large Language Models, use it when you want to generate text based on the input.
         
         For example:
         ## get how to install the package of openAI by GPT4
         prompt = f"How should I install the package of openAI, based on the document of its website HTML: {self.html}"
-        result = gpt(prompt=prompt)
+        result = chat_llm(prompt=prompt)
         """
 
     @staticmethod
-    def gpt(prompt, model="gpt-3.5-turbo-0125", temperature=0.7, max_tokens=2048):
+    def chat_llm(prompt, model="gpt-3.5-turbo-0125", temperature=0.7, max_tokens=2048):
 
-        result = open_ai_chat(prompt=[{"role": "user",
+        result = completion(messages=[{"role": "user",
                                        "content": prompt}],
-                              model=model,
-                              temperature=temperature,
-                              api_key=os.environ["OPENAI_API_KEY"],
-                              max_tokens=max_tokens,
-                              printing=True, stream=True)
+                            model=model,
+                            temperature=temperature,
+                            max_tokens=max_tokens)
 
-        return result
+        return result.choices[0].message.content
 
 
 if __name__ == "__main__":
     text = "how should I install the package of openAI"
 
-    gpt = GPT()
+    chat = ChatLLM()
 
-    print(gpt.run(text))
+    res = chat.run(text)
+
+    print(res)
