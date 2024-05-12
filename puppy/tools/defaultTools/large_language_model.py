@@ -26,14 +26,14 @@ class LangeLanguageModel(FuncBase):
         self.name = "gpt"
         self.func = self.lange_language_model
         self.intro = """
-        Large Language Models, use it when you want to generate text based on the input text. for example, GPT4 or GPT3.5,
-        ues it when summarizing text, HTML etc.
-        
-        For example:
-        ## get how to install the package of openAI by GPT4
-        prompt = f"summarize this web based on the document of its website HTML: {self.html}"
-        result = gpt(prompt=prompt)
-        """
+ChatGPT, GPT4 or GPT3.5,
+ues it when summarizing text, HTML etc. Or generate text, answer question based on a reference. etc.
+
+For example:
+## summarizing the web based on the html
+prompt = f"summarize this web based on the document of its website HTML: {self.html}"
+result = gpt(prompt=prompt)
+"""
 
     @staticmethod
     def lange_language_model(prompt, model="gpt-3.5-turbo-0125", temperature=0.7, max_tokens=2048):

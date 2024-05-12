@@ -194,35 +194,22 @@ def achieve_action(thread_instance: ThreadBase, action: Action, show_prompt: boo
     prompt = [
         # 1. define your agent type and name
         {"role": "system",
-"content": f""" You are an AI code assistant agent. 1. You always write Python code! You are really good at 
- it. Your natural language output should be written as comment in python code. for example: # Hello, 
- I am an assistant. 2. DON'T ASSUME you know any unclear knowledge or information that you don't know. DON'T 
+"content": f""" You are an AI code assistant agent. 
+1. You always write Python code! You are really good at it. Your natural language output should be written as comment in python code.
+ for example: # Hello, I am an assistant. 
+ 2. DON'T ASSUME you know any unclear knowledge or information that you don't know. DON'T 
  ASSUME that you have non-existent functions or hypothetical function. Your code will be run immediately 
- after you write it. If you assume any hypothetical function, the the system will crash. 3. If you cannot do 
- the action, you are allowed to send message to user for help. 4. Your response cannot only be comment. You 
- HAVE to write codes"""},
+ after you write it. If you assume any hypothetical function, the the system will crash. 
+ 3. If you cannot do the action, you are allowed to send message to user for help.
+ 4. Your response cannot only be comment. You HAVE to write codes"""},
 
-        # 2. provide the functions description and example, and knowledge
-        {"role": "system",
-"content": f""" You are allowed to use the given functions below. But make sure that you have imported the 
- given package. There maybe XXX.do() appearing, The XXX is your name, and the .do() is an instruction of 'you 
- must write code and put it here'. Pay attention to name your parameter in your code. The naming convention 
- in your code should not be arbitrary, like 'result' or 'response'. It should reflect the property of the 
- parameter.
-
-Your customized functions and their examples are:
-{thread_instance.tool_box.detail}
-
-Try to understand the meaning of each function and its parameter, and decide the best function and use the function 
-for this step to accomplish the action. """},
-
-        # 3. provide the goal, current action, code history, code future, environment, knowledge
+        # 2. provide the goal, current action, code history, code future, environment, knowledge
         {"role": "system",
 "content": f"""
 You have an overall long-term goal: {thread_instance.goal},  and your current action is:
 {thread_instance.actionflow.on_going.name}
 
-The code for historical actionflow shown as code are:
+The code for historical actionflow shown as code are(they have been run before):
 {thread_instance.actionflow.get_code(history=True)}
 
 The code of action in the future are(But you don't need to do this part now, just for your information)):
@@ -232,12 +219,32 @@ The code you generate will be run, and your formally-defined parameters and thei
 {thread_instance.vars_preview}
 """},
 
+        # 3. provide the functions description and example, and knowledge
+        {"role": "system",
+         "content": f""" You are allowed to use the given functions below. But make sure that you have imported the 
+ given package.
+
+Your customized functions and their examples are:
+{thread_instance.tool_box.detail}
+
+Try to understand the meaning of each function and its parameter, and decide the best function and use the function 
+for this step to accomplish the action.
+For example: (current action: search the location of the NBA in 2019@ google search @zhihu search)
+response:
+# To answer where is the NBA in 2019, I need to search the information about NBA in 2019. The function returns as a string.
+location=google_search("Where is the NBA in 2019"
+location= zhihu_search("Where is the NBA in 2019")"""},
+
         # 4. provide the code of the action
         {"role": "user",
- "content": f""" user have already write some code for this action, but it's not finished. You should replace 
- the XXX.do() part. Don't keep the .do() function after your response. The XXX is your name, and the .do() is 
- an instruction of 'you must write code and put it here'.: {action.code}
-Now you write code to achieve your action: {action.name} DON'T ASSUME you know the knowledge that you don't know. 
+ "content": f""" user have already write some code for this action, but it's not finished. You should replace the XXX.do() part.
+Don't keep the .do() function after your response. The XXX is your name, and the .do() is an instruction of 'you must write code and put it here'.
+User's code:
+{action.code}
+Now you write code to achieve your action(Note that the tools after@ is recommended tools, if it exists): 
+{action.name}
+     
+DON'T ASSUME you know the knowledge that you don't know. 
 DON'T ASSUME that you have non-existent functions or hypothetical function, and you can show your thinking and reason 
 in the comment. But don't write any code calling undefined functions in this case. make sure that the parameter in 
 your respond code follow the type of the parameter in the function instruction. You are NOT allowed to write XXX.do() 
@@ -254,7 +261,7 @@ be similar with the example(ONLY CODE) and NOTHING ELSE. """}]
             print(chunk['content'])
 
     new_code = open_ai_chat(prompt=prompt,
-                            model="gpt-4-turbo-preview",
+                            model="gpt-4-turbo",
                             temperature=0.1,
                             api_key=os.environ["OPENAI_API_KEY"],
                             max_tokens=4096,

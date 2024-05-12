@@ -33,7 +33,7 @@ class UsableTools(EnvBase):
         self.usable_tools_dict = {}
 
         # the default tools
-        self.default_tools = [LangeLanguageModel(), SearchNative(), SendMessageToHuman()]
+        self.default_tools = [SendMessageToHuman(self.__thread_instance), SearchNative(), LangeLanguageModel()]
 
         # TODO: Search path to collect all the default funcs
 
@@ -52,11 +52,9 @@ class UsableTools(EnvBase):
     def detail(self):
         tools_list=[]
         for tool in self.default_tools:
-            tools_list.append(
-                {"tool_name": tool.name,
-                "intro": tool.intro})
+            tools_list.append({tool.name: tool.intro})
 
-        return tools_list
+        return (tools_list)
 
     # once a tool_instance has been loaded into the list, we make a global func
     def load_tool(self, tool):
