@@ -16,7 +16,7 @@ class ExecContext(EnvBase):
         self.vars_dict.update(env_dict)
         self.initial_vars_dict.update(env_dict)
 
-    def add(self, env_dict):
+    def update(self, env_dict):
         self.vars_dict.update(env_dict)
 
     @property
