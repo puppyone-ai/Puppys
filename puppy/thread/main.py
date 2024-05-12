@@ -4,7 +4,7 @@ from puppy.thread.do import plan_next_action, check_if_action_achieved, achieve_
 from puppy.utils.std import redirected_stdout
 from puppy.tools.usable_tools import UsableTools
 from puppy.environment.base import EnvBase
-from puppy.thread.exec_context import ExecContext
+import copy
 
 
 class Thread(ThreadBase):
@@ -21,9 +21,10 @@ class Thread(ThreadBase):
         # create a buffer and exec_environment for the thread
         import io
 
-        self.exec_context=ExecContext()
-        self.exec_context.initialize(globals())
-        self.exec_context.initialize({'self': self})
+
+        self.vars_dict = globals()
+        self.vars_dict.update({'self': self})
+        self.runtime_vars_dict = {}
 
         self.buffer = io.StringIO()
 
@@ -57,7 +58,7 @@ class Thread(ThreadBase):
 
         # load tools
         for tool in self.tool_box.default_tools:
-            self.tool_box.load_tool(tool(thread_instance=self))
+            self.tool_box.load_tool(tool)
 
         # start the actionflow
 
@@ -91,7 +92,7 @@ class Thread(ThreadBase):
                     self._do(self.actionflow.on_going)
 
                 elif action.status == "changeable":
-                    action_refined = plan_next_action(thread_instance=self, action=action, show_prompt=True)
+                    action_refined = plan_next_action(thread_instance=self, action=action, show_prompt=False)
                     self.actionflow.on_going = action_refined
                     self._do(self.actionflow.on_going)
 
@@ -99,23 +100,46 @@ class Thread(ThreadBase):
 
     def _do(self, attention) -> None:
 
-        self.exec_context["finishedOrNot"] = False
+        self.vars_dict["finishedOrNot"] = False
 
         # try action till this action has been achieved
 
-        while self.exec_context["finishedOrNot"] is not True :
+        while self.vars_dict["finishedOrNot"] is not True :
 
             # generate and write the code that can achieve the given action
             action_plan = achieve_action(thread_instance=self, action=attention, show_prompt=False)
 
             # execute the generated code in thread's environment and redirect the stdout to the buffer
             with redirected_stdout(self.buffer):
-                exec(action_plan.code, self.exec_context())
+                self.thread_exec(action_plan.code)
 
             self.actionflow.history_list.put_action(action_plan)
 
             # check the action, return 'finishOrNot= True / False'
-            check_if_action_achieved(thread_instance=self, action=action_plan, show_prompt=False)
+            check_code=check_if_action_achieved(thread_instance=self, action=action_plan, show_prompt=False)
+
+            self.thread_exec(check_code)
+
+    def thread_exec(self, code):
+        previous_env_dict = self.vars_dict.copy()
+
+        exec(code, self.vars_dict)
+
+        new_globals = {k: v for k, v in self.vars_dict.items() if k not in previous_env_dict or previous_env_dict[k] != v}
+
+        self.runtime_vars_dict.update(new_globals)
+
+    @property
+    def vars_preview(self, characters_num=200):
+        dict_temp = {}
+
+        for key, value in self.runtime_vars_dict.items():
+
+                string_data = str(value)
+                preview_info = string_data[:characters_num]
+                dict_temp.update({key: {"type: ": type(value), "preview:": preview_info}})
+
+        return dict_temp
 
 
     def run(self) -> None:
@@ -127,3 +151,5 @@ class Thread(ThreadBase):
 
         # end the code thread
         thread_code.join()
+
+

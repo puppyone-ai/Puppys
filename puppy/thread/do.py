@@ -62,7 +62,7 @@ def plan_next_action(thread_instance: ThreadBase, action: Action, show_prompt: b
         {thread_instance.actionflow.get_code(pending=True, current=True)}
 
         your formally-defined parameters and their previewing are as follows: 
-        {thread_instance.exec_environment.preview()}"""},
+        {thread_instance.vars_preview}"""},
 
 
         # 4. conceive the action
@@ -157,7 +157,7 @@ def check_if_action_achieved(thread_instance: ThreadBase, action: Action, show_p
 
 
         your formally-defined parameters and their previewing are as follows: 
-        {thread_instance.exec_environment.preview()}"""},
+        {thread_instance.vars_preview}"""},
 
 
         # 4. justify if the action is done or not
@@ -185,7 +185,7 @@ def check_if_action_achieved(thread_instance: ThreadBase, action: Action, show_p
     new_code = new_code.replace("```python\n", "").replace("\n```", "")
 
     # deliver 'finishedOrNot' to the environment for verification of the final execution.
-    exec(new_code, thread_instance.exec_environment)
+    return new_code
 
 
 def achieve_action(thread_instance: ThreadBase, action: Action, show_prompt: bool = False) -> Action:
@@ -213,7 +213,7 @@ def achieve_action(thread_instance: ThreadBase, action: Action, show_prompt: boo
         Pay attention to name your parameter in your code. The naming convention in your code should not be arbitrary, like 'result' or 'response'. It should reflect the property of the parameter.
     
         Your customized functions and their examples are:
-        {thread_instance.tool_box.usable_tools}
+        {thread_instance.tool_box.detail}
     
         Try to understand the meaning of each function and its parameter, and decide the best function and use the function for this step to accomplish the action. 
         """},
@@ -231,7 +231,7 @@ def achieve_action(thread_instance: ThreadBase, action: Action, show_prompt: boo
         {thread_instance.actionflow.get_code(pending=True, current=True)}
 
         The code you generate will be run, and your formally-defined parameters and their previewing are as follows: 
-        {thread_instance.exec_environment.preview()}
+        {thread_instance.vars_preview}
         """},
 
 
@@ -257,7 +257,7 @@ def achieve_action(thread_instance: ThreadBase, action: Action, show_prompt: boo
             print(chunk['content'])
 
     new_code = open_ai_chat(prompt=prompt,
-                            model="gpt-4-turbo",
+                            model="gpt-4-turbo-preview",
                             temperature=0.1,
                             api_key=os.environ["OPENAI_API_KEY"],
                             max_tokens=4096,

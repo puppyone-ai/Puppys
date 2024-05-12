@@ -32,7 +32,7 @@ class SendMessageToHuman(FuncBase):
         """
         self.func = self.send_message_to_human
 
-        self.__thread_instance = thread_instance
+        self.thread_instance = thread_instance
 
     def send_message_to_human(self, question):
 
@@ -43,7 +43,7 @@ class SendMessageToHuman(FuncBase):
         chat_history = "\n" + "your message:" + question + "\n" + "# User's response: " + user_input + "\n"
 
         # TODO: creat a thread to modify the attention code
-        self.__thread_instance.actionflow.on_going.code += chat_history
+        self.thread_instance.actionflow.on_going.code += chat_history
 
 
 if __name__ == "__main__":

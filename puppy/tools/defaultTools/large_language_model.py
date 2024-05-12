@@ -4,7 +4,7 @@ import os
 from litellm import completion
 
 
-class ChatLLM(FuncBase):
+class LangeLanguageModel(FuncBase):
 
     def __init__(self, *args, **kwargs):
 
@@ -23,19 +23,20 @@ class ChatLLM(FuncBase):
 
         super().__init__(*args, **kwargs)
 
-        self.name = "chat_llm"
-        self.func = self.chat_llm
+        self.name = "gpt"
+        self.func = self.lange_language_model
         self.intro = """
-        Large Language Models, use it when you want to generate text based on the input.
+        Large Language Models, use it when you want to generate text based on the input text. for example, GPT4 or GPT3.5,
+        ues it when summarizing text, HTML etc.
         
         For example:
         ## get how to install the package of openAI by GPT4
-        prompt = f"How should I install the package of openAI, based on the document of its website HTML: {self.html}"
-        result = chat_llm(prompt=prompt)
+        prompt = f"summarize this web based on the document of its website HTML: {self.html}"
+        result = gpt(prompt=prompt)
         """
 
     @staticmethod
-    def chat_llm(prompt, model="gpt-3.5-turbo-0125", temperature=0.7, max_tokens=2048):
+    def lange_language_model(prompt, model="gpt-3.5-turbo-0125", temperature=0.7, max_tokens=2048):
 
         result = completion(messages=[{"role": "user",
                                        "content": prompt}],
@@ -49,7 +50,7 @@ class ChatLLM(FuncBase):
 if __name__ == "__main__":
     text = "how should I install the package of openAI"
 
-    chat = ChatLLM()
+    chat = LangeLanguageModel()
 
     res = chat.run(text)
 
