@@ -24,8 +24,7 @@ class SendMessageToHuman(FuncBase):
         self.name = "send_message_to_human"
         self.intro = """
 Use it when you have no idea how to achieve an action based on the current information knowledge, or functions. or you want to convey a message to the user
-If you feel confused about any knowledge that are essential for following actions. You can stop keeping going and only ask human for help. You don't need to finish all the actions in one time.
-use emoji to make the conversation more interesting. For example, happy/ sad/ sorry/ angry/ question/ etc.
+If you feel confused about any knowledge that are essential for following actions. You can stop keeping going and only ask human for help.
 
 for example:
 ## Ask the user about the phone number of his boss
