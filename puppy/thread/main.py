@@ -1,8 +1,10 @@
 from .base import ThreadBase
 from puppy.thread.actionflow.actionflow import Actionflow
-from puppy.thread.do import refine, check, achieve
+from puppy.thread.do import plan_next_action, check_if_action_achieved, achieve_action
 from puppy.utils.std import redirected_stdout
 from puppy.tools.usable_tools import UsableTools
+from puppy.environment.base import EnvBase
+from puppy.thread.exec_context import ExecContext
 
 
 class Thread(ThreadBase):
@@ -19,7 +21,11 @@ class Thread(ThreadBase):
 
         # create a buffer and exec_environment for the thread
         import io
-        self.exec_environment = {"self": self}
+
+        self.exec_context=ExecContext()
+        self.exec_context.initialize(globals())
+        self.exec_context.initialize({'self': self})
+
         self.buffer = io.StringIO()
 
         # import the actionflow as an env_var that running all actions
@@ -82,7 +88,7 @@ class Thread(ThreadBase):
 
                 # STEP 2.2: check if the action is fixed, semi-fixed, or changeable, and run sequentially
                 if action.status == "fixed":
-                    exec(action.code, self.exec_environment)
+                    exec(action.code, self.exec_context)
                     self.actionflow.history_list.put_action(action)
 
                 elif action.status == "semi-fixed":
@@ -90,7 +96,7 @@ class Thread(ThreadBase):
                     self._do(self.action_tracked)
 
                 elif action.status == "changeable":
-                    action_refined = refine(thread_instance=self, action=action, show_prompt=True)
+                    action_refined = plan_next_action(thread_instance=self, action=action, show_prompt=True)
                     self.action_tracked = action_refined
                     self._do(self.action_tracked)
 
@@ -98,23 +104,25 @@ class Thread(ThreadBase):
 
     def _do(self, attention) -> None:
 
-        self.exec_environment["finishedOrNot"] = False
+        self.exec_context["finishedOrNot"] = False
 
         # try action till this action has been achieved
 
-        while self.exec_environment["finishedOrNot"] is not True :
+        while self.exec_context["finishedOrNot"] is not True :
 
             # generate and write the code that can achieve the given action
-            action_plan = achieve(thread_instance=self, action=attention, show_prompt=False)
+            action_plan = achieve_action(thread_instance=self, action=attention, show_prompt=False)
 
             # execute the generated code in thread's environment and redirect the stdout to the buffer
             with redirected_stdout(self.buffer):
-                exec(action_plan.code, self.exec_environment)
+                exec(action_plan.code, self.exec_context())
 
             self.actionflow.history_list.put_action(action_plan)
 
             # check the action, return 'finishOrNot= True / False'
-            check(thread_instance=self, action=action_plan, show_prompt=False)
+            check_if_action_achieved(thread_instance=self, action=action_plan, show_prompt=False)
+
+
 
     def run(self) -> None:
         # start the code thread

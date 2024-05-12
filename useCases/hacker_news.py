@@ -10,6 +10,9 @@ hacker_news = Thread()
 @hacker_news.actionflow.update
 def pending_list():
 
+    ##
+    hacker_news.do()
+
     ## go to https://news.ycombinator.com/, save its HTML @python
     hacker_news.do()
 
@@ -18,5 +21,8 @@ def pending_list():
 
     ## pick the news that related to Large Language Models, summerize all the news, and show it to me
     hacker_news.do()
+
+    ## let me pick the news that related to Large Language Models, summerize all the news, and show it to me
+    print("done")
 
 hacker_news.run()
