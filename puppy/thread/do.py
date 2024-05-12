@@ -53,7 +53,7 @@ def plan_next_action(thread_instance: ThreadBase, action: Action, show_prompt: b
         {"role": "system",
          "content": f"""
         You have an overall long-term goal: {thread_instance.goal},  and your current action is:
-        {thread_instance.action_tracked.name}
+        {thread_instance.actionflow.on_going.name}
         
         The code for historical actionflow shown as code are:
         {thread_instance.actionflow.get_code(history=True)}
@@ -147,7 +147,7 @@ def check_if_action_achieved(thread_instance: ThreadBase, action: Action, show_p
         {"role": "system",
          "content": f"""
         You have an overall long-term goal: {thread_instance.goal},  and your current action is:
-        {thread_instance.action_tracked.name}
+        {thread_instance.actionflow.on_going.name}
         
         The code for historical actionflow shown as code are:
         {thread_instance.actionflow.get_code(history=True)}
@@ -222,7 +222,7 @@ def achieve_action(thread_instance: ThreadBase, action: Action, show_prompt: boo
         {"role": "system",
         "content": f"""
         You have an overall long-term goal: {thread_instance.goal},  and your current action is:
-        {thread_instance.action_tracked.name}
+        {thread_instance.actionflow.on_going.name}
     
         The code for historical actionflow shown as code are:
         {thread_instance.actionflow.get_code(history=True)}

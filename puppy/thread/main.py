@@ -17,7 +17,6 @@ class Thread(ThreadBase):
 
         # set the  of the thread
         self.goal = ""
-        self.action_tracked = None
 
         # create a buffer and exec_environment for the thread
         import io
@@ -82,23 +81,19 @@ class Thread(ThreadBase):
 
                 action = self.actionflow.current_list.pop_action()
 
-                self.actionflow.on_going.put(action)
-
-                action = self.actionflow.on_going.get()
-
                 # STEP 2.2: check if the action is fixed, semi-fixed, or changeable, and run sequentially
                 if action.status == "fixed":
                     exec(action.code, self.exec_context)
                     self.actionflow.history_list.put_action(action)
 
                 elif action.status == "semi-fixed":
-                    self.action_tracked = action  # set the action to attention
-                    self._do(self.action_tracked)
+                    self.actionflow.on_going = action
+                    self._do(self.actionflow.on_going)
 
                 elif action.status == "changeable":
                     action_refined = plan_next_action(thread_instance=self, action=action, show_prompt=True)
-                    self.action_tracked = action_refined
-                    self._do(self.action_tracked)
+                    self.actionflow.on_going = action_refined
+                    self._do(self.actionflow.on_going)
 
         self.actionflow.save_actionflow_history()
 
@@ -121,7 +116,6 @@ class Thread(ThreadBase):
 
             # check the action, return 'finishOrNot= True / False'
             check_if_action_achieved(thread_instance=self, action=action_plan, show_prompt=False)
-
 
 
     def run(self) -> None:
