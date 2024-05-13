@@ -9,7 +9,7 @@ Mei = Thread()
 @Mei.actionflow.update
 def pending_list():
 
-    ## today is 2024-05-10,search the top 10 news about Ukraine from internet. @GPT
+    ## today is 2024-05-10,search the top 10 news about Ukraine from internet. @SearchNative
     Mei.do()
 
     ## save these news to a markdown file named "ukraine_news.md" @python
