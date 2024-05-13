@@ -1,10 +1,8 @@
 from .base import ThreadBase
 from puppy.thread.actionflow.actionflow import Actionflow
-from puppy.thread.do import plan_next_action, check_if_action_achieved, achieve_action
+from puppy.thread.do import check, achieve
 from puppy.utils.std import redirected_stdout
 from puppy.tools.usable_tools import UsableTools
-from puppy.environment.base import EnvBase
-import copy
 
 
 class Thread(ThreadBase):
@@ -17,15 +15,11 @@ class Thread(ThreadBase):
 
         # set the  of the thread
         self.goal = ""
+        self.attention = None
 
         # create a buffer and exec_environment for the thread
         import io
-
-
-        self.vars_dict = globals()
-        self.vars_dict.update({'self': self})
-        self.runtime_vars_dict = {}
-
+        self.exec_environment = {"self": self}
         self.buffer = io.StringIO()
 
         # import the actionflow as an env_var that running all actions
@@ -42,7 +36,7 @@ class Thread(ThreadBase):
         #     self.puppy = kwargs['puppy']
         #     self.puppy_name = self.puppy.puppy_name
         # else:
-        # self.puppy_name = "Mei"  # the name is essential in the prompt
+        self.puppy_name = "Mei"  # the name is essential in the prompt
 
         #
         if 'name' in kwargs:
@@ -58,7 +52,7 @@ class Thread(ThreadBase):
 
         # load tools
         for tool in self.tool_box.default_tools:
-            self.tool_box.load_tool(tool)
+            self.tool_box.load_tool(tool(thread_instance=self))
 
         # start the actionflow
 
@@ -82,65 +76,45 @@ class Thread(ThreadBase):
 
                 action = self.actionflow.current_list.pop_action()
 
+                self.actionflow.on_going.put(action)
+
+                action = self.actionflow.on_going.get()
+
                 # STEP 2.2: check if the action is fixed, semi-fixed, or changeable, and run sequentially
                 if action.status == "fixed":
-                    exec(action.code, self.exec_context)
+                    exec(action.code, self.exec_environment)
                     self.actionflow.history_list.put_action(action)
 
                 elif action.status == "semi-fixed":
-                    self.actionflow.on_going = action
-                    self._do(self.actionflow.on_going)
+                    self.attention = action
+                    self._do(self.attention)
 
+                # TODO: finish the changeable mode
                 elif action.status == "changeable":
-                    action_refined = plan_next_action(thread_instance=self, action=action, show_prompt=False)
-                    self.actionflow.on_going = action_refined
-                    self._do(self.actionflow.on_going)
+                    pass
 
         self.actionflow.save_actionflow_history()
 
     def _do(self, attention) -> None:
 
-        self.vars_dict["finishedOrNot"] = False
+        self.exec_environment["finishedOrNot"] = False
+
+        check(thread_instance=self, action=attention, show_prompt=False)
 
         # try action till this action has been achieved
-
-        while self.vars_dict["finishedOrNot"] is not True :
+        while self.exec_environment["finishedOrNot"] is not True:
 
             # generate and write the code that can achieve the given action
-            action_plan = achieve_action(thread_instance=self, action=attention, show_prompt=True)
+            action_plan = achieve(thread_instance=self, action=attention, show_prompt=False)
 
             # execute the generated code in thread's environment and redirect the stdout to the buffer
             with redirected_stdout(self.buffer):
-                self.thread_exec(action_plan.code)
+                exec(action_plan.code, self.exec_environment)
 
             self.actionflow.history_list.put_action(action_plan)
 
             # check the action, return 'finishOrNot= True / False'
-            check_code=check_if_action_achieved(thread_instance=self, action=action_plan, show_prompt=False)
-
-            self.thread_exec(check_code)
-
-    def thread_exec(self, code):
-        previous_env_dict = self.vars_dict.copy()
-
-        exec(code, self.vars_dict)
-
-        new_globals = {k: v for k, v in self.vars_dict.items() if k not in previous_env_dict or previous_env_dict[k] != v}
-
-        self.runtime_vars_dict.update(new_globals)
-
-    @property
-    def vars_preview(self, characters_num=200):
-        dict_temp = {}
-
-        for key, value in self.runtime_vars_dict.items():
-
-                string_data = str(value)
-                preview_info = string_data[:characters_num]
-                dict_temp.update({key: {"type: ": type(value), "preview:": preview_info}})
-
-        return dict_temp
-
+            check(thread_instance=self, action=action_plan, show_prompt=False)
 
     def run(self) -> None:
         # start the code thread
@@ -151,5 +125,3 @@ class Thread(ThreadBase):
 
         # end the code thread
         thread_code.join()
-
-

@@ -30,27 +30,29 @@ class FuncBase(EnvBase):
 
         self.visible = True
 
-    """
+        self.__name = None
+        self.__intro = None
+
     @property
     def name(self):
         # return getattr(self, '__name', self.func.__name__)
 
-        return self.name
+        return self.__name
 
     @name.setter
     def name(self, value):
-        self.name = value
+        self.__name = value
 
     @property
     def intro(self):
         # return getattr(self, '__intro', self.func.__doc__)
 
-        return self.intro
+        return self.__intro
 
     @intro.setter
     def intro(self, value):
-        self.intro = value
-    """
+        self.__intro = value
+
     @property
     def func(self):
         return self.__func
