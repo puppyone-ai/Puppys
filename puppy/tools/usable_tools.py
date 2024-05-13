@@ -1,6 +1,6 @@
 from puppy.tools.defaultTools.send_message_to_human import SendMessageToHuman
 from puppy.tools.defaultTools.search_native import SearchNative
-from puppy.tools.defaultTools.chat_llm import ChatLLM
+from puppy.tools.defaultTools.large_language_model import LangeLanguageModel
 from puppy.thread.base import ThreadBase
 from puppy.environment.base import EnvBase
 
@@ -33,7 +33,7 @@ class UsableTools(EnvBase):
         self.usable_tools_dict = {}
 
         # the default tools
-        self.default_tools = [ChatLLM, SearchNative, SendMessageToHuman]
+        self.default_tools = [SendMessageToHuman(self.__thread_instance), SearchNative(), LangeLanguageModel()]
 
         # TODO: Search path to collect all the default funcs
 
@@ -43,15 +43,25 @@ class UsableTools(EnvBase):
 
     @property
     def usable_tools(self):
+
+        return self.usable_tools_dict
         import json
         return json.dumps(self.usable_tools_dict, indent=4)
+
+    @property
+    def detail(self):
+        tools_list=[]
+        for tool in self.default_tools:
+            tools_list.append({tool.name: tool.intro})
+
+        return (tools_list)
 
     # once a tool_instance has been loaded into the list, we make a global func
     def load_tool(self, tool):
 
         self.usable_tools_dict.update({tool.name: tool.intro})
 
-        self.__thread_instance.exec_environment.update({tool.name: tool.func})
+        self.__thread_instance.vars_dict.update({tool.name: tool.func})
 
     def remove_tool(self, name):
 
