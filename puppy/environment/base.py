@@ -22,11 +22,6 @@ class EnvBase:
         # if this var is default visible for .expose() or not
         self.__visibility = visible if visible is not None else False
 
-    # preview, return the top k characters of the value of this env by calling itself
-    @property
-    def preview(self, characters_num=100):
-        return str(self)[:characters_num]
-
     @property
     def visible(self):
         return self.__visibility
@@ -90,8 +85,12 @@ class EnvBase:
         instance = env_example
         setattr(self, env_example.name, instance)
 
-def new_env(*args, **kwargs):
-    return EnvBase(*args, **kwargs)
+    # resolve the warning for dynamic attribute access
+    # def __getattribute__(self, item):
+    #     try:
+    #         return super().__getattribute__(item)
+    #     except AttributeError as e:
+    #         print(e)
 
 
 if __name__ == "__main__":

@@ -25,13 +25,12 @@ class SearchNative(FuncBase):
         self.name = "search_native"
         self.func = self.search_native
         self.intro = """
-Search Engine, use it when you want to search something from websites with a SPECIFIC QUESTION.
-The result will be text-based answer with citations.
+        Search Engine, use it when you want to search something from perplexity online
 
-for example:
-## search the query
-query = "how should I install the package of openAI"
-searchResults = search_native(query)
+        for example:
+        ## search the query
+        query = "how should I install the package of openAI"
+        searchResults = search_native(query)
         """
 
     @staticmethod
@@ -41,8 +40,8 @@ searchResults = search_native(query)
             {
                 "role": "system",
                 "content": (
-                    """You are an artificial intelligence assistant and you need to 
-                    engage in a helpful, detailed, polite conversation with a user."""
+                    "You are an artificial intelligence assistant and you need to "
+                    "engage in a helpful, detailed, polite conversation with a user."
                 ),
             },
             {

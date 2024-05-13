@@ -45,9 +45,8 @@ def _check_status(action) -> None:
 
     if ".do()" in action.code:
 
-        if action.name == '':
+        if not action.code:
             action.status = "changeable"
-
         else:
             action.status = "semi-fixed"
 
