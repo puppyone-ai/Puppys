@@ -20,12 +20,19 @@ def pending_list():
     # read the data from the csv files and put them into dataframes.
     Mei.do()
 
+
     ## explore the data, check the first 5 rows of the dataframes and print them @python, and send to me
     Mei.do()
     send_message_to_human(top_five_rows)
 
-    ## generate code to calculate the correlation function between BTC and ETH price. @python
-    # plot the correlation, don't display the figure, save it to the folder "crypto_analysis"
+
+    ## set and import the plotly library
+    import matplotlib
+    matplotlib.use('Agg')  # Use the 'Agg' backend for non-GUI use
+
+
+    ## calculate the correlation function between BTC and ETH price.
+    # plot the correlation, and save the figure"
     Mei.do()
 
 
