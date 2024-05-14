@@ -1,6 +1,4 @@
 from puppy.environment.func import FuncBase
-from puppy.llm.openAI import open_ai_chat
-import os
 from litellm import completion
 
 

@@ -42,13 +42,6 @@ class UsableTools(EnvBase):
         return self.__thread_instance
 
     @property
-    def usable_tools(self):
-
-        return self.usable_tools_dict
-        import json
-        return json.dumps(self.usable_tools_dict, indent=4)
-
-    @property
     def detail(self):
         tools_list=[]
         for tool in self.default_tools:
@@ -61,7 +54,7 @@ class UsableTools(EnvBase):
 
         self.usable_tools_dict.update({tool.name: tool.intro})
 
-        self.__thread_instance.vars_dict.update({tool.name: tool.func})
+        self.__thread_instance.runtime_vars_dict.update({tool.name: tool.func})
 
     def remove_tool(self, name):
 
