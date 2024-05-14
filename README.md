@@ -26,13 +26,13 @@
 
 <div align="center">
 
-**-------------  🔥 Version 0.0.21 (30-April-2024):  -------------**
+**-------------  🔥 Version 0.0.22 (14-May-2024):  -------------**
 
 </div>
 
-1. **Updated FuncBase**: An easier way to create your func in agent's env
-2. **Redisigned tool_box**: usable_tools is a default env in thread.
-2. **Fixed bugs**: Fixed the bug of prompt and the func of 'send_message_to_human'
+1. **Updated a New User Case**: A crypto data analysis, calculate BTC and ETH price.
+2. **New Feature**: 'previewing_before_planning', a significant and default setting of Thread.
+2. **Fixed bugs**: Fixed the bug parsing '##'.
 
 <img src="./assets/dividerBlue.png" alt="Image">
 

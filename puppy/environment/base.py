@@ -85,12 +85,9 @@ class EnvBase:
         instance = env_example
         setattr(self, env_example.name, instance)
 
-    # resolve the warning for dynamic attribute access
-    # def __getattribute__(self, item):
-    #     try:
-    #         return super().__getattribute__(item)
-    #     except AttributeError as e:
-    #         print(e)
+
+def new_env(*args, **kwargs):
+    return EnvBase(*args, **kwargs)
 
 
 if __name__ == "__main__":
@@ -114,12 +111,14 @@ if __name__ == "__main__":
 
     print(building.expose)
 
+
     ## method 3 (Recommended, define an env method in a class)
     class Building(EnvBase):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
 
             self.floor_1 = EnvBase(name='floor_1', visible=True)
+
 
     building = Building(name='building', visible=True)
     print(building.expose)

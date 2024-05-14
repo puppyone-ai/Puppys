@@ -1,7 +1,6 @@
 from puppy.environment.func import FuncBase
 from openai import OpenAI
 import os
-import requests
 
 
 class SearchNative(FuncBase):
