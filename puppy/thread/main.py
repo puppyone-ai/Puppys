@@ -1,7 +1,7 @@
 from .base import ThreadBase
 from puppy.thread.actionflow.actionflow import Actionflow
 from puppy.thread.do import plan_next_action, check_if_action_achieved, achieve_action
-from puppy.utils.std import redirected_stdout
+from contextlib import redirect_stdout, redirect_stderr
 from puppy.tools.usable_tools import UsableTools
 from puppy.environment.base import EnvBase
 
@@ -24,7 +24,8 @@ class Thread(ThreadBase):
         self.runtime_vars_dict = {}
         self.runtime_vars_dict.update({'self': self})
 
-        self.buffer = io.StringIO()
+        self.output_buffer = io.StringIO()
+        self.error_buffer = io.StringIO()
 
         # import the actionflow as an env_var that running all actions
         self.actionflow = Actionflow(thread_instance=self)
@@ -82,7 +83,7 @@ class Thread(ThreadBase):
 
                 # STEP 2.2: check if the action is fixed, semi-fixed, or changeable, and run sequentially
                 if action.status == "fixed":
-                    exec(action.code, self.exec_context)
+                    self.thread_exec(action.code)
                     self.actionflow.history_list.put_action(action)
 
                 elif action.status == "semi-fixed":
@@ -106,9 +107,8 @@ class Thread(ThreadBase):
             # generate and write the code that can achieve the given action
             action_plan = achieve_action(thread_instance=self, action=attention, show_prompt=False)
 
-            # execute the generated code in thread's environment and redirect the stdout to the buffer
-            with redirected_stdout(self.buffer):
-                self.thread_exec(action_plan.code)
+            # execute the generated code in thread's environment
+            self.thread_exec(action_plan.code)
 
             self.actionflow.history_list.put_action(action_plan)
 
@@ -118,7 +118,9 @@ class Thread(ThreadBase):
             self.thread_exec(check_code)
 
     def thread_exec(self, code):
-        exec(code, self.global_var_dict, self.runtime_vars_dict)
+        # redirect the stdout to the buffer
+        with redirect_stdout(self.output_buffer), redirect_stderr(self.error_buffer):
+            exec(code, self.global_var_dict, self.runtime_vars_dict)
 
     @property
     def vars_preview(self, characters_num=200):

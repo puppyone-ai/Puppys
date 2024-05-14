@@ -101,20 +101,21 @@ def check_if_action_achieved(thread_instance: ThreadBase, action: Action, show_p
     prompt = [
         # 1. define your agent type and name
         {"role": "system",
-"content": f""" You are an AI code assistant agent. 1. You always write Python code! You are really good at it. Your 
- natural language output should be written as comment in python code. for example: # Hello, I am an assistant. 2. 
- DON'T ASSUME you know any unclear knowledge or information that you don't know. DON'T ASSUME that you have 
- non-existent functions or hypothetical function. Your code will be run immediately after you write it. If you assume 
- any hypothetical function, the system will crash. 3. You need to justify if your current action has been achieved or 
- not by history code, and decide to skip the current action or not. 4. You only need to decide if your current action 
- has been achieved or not. You don't need to write code to achieve it."""},
+"content": f""" 
+You are an AI code assistant agent. 1. You always write Python code! You are really good at it. Your 
+natural language output should be written as comment in python code. for example: # Hello, I am an assistant. 2. 
+DON'T ASSUME you know any unclear knowledge or information that you don't know. DON'T ASSUME that you have 
+non-existent functions or hypothetical function. Your code will be run immediately after you write it. If you assume 
+any hypothetical function, the system will crash. 3. You need to justify if your current action has been achieved or 
+not by history code, and decide to skip the current action or not. 4. You only need to decide if your current action 
+has been achieved or not. You don't need to write code to achieve it."""},
 
         # 2. set the standard of if the action is done or not
         {"role": "system",
- "content": f""" You justify if your current action is done or not, you have two choices: 1. Done: That means 
- you don't need to write code to achieve it again. The action history shows that you have already know what 
- you want to know or have already achieve the action. In this case, you should write Python code to return 
- Ture, and your generated code should be: finishedOrNot=True
+"content": f""" You justify if your current action is done or not, you have two choices: 1. Done: That means 
+you don't need to write code to achieve it again. The action history shows that you have already know what 
+you want to know or have already achieve the action. In this case, you should write Python code to return 
+Ture, and your generated code should be: finishedOrNot=True
 
 2. Unfinished: That means you need to write code to achieve it again, or there are some unfinished actions that you 
 need to make . In this case, you should write Python code to return False, and the your generated code should be: 
@@ -143,7 +144,7 @@ finishedOrNot=True"""},
 
         # 3. provide the goal, current action, code history, code future, environment, knowledge
         {"role": "system",
- "content": f"""
+"content": f"""
 You have an overall long-term goal: {thread_instance.goal},  and your current action is:
 {thread_instance.actionflow.on_going.name}
 
@@ -159,7 +160,7 @@ your formally-defined parameters and their previewing are as follows:
 
         # 4. justify if the action is done or not
         {"role": "user",
- "content": f"""
+"content": f"""
 Now you need to write code to justify if the action is done or not: \n{action.code}
 Your answer is:
 """}
@@ -196,12 +197,12 @@ def achieve_action(thread_instance: ThreadBase, action: Action, show_prompt: boo
         {"role": "system",
 "content": f""" You are an AI code assistant agent. 
 1. You always write Python code! You are really good at it. Your natural language output should be written as comment in python code.
- for example: # Hello, I am an assistant. 
- 2. DON'T ASSUME you know any unclear knowledge or information that you don't know. DON'T 
- ASSUME that you have non-existent functions or hypothetical function. Your code will be run immediately 
- after you write it. If you assume any hypothetical function, the the system will crash. 
- 3. If you cannot do the action, you are allowed to send message to user for help.
- 4. Your response cannot only be comment. You HAVE to write codes"""},
+for example: # Hello, I am an assistant. 
+2. DON'T ASSUME you know any unclear knowledge or information that you don't know. DON'T 
+ASSUME that you have non-existent functions or hypothetical function. Your code will be run immediately 
+after you write it. If you assume any hypothetical function, the the system will crash. 
+3. If you cannot do the action, you are allowed to send message to user for help.
+4. Your response cannot only be comment. You HAVE to write codes"""},
 
         # 2. provide the goal, current action, code history, code future, environment, knowledge
         {"role": "system",
@@ -212,17 +213,22 @@ You have an overall long-term goal: {thread_instance.goal},  and your current ac
 The code for historical actionflow shown as code are(they have been run before):
 {thread_instance.actionflow.get_code(history=True)}
 
+The previous code generated some output, and you can check the output to help you to achieve the action:
+{thread_instance.output_buffer.getvalue()+thread_instance.error_buffer.getvalue()}
+
 The code of action in the future are(But you don't need to do this part now, just for your information)):
 {thread_instance.actionflow.get_code(pending=True, current=True)}
 
 The code you generate will be run, and your formally-defined parameters and their previewing are as follows: 
 {thread_instance.vars_preview}
+
 """},
 
         # 3. provide the functions description and example, and knowledge
         {"role": "system",
-         "content": f""" You are allowed to use the given functions below. But make sure that you have imported the 
- given package.
+"content": f""" 
+You are allowed to use the given functions below. But make sure that you have imported the 
+given package.
 
 Your customized functions and their examples are:
 {thread_instance.tool_box.detail}
@@ -232,12 +238,13 @@ for this step to accomplish the action.
 For example: (current action: search the location of the NBA in 2019@ google search @zhihu search)
 response:
 # To answer where is the NBA in 2019, I need to search the information about NBA in 2019. The function returns as a string.
-location=google_search("Where is the NBA in 2019"
+location= google_search("Where is the NBA in 2019"
 location= zhihu_search("Where is the NBA in 2019")"""},
 
         # 4. provide the code of the action
         {"role": "user",
- "content": f""" user have already write some code for this action, but it's not finished. You should replace the XXX.do() part.
+"content": f""" 
+user have already write some code for this action, but it's not finished. You should replace the XXX.do() part.
 Don't keep the .do() function after your response. The XXX is your name, and the .do() is an instruction of 'you must write code and put it here'.
 User's code:
 {action.code}
