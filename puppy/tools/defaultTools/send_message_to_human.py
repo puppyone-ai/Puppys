@@ -38,7 +38,6 @@ send_message_to_human("\U0001F600: What's the phone number of your boss?")
 
         with recover_stdout():
             user_input = input(question + "\n" + "Your response:")
-            print("\U0001F600: Sure, get it.")
 
         chat_history = "\n" + "your message:" + question + "\n" + "# User's response: " + user_input + "\n"
 
