@@ -25,11 +25,11 @@ class LangeLanguageModel(FuncBase):
         self.func = self.lange_language_model
         self.intro = """
 ChatGPT, GPT4 or GPT3.5,
-ues it when summarizing text, HTML etc. Or generate text, answer question based on a reference. etc.
+Good at summarizing, retrieving, finding information, generating text, and answer question based on a reference. etc.
 
 For example:
 ## summarizing the web based on the html
-prompt = f"summarize this web based on the document of its website HTML: {self.html}"
+prompt = f"What does this shows: {self.html}"
 result = gpt(prompt=prompt)
 """
 
