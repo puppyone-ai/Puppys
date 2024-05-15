@@ -45,7 +45,7 @@ Our solution is that, actionflow is as a list in the environment, which need to 
 Unlike previous agent frameworks, we placed the workflow within the environment, to be parsed by the decision tree, rather than a default flow.
 
 <div align="center">
-<img src="./assets/AgentRPA.png" alt="Image">
+<img src="./assets/AgentRPA.png" alt="Image" width="900">
 </div>
 
 ## Building an agent just like building a Turing machine
@@ -56,7 +56,7 @@ When programming an agent, what exactly are we programming?
 To enable the agent to make the correct decisions upon encountering a specific state, we should define its **finite state machine (decision tree)**, and we might also need to define the **environment (tape)** in which the agent operates.
 
 <div align="center">
-<img src="./assets/decisionTree_Enviroment.png" alt="Image">
+<img src="./assets/decisionTree_Enviroment.png" alt="Image" width="900">
 </div>
 
 
