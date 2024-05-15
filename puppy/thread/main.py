@@ -1,6 +1,6 @@
 from .base import ThreadBase
 from puppy.thread.actionflow.actionflow import Actionflow
-from puppy.thread.do import plan_next_action, check_if_action_achieved, achieve_action
+from puppy.thread.do import plan_next_action, check_if_action_achieved, achieve_action, achieve_action_new
 from puppy.utils.std import redirected_stdout
 from puppy.tools.usable_tools import UsableTools
 from puppy.environment.base import EnvBase
@@ -104,7 +104,7 @@ class Thread(ThreadBase):
 
         while self.runtime_vars_dict["finishedOrNot"] is not True:
             # generate and write the code that can achieve the given action
-            action_plan = achieve_action(thread_instance=self, action=attention, show_prompt=False)
+            action_plan = achieve_action_new(thread_instance=self, action=attention, show_prompt=True)
 
             # execute the generated code in thread's environment and redirect the stdout to the buffer
             with redirected_stdout(self.buffer):
@@ -121,7 +121,7 @@ class Thread(ThreadBase):
         exec(code, self.global_var_dict, self.runtime_vars_dict)
 
     @property
-    def vars_preview(self, characters_num=200):
+    def vars_preview(self, characters_num=300):
         dict_temp = {}
 
         for key, value in self.runtime_vars_dict.items():

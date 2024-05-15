@@ -5,18 +5,18 @@ from puppy.thread.main import Thread
 
 
 # change the API key to your own
-# 显示当前工作目录
-print("当前工作目录:", os.getcwd())
+#os.environ["OPENAI_API_KEY"] = ""
 
-# 列出当前目录下的所有文件
-print("目录内容:", os.listdir('.'))
+# 显示当前工作目录
+print("current folder:", os.getcwd())
+print("content:", os.listdir('.'))
 
 
 Mei = Thread()
 
 @Mei.actionflow.update
 def pending_list():
-    ## we have "crypto_analysis/data/btc_data.csv" and "crypto_analysis/data/btc_data.csv" in a folder
+    ## we have "data/btc_data.csv" and "data/btc_data.csv" in a folder
     # read the data from the csv files and put them into dataframes.
     Mei.do()
 
@@ -37,5 +37,3 @@ def pending_list():
 
 
 Mei.run()
-
-
