@@ -154,6 +154,7 @@ The code for historical actionflow shown as code are:
 The code of action in the future are(But you don't need to do this part now, just for your information)):
 {thread_instance.actionflow.get_code(pending=True, current=True)}
 
+
 your formally-defined parameters and their previewing are as follows: 
 {thread_instance.vars_preview}"""},
 
@@ -211,6 +212,9 @@ You have an overall long-term goal: {thread_instance.goal},  and your current ac
 
 The code for historical actionflow shown as code are(they have been run before):
 {thread_instance.actionflow.get_code(history=True)}
+
+The previous code generated some output, and you can check the output to help you to achieve the action:
+{thread_instance.output_buffer.getvalue()}
 
 The code of action in the future are(But you don't need to do this part now, just for your information)):
 {thread_instance.actionflow.get_code(pending=True, current=True)}
