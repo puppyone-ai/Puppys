@@ -1,5 +1,5 @@
 from puppy.environment.func import FuncBase
-from puppy.utils.std import redirected_stdout
+from contextlib import redirect_stdout
 from puppy.thread.base import ThreadBase
 import sys
 
@@ -37,10 +37,10 @@ send_message_to_human("\U0001F600: What's the phone number of your boss?")
 
     def send_message_to_human(self, question):
 
-        with redirected_stdout(new_output=sys.__stdout__):
-            user_input = input(question + "\n" + "Your response:")
+        with redirect_stdout(sys.__stdout__):
+            user_input = input(str(question) + "\n" + "Your response:")
 
-        chat_history = "\n" + "your message:" + question + "\n" + "# User's response: " + user_input + "\n"
+        chat_history = "\n" + "your message:" + str(question) + "\n" + "# User's response: " + user_input + "\n"
 
         # TODO: creat a thread to modify on going code
         self.thread_instance.actionflow.on_going.code += chat_history

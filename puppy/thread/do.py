@@ -174,7 +174,7 @@ Your answer is:
     print("\n\U00002705 Checking Code ##############################################################")
 
     new_code = open_ai_chat(prompt=prompt,
-                            model="gpt-4-turbo",
+                            model="gpt-4o",
                             temperature=0.1,
                             api_key=os.environ["OPENAI_API_KEY"],
                             max_tokens=4096,
@@ -214,7 +214,7 @@ The code for historical actionflow shown as code are(they have been run before):
 {thread_instance.actionflow.get_code(history=True)}
 
 The previous code generated some output, and you can check the output to help you to achieve the action:
-{thread_instance.output_buffer.getvalue()+thread_instance.error_buffer.getvalue()}
+{thread_instance.output_buffer.getvalue()}
 
 The code of action in the future are(But you don't need to do this part now, just for your information)):
 {thread_instance.actionflow.get_code(pending=True, current=True)}
@@ -268,7 +268,7 @@ be similar with the example(ONLY CODE) and NOTHING ELSE. """}]
             print(chunk['content'])
 
     new_code = open_ai_chat(prompt=prompt,
-                            model="gpt-4-turbo",
+                            model="gpt-4o",
                             temperature=0.1,
                             api_key=os.environ["OPENAI_API_KEY"],
                             max_tokens=4096,

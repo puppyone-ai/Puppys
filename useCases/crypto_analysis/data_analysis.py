@@ -2,14 +2,15 @@ import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+
+
 from puppy.thread.main import Thread
 
 Mei = Thread()
 
-
 @Mei.actionflow.update
 def pending_list():
-    ## we have "crypto_analysis/data/btc_data.csv" and "crypto_analysis/data/btc_data.csv" in a folder
+    ## we have "data/btc_data.csv" and "data/btc_data.csv" in a folder
     # read the data from the csv files and put them into dataframes.
     Mei.do()
 
