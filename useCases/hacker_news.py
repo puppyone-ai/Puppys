@@ -15,7 +15,7 @@ def pending_list():
     ## go to https://news.ycombinator.com/ show me the HTML
     hacker_news.do()
 
-    ## show the top 10 news @gpt, and send message to me
+    ## show the top 10 news @gpt, and send it to me
     hacker_news.do()
 
     ## pick the news that related to Large Language Models, summarize all the news, and show it to me
