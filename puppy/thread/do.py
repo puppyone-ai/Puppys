@@ -173,7 +173,7 @@ Your answer is:
     print("\U00002705 Checking Code ##############################################################")
 
     new_code = open_ai_chat(prompt=prompt,
-                            model="gpt-4o",
+                            model="gpt-4-turbo",
                             temperature=0.1,
                             api_key=os.environ["OPENAI_API_KEY"],
                             max_tokens=4096,
@@ -269,7 +269,7 @@ be similar with the example(ONLY CODE) and NOTHING ELSE. """}]
             print(chunk['content'])
 
     new_code = open_ai_chat(prompt=prompt,
-                            model="gpt-4o",
+                            model="gpt-4-turbo",
                             temperature=0.1,
                             api_key=os.environ["OPENAI_API_KEY"],
                             max_tokens=4096,
