@@ -5,7 +5,7 @@ import sys
 
 
 class SendMessageToHuman(FuncBase):
-    def __init__(self, thread_instance=None, *args, **kwargs):
+    def __init__(self, thread_instance, *args, **kwargs):
 
         """
         {
@@ -43,7 +43,7 @@ class SendMessageToHuman(FuncBase):
 
         chat_history = "\n" + "your message:" + str(question) + "\n" + "# User's response: " + user_input + "\n"
 
-        # TODO: creat a thread to modify on going code
+        # TODO: create a thread to modify on going code
         self.__thread_instance.actionflow.on_going.code += chat_history
 
 
