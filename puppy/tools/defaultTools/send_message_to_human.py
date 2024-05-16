@@ -4,7 +4,6 @@ from puppy.thread.base import ThreadBase
 import sys
 
 
-
 class SendMessageToHuman(FuncBase):
     def __init__(self, thread_instance, *args, **kwargs):
 
@@ -46,7 +45,6 @@ send_message_to_human("\U0001F600: What's the phone number of your boss?")
 
         # TODO: create a thread to modify on going code
         self.__thread_instance.actionflow.on_going.code += chat_history
-
 
 
 if __name__ == "__main__":
