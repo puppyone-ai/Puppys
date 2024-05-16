@@ -18,7 +18,7 @@ def pending_list():
     ## show the top 10 news @gpt, and send message to me
     hacker_news.do()
 
-    ## pick the news that related to Large Language Models, summerize all the news, and show it to me
+    ## pick the news that related to Large Language Models, summarize all the news, and show it to me
     hacker_news.do()
 
 hacker_news.run()
