@@ -1,4 +1,7 @@
-from zhipuai import ZhipuAI
+try:
+    from zhipuai import ZhipuAI
+except ImportError:
+    ...
 import os
 
 # using Zhipu API model
