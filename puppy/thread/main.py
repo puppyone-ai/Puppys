@@ -1,7 +1,10 @@
 from .base import ThreadBase
 from puppy.thread.actionflow.actionflow import Actionflow
+
 from puppy.thread.do import plan_next_action, check_if_action_achieved, achieve_action
 from contextlib import redirect_stdout, redirect_stderr
+
+
 from puppy.tools.usable_tools import UsableTools
 from puppy.environment.base import EnvBase
 
@@ -99,41 +102,24 @@ class Thread(ThreadBase):
 
     def _do(self, attention) -> None:
 
-        # set the finishedOrNot to False before all starts
         self.runtime_vars_dict["finishedOrNot"] = False
 
         # try action till this action has been achieved
-        while self.runtime_vars_dict["finishedOrNot"] is not True:
 
+        while self.runtime_vars_dict["finishedOrNot"] is not True:
             # generate and write the code that can achieve the given action
-            action_plan = achieve_action(thread_instance=self, action=attention, show_prompt=True)
+            action_plan = achieve_action_new(thread_instance=self, action=attention, show_prompt=False)
 
             # execute the generated code in thread's environment
             self.thread_exec(action_plan.code)
 
-            # check if the code has been run successfully
-            if self.error_buffer.getvalue() == '':
+            self.actionflow.history_list.put_action(action_plan)
 
-                # put the action into the history list
-                self.actionflow.history_list.put_action(action_plan)
+            # check the action, return 'finishOrNot= True / False'
+            check_code = check_if_action_achieved(thread_instance=self, action=action_plan, show_prompt=False)
 
-                # if the code has no error, check if the action is achieved, return 'finishOrNot= True / False'
-                check_code = check_if_action_achieved(thread_instance=self, action=action_plan, show_prompt=False)
-                self.thread_exec(check_code)
+            self.thread_exec(check_code)
 
-            else:
-                # if the code has error, add the error message to the action_plan
-                action_plan.code += f'\n# Error: {self.error_buffer.getvalue()}'
-
-                # put the action into the history list
-                self.actionflow.history_list.put_action(action_plan)
-
-                # clear the error buffer, to avoid the error message from the last run
-                self.error_buffer.seek(0)
-                self.error_buffer.truncate()
-
-                # do the action again
-                self._do(self.actionflow.on_going)
 
     def thread_exec(self, code):
         # redirect the stdout and stderr to the buffer
@@ -142,7 +128,7 @@ class Thread(ThreadBase):
             exec(code, self.global_var_dict, self.runtime_vars_dict)
 
     @property
-    def vars_preview(self, characters_num=200):
+    def vars_preview(self, characters_num=300):
         dict_temp = {}
 
         for key, value in self.runtime_vars_dict.items():

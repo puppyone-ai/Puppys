@@ -3,6 +3,9 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
+# change the API key to your own
+#os.environ["OPENAI_API_KEY"] = ""
+
 
 from puppy.thread.main import Thread
 
@@ -28,5 +31,3 @@ def pending_list():
 
 
 Mei.run()
-
-
