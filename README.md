@@ -36,20 +36,6 @@
 
 <img src="./assets/dividerBlue.png" alt="Image">
 
-## Hybrid solution of Agent and RPA
-
-**Agents** can do tasks by themselves and work in many situations, but only be able to solve very simple problems.
-**RPA** (Robotic Process Automation), on the other hand, can handle complex tasks but isn't very flexible. So, here is a question: **what if we make a hybrid agent that mix the advantages of agents and RPA?** Could this idea work?
-
-Our solution is that, actionflow is as a list in the environment, which need to be interpreted by a decision tree.
-Unlike previous agent frameworks, we placed the workflow within the environment, to be parsed by the decision tree, rather than a default flow.
-
-Giving the agent a confined environment, and 
-
-<div align="center">
-<img src="./assets/AgentRPA.png" alt="Image" width="800">
-</div>
-
 ## Building an agent just like building a Turing machine
 
 
@@ -64,6 +50,21 @@ The advantage is that by defining a confined environment, we can effectively exp
 <div align="center">
 <img src="./assets/decisionTree_Enviroment.png" alt="Image" width="800">
 </div>
+
+## Hybrid solution of Agent and RPA
+
+**Agents** can do tasks by themselves and work in many situations, but only be able to solve very simple problems.
+**RPA** (Robotic Process Automation), on the other hand, can handle complex tasks but isn't very flexible. So, here is a question: **what if we make a hybrid agent that mix the advantages of agents and RPA?** Could this idea work?
+
+Our solution is that, actionflow is as a list in the environment, which need to be interpreted by a decision tree.
+Unlike previous agent frameworks, we placed the workflow within the environment, to be parsed by the decision tree, rather than a default flow.
+
+Giving the agent a confined environment, and 
+
+<div align="center">
+<img src="./assets/AgentRPA.png" alt="Image" width="800">
+</div>
+
 
 
 ## Agent's planning: Talk is shit, show me your code!
