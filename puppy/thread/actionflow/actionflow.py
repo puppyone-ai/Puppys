@@ -3,6 +3,8 @@ from puppy.thread.base import ThreadBase
 from puppy.thread.actionflow.action import Action
 from puppy.utils.parse import parse_code2list
 
+import queue
+
 
 # the intermediate env for governing the actionflow in the thread
 class Actionflow(EnvBase):
@@ -28,7 +30,8 @@ class Actionflow(EnvBase):
         self.pending_list = ActionflowList(name="pending_list", intro="a list of pending actions", visible=True)
         self.current_list = ActionflowList(name="current_list", intro="a list of current actions", visible=True)
         self.history_list = ActionflowList(name="history_list", intro="a list of history actions", visible=True)
-        self.on_going = Action(name="on_going", intro="the action that is currently running", visible=True)
+
+        self.on_going = queue.Queue()
 
     @property
     def flow_dict(self):
@@ -79,7 +82,7 @@ class Actionflow(EnvBase):
                 flow.clear()
 
         # clear the on_going
-        self.on_going = Action(name="on_going", intro="the action that is currently running", visible=True)
+        self.on_going = queue.Queue()
 
     # as a shortcut to print actionflow when running
     def show_status(self) -> None:

@@ -93,7 +93,7 @@ response:
     return action_refined
 
 
-def check_if_action_achieved(thread_instance: ThreadBase, action: Action, show_prompt: bool = False) -> str:
+def check_if_action_achieved(thread_instance: ThreadBase, action: Action, show_prompt: bool = False) -> None:
     """
     check the action and write corresponding code
     """

@@ -22,11 +22,6 @@ class EnvBase:
         # if this var is default visible for .expose() or not
         self.__visibility = visible if visible is not None else False
 
-    # preview, return the top k characters of the value of this env by calling itself
-    @property
-    def preview(self, characters_num=100):
-        return str(self)[:characters_num]
-
     @property
     def visible(self):
         return self.__visibility
