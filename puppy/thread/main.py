@@ -1,13 +1,16 @@
 from .base import ThreadBase
 from puppy.thread.actionflow.actionflow import Actionflow
-from puppy.thread.do import plan_next_action, check_if_action_achieved, achieve_action, achieve_action_new
-from puppy.utils.std import redirected_stdout
+
+from puppy.thread.do import plan_next_action, check_if_action_achieved, achieve_action
+from contextlib import redirect_stdout, redirect_stderr
+
+
 from puppy.tools.usable_tools import UsableTools
 from puppy.environment.base import EnvBase
 
 
 class Thread(ThreadBase):
-    def __init__(self, **kwargs):
+    def __init__(self, goal='', **kwargs):
 
         super().__init__()
 
@@ -15,16 +18,17 @@ class Thread(ThreadBase):
         self._naming(**kwargs)
 
         # set the  of the thread
-        self.goal = ""
+        self.goal = goal
 
-        # create a buffer and exec_environment for the thread
+        # create the buffer and exec_environment for the thread
         import io
 
         self.global_var_dict = globals()
         self.runtime_vars_dict = {}
         self.runtime_vars_dict.update({'self': self})
 
-        self.buffer = io.StringIO()
+        self.output_buffer = io.StringIO()
+        self.error_buffer = io.StringIO()
 
         # import the actionflow as an env_var that running all actions
         self.actionflow = Actionflow(thread_instance=self)
@@ -32,7 +36,7 @@ class Thread(ThreadBase):
         # import the toolbox as an env_var that involves all default functions
         self.tool_box = UsableTools(thread_instance=self)
 
-        print(f"{self.thread_name}: Initialize and Done \U0001F3B2")
+
 
     # naming the thread with args
     def _naming(self, **kwargs) -> None:
@@ -48,8 +52,7 @@ class Thread(ThreadBase):
             print(f'Created a thread as {self.thread_name}! ')
 
         else:
-            self.thread_name = "Ur Thread"
-            print(f'Created a thread !')
+            self.thread_name = "Default Thread"
 
     # set the default decision tree for run the actionflow
     def default_decisiontree(self) -> None:
@@ -58,11 +61,12 @@ class Thread(ThreadBase):
         for tool in self.tool_box.default_tools:
             self.tool_box.load_tool(tool)
 
-        # start the actionflow
+        print(f"\U0001F3B2 Initialize Done ")
 
+        # start the actionflow
         while self.actionflow.pending_list:
 
-            print("\n\U0001F525 Actionflow Run ----------------------------------------------------------------------")
+            print("\U0001F525 New Action Run")
 
             # STEP 1: take out the action from ActionFlowPending and put into ActionFlowCurrent
 
@@ -76,13 +80,13 @@ class Thread(ThreadBase):
 
                 # STEP 2.1: load the action to ActionOnGoing (for scalability in the future version)
 
-                self.actionflow.show_status()  # print the actionflow
+                # self.actionflow.show_status()  # print the actionflow
 
                 action = self.actionflow.current_list.pop_action()
 
                 # STEP 2.2: check if the action is fixed, semi-fixed, or changeable, and run sequentially
                 if action.status == "fixed":
-                    exec(action.code, self.exec_context)
+                    self.thread_exec(action.code)
                     self.actionflow.history_list.put_action(action)
 
                 elif action.status == "semi-fixed":
@@ -104,11 +108,10 @@ class Thread(ThreadBase):
 
         while self.runtime_vars_dict["finishedOrNot"] is not True:
             # generate and write the code that can achieve the given action
-            action_plan = achieve_action_new(thread_instance=self, action=attention, show_prompt=True)
+            action_plan = achieve_action(thread_instance=self, action=attention, show_prompt=False)
 
-            # execute the generated code in thread's environment and redirect the stdout to the buffer
-            with redirected_stdout(self.buffer):
-                self.thread_exec(action_plan.code)
+            # execute the generated code in thread's environment
+            self.thread_exec(action_plan.code)
 
             self.actionflow.history_list.put_action(action_plan)
 
@@ -117,8 +120,12 @@ class Thread(ThreadBase):
 
             self.thread_exec(check_code)
 
+
     def thread_exec(self, code):
-        exec(code, self.global_var_dict, self.runtime_vars_dict)
+        # redirect the stdout and stderr to the buffer
+        with redirect_stdout(self.output_buffer), redirect_stderr(self.error_buffer):
+            # execute the code
+            exec(code, self.global_var_dict, self.runtime_vars_dict)
 
     @property
     def vars_preview(self, characters_num=300):

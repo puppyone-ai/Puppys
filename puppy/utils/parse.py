@@ -10,8 +10,6 @@ def parse_code2list(source_code: str) -> list:
     """
 
     # clean source code
-
-    # clean source code
     lines = source_code.split('\n')
     striped_lines = []
 
@@ -20,7 +18,6 @@ def parse_code2list(source_code: str) -> list:
             striped_lines.append(line)
 
     # load source code to action list sequentially
-    import textwrap
 
     action_list = []
     current_indent = 0
@@ -39,7 +36,6 @@ def parse_code2list(source_code: str) -> list:
             action_list[-1].code += line_without_indent + '\n'
 
     for action in action_list:
-        print(action.code)
         _check_status(action)
 
     return action_list

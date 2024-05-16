@@ -1,6 +1,6 @@
-openai
-zhipuai
-# MinimalLLM @ git+https://github.com/EvoEvolver/MinimalLLM
+openai>=1.0.0
+litellm
+beautifulsoup4
 
 pandas
 python-dotenv

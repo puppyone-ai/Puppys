@@ -49,8 +49,6 @@ class Actionflow(EnvBase):
         def wrapper(*args, **kwargs):
             func(*args, **kwargs)
 
-        print("\n\U0001F525 Parsing the code-------------------------------------------------------------------------")
-
         # retrieve the thread goal description from the docstring of func
         import inspect
 
@@ -184,7 +182,7 @@ class ActionflowList(list, EnvBase):
         def wrapper(*args, **kwargs):
             func(*args, **kwargs)
 
-        print("\n\U0001F525 Parsing the code-------------------------------------------------------------------------")
+        #print("\n\U0001F525 Parsing the code-------------------------------------------------------------------------")
 
         import inspect
 

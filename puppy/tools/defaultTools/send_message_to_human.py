@@ -1,5 +1,8 @@
 from puppy.environment.func import FuncBase
-from puppy.utils.std import recover_stdout
+from contextlib import redirect_stdout
+from puppy.thread.base import ThreadBase
+import sys
+
 
 
 class SendMessageToHuman(FuncBase):
@@ -37,13 +40,14 @@ class SendMessageToHuman(FuncBase):
 
     def send_message_to_human(self, question):
 
-        with recover_stdout():
-            user_input = input(question + "\n" + "Your response:")
+        with redirect_stdout(sys.__stdout__):
+            user_input = input(str(question) + "\n" + "Your response:")
 
-        chat_history = "\n" + "your message:" + question + "\n" + "# User's response: " + user_input + "\n"
+        chat_history = "\n" + "your message:" + str(question) + "\n" + "# User's response: " + user_input + "\n"
 
-        # TODO: creat a thread to modify the attention code
-        self.__thread_instance.attention.code += chat_history
+        # TODO: creat a thread to modify on going code
+        self.thread_instance.actionflow.on_going.code += chat_history
+
 
 
 if __name__ == "__main__":

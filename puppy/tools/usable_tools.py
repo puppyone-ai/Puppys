@@ -43,11 +43,11 @@ class UsableTools(EnvBase):
 
     @property
     def detail(self):
-        tools_list=[]
+        tools_list = []
         for tool in self.default_tools:
             tools_list.append({tool.name: tool.intro})
 
-        return (tools_list)
+        return tools_list
 
     # once a tool_instance has been loaded into the list, we make a global func
     def load_tool(self, tool):
