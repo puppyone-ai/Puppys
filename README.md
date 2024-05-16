@@ -26,13 +26,14 @@
 
 <div align="center">
 
-**-------------  🔥 Version 0.0.22 (14-May-2024):  -------------**
+**-------------  🔥 Version 0.0.23 (16-May-2024):  -------------**
 
 </div>
 
 1. **Updated a New User Case**: A crypto data analysis, calculate BTC and ETH price.
-2. **New Feature**: 'previewing_before_planning', a significant and default setting of Thread.
-2. **Fixed bugs**: Fixed the bug parsing '##'.
+2. **Pip Install**: Now you can use pip to install the package.
+3. **New Feature**: 'previewing_before_planning', a significant and default setting of Thread.
+4. **Fixed bugs**: Fixed the bug parsing '##'. 'self' before send_message
 
 <img src="./assets/dividerBlue.png" alt="Image">
 
