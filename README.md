@@ -44,6 +44,8 @@
 Our solution is that, actionflow is as a list in the environment, which need to be interpreted by a decision tree.
 Unlike previous agent frameworks, we placed the workflow within the environment, to be parsed by the decision tree, rather than a default flow.
 
+Giving the agent a confined environment, and 
+
 <div align="center">
 <img src="./assets/AgentRPA.png" alt="Image" width="800">
 </div>
@@ -51,14 +53,31 @@ Unlike previous agent frameworks, we placed the workflow within the environment,
 ## Building an agent just like building a Turing machine
 
 
-When programming an agent, what exactly are we programming? 
+When programming an agent, what exactly are we programming?
 
-To enable the agent to make the correct decisions upon encountering a specific state, we should define its **finite state machine (decision tree)**, and we might also need to define the **environment (tape)** in which the agent operates.
+We can draw some inspiration from the history of computer science. Consider a Turing machine:
+
+We need to define its decision tree (finite state machine) and the environment (tape) in which the agent operates.
+
+The advantage is that by defining a confined environment, we can effectively explore continuous learning within a specific domain.
 
 <div align="center">
 <img src="./assets/decisionTree_Enviroment.png" alt="Image" width="800">
 </div>
 
+
+## Agent's planning: Talk is shit, show me your code!
+
+When an agent perceives its environment, thinks, and acts, what language does it use? Is it **natural language**, or **code language**?
+
+In fact, the biggest difference between an agent and an LLM is that **an LLM predicts the next token**, **an agent predicts the next action**. 
+
+An action involves both the agent’s thoughts and decisions (natural language)and its execution  (code). Therefore, we made the atomic predicted unit of (natural language * code).
+This prevents an agent from planning actions that it can never actually carry out.
+
+<div align="center">
+<img src="./assets/PuppyVsOthers.png" alt="Image" width="800">
+</div>
 
 
 
