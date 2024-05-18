@@ -22,11 +22,10 @@ def pending_list():
     send_message_to_human(top_five_rows)
 
     ## set and import the plotly library
-    import matplotlib
-    matplotlib.use('Agg')  # Use the 'Agg' backend for non-GUI use
+    import matplotlib as plt
 
     ## calculate the correlation function between BTC and ETH price.
-    # plot the correlation, and save the figure"
+    # plot the correlation, and show it to me
     Mei.do()
 
 

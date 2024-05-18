@@ -10,7 +10,7 @@ from puppy.environment.base import EnvBase
 
 
 class Thread(ThreadBase):
-    def __init__(self, goal='', **kwargs):
+    def __init__(self, goal='', print_mode='terminal', **kwargs):
 
         super().__init__()
 
@@ -21,22 +21,26 @@ class Thread(ThreadBase):
         self.goal = goal
 
         # create the buffer and exec_environment for the thread
-        import io
 
         self.global_var_dict = globals()
         self.runtime_vars_dict = {}
         self.runtime_vars_dict.update({'self': self})
 
-        self.output_buffer = io.StringIO()
-        self.error_buffer = io.StringIO()
+        import io
+        import sys
+
+        if print_mode == 'terminal':
+            self.output_buffer = sys.__stdout__
+            self.error_buffer = sys.__stderr__
+        elif print_mode == 'buffer':
+            self.output_buffer = io.StringIO()
+            self.error_buffer = io.StringIO()
 
         # import the actionflow as an env_var that running all actions
         self.actionflow = Actionflow(thread_instance=self)
 
         # import the toolbox as an env_var that involves all default functions
         self.tool_box = UsableTools(thread_instance=self)
-
-
 
     # naming the thread with args
     def _naming(self, **kwargs) -> None:
@@ -119,7 +123,6 @@ class Thread(ThreadBase):
             check_code = check_if_action_achieved(thread_instance=self, action=action_plan, show_prompt=False)
 
             self.thread_exec(check_code)
-
 
     def thread_exec(self, code):
         # redirect the stdout and stderr to the buffer
