@@ -47,8 +47,7 @@ class Thread(ThreadBase):
     def default_decisiontree(self) -> None:
 
         # load tools
-        for tool in self.tool_box.default_tools:
-            self.tool_box.load_tool(tool)
+        self.tool_box.inventory_tools()
 
         print(f"\U0001F3B2 Initialize Done ")
 

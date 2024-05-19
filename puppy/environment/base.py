@@ -88,9 +88,9 @@ class EnvBase:
 
     # Monkey Patching
     # add an existed env instance into this env instance
-    def add_env(self, env_instance: EnvBase):
-        instance = env_instance
-        setattr(self, env_instance.name, instance)
+    def add_env(self, *args):
+        for env_instance in args:
+            setattr(self, env_instance.name, env_instance)
 
     def delete_env(self,
                    env_name: str = None,
