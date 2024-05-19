@@ -1,4 +1,4 @@
-openai>=1.14.0
+openai>=1.0.0
 litellm
 beautifulsoup4
 
@@ -7,5 +7,3 @@ python-dotenv
 
 requests
 google-api-python-client
-
-reflex>=0.4.7
