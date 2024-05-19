@@ -172,11 +172,14 @@ class ActionflowList(list, EnvBase):
 
     # pop an action from the start of list
     def pop_action(self) -> Action:
-        self.delete_env(env_instance=self[0])
+        self.delete_env(self[0])
         return self.pop(0)
 
-    # (Decorator) Use to update the specific list
     def update(self, func) -> None:
+
+        """
+        This decorator is used to update the specific list
+        """
         # print("\n\U0001F525 Parsing the code-----------------------------------------------------------------------")
 
         import inspect

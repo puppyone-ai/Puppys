@@ -34,7 +34,6 @@ class UsableTools(EnvBase):
         self.usable_tools_dict = {}
 
         # the default tools
-        # self.default_tools = [SendMessageToHuman(self.__thread_instance), LangeLanguageModel()]
         self.add_env(SendMessageToHuman(self.__thread_instance), LangeLanguageModel())
 
         # TODO: Search path to collect all the default funcs
