@@ -15,48 +15,34 @@ class Thread(ThreadBase):
         super().__init__()
 
         # naming the thread
-        self._naming(**kwargs)
+        self.thread_name = kwargs['name'] if 'name' in kwargs else "Default Thread"
+        print(f'Created a thread as {self.thread_name}! ')
 
         # set the  of the thread
         self.goal = goal
 
-        # create the buffer and exec_environment for the thread
-
+        # add exec_environment for the thread
         self.global_var_dict = globals()
         self.runtime_vars_dict = {}
         self.runtime_vars_dict.update({'self': self})
 
+        # cache print from exec_environment
         import io
         import sys
 
-        if print_mode == 'terminal':
-            self.output_buffer = sys.__stdout__
-            self.error_buffer = sys.__stderr__
-        elif print_mode == 'buffer':
-            self.output_buffer = io.StringIO()
-            self.error_buffer = io.StringIO()
+        self.output_buffer = sys.__stdout__
+        self.error_buffer = sys.__stderr__
+
+        if 'print_mode' in kwargs:
+            if kwargs['print_mode'] == 'buffer':
+                self.output_buffer = io.StringIO()
+                self.error_buffer = io.StringIO()
 
         # import the actionflow as an env_var that running all actions
         self.actionflow = Actionflow(thread_instance=self)
 
         # import the toolbox as an env_var that involves all default functions
         self.tool_box = UsableTools(thread_instance=self)
-
-    # naming the thread with args
-    def _naming(self, **kwargs) -> None:
-        # if 'puppy' in kwargs:
-        #     self.puppy = kwargs['puppy']
-        #     self.puppy_name = self.puppy.puppy_name
-        # else:
-        # self.puppy_name = "Mei"  # the name is essential in the prompt
-
-        #
-        if 'name' in kwargs:
-            self.thread_name = kwargs['name']
-            print(f'Created a thread as {self.thread_name}! ')
-
-        else:
-            self.thread_name = "Default Thread"
 
     # set the default decision tree for run the actionflow
     def default_decisiontree(self) -> None:
