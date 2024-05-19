@@ -32,13 +32,23 @@ class EnvBase:
 
     """
     vars(self): (current level) all 
-    self.detail: (current level) non-private 
-    self.expose: (hierarchy) non-private 
+    detail: (current level) non-private 
+    expose: (hierarchy) non-private 
     """
 
-    # show non-private attributes under this env
     @property
-    def detail(self):
+    def detail_dict(self) -> dict:
+        return self._show_detail()
+
+    @property
+    def detail_json(self) -> str:
+        import json
+        return json.dumps(self._show_detail())
+
+    def _show_detail(self) -> dict:
+        """
+        This method is used to show all non-private attributes under this env
+        """
 
         non_private_dict = {}
 
@@ -51,39 +61,45 @@ class EnvBase:
 
         return non_private_dict
 
-    # recursively show non-private attributes under this env
-    @property
-    def expose(self):
+    def expose(self, as_json: bool = False) -> [dict, str]:
+        """
+        This method is used to show all non-private attributes under this env
+        """
 
         view_dict = {}
 
-        for key, value in self.detail.items():
+        for key, value in self.detail_dict.items():
 
             if isinstance(value, EnvBase) is False:  # if target is an env or default var
                 view_dict.update({key: value})
             else:
-                view_dict.update({key: value.expose})
+                view_dict.update({key: value.expose()})
 
-        # TODO: rewrite the output format as json
+        import json
 
-        # import json
-        #
-        # return json.dumps(view_dict, indent=4)
-
-        return view_dict
+        return view_dict if as_json is False else json.dumps(view_dict)
 
     # Monkey Patching
     # create a new env instance in this env instance
     def create_new_env(self, *args, **kwargs):
 
-        instance = EnvBase(*args, **kwargs, parent=self)
-        setattr(self, kwargs['name'], instance)
+        instance = EnvBase(*args, **kwargs)
+        setattr(self, instance.name, instance)
 
     # Monkey Patching
     # add an existed env instance into this env instance
-    def add_new_env(self, env_example: EnvBase):
-        instance = env_example
-        setattr(self, env_example.name, instance)
+    def add_env(self, env_instance: EnvBase):
+        instance = env_instance
+        setattr(self, env_instance.name, instance)
+
+    def delete_env(self,
+                   env_name: str = None,
+                   env_instance: EnvBase = None):
+        if env_name is not None:
+            delattr(self, env_name)
+
+        if env_instance is not None:
+            delattr(self, env_instance.name)
 
 
 def new_env(*args, **kwargs):
@@ -100,16 +116,16 @@ if __name__ == "__main__":
 
     floor_1 = EnvBase(name='floor_1', visible=True)
 
-    building.add_new_env(floor_1)
+    building.add_env(floor_1)
 
-    print(building.expose)
+    print(building.expose())
 
     ## method 2 (with 'create_new_env' monkey patching)
     building = EnvBase(name='building', visible=True)
 
     building.create_new_env(name='floor_1', visible=True)
 
-    print(building.expose)
+    print(building.expose())
 
 
     ## method 3 (Recommended, define an env method in a class)
@@ -121,4 +137,4 @@ if __name__ == "__main__":
 
 
     building = Building(name='building', visible=True)
-    print(building.expose)
+    print(building.expose())

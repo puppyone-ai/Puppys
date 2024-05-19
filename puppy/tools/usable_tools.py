@@ -42,7 +42,7 @@ class UsableTools(EnvBase):
         return self.__thread_instance
 
     @property
-    def detail(self):
+    def detail_dict(self):
         tools_list = []
         for tool in self.default_tools:
             tools_list.append({tool.name: tool.intro})

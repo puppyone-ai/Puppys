@@ -4,7 +4,6 @@ from puppy.thread.actionflow.actionflow import Actionflow
 from puppy.thread.do import plan_next_action, check_if_action_achieved, achieve_action
 from contextlib import redirect_stdout, redirect_stderr
 
-
 from puppy.tools.usable_tools import UsableTools
 from puppy.environment.base import EnvBase
 
@@ -70,7 +69,7 @@ class Thread(ThreadBase):
 
                 # STEP 2.1: load the action to ActionOnGoing (for scalability in the future version)
 
-                # self.actionflow.show_status()  # print the actionflow
+                self.actionflow.show_status()  # print the actionflow
 
                 action = self.actionflow.current_list.pop_action()
 
