@@ -54,10 +54,10 @@ You have an overall long-term goal: {thread_instance.goal},  and your current ac
 {thread_instance.actionflow.on_going.name}
 
 The code for historical actionflow shown as code are:
-{thread_instance.actionflow.get_code(history=True)}
+{thread_instance.actionflow.get_code('history_list')}
 
 The code of action in the future are(But you don't need to do this part now, just for your information)):
-{thread_instance.actionflow.get_code(pending=True, current=True)}
+{thread_instance.actionflow.get_code('pending_list, current_list')}
 
 your formally-defined parameters and their previewing are as follows: 
 {thread_instance.vars_preview}"""},
@@ -149,10 +149,10 @@ You have an overall long-term goal: {thread_instance.goal},  and your current ac
 {thread_instance.actionflow.on_going.name}
 
 The code for historical actionflow shown as code are:
-{thread_instance.actionflow.get_code(history=True)}
+{thread_instance.actionflow.get_code('history_list')}
 
 The code of action in the future are(But you don't need to do this part now, just for your information)):
-{thread_instance.actionflow.get_code(pending=True, current=True)}
+{thread_instance.actionflow.get_code('pending_list', 'current_list')}
 
 your formally-defined parameters and their previewing are as follows: 
 {thread_instance.vars_preview}"""},
@@ -217,7 +217,7 @@ f"""The code you generate will be run, and your formally-defined parameters and 
 You are allowed to use the given functions below. But make sure that you write code to import the given package.
 
 Your customized functions and their examples are:
-{thread_instance.tool_box.detail}
+{thread_instance.tool_box.tool_dict}
  """},
 
 
@@ -228,7 +228,7 @@ f"""You have an overall long-term goal: {thread_instance.goal},  and your curren
 {thread_instance.actionflow.on_going.name}
 
 The code for historical actionflow shown as code are(they have been run before):
-{thread_instance.actionflow.get_code(history=True)}
+{thread_instance.actionflow.get_code('history_list')}
 
 Now you write code to achieve your action(Note that the tools after@ is recommended tools, if it exists): 
 {action.name}
@@ -239,7 +239,7 @@ User's code:
 {action.code}
 
 The code of action in the future are (But you don't need to do this part now, just for your information)):
-{thread_instance.actionflow.get_code(pending=True, current=True)}
+{thread_instance.actionflow.get_code('pending_list', 'current_list')}
 
 Try to understand the meaning of each function and its parameter, and decide the best function and use the function 
 for this step to accomplish the action.

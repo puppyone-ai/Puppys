@@ -36,13 +36,26 @@ result = gpt(prompt=prompt)
     @staticmethod
     def lange_language_model(prompt, model="gpt-3.5-turbo-0125", temperature=0.7, max_tokens=2048):
 
-        result = completion(messages=[{"role": "user",
-                                       "content": prompt}],
-                            model=model,
-                            temperature=temperature,
-                            max_tokens=max_tokens)
+        result = None
 
-        return result.choices[0].message.content
+        cnt = 0
+
+        while result is None and cnt < 3:
+
+            try:
+                cnt += 1
+
+                result = completion(messages=[{"role": "user",
+                                               "content": prompt}],
+                                    model=model,
+                                    temperature=temperature,
+                                    max_tokens=max_tokens)
+
+                import time
+                time.sleep(1)
+
+            finally:
+                return result.choices[0].message.content
 
 
 if __name__ == "__main__":
