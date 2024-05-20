@@ -26,6 +26,7 @@ class LangeLanguageModel(FuncBase):
         self.intro = """
 ChatGPT, GPT4 or GPT3.5,
 Good at summarizing, retrieving, finding information, generating text, and answer question based on a reference. etc.
+You should not use this function to get real-time information from internet.
 
 For example:
 ## summarizing the web based on the html

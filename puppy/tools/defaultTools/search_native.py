@@ -3,7 +3,7 @@ from openai import OpenAI
 import os
 
 
-class SearchNative(FuncBase):
+class SearchEngine(FuncBase):
     def __init__(self, *args, **kwargs):
 
         """
@@ -21,19 +21,20 @@ class SearchNative(FuncBase):
 
         super().__init__(*args, **kwargs)
 
-        self.name = "search_native"
-        self.func = self.search_native
+        self.name = "search_engine"
+        self.func = self.search_engine
         self.intro = """
-Search Engine, use it when you want to search something from perplexity online
+Search Engine, use it when the user request to find some real-time information online. 
+For example, when user want to know the weather, asset price or economy indicators. 
 
 for example:
-## search the query
-query = "how should I install the package of openAI"
-searchResults = search_native(query)
+## search the weather in Amsterdam
+query = "what is the weather today in Amsterdam?"
+searchResults = search_engine(query)
         """
 
     @staticmethod
-    def search_native(query):
+    def search_engine(query):
 
         messages = [
             {
@@ -78,9 +79,9 @@ searchResults = search_native(query)
 
 if __name__ == "__main__":
 
-    search_content = "how’s the weather today in New York?"
+    search_content = "how’s the weather today in Amsterdam?"
 
-    search = SearchNative()
+    search = SearchEngine()
     results = search.run(search_content)
 
     print(results)

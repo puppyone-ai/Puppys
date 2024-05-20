@@ -1,5 +1,5 @@
 from puppy.tools.defaultTools.send_message_to_human import SendMessageToHuman
-from puppy.tools.defaultTools.search_native import SearchNative
+from puppy.tools.defaultTools.search_native import SearchEngine
 from puppy.tools.defaultTools.large_language_model import LangeLanguageModel
 from puppy.thread.base import ThreadBase
 from puppy.environment.base import EnvBase
@@ -34,7 +34,7 @@ class UsableTools(EnvBase):
         self.usable_tools_dict = {}
 
         # the default tools
-        self.add_env(SendMessageToHuman(self.__thread_instance), LangeLanguageModel())
+        self.add_env(SendMessageToHuman(self.__thread_instance), LangeLanguageModel(), SearchEngine())
 
         # TODO: Search path to collect all the default funcs
 
