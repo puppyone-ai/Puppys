@@ -1,19 +1,10 @@
-import os
-import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-
-# change the API key to your own
-#os.environ["OPENAI_API_KEY"] = ""
-
-
 from puppy.thread.main import Thread
 
 Mei = Thread()
 
 @Mei.actionflow.update
 def pending_list():
-    ## we have "data/btc_data.csv" and "data/btc_data.csv" in a folder
+    ## we have "data/btc_data.csv" and "data/btc_data.csv" in the directory of this file.
     # read the data from the csv files and put them into dataframes.
     Mei.do()
 
@@ -22,10 +13,11 @@ def pending_list():
     send_message_to_human(top_five_rows)
 
     ## set and import the plotly library
-    import matplotlib as plt
+    import matplotlib.pylab as plt
 
     ## calculate the correlation function between BTC and ETH price.
-    # plot the correlation, and show it to me
+    # plot the correlation, and save it to the working directory. 
+    # don't show the plot in the python console.
     Mei.do()
 
 
