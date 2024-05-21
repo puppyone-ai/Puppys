@@ -3,6 +3,7 @@ from puppy.tools.defaultTools.search_native import SearchNative
 from puppy.tools.defaultTools.large_language_model import LangeLanguageModel
 from puppy.thread.base import ThreadBase
 from puppy.environment.base import EnvBase
+from puppy.environment.func import FuncBase
 
 
 # TODO: Search path to collect all the default funcs
@@ -33,7 +34,7 @@ class UsableTools(EnvBase):
         self.usable_tools_dict = {}
 
         # the default tools
-        self.default_tools = [SendMessageToHuman(self.__thread_instance), LangeLanguageModel()]
+        self.add_env(SendMessageToHuman(self.__thread_instance), LangeLanguageModel())
 
         # TODO: Search path to collect all the default funcs
 
@@ -42,21 +43,41 @@ class UsableTools(EnvBase):
         return self.__thread_instance
 
     @property
-    def detail(self):
-        tools_list = []
-        for tool in self.default_tools:
-            tools_list.append({tool.name: tool.intro})
+    def tool_dict(self) -> dict:
 
-        return tools_list
+        """
+        This property is used to return the dict of all tools dynamically
+        """
 
-    # once a tool_instance has been loaded into the list, we make a global func
-    def load_tool(self, tool):
+        clone_dict = self.detail_dict.copy()
+
+        return {key: value for key, value in clone_dict.items() if isinstance(value, FuncBase)}
+
+    def inventory_tools(self) -> None:
+
+        """
+        This method is used to inventory all the tools within the tool box
+        """
+
+        for tool in self.tool_dict.values():
+            self.load_tool(tool)
+
+    def load_tool(self, tool: FuncBase) -> None:
+
+        """
+        This method is used to load a tool into the tool box
+        """
 
         self.usable_tools_dict.update({tool.name: tool.intro})
 
         self.__thread_instance.runtime_vars_dict.update({tool.name: tool.func})
+        # once a tool_instance has been loaded into the list, we make a global func
 
-    def remove_tool(self, name):
+    def remove_tool(self, name: str) -> None:
+
+        """
+        This method is used to remove a tool from the tool box
+        """
 
         self.usable_tools_dict.pop(name)
 
@@ -65,4 +86,5 @@ class UsableTools(EnvBase):
 
 if __name__ == "__main__":
     tool_box = (UsableTools(thread_instance=ThreadBase()))
-    print(tool_box.expose)
+    print(tool_box.expose())
+    print(tool_box.tool_dict)
