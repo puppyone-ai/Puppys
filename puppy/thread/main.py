@@ -4,7 +4,6 @@ from puppy.thread.actionflow.actionflow import Actionflow
 from puppy.thread.do import plan_next_action, check_if_action_achieved, achieve_action
 from contextlib import redirect_stdout, redirect_stderr
 
-
 from puppy.tools.usable_tools import UsableTools
 from puppy.environment.base import EnvBase
 
@@ -48,8 +47,7 @@ class Thread(ThreadBase):
     def default_decisiontree(self) -> None:
 
         # load tools
-        for tool in self.tool_box.default_tools:
-            self.tool_box.load_tool(tool)
+        self.tool_box.inventory_tools()
 
         print(f"\U0001F3B2 Initialize Done ")
 
@@ -70,7 +68,7 @@ class Thread(ThreadBase):
 
                 # STEP 2.1: load the action to ActionOnGoing (for scalability in the future version)
 
-                # self.actionflow.show_status()  # print the actionflow
+                self.actionflow.show_status()  # print the actionflow
 
                 action = self.actionflow.current_list.pop_action()
 
