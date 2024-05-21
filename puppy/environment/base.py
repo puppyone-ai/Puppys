@@ -31,24 +31,14 @@ class EnvBase:
         self.__visibility = value
 
     """
-    vars(self): public and private  
-    detail: public
-    expose: (recursively) public 
+    vars(self): (current level) all 
+    self.detail: (current level) non-private 
+    self.expose: (hierarchy) non-private 
     """
 
+    # show non-private attributes under this env
     @property
-    def detail_dict(self) -> dict:
-        return self._show_detail()
-
-    @property
-    def detail_json(self) -> str:
-        import json
-        return json.dumps(self._show_detail())
-
-    def _show_detail(self) -> dict:
-        """
-        This method is used to show all non-private attributes under this env
-        """
+    def detail(self):
 
         non_private_dict = {}
 
@@ -61,69 +51,39 @@ class EnvBase:
 
         return non_private_dict
 
-    def expose(self, as_json: bool = False) -> [dict, str]:
-        """
-        This method is used to recursively show all public attributes under this env
-        """
+    # recursively show non-private attributes under this env
+    @property
+    def expose(self):
 
         view_dict = {}
 
-        for key, value in self.detail_dict.items():
+        for key, value in self.detail.items():
 
             if isinstance(value, EnvBase) is False:  # if target is an env or default var
                 view_dict.update({key: value})
             else:
-                view_dict.update({key: value.expose()})
+                view_dict.update({key: value.expose})
 
-        import json
+        # TODO: rewrite the output format as json
 
-        return view_dict if as_json is False else json.dumps(view_dict)
+        # import json
+        #
+        # return json.dumps(view_dict, indent=4)
+
+        return view_dict
 
     # Monkey Patching
+    # create a new env instance in this env instance
     def create_new_env(self, *args, **kwargs):
 
-        """
-        create a new env instance and build a pointer from this env instance to the new env instance
-        """
-
-        instance = EnvBase(*args, **kwargs)
-        setattr(self, instance.name, instance)
+        instance = EnvBase(*args, **kwargs, parent=self)
+        setattr(self, kwargs['name'], instance)
 
     # Monkey Patching
-    def add_env(self, *args):
-
-        """
-        Add a pointer to an existed target env from this env
-        """
-
-        for env_instance in args:
-            setattr(self, env_instance.name, env_instance)
-
-    def delete_env(self, *args):
-
-        """
-        Delete the pointer from this env to an existed target env
-        """
-        for env in args:
-
-            # if the target env is indexed by name
-            if type(env) is str:
-                env_name = env
-                try:
-                    delattr(self, env_name)
-                except AttributeError:
-                    print(f"Env '{env_name}' not found in {self.name}")
-
-            # if the target env is indexed by instance point
-            elif isinstance(env, EnvBase):
-                env_instance = env
-                try:
-                    delattr(self, env_instance.name)
-                except AttributeError:
-                    print(f"Env '{env_instance.name}' not found in {self.name}")
-
-            else:
-                raise TypeError("Only str or EnvBase instance is allowed")
+    # add an existed env instance into this env instance
+    def add_new_env(self, env_example: EnvBase):
+        instance = env_example
+        setattr(self, env_example.name, instance)
 
 
 def new_env(*args, **kwargs):
@@ -137,21 +97,20 @@ if __name__ == "__main__":
 
     # method 1 (with 'add_new_env' monkey patching)
     building = EnvBase(name='building', visible=True)
-    # or
-    # building = new_env(name='building', visible=True)
 
     floor_1 = EnvBase(name='floor_1', visible=True)
 
-    building.add_env(floor_1)
+    building.add_new_env(floor_1)
 
-    print(building.expose())
+    print(building.expose)
 
     ## method 2 (with 'create_new_env' monkey patching)
     building = EnvBase(name='building', visible=True)
 
     building.create_new_env(name='floor_1', visible=True)
 
-    print(building.expose())
+    print(building.expose)
+
 
     ## method 3 (Recommended, define an env method in a class)
     class Building(EnvBase):
@@ -162,5 +121,4 @@ if __name__ == "__main__":
 
 
     building = Building(name='building', visible=True)
-    print(building.expose())
-
+    print(building.expose)

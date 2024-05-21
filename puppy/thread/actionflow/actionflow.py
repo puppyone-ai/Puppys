@@ -3,6 +3,8 @@ from puppy.thread.base import ThreadBase
 from puppy.thread.actionflow.action import Action
 from puppy.utils.parse import parse_code2list
 
+import queue
+
 
 # the intermediate env for governing the actionflow in the thread
 class Actionflow(EnvBase):
@@ -28,88 +30,83 @@ class Actionflow(EnvBase):
         self.pending_list = ActionflowList(name="pending_list", intro="a list of pending actions", visible=True)
         self.current_list = ActionflowList(name="current_list", intro="a list of current actions", visible=True)
         self.history_list = ActionflowList(name="history_list", intro="a list of history actions", visible=True)
-        self.on_going = None
+
+        self.on_going = queue.Queue()
 
     @property
-    def flow_dict(self) -> dict:
-        """
-        This property is used to return the dict of all actionflow_list
-        """
+    def flow_dict(self):
         flow_dict = {}
 
-        for key, value in self.detail_dict.items():
+        for key, value in self.detail.items():
             if isinstance(value, ActionflowList):
                 flow_dict.update({key: value})
 
         return flow_dict
 
+    # (decorator) Use to update the specific actionflow list
     def update(self, func) -> None:
-        """
-        This decorator is used to update the specific list under the actionflow
-        """
+
+        def wrapper(*args, **kwargs):
+            func(*args, **kwargs)
 
         # retrieve the thread goal description from the docstring of func
-        self.__thread_instance.goal = func.__doc__
-
-        # compile the source code of func into actions
         import inspect
+
         source_code = inspect.getsource(func)
         parsed_action = parse_code2list(source_code)
         func_name = func.__name__
 
-        # load the actions into the specific list
         if func_name in self.flow_dict:
-            actionflow_list = getattr(self, func_name)
-            for action in parsed_action:
-                actionflow_list.put_action(action)
+            if func_name == "pending_list":
+                for action in parsed_action:
+                    self.pending_list.append(action)
 
-        # if the func_name is not in the actionflow, raise an error
+            elif func_name == "current_list":
+                for action in parsed_action:
+                    self.current_list.append(action)
+
+            elif func_name == "history_list":
+                for action in parsed_action:
+                    self.history_list.append(action)
         else:
-            raise KeyError(f"{func_name} not in actionflow")
+            raise KeyError(f"{func_name} not in actionflow flow list")
 
+        return
+
+    # get all actionflow cleared
     def clear_all(self) -> None:
-        """
-        This method is used to clear all actionflow_list
-        """
 
-        for flow in self.flow_dict.values():
-            flow.clear()
+        # clear all actionflow_list
+        for flow in self.detail:
+            if isinstance(flow, ActionflowList):
+                flow.clear()
 
+        # clear the on_going
+        self.on_going = queue.Queue()
+
+    # as a shortcut to print actionflow when running
     def show_status(self) -> None:
-        """
-        This method is used to print the actionflow
-        """
-
         print(f"\n\u2699 Actionflow ################################################################################")
+        print("\nPending:")  # \U0001F51C
+        print(self.pending_list.read)
+        print("\nCurrent:")  # \U000025B6
+        print(self.current_list.read)
+        print("\nHistory:")  # \U0001F519
+        print(self.history_list.read)
 
-        for flow in self.flow_dict.values():
-            print(f'\n{flow.name}:')
-            print(flow.action_list)
-
-        print('\n')
-
-    def get_code(self, *args) -> str:
-        """
-        This method is used to get the code of action within the specific actionflow_list
-        """
-
+    def get_code(self, pending: bool = False, current: bool = False, history: bool = False) -> str:
         res = '''\n'''
+        if pending:
+            res += "\n".join(action.code for action in self.pending_list)
+        if current:
+            res += "\n".join(action.code for action in self.current_list)
+        if history:
+            res += "\n".join(action.code for action in self.history_list)
 
-        for flow in args:
-            if type(flow) != str:
-                raise TypeError("target flow name must be assigned as a string")
-
-            if flow in self.flow_dict:
-                res += "\n".join(action.code for action in self.flow_dict[flow])
-
-            else:
-                raise KeyError(f"{flow} not in actionflow")
-
-        return res
+        return res if res else "No code found"
 
     # save the actionflow.history to a file
     def save_actionflow_history(self):
-
         # save the actionflow_history
         import os
         from datetime import datetime
@@ -125,14 +122,20 @@ class Actionflow(EnvBase):
         # create a new file
         file_path = os.path.join(folder_path, f"user_case_history_{date_str}.txt")
 
-        # Directly expose the history as a JSON string
-        history = self.history_list.expose(as_json=True)
+        # Directly convert the Python object to a JSON string
+        history = self.history_list.read
 
         # Write the JSON string to a file as agent log
 
+        import json
+
         with open(file_path, "w") as file:
 
-            file.write(history)
+            try:
+                json.dump(history, file, indent=4)
+
+            except ValueError as e:
+                print(e)
 
 
 # the base class of actionflow
@@ -161,26 +164,25 @@ class ActionflowList(list, EnvBase):
 
         self.visible = True
 
-    @property
-    def action_list(self) -> list:
-        return [action.name for action in self]
-
     # add an action to the end of the list
     def put_action(self, action: Action) -> None:
-        self.add_env(action)
-        self.append(action)
+        return self.append(action)
 
     # pop an action from the start of list
     def pop_action(self) -> Action:
-        self.delete_env(self[0])
         return self.pop(0)
 
+    @property
+    def read(self) -> dict:
+        return {action.name: action.expose for action in self}
+
+    # (decorator) Use to update the specific actionflow list
     def update(self, func) -> None:
 
-        """
-        This decorator is used to update the specific list
-        """
-        # print("\n\U0001F525 Parsing the code-----------------------------------------------------------------------")
+        def wrapper(*args, **kwargs):
+            func(*args, **kwargs)
+
+        #print("\n\U0001F525 Parsing the code-------------------------------------------------------------------------")
 
         import inspect
 
@@ -189,3 +191,5 @@ class ActionflowList(list, EnvBase):
 
         for action in parsed_action:
             self.append(action)
+
+        return
