@@ -1,6 +1,6 @@
 import os
 
-from puppy.llm.openAI import open_ai_chat
+from .openAI import open_ai_chat
 
 
 def deepseek_chat(prompt, 
@@ -22,5 +22,4 @@ def deepseek_chat(prompt,
 
 if __name__ == "__main__":
     response = deepseek_chat(prompt=[{"role": "user", "content": "Introduce yourself, with 20 words"}],
-                             printing=True, stream=True,
-                             api_key=os.environ["DEEPSEEK_API_KEY"])
+                             printing=True, stream=True)
