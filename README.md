@@ -26,14 +26,14 @@
 
 <div align="center">
 
-**-------------  🔥 Version 0.0.24 (16-May-2024):  -------------**
+**-------------  🔥 Version 0.0.25 (23-May-2024):  -------------**
 
 </div>
 
-1. **Updated a New User Case**: A crypto data analysis, calculate BTC and ETH price.
-2. **Pip Install**: Now you can use pip to install the package.
-3. **New Feature**: 'previewing_before_planning', a significant and default setting of Thread.
-4. **Fixed bugs**: Fixed the bug parsing '##'. 'self' before send_message
+1. **Updated a New User Case**: Two-agent role playing: supporting multi-thread
+2. **Friendly for VS Code Users**: We fixed the bug of path bug that only for VS Code users
+3. **Editable Decisiontree**: Decisiontree supporting customization.
+4. **Fixed bugs**: Printing can't show.
 
 <img src="./assets/dividerBlue.png" alt="Image">
 
@@ -60,7 +60,7 @@ The advantage is that by defining a confined environment, we can effectively exp
 Our solution is that, actionflow is as a list in the environment, which need to be interpreted by a decision tree.
 Unlike previous agent frameworks, we placed the workflow within the environment, to be parsed by the decision tree, rather than a default flow.
 
-Giving the agent a confined environment, and 
+Giving the agent a confined environment, and let the agent evolves in the confined environment.
 
 <div align="center">
 <img src="./assets/AgentRPA.png" alt="Image" width="800">
