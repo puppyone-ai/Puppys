@@ -1,6 +1,94 @@
 from puppy.thread.actionflow.action import Action
 import textwrap
 
+import json
+from puppy.llm.openAI import open_ai_chat
+from openai import OpenAI
+
+
+# soft decoder
+def parse_code2list2(source_code: str) -> list:
+    """
+    Load the action from source code through LLM
+
+    input: source_code
+    output: list
+    """
+
+    prompt = [
+        # 1.define the type of this agent
+        {
+            "role": "system",
+            "content": """
+            You are a helpful assistant designed to output python list composed of serval python dictionary objects such as [{"name":"You","code":"print"}, {"name":"Me","code":"print"}].
+            """
+        },
+
+        # 2.provide examples
+        {
+            "role": "system",
+            "content": """
+            You are provided an example as belows:
+            <example>:
+            User's input:
+            ## welcome the User
+            print("Hello, can I help you?\n")
+
+
+            ## give user your identity
+            for i in range(5):
+                print("I am AI\n")
+                for i in range(5):
+                    puppy.do()
+            "
+
+            your output:
+            [
+            {"name":"welcome the User",
+            "code":
+            "## welcome the User
+             print("Hello, can I help you?\n")"},
+            {"name":"give user your identity",
+            "code":
+            "## give user your identity
+             for i in range(5):
+                print("I am AI\n")
+                for i in range(5):
+                    puppy.do()"}
+            ]
+            </example>
+            """
+        },
+
+        # 3.tell llm to output
+        {
+            "role": "user",
+            "content": source_code
+        }
+
+    ]
+
+    medium = open_ai_chat(prompt=prompt,
+                          model="gpt-4-turbo",
+                          temperature=0.3,
+                          api_key=os.environ["OPENAI_API_KEY"],
+                          max_tokens=4096,
+                          printing=True, stream=True)
+
+    medium = eval(medium)  # [{"name":action1.name,"code":action1.code},{"name":action2.name,"code":action2.code},...]
+
+    action_list = []
+
+    for action in medium:
+        action_list.append(Action())
+        action_list[-1].name = action["name"]
+        action_list[-1].code = action["code"]
+
+    for action in action_list:
+        print(action.code)
+        _check_status(action)
+
+    return action_list
 
 # TODO: abstract the parser to convert the source code to diverse properties
 def parse_code2list(source_code: str) -> list:
