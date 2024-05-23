@@ -1,15 +1,18 @@
-import os
+# If you are a VS Code users:
 import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
+print(sys.path)
 
 # change the API key to your own
 #os.environ["OPENAI_API_KEY"] = ""
 
 
 from puppy.thread.main import Thread
+from puppy.thread.decisiontree.decisiontree import default_decisiontree
 
-Mei = Thread()
+Mei = Thread(decisiontree=default_decisiontree)
 
 @Mei.actionflow.update
 def pending_list():
@@ -22,11 +25,10 @@ def pending_list():
     send_message_to_human(top_five_rows)
 
     ## set and import the plotly library
-    import matplotlib
-    matplotlib.use('Agg')  # Use the 'Agg' backend for non-GUI use
+    import matplotlib as plt
 
     ## calculate the correlation function between BTC and ETH price.
-    # plot the correlation, and save the figure"
+    # plot the correlation, and show it to me
     Mei.do()
 
 

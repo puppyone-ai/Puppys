@@ -11,7 +11,7 @@ class Puppy:
 
     def creat_thread(self, thread_name):
 
-        # TODO: if thread_name is not a string, or not delivered, raise an error
+        # TODO: if name is not a string, or not delivered, raise an error
 
         if not hasattr(self, thread_name):
             setattr(self, thread_name, Thread(puppy=self))

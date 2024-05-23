@@ -4,12 +4,16 @@ import os
 
 # using OpenAI API model
 def open_ai_chat(prompt,
-                 temperature=0.1, max_tokens=4096, model="gpt-4-0125-preview",
-                 api_key="",
-                 printing=False, stream=False
+                 temperature=0.1, max_tokens=4096, model="gpt-4-turbo",
+                 api_key=None,
+                 printing=False, stream=True
                  ):
 
-    client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", api_key))
+    if api_key == None:
+        client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", api_key))
+
+    else:
+        client = OpenAI(api_key=api_key)
 
     completion = client.chat.completions.create(
         model=model,
