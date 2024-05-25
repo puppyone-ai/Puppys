@@ -1,3 +1,6 @@
+import os
+from puppy.thread.main import Thread
+
 # change the API key to your own
 #os.environ["OPENAI_API_KEY"] = ""
 
