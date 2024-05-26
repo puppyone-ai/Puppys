@@ -1,0 +1,200 @@
+import time
+
+from puppy.thread.main import Thread
+from puppy.thread.main import thread_run
+from puppy.environment.base import EnvBase
+from puppy.llm.openAI import open_ai_chat
+
+
+class ChattingHistory(EnvBase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.value = []
+
+    # add the chatting content to chat_history
+    def add(self, words: str, role: str):
+        chatting = {"role": role,
+                    "content": words}
+        self.value.append(chatting)
+
+
+def holder_decisiontree(self):
+    self.player_list = [player_1, player_2, player_3, player_4]
+    gotcha = False
+
+    while gotcha == False:
+
+        # chatting
+        print("-----chatting-----")
+        # let agents describe their words
+        for player in self.player_list:
+
+            # let the player to start
+            player.chatting = True
+
+            # wait the player to finish
+            while True:
+                if player.chatting == False:
+                    break
+                else:
+                    time.sleep(1)
+
+        self.chat_history = ChattingHistory()
+        print("-----discussing-----")
+        # let all the players discuss who is the ghost
+        for player in self.player_list:
+            player.discussing = True
+
+            # wait the player to finish
+            while True:
+                if player.discussing == False:
+                    break
+                else:
+                    time.sleep(1)
+
+        # wait for all the agents finish discussing
+        while True:
+            if all(not player.discussing for player in self.player_list):
+                break
+            else:
+                time.sleep(0.1)
+
+        # select the ghost
+        find_ghost_prompt = [{"role": "system",
+                              "content": f"""
+            你是《谁是卧底》的游戏主持者, 玩家列表是 {self.player_list}
+            根据每个玩家的“捉鬼”的讨论结果和投票： {self.chat_history.value}输出多数人认为的是鬼的玩家的名字，比如：
+            player_4
+            """}]
+
+        print("经过讨论，鬼是：")
+        the_ghost = open_ai_chat(prompt=find_ghost_prompt, printing=True, stream=True, temperature=0.9)
+
+        # 从 list 中删掉 the_ghost
+        self.player_list.remove(eval(the_ghost))
+
+        if eval(the_ghost).is_ghost == True:
+            gotcha = True
+            print("游戏结束，人类胜利")
+        else:
+            for player in self.player_list:
+                player.chat_history.add(
+                    words=f"{eval(the_ghost).name} has been removed from the game, however, he is not the ghost. Think about it",
+                    role="user")
+
+            if len(self.player_list) <= 2:
+                gotcha = True
+                print("游戏结束，鬼胜利")
+
+
+def chatting_decisiontree(self):
+    system_prompt = [{"role": "system",
+                      "content":
+                          f"""你在玩一个游戏《谁是卧底》。有四个玩家。三个玩家不是鬼，他们拿到的词语是相同的。一个玩家是鬼，他拿到的词语是不同的。
+    每个人需要依次描述他们拿到的词语。所有人都完成了描述后，所有人会讨论谁是鬼。被认为是鬼的玩家将被移出游戏。此时如果鬼还在游戏里，那么继续描述直到找到鬼。否则游戏结束。你们任何玩家都不会被告知是鬼。你需要根据聊天记录逐步判断出谁是鬼
+    如果你是鬼，那么你需要做到不被发现，进而扮演不是鬼的玩家，包括按照你按照你认为的不是鬼的玩家拿到的词语来进行描述。如果你不是鬼，那么你需要做到不被怀疑。
+    几个你需要做的：
+    1. 你不能对词语形容得太具体，也不要出现这个词语。因为你也不知道你自己是不是鬼，如果你是鬼，那么你就暴露了，从而被投票出局。如果你不是鬼，那么其他人可能会猜到这个词进而伪装自己，那么游戏可能会失败。建议用一个特征来描述。
+    2. 如果你介绍中发现你自己的词语和大多数人的描述不符，或者不够贴的话，那么你可能是鬼，此时你需要猜测其他不是鬼的人拿到的词语是什么，然后必须按照那个多数人拿到的正确的词语来描述以伪装自己，从而让自己鬼的身份不被发现从而活下去。
+    3. 如果发现自己的词语和其他人介绍很相似，那么你可能不是鬼，此时你可以提升或者添加对细节的描述，使得那个鬼露馅。但是要尽可能不让那个鬼通过这些细节猜到这个词语。否则你们就找不到这个鬼了。
+    4. 如果有玩家被淘汰，但是他不是鬼，游戏继续的话，你可能要尝试提升对这个词的描述的限定范围。
+    
+    你拿到的词是：{self.the_word}，think step by step，并且按照上面的指示来思考和决策。你需要对这个词进行描述从而赢得这场游戏。
+    用中文来回答。你的输出格式如下，举一个例子：
+    （如果你拿到的词是洗澡）#这个词不要输出
+    
+    "{self.name}: 这是一个让人变干净的事情。"
+    
+    """}]
+
+    # repeat the chat for 5 loops
+    while True:
+        if self.chatting == True:
+            print(f"[{self.name}]")
+            # print("chat_history,",self.chat_history.value)
+
+            response = open_ai_chat(prompt=system_prompt + self.chat_history.value, printing=True, stream=True,
+                                    temperature=0.9)
+            self.chat_history.add(words=response, role='assistant')
+            self.chatting = False
+
+            for player in self.other_player_list:
+                player.chat_history.add(words=response, role='user')
+
+        else:
+            time.sleep(0.1)
+            pass
+
+        if self.discussing == True:
+            print(f"[{self.name}]")
+
+            discuss_prompt = [{"role": "system",
+                               "content":
+                                   f"""你在玩一个游戏《谁是卧底》。有四个玩家。三个玩家不是鬼，他们拿到的词语是相同的。一个玩家是鬼，他拿到的词语是不同的。
+            每个人需要描述他们拿到的词语。所有人都完成了描述后，所有人会讨论谁是鬼。被认为是鬼的玩家将被移出游戏。此时如果鬼还在游戏里，那么继续描述直到找到鬼。否则游戏结束。
+            如果你是鬼，那么你需要做到不被发现。如果你不是鬼，那么你需要做到不被怀疑。
+            你拿到的词是： {self.the_word}. 
+            你现在要根据其他玩家的描述来猜测谁是鬼。你用中文回答。
+            你可能要：
+            1. 你不能认为自己是鬼，因为如果你这么做的话，你可能会出局。
+            2. 描述和其他人重叠的人可能是鬼，因为他们不确定不是鬼的人拿到的词
+            
+            你的描述中要包含你认为谁是鬼，与你认为他是鬼的原因。
+            下面是其他的玩家的描述记录:
+            """}]
+
+            response = open_ai_chat(prompt=discuss_prompt + self.chat_history.value, printing=True, stream=True,
+                                    temperature=0.9)
+            self.holder.chat_history.add(words=response, role='assistant')
+            self.discussing = False
+
+        else:
+            time.sleep(0.1)
+            pass
+
+
+holder = Thread(name="game_holder", decisiontree=holder_decisiontree)
+holder.chat_history = ChattingHistory()
+
+player_1 = Thread(name="player_1", decisiontree=chatting_decisiontree)
+player_1.the_word = '跳伞'
+print(player_1.the_word)
+player_1.is_ghost = False
+player_1.chat_history = ChattingHistory()
+player_1.chatting = False
+player_1.discussing = False
+
+player_2 = Thread(name="player_2", decisiontree=chatting_decisiontree)
+player_2.the_word = '跳伞'
+print(player_2.the_word)
+player_2.is_ghost = False
+player_2.chat_history = ChattingHistory()
+player_2.chatting = False
+player_2.discussing = False
+
+player_3 = Thread(name="player_3", decisiontree=chatting_decisiontree)
+player_3.the_word = '蹦极'
+print(player_3.the_word)
+player_3.is_ghost = True
+player_3.chat_history = ChattingHistory()
+player_3.chatting = False
+player_3.discussing = False
+
+player_4 = Thread(name="player_4", decisiontree=chatting_decisiontree)
+player_4.the_word = '跳伞'
+print(player_4.the_word)
+player_4.is_ghost = False
+player_4.chat_history = ChattingHistory()
+player_4.chatting = False
+player_4.discussing = False
+
+player_1.other_player_list = [player_2, player_3, player_4]
+player_2.other_player_list = [player_1, player_3, player_4]
+player_3.other_player_list = [player_1, player_2, player_4]
+player_4.other_player_list = [player_1, player_2, player_3]
+player_1.holder = holder
+player_2.holder = holder
+player_3.holder = holder
+player_4.holder = holder
+
+thread_run([holder, player_4, player_3, player_2, player_1])

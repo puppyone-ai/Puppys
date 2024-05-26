@@ -42,34 +42,34 @@ class ChattingHistory(EnvBase):
         self.value.append(chatting)
 
 # define the decisiontree for both thread
-def lawyer_decisiontree(self):
+def chatting_decisiontree(self):
     self.chat_history.add(words=self.system_prompt, role='system')
 
     loop_num=0
     # repeat the chat for 5 loops
     while loop_num<5:
 
-        if self.starting==True:
+        if self.chatting==True:
             print(f"[{self.name}]")
             response = open_ai_chat(prompt=self.chat_history.value, printing=True, stream=True, temperature=0.9)
             self.chat_history.add(words=response, role='assistant')
-            self.starting = False
+            self.chatting = False
 
             for lawyer in self.other_lawyer_list:
                 lawyer.chat_history.add(words=response, role='user')
-                lawyer.starting = True
+                lawyer.chatting = True
 
             loop_num+=1
 
         else:
-            time.sleep(0.5)
+            time.sleep(0.1)
             pass
 
 # define two threads
-lawyer_1=Thread(name='Lawyer_1', decisiontree=lawyer_decisiontree)
-lawyer_2=Thread(name='Lawyer_2', decisiontree=lawyer_decisiontree)
+lawyer_1=Thread(name='Lawyer_1', decisiontree=chatting_decisiontree)
+lawyer_2=Thread(name='Lawyer_2', decisiontree=chatting_decisiontree)
 
-lawyer_1.starting = True        # set the starting condition
+lawyer_1.starting = True        # set the chatting condition
 lawyer_1.other_lawyer_list=[lawyer_2]
 lawyer_1.chat_history = ChattingHistory()
 lawyer_1.system_prompt = Lawyer_1_setting
