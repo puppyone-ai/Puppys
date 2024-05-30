@@ -11,3 +11,13 @@ def redirected_stdout(new_output):
         yield
     finally:
         sys.stdout = old_output
+
+
+@contextmanager
+def redirect_stdin(new_stdin):
+    old_stdin = sys.stdin
+    try:
+        sys.stdin = new_stdin
+        yield new_stdin
+    finally:
+        sys.stdin = old_stdin

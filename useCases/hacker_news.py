@@ -21,4 +21,5 @@ def pending_list():
     ## pick the news that related to Large Language Models, summarize all the news, and show it to me
     hacker_news.do()
 
-hacker_news.run()
+# hacker_news.run()
+hacker_news.run_with_reflex()

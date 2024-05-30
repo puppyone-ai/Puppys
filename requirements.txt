@@ -1,9 +1,11 @@
-openai>=1.0.0
+openai>=1.14.0
 litellm
 beautifulsoup4
 
 pandas
 python-dotenv
+websockets
 
 requests
+reflex>=0.4.7
 google-api-python-client

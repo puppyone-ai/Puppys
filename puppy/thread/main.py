@@ -7,9 +7,15 @@ from contextlib import redirect_stdout, redirect_stderr
 from puppy.tools.usable_tools import UsableTools
 from puppy.environment.base import EnvBase
 
+import io
+import sys
+import asyncio
+import websockets
+import threading
+
 
 class Thread(ThreadBase):
-    def __init__(self, goal='', print_mode='terminal', **kwargs):
+    def __init__(self, goal='', **kwargs):
 
         super().__init__()
 
@@ -26,16 +32,10 @@ class Thread(ThreadBase):
         self.runtime_vars_dict.update({'self': self})
 
         # cache print from exec_environment
-        import io
-        import sys
 
-        self.output_buffer = sys.__stdout__
+        self.output_stream = sys.__stdout__
         self.error_buffer = sys.__stderr__
-
-        if 'print_mode' in kwargs:
-            if kwargs['print_mode'] == 'buffer':
-                self.output_buffer = io.StringIO()
-                self.error_buffer = io.StringIO()
+        self.input_stream = sys.__stdin__
 
         # import the actionflow as an env_var that running all actions
         self.actionflow = Actionflow(thread_instance=self)
@@ -110,9 +110,13 @@ class Thread(ThreadBase):
 
     def thread_exec(self, code):
         # redirect the stdout and stderr to the buffer
-        with redirect_stdout(self.output_buffer), redirect_stderr(self.error_buffer):
+        with redirect_stdout(self.output_stream), redirect_stderr(self.error_buffer):
+
             # execute the code
             exec(code, self.global_var_dict, self.runtime_vars_dict)
+
+            # # monitor the stdout and stdin during the execution
+            # self.output_updated.set()
 
     @property
     def vars_preview(self, characters_num=300):
@@ -127,10 +131,51 @@ class Thread(ThreadBase):
 
     def run(self) -> None:
         # start the code thread
-        import threading
-        thread_code = threading.Thread(target=self.default_decisiontree)
-        thread_code.daemon = False
+        thread_code = threading.Thread(target=self.default_decisiontree, daemon=False)
         thread_code.start()
 
         # end the code thread
         thread_code.join()
+
+    @staticmethod
+    async def send_message_to_frontend(message: str) -> None:
+        async with websockets.connect('ws://localhost:9000/notify') as websocket:
+            await websocket.send(message)
+
+    def request_message_from_frontend(self, instruction: str) -> None:
+        async def recv_message_from_frontend(message: str) -> str:
+            await self.send_message_to_frontend(message)
+            async with websockets.connect('ws://localhost:9000/feedback') as websocket:
+                response = await websocket.recv()
+                return response
+
+        future = asyncio.run_coroutine_threadsafe(recv_message_from_frontend(instruction), self.loop)
+        self.input_stream.write(future.result())
+        self.input_stream.seek(0)
+
+    def run_with_reflex(self) -> None:
+
+        # create the buffer for the output and error
+        # self.output_stream = io.StringIO()
+        # self.input_stream = io.StringIO()
+        # self.error_buffer = io.StringIO()
+
+        # websockets.server.serve(self.send_message_to_backend, 'localhost', 9000)
+
+        self.loop = asyncio.new_event_loop()
+
+        # overwrite the input and output stream
+        self.global_var_dict.update({
+            'print': lambda message: asyncio.run_coroutine_threadsafe(self.send_message_to_frontend(message), self.loop),
+            'input': self.request_message_from_frontend, })
+
+        def start_event_loop(loop):
+            asyncio.set_event_loop(loop)
+            loop.run_forever()
+
+        threading.Thread(target=start_event_loop, args=(self.loop,), daemon=True).start()
+
+        import webbrowser
+        webbrowser.open('http://localhost:3000')
+
+        self.run()
