@@ -1,25 +1,34 @@
-from .base import ThreadBase
-from puppy.thread.actionflow.actionflow import Actionflow
+from .base import PuppyBase
+from puppy_new.pp.actionflow.actionflow import Actionflow
 from contextlib import redirect_stdout, redirect_stderr
+from puppy_new.llm.openAI import open_ai_chat
+import os
 
-from puppy.tools.usable_tools import UsableTools
+from puppy_new.tools.usable_tools import UsableTools
 import threading
+import inspect
+import textwrap
+
+from puppy_new.pp.do_and_check import do_check, do, check
 
 
-class Thread(ThreadBase):
+
+class Puppy(PuppyBase):
     def __init__(self , decisiontree = None, goal='', print_mode='terminal', **kwargs):
 
         super().__init__()
 
         # naming the pp
         self.name = kwargs['name'] if 'name' in kwargs else "Default Puppy"
-        print(f'Created a thread as {self.name}! ')
+        print(f'Created a Puppy as {self.name}! ')
 
 
         # add exec_environment for the pp
         self.global_var_dict = globals()
         self.runtime_vars_dict = {}
         self.runtime_vars_dict.update({'self': self})
+
+        self.starting = threading.Event()
 
 
         # cache print from exec_environment
@@ -41,11 +50,13 @@ class Thread(ThreadBase):
         self.tool_box = UsableTools(thread_instance=self)
         # load tools
 
-        # set the env of the goal in the pp
-        self.goal = ''
-
         # set the decisiontree
-        self.decisiontree= decisiontree
+        self._decisiontree= decisiontree
+
+
+    def decisiontree(self):
+        return self._decisiontree(self)
+
 
     @property
     def vars_preview(self, characters_num=300):
@@ -59,7 +70,7 @@ class Thread(ThreadBase):
         return dict_temp
 
     # execute the code as the pp mode
-    def thread_exec(self, code):
+    def puppy_exec(self, code):
         # redirect the stdout and stderr to the buffer
         with redirect_stdout(self.output_buffer), redirect_stderr(self.error_buffer):
             # execute the code
@@ -67,15 +78,51 @@ class Thread(ThreadBase):
 
 
     def run(self) -> None:
-        self.decisiontree(self)
+
+        # 获取函数的参数
+        signature = inspect.signature(self._decisiontree)
+
+        # 或者使用 getfullargspec 来获取更详细的参数信息
+        args_spec = inspect.getfullargspec(self._decisiontree)
+
+        # 获取函数的完整源代码
+        full_source_code = inspect.getsource(self._decisiontree)
+
+        # 去除第一行（函数定义行）
+        source_code_without_def = '\n'.join(full_source_code.splitlines()[1:])
+
+        # 使用 textwrap.dedent() 去除因为 def 引起的缩进
+        dedented_source_code = textwrap.dedent(source_code_without_def)
+
+        self.actionflow.all_code = dedented_source_code
+
+        # set the env of tool_box
+        self.tool_box = UsableTools(thread_instance=self)
+
+        for tool in self.tool_box.default_tools:
+            self.tool_box.load_tool(tool)
 
 
-def thread_run(Thread_list:list):
+        self.decisiontree()
+
+
+    def do_check(self, *args, **kwargs):
+        return do_check(self, *args, **kwargs)
+
+    def check(self, *args, **kwargs):
+        return check(self, *args, **kwargs)
+
+    def do(self, *args, **kwargs):
+        return do(self, *args, **kwargs)
+
+
+def puppy_run(Puppy_list:list):
     threads = []
+    print("start")
 
     # 为列表中的每个线程对象创建一个线程
-    for Thread in Thread_list:
-        thread = threading.Thread(target=Thread.run)  # 注意这里传递的是方法引用，不是方法调用
+    for puppy in Puppy_list:
+        thread = threading.Thread(target=puppy.run)  # 注意这里传递的是方法引用，不是方法调用
         thread.daemon = False
         threads.append(thread)
         thread.start()  # 启动线程
@@ -83,3 +130,4 @@ def thread_run(Thread_list:list):
     # 等待所有线程完成
     for thread in threads:
         thread.join()
+

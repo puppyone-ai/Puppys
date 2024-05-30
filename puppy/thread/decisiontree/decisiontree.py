@@ -30,7 +30,7 @@ def default_decisiontree(self) -> None:
 
             # STEP 2.2: check if the action is fixed, semi-fixed, or changeable, and run sequentially
             if action.status == "fixed":
-                self.thread_exec(action.code)
+                self.puppy_exec(action.code)
                 self.actionflow.history_list.put_action(action)
 
             elif action.status == "semi-fixed":
@@ -54,12 +54,12 @@ def _do(threadInstance, action_now) -> None:
         # generate and write the code that can achieve the given action
         action_plan = achieve_action(thread_instance=threadInstance, action=action_now, show_prompt=False)
 
-        # execute the generated code in thread's environment
-        threadInstance.thread_exec(action_plan.code)
+        # execute the generated code in pp's environment
+        threadInstance.puppy_exec(action_plan.code)
 
         threadInstance.actionflow.history_list.put_action(action_plan)
 
         # check the action, return 'finishOrNot= True / False'
         check_code = check_if_action_achieved(thread_instance=threadInstance, action=action_plan, show_prompt=False)
 
-        threadInstance.thread_exec(check_code)
+        threadInstance.puppy_exec(check_code)
