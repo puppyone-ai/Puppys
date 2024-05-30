@@ -19,7 +19,6 @@ def hacker_news_decisiontree(self):
     self.do_check("pick the news that related to Large Language Models, summarize all the news, and send it to me")
 
 
-
 hacker_news = Puppy(decisiontree=hacker_news_decisiontree)
 
 hacker_news.run()
