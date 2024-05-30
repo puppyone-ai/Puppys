@@ -6,7 +6,7 @@ from puppy.utils.parse import parse_code2list
 import queue
 
 
-# the intermediate env for governing the actionflow in the thread
+# the intermediate env for governing the actionflow in the pp
 class Actionflow(EnvBase):
     def __init__(self, thread_instance: ThreadBase = ThreadBase(), **kwargs):
 
@@ -22,7 +22,7 @@ class Actionflow(EnvBase):
         """
 
         super().__init__(name="actionflow",
-                         intro="an actionflow that governs all actionflow_list in the thread",
+                         intro="an actionflow that governs all actionflow_list in the pp",
                          visible=False, **kwargs)
 
         self.__thread_instance = thread_instance
@@ -49,7 +49,7 @@ class Actionflow(EnvBase):
         def wrapper(*args, **kwargs):
             func(*args, **kwargs)
 
-        # retrieve the thread goal description from the docstring of func
+        # retrieve the pp goal description from the docstring of func
         import inspect
 
         source_code = inspect.getsource(func)

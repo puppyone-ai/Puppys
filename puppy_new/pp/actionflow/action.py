@@ -1,4 +1,4 @@
-from puppy.environment.base import EnvBase
+from puppy_new.environment.base import EnvBase
 
 
 class Action(EnvBase):

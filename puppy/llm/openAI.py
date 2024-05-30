@@ -6,14 +6,16 @@ import os
 def open_ai_chat(prompt,
                  temperature=0.1, max_tokens=4096, model="gpt-4-turbo",
                  api_key=None,
-                 printing=False, stream=True
+                 printing=False, stream=True,
+                 base_url=None,
                  ):
 
     if api_key == None:
-        client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", api_key))
+        api_key = os.environ.get("OPENAI_API_KEY", None)
+        if api_key is None:
+            raise ValueError("API key not provided")
 
-    else:
-        client = OpenAI(api_key=api_key)
+    client = OpenAI(api_key=api_key, base_url=base_url)
 
     completion = client.chat.completions.create(
         model=model,

@@ -41,7 +41,7 @@ class ChattingHistory(EnvBase):
         "content": words}
         self.value.append(chatting)
 
-# define the decisiontree for both thread
+# define the decisiontree for both pp
 def chatting_decisiontree(self):
     self.chat_history.add(words=self.system_prompt, role='system')
 
