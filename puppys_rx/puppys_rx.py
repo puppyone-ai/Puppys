@@ -9,11 +9,11 @@ from puppys_rx.state import State
 def index() -> rx.Component:
     """The main app."""
     return rx.chakra.vstack(
-        navbar(),
+        # navbar(),
         chat.chat(),
         chat.action_bar(),
-        background_color=rx.color("mauve", 1),
-        color=rx.color("mauve", 12),
+        background_color=rx.color("gray", 1),
+        color=rx.color("gray", 12),
         min_height="100vh",
         align_items="stretch",
         spacing="0",
@@ -23,7 +23,7 @@ def index() -> rx.Component:
 # Add state and page to the app.
 app = rx.App(
     theme=rx.theme(
-        appearance="dark",
+        appearance="light",
         accent_color="violet",
         sio={"url": "http://localhost:8000"},
     ),

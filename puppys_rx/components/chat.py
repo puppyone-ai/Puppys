@@ -103,16 +103,18 @@ def action_bar() -> rx.Component:
                     rx.hstack(
                         rx.radix.text_field.root(
                             rx.radix.text_field.input(
-                                placeholder="Type something...",
+                                placeholder="Ask puppy...",
                                 id="question",
-                                width=["15em", "20em", "45em", "50em", "50em", "50em"],
+                                width=["10em", "15em", "20em", "30em", "40em", "50em"],
+                                height="3em",
+                                borderRadius="13px",
                             ),
-                            rx.radix.text_field.slot(
-                                rx.tooltip(
-                                    rx.icon("info", size=18),
-                                    content="Enter a question to get a response.",
-                                )
-                            ),
+                            # rx.radix.text_field.slot(
+                            #     rx.tooltip(
+                            #         rx.icon("info", size=18),
+                            #         content="Enter a question to get a response.",
+                            #     )
+                            # ),
                         ),
                         rx.button(
                             rx.cond(
@@ -135,8 +137,8 @@ def action_bar() -> rx.Component:
             #     font_size=".75em",
             #     color=rx.color("mauve", 10),
             # ),
-            rx.logo(margin_top="-1em", margin_bottom="-1em"),
-            align_items="center",
+            # rx.logo(margin_top="-1em", margin_bottom="-1em"),
+            # align_items="center",
         ),
         position="sticky",
         bottom="0",
@@ -144,8 +146,8 @@ def action_bar() -> rx.Component:
         padding_y="16px",
         backdrop_filter="auto",
         backdrop_blur="lg",
-        border_top=f"1px solid {rx.color('mauve', 3)}",
-        background_color=rx.color("mauve", 2),
+        border_top=f"1px solid {rx.color('gray', 3)}",
+        background_color=rx.color("gray", 2),
         align_items="stretch",
         width="100%",
     )
