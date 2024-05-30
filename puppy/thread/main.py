@@ -3,14 +3,15 @@ from puppy.thread.actionflow.actionflow import Actionflow
 
 from puppy.thread.do import plan_next_action, check_if_action_achieved, achieve_action
 from contextlib import redirect_stdout, redirect_stderr
+from puppy.utils.websocket_backend import recv_message_from_frontend, send_message_to_frontend
 
 from puppy.tools.usable_tools import UsableTools
-from puppy.environment.base import EnvBase
+# from puppy.environment.base import EnvBase
 
-import io
+# import io
 import sys
 import asyncio
-import websockets
+# import websockets
 import threading
 
 
@@ -36,6 +37,8 @@ class Thread(ThreadBase):
         self.output_stream = sys.__stdout__
         self.error_buffer = sys.__stderr__
         self.input_stream = sys.__stdin__
+
+        self.loop = None
 
         # import the actionflow as an env_var that running all actions
         self.actionflow = Actionflow(thread_instance=self)
@@ -137,17 +140,10 @@ class Thread(ThreadBase):
         # end the code thread
         thread_code.join()
 
-    @staticmethod
-    async def send_message_to_frontend(message: str) -> None:
-        async with websockets.connect('ws://localhost:9000/notify') as websocket:
-            await websocket.send(message)
+    def send_message_to_frontend(self, message: str) -> None:
+        asyncio.run_coroutine_threadsafe(send_message_to_frontend(message), self.loop)
 
     def request_message_from_frontend(self, instruction: str) -> None:
-        async def recv_message_from_frontend(message: str) -> str:
-            await self.send_message_to_frontend(message)
-            async with websockets.connect('ws://localhost:9000/feedback') as websocket:
-                response = await websocket.recv()
-                return response
 
         future = asyncio.run_coroutine_threadsafe(recv_message_from_frontend(instruction), self.loop)
         self.input_stream.write(future.result())
@@ -165,9 +161,9 @@ class Thread(ThreadBase):
         self.loop = asyncio.new_event_loop()
 
         # overwrite the input and output stream
-        self.global_var_dict.update({
-            'print': lambda message: asyncio.run_coroutine_threadsafe(self.send_message_to_frontend(message), self.loop),
-            'input': self.request_message_from_frontend, })
+        self.global_var_dict_vars_dict.update({
+            'print': self.send_message_to_frontend,
+            'input': self.request_message_from_frontend})
 
         def start_event_loop(loop):
             asyncio.set_event_loop(loop)
