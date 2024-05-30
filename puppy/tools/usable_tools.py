@@ -1,16 +1,16 @@
-from puppy.tools.defaultTools.send_message_to_human import SendMessageToHuman
-from puppy.tools.defaultTools.search_native import SearchNative
-from puppy.tools.defaultTools.large_language_model import LangeLanguageModel
-from puppy.thread.base import ThreadBase
+from puppy.tools.defaultTools.talk_with_human import TalkWithHuman
+from puppy.tools.defaultTools.search import Search
+from puppy.tools.defaultTools.large_language_model import LLM
+from puppy.pp.base import PuppyBase
 from puppy.environment.base import EnvBase
 
 
 # TODO: Search path to collect all the default funcs
 
 # the default tool box that contains all the default functions
-# use to manage all tools under a thread
+# use to manage all tools under a pp
 class UsableTools(EnvBase):
-    def __init__(self, thread_instance: ThreadBase = ThreadBase(), **kwargs):
+    def __init__(self, thread_instance: PuppyBase = PuppyBase(), **kwargs):
 
         """
         {
@@ -33,7 +33,12 @@ class UsableTools(EnvBase):
         self.usable_tools_dict = {}
 
         # the default tools
-        self.default_tools = [SendMessageToHuman(self.__thread_instance), LangeLanguageModel()]
+        self.default_tools = [TalkWithHuman(self.__thread_instance), LLM()]
+
+        self.talk_with_Human=TalkWithHuman
+
+        self.language_model=LLM()
+
 
         # TODO: Search path to collect all the default funcs
 
@@ -64,5 +69,5 @@ class UsableTools(EnvBase):
 
 
 if __name__ == "__main__":
-    tool_box = (UsableTools(thread_instance=ThreadBase()))
+    tool_box = (UsableTools(thread_instance=PuppyBase()))
     print(tool_box.expose)
