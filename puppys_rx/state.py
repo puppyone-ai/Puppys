@@ -94,14 +94,16 @@ class State(rx.State):
     @rx.background
     async def recv_massage(self, websocket):
         while True:
-            message = await websocket.recv()
-            self.chats[self.current_chat].append(A(question=message))
+            async with self:
+                message = await websocket.recv()
+                self.chats[self.current_chat].append(A(question=message))
 
     @rx.background
     async def send_massage(self, websocket):
         while True:
-            message = await self.message_queue.get()  # 从队列中获取消息
-            await websocket.send(message)
+            async with self:
+                message = await self.message_queue.get()  # 从队列中获取消息
+                await websocket.send(message)
 
     async def send_human_feedback(self, form_data: dict[str, str]):
         """

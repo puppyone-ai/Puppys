@@ -161,7 +161,7 @@ class Thread(ThreadBase):
         self.loop = asyncio.new_event_loop()
 
         # overwrite the input and output stream
-        self.global_var_dict_vars_dict.update({
+        self.global_var_dict.update({
             'print': self.send_message_to_frontend,
             'input': self.request_message_from_frontend})
 
