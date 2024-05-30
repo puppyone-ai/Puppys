@@ -1,9 +1,9 @@
-from puppy.environment.func import FuncBase
+from puppy_new.environment.func import FuncBase
 from openai import OpenAI
 import os
 
 
-class SearchNative(FuncBase):
+class Search(FuncBase):
     def __init__(self, *args, **kwargs):
 
         """
@@ -80,7 +80,7 @@ if __name__ == "__main__":
 
     search_content = "how’s the weather today in New York?"
 
-    search = SearchNative()
+    search = Search()
     results = search.run(search_content)
 
     print(results)

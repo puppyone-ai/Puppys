@@ -8,7 +8,7 @@ from puppy.environment.base import EnvBase
 # TODO: Search path to collect all the default funcs
 
 # the default tool box that contains all the default functions
-# use to manage all tools under a thread
+# use to manage all tools under a pp
 class UsableTools(EnvBase):
     def __init__(self, thread_instance: ThreadBase = ThreadBase(), **kwargs):
 

@@ -42,11 +42,21 @@ def open_ai_chat(prompt,
             return finalResponse
 
     else:
-        return completion.choices[0].message.content
+        if stream is False:
+            return completion.choices[0].message.content
+
+        elif stream is True:
+            finalResponse = ""
+            for chunk in completion:
+                if chunk.choices[0].delta.content is not None:
+
+                    finalResponse += chunk.choices[0].delta.content
+
+            return finalResponse
 
 
 if __name__ == "__main__":
     response = open_ai_chat(prompt=[{"role": "user", "content": "Introduce yourself, with 20 words"}],
-                            printing=True, stream=True,
+                            printing=False, stream=True,
                             api_key=os.environ["OPENAI_API_KEY"])
 
