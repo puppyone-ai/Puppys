@@ -3,8 +3,8 @@
 #import os
 #sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from puppy_new.pp.main import Puppy
-from puppy_new.tools.usable_tools import UsableTools
+from puppy.pp.main import Puppy
+from puppy.tools.usable_tools import UsableTools
 
 # change the API key to your own
 #os.environ["OPENAI_API_KEY"] = ""
@@ -22,3 +22,4 @@ def hacker_news_decisiontree(self):
 hacker_news = Puppy(decisiontree=hacker_news_decisiontree)
 
 hacker_news.run()
+

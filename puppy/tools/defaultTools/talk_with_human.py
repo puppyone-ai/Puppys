@@ -1,6 +1,6 @@
-from puppy_new.environment.func import FuncBase
+from puppy.environment.func import FuncBase
 from contextlib import redirect_stdout
-from puppy_new.pp.base import PuppyBase
+from puppy.pp.base import PuppyBase
 import sys
 
 
@@ -49,7 +49,7 @@ talk_with_human(" What's the phone number of your boss?")
 if __name__ == "__main__":
     text = "how should I install the package of openAI"
 
-    from puppy_new.pp.base import PuppyBase
+    from puppy.pp.base import PuppyBase
 
     thread = PuppyBase(name=" Mr.Walter")
 

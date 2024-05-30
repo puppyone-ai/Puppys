@@ -1,4 +1,4 @@
-from puppy_new.environment.func import FuncBase
+from puppy.environment.func import FuncBase
 from openai import OpenAI
 import os
 

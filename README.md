@@ -26,19 +26,16 @@
 
 <div align="center">
 
-**-------------  🔥 Version 0.0.25 (23-May-2024):  -------------**
+**-------------  🔥 Version 0.0.26 (30-May-2024):  -------------**
 
 </div>
 
-1. **Updated a New User Case**: Two-agent role playing: supporting multi-thread
-2. **Friendly for VS Code Users**: We fixed the bug of path bug that only for VS Code users
-3. **Editable Decisiontree**: Decisiontree supporting customization.
-4. **Fixed bugs**: Printing can't show.
-
-<img src="./assets/dividerBlue.png" alt="Image">
+1. **Redesigned Grammar**: Now you use do(action) instead of ##action do().
+2. **Supporting Parameters in Decisiontree**: parameter can be customized in decisiontree.
+3. **Decouple Doing and Checking**: Checking and doing an action is different, now you can define them.
+4. **Another User Case**: Playing Gotcha Game with 4 agents!
 
 ## Building an agent just like building a Turing machine
-
 
 When programming an agent, what exactly are we programming?
 
@@ -89,8 +86,8 @@ This prevents an agent from planning actions that it can never actually carry ou
 1. 📢 *Hacker News Reporter*
 
 ```
-from puppy_new.pp.main import Puppy
-from puppy_new.tools.usable_tools import UsableTools
+from puppy.pp.main import Puppy
+from puppy.tools.usable_tools import UsableTools
 
 # change the API key to your own
 #os.environ["OPENAI_API_KEY"] = ""
@@ -98,7 +95,7 @@ from puppy_new.tools.usable_tools import UsableTools
 def hacker_news_decisiontree(self):
     self.tool_box=UsableTools()
 
-    self.do_check("go to https://news.ycombinator.com/ show the HTML", show_response = True)
+    self.do_check("go to https://news.ycombinator.com/ show the HTML")
 
     self.do_check("show the top 10 news, and send it to me")
 

@@ -1,5 +1,5 @@
-from puppy_new.pp.base import   PuppyBase
-from puppy_new.llm.openAI import open_ai_chat
+from puppy.pp.base import   PuppyBase
+from puppy.llm.openAI import open_ai_chat
 import os
 
 def do(puppy_instance:PuppyBase, action_name: str = "", tool_list: list = [], show_prompt=False, show_response=False):

@@ -1,34 +1,31 @@
 from .base import PuppyBase
-from puppy_new.pp.actionflow.actionflow import Actionflow
+from puppy.pp.actionflow.actionflow import Actionflow
 from contextlib import redirect_stdout, redirect_stderr
-from puppy_new.llm.openAI import open_ai_chat
+from puppy.llm.openAI import open_ai_chat
 import os
 
-from puppy_new.tools.usable_tools import UsableTools
+from puppy.tools.usable_tools import UsableTools
 import threading
 import inspect
 import textwrap
 
-from puppy_new.pp.do_and_check import do_check, do, check
+from puppy.pp.do_and_check import do_check, do, check
 
 
 
 class Puppy(PuppyBase):
-    def __init__(self , decisiontree = None, goal='', print_mode='terminal', **kwargs):
+    def __init__(self , name ="default_puppy", decisiontree = None,  print_mode='terminal', **kwargs):
 
         super().__init__()
 
-        # naming the pp
-        self.name = kwargs['name'] if 'name' in kwargs else "Default Puppy"
-        print(f'Created a Puppy as {self.name}! ')
-
+        self.name = name
+        self.args = kwargs
 
         # add exec_environment for the pp
         self.global_var_dict = globals()
         self.runtime_vars_dict = {}
         self.runtime_vars_dict.update({'self': self})
-
-        self.starting = threading.Event()
+        self.trigger = threading.Event()
 
 
         # cache print from exec_environment
@@ -38,10 +35,9 @@ class Puppy(PuppyBase):
         self.output_buffer = sys.__stdout__
         self.error_buffer = sys.__stderr__
 
-        if 'print_mode' in kwargs:
-            if kwargs['print_mode'] == 'buffer':
-                self.output_buffer = io.StringIO()
-                self.error_buffer = io.StringIO()
+        if print_mode == 'buffer':
+            self.output_buffer = io.StringIO()
+            self.error_buffer = io.StringIO()
 
         # set the env of actionflow
         self.actionflow = Actionflow(thread_instance=self)
@@ -55,8 +51,7 @@ class Puppy(PuppyBase):
 
 
     def decisiontree(self):
-        return self._decisiontree(self)
-
+        return self._decisiontree(self, **self.args)
 
     @property
     def vars_preview(self, characters_num=300):
@@ -118,7 +113,6 @@ class Puppy(PuppyBase):
 
 def puppy_run(Puppy_list:list):
     threads = []
-    print("start")
 
     # 为列表中的每个线程对象创建一个线程
     for puppy in Puppy_list:
