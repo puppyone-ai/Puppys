@@ -1,5 +1,5 @@
 # from abc import ABC, abstractmethod
-from puppy_new.environment.base import EnvBase
+from puppy.environment.base import EnvBase
 
 
 class PuppyBase(EnvBase):

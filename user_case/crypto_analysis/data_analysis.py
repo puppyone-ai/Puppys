@@ -7,8 +7,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 #os.environ["OPENAI_API_KEY"] = ""
 
 
-from puppy_new.pp.main import Puppy
-from puppy_new.tools.usable_tools import UsableTools
+from puppy.pp.main import Puppy
+from puppy.tools.usable_tools import UsableTools
 
 
 def crypto_analysis_decisiontree(self):

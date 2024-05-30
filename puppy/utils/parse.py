@@ -1,4 +1,4 @@
-from puppy.thread.actionflow.action import Action
+from puppy.pp.actionflow.action import Action
 import textwrap
 
 import json

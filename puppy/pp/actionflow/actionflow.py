@@ -1,7 +1,7 @@
-from puppy_new.environment.base import EnvBase
-from puppy_new.pp.base import PuppyBase
-from puppy_new.pp.actionflow.action import Action
-from puppy_new.utils.parse import parse_code2list
+from puppy.environment.base import EnvBase
+from puppy.pp.base import PuppyBase
+from puppy.pp.actionflow.action import Action
+from puppy.utils.parse import parse_code2list
 
 import queue
 

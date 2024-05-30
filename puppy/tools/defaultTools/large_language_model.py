@@ -2,7 +2,7 @@ from puppy.environment.func import FuncBase
 from litellm import completion
 
 
-class LangeLanguageModel(FuncBase):
+class LLM(FuncBase):
 
     def __init__(self, *args, **kwargs):
 
@@ -21,16 +21,17 @@ class LangeLanguageModel(FuncBase):
 
         super().__init__(*args, **kwargs)
 
-        self.name = "gpt"
+        self.name = "llm"
         self.func = self.lange_language_model
         self.intro = """
-ChatGPT, GPT4 or GPT3.5,
+Large_Language_Model, ChatGPT, GPT4 or GPT3.5,
 Good at summarizing, retrieving, finding information, generating text, and answer question based on a reference. etc.
+Bad for real-time information, webpage and generating image.
 
 For example:
 ## summarizing the web based on the html
-prompt = f"What does this shows: {self.html}"
-result = gpt(prompt=prompt)
+prompt = f"What does this shows, summarize it into 100 words: {self.html}"
+result = llm(prompt=prompt)
 """
 
     @staticmethod
@@ -48,7 +49,7 @@ result = gpt(prompt=prompt)
 if __name__ == "__main__":
     text = "how should I install the package of openAI"
 
-    chat = LangeLanguageModel()
+    chat = LLM()
 
     res = chat.run(text)
 
