@@ -17,6 +17,7 @@ def crypto_analysis_decisiontree(self):
     import pandas as pd
     btc_data = pd.read_csv('data/btc_data.csv')
     eth_data = pd.read_csv('data/eth_data.csv')
+    print(locals())
 
     self.do_check("show me the top 5 lines of the dataframes",show_response= True)
 

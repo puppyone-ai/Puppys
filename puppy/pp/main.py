@@ -19,6 +19,7 @@ class Puppy(PuppyBase):
         super().__init__()
 
         self.name = name
+        self.description = ""
         self.args = kwargs
 
         # add exec_environment for the pp
@@ -44,7 +45,6 @@ class Puppy(PuppyBase):
 
         # set the env of tool_box
         self.tool_box = UsableTools(thread_instance=self)
-        # load tools
 
         # set the decisiontree
         self._decisiontree= decisiontree
@@ -68,6 +68,10 @@ class Puppy(PuppyBase):
     def puppy_exec(self, code):
         # redirect the stdout and stderr to the buffer
         with redirect_stdout(self.output_buffer), redirect_stderr(self.error_buffer):
+            local_vars=locals()
+
+            self.runtime_vars_dict.update(local_vars)
+
             # execute the code
             exec(code, self.global_var_dict, self.runtime_vars_dict)
 
@@ -93,11 +97,9 @@ class Puppy(PuppyBase):
 
         # set the env of tool_box
         self.tool_box = UsableTools(thread_instance=self)
+        self.tool_box.load_tool()
 
-        for tool in self.tool_box.default_tools:
-            self.tool_box.load_tool(tool)
-
-
+        #self.puppy_exec(dedented_source_code)
         self.decisiontree()
 
 

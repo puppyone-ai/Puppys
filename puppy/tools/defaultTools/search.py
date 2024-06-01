@@ -10,7 +10,7 @@ class Search(FuncBase):
         {
             "FuncBase": {
                 "name": "",
-                "intro": "",
+                "description": "",
                 "tag": "func",
                 "__env_instance": None,
                 "__func": None,
@@ -23,14 +23,13 @@ class Search(FuncBase):
 
         self.name = "search_native"
         self.func = self.search_native
-        self.intro = """
+        self.description = """
 Search Engine, use it when you want to search something from perplexity online
 
 for example:
 ## search the query
 query = "how should I install the package of openAI"
-searchResults = search_native(query)
-        """
+searchResults = search_native(query)"""
 
     @staticmethod
     def search_native(query):
