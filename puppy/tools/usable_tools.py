@@ -1,17 +1,16 @@
-from puppy.tools.defaultTools.send_message_to_human import SendMessageToHuman
-from puppy.tools.defaultTools.search_native import SearchEngine
-from puppy.tools.defaultTools.large_language_model import LangeLanguageModel
-from puppy.thread.base import ThreadBase
+from puppy.tools.defaultTools.talk_with_human import TalkWithHuman
+from puppy.tools.defaultTools.search import Search
+from puppy.tools.defaultTools.large_language_model import LLM
+from puppy.pp.base import PuppyBase
 from puppy.environment.base import EnvBase
-from puppy.environment.func import FuncBase
 
 
 # TODO: Search path to collect all the default funcs
 
 # the default tool box that contains all the default functions
-# use to manage all tools under a thread
+# use to manage all tools under a pp
 class UsableTools(EnvBase):
-    def __init__(self, thread_instance: ThreadBase = ThreadBase(), **kwargs):
+    def __init__(self, thread_instance: PuppyBase = PuppyBase(), **kwargs):
 
         """
         {
@@ -34,7 +33,12 @@ class UsableTools(EnvBase):
         self.usable_tools_dict = {}
 
         # the default tools
-        self.add_env(SendMessageToHuman(self.__thread_instance), LangeLanguageModel(), SearchEngine())
+        self.default_tools = [TalkWithHuman(self.__thread_instance), LLM()]
+
+        self.talk_with_Human=TalkWithHuman
+
+        self.language_model=LLM()
+
 
         # TODO: Search path to collect all the default funcs
 
@@ -43,41 +47,21 @@ class UsableTools(EnvBase):
         return self.__thread_instance
 
     @property
-    def tool_dict(self) -> dict:
+    def detail(self):
+        tools_list = []
+        for tool in self.default_tools:
+            tools_list.append({tool.name: tool.intro})
 
-        """
-        This property is used to return the dict of all tools dynamically
-        """
+        return tools_list
 
-        clone_dict = self.detail_dict.copy()
-
-        return {key: value for key, value in clone_dict.items() if isinstance(value, FuncBase)}
-
-    def inventory_tools(self) -> None:
-
-        """
-        This method is used to inventory all the tools within the tool box
-        """
-
-        for tool in self.tool_dict.values():
-            self.load_tool(tool)
-
-    def load_tool(self, tool: FuncBase) -> None:
-
-        """
-        This method is used to load a tool into the tool box
-        """
+    # once a tool_instance has been loaded into the list, we make a global func
+    def load_tool(self, tool):
 
         self.usable_tools_dict.update({tool.name: tool.intro})
 
         self.__thread_instance.runtime_vars_dict.update({tool.name: tool.func})
-        # once a tool_instance has been loaded into the list, we make a global func
 
-    def remove_tool(self, name: str) -> None:
-
-        """
-        This method is used to remove a tool from the tool box
-        """
+    def remove_tool(self, name):
 
         self.usable_tools_dict.pop(name)
 
@@ -85,6 +69,5 @@ class UsableTools(EnvBase):
 
 
 if __name__ == "__main__":
-    tool_box = (UsableTools(thread_instance=ThreadBase()))
-    print(tool_box.expose())
-    print(tool_box.tool_dict)
+    tool_box = (UsableTools(thread_instance=PuppyBase()))
+    print(tool_box.expose)

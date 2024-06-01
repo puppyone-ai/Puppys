@@ -5,5 +5,6 @@
 /useCases/user_case_history/
 .env
 **/user_case_history/
-dist/
-Puppys.egg-info/
+*.egg-info/
+*.whl
+*.tar.gz

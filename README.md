@@ -26,19 +26,16 @@
 
 <div align="center">
 
-**-------------  🔥 Version 0.0.24 (16-May-2024):  -------------**
+**-------------  🔥 Version 0.0.26 (30-May-2024):  -------------**
 
 </div>
 
-1. **Updated a New User Case**: A crypto data analysis, calculate BTC and ETH price.
-2. **Pip Install**: Now you can use pip to install the package.
-3. **New Feature**: 'previewing_before_planning', a significant and default setting of Thread.
-4. **Fixed bugs**: Fixed the bug parsing '##'. 'self' before send_message
-
-<img src="./assets/dividerBlue.png" alt="Image">
+1. **Redesigned Grammar**: Now you use do(action) instead of ##action do().
+2. **Supporting Parameters in Decisiontree**: parameter can be customized in decisiontree.
+3. **Decouple Doing and Checking**: Checking and doing an action is different, now you can define them.
+4. **Another User Case**: Playing Gotcha Game with 4 agents!
 
 ## Building an agent just like building a Turing machine
-
 
 When programming an agent, what exactly are we programming?
 
@@ -60,7 +57,7 @@ The advantage is that by defining a confined environment, we can effectively exp
 Our solution is that, actionflow is as a list in the environment, which need to be interpreted by a decision tree.
 Unlike previous agent frameworks, we placed the workflow within the environment, to be parsed by the decision tree, rather than a default flow.
 
-Giving the agent a confined environment, and 
+Giving the agent a confined environment, and let the agent evolves in the confined environment.
 
 <div align="center">
 <img src="./assets/AgentRPA.png" alt="Image" width="800">
@@ -89,27 +86,23 @@ This prevents an agent from planning actions that it can never actually carry ou
 1. 📢 *Hacker News Reporter*
 
 ```
-import sys
-import os
-from puppy.thread.main import Thread
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from puppy.pp.main import Puppy
+from puppy.tools.usable_tools import UsableTools
 
 # change the API key to your own
 #os.environ["OPENAI_API_KEY"] = ""
 
-hacker_news = Thread()
+def hacker_news_decisiontree(self):
+    self.tool_box=UsableTools()
 
-@hacker_news.actionflow.update
-def pending_list():
+    self.do_check("go to https://news.ycombinator.com/ show the HTML")
 
-    ## go to https://news.ycombinator.com/ show me the HTML
-    hacker_news.do()
+    self.do_check("show the top 10 news, and send it to me")
 
-    ## show the top 10 news @gpt, and send message to me
-    hacker_news.do()
+    self.do_check("pick the news that related to Large Language Models, summarize all the news, and send it to me")
 
-    ## pick the news that related to Large Language Models, summerize all the news, and show it to me
-    hacker_news.do()
+
+hacker_news = Puppy(decisiontree=hacker_news_decisiontree)
 
 hacker_news.run()
 ```

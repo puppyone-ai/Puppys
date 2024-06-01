@@ -25,14 +25,3 @@ class Action(EnvBase):
         self.visible = True
 
         # Could consider introduce the front-end func_name as indexing in the future
-
-
-if __name__ == "__main__":
-
-    revolver = EnvBase(name='revolver', visible=True)
-
-    action = Action(name='trigger', code='print("Bang!")', visible=True)
-
-    revolver.add_env(action)
-
-    print(revolver.expose())

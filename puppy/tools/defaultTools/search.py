@@ -3,7 +3,7 @@ from openai import OpenAI
 import os
 
 
-class SearchEngine(FuncBase):
+class Search(FuncBase):
     def __init__(self, *args, **kwargs):
 
         """
@@ -81,7 +81,7 @@ if __name__ == "__main__":
 
     search_content = "how’s the weather today in Amsterdam?"
 
-    search = SearchEngine()
+    search = Search()
     results = search.run(search_content)
 
     print(results)
