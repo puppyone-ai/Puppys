@@ -99,8 +99,10 @@ class Puppy(PuppyBase):
         self.tool_box = UsableTools(thread_instance=self)
         self.tool_box.load_tool()
 
-        #self.puppy_exec(dedented_source_code)
         self.decisiontree()
+
+    def puppy_env_update(self, vars_dict):
+        self.runtime_vars_dict.update(vars_dict)
 
 
     def do_check(self, *args, **kwargs):

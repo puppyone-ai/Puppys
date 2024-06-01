@@ -9,15 +9,15 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 
 from puppy.pp.main import Puppy
 from puppy.tools.usable_tools import UsableTools
-
+import pandas as pd
 
 def crypto_analysis_decisiontree(self):
     self.tool_box=UsableTools()
 
-    import pandas as pd
     btc_data = pd.read_csv('data/btc_data.csv')
     eth_data = pd.read_csv('data/eth_data.csv')
-    print(locals())
+
+    self.runtime_vars_dict.update(locals())
 
     self.do_check("show me the top 5 lines of the dataframes",show_response= True)
 
@@ -27,3 +27,5 @@ def crypto_analysis_decisiontree(self):
 hacker_news = Puppy(decisiontree=crypto_analysis_decisiontree)
 
 hacker_news.run()
+
+
