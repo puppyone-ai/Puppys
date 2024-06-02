@@ -11,10 +11,9 @@ os.environ['PERPLEXITY_API_KEY'] = "pplx-d9c4ae08201dd95c44b14d4726035f696f8ff07
 from puppy.pp.main import Puppy
 from puppy.tools.usable_tools import UsableTools, Search
 
-def hacker_news_decisiontree(self):
+def decisiontree(self):
     # set available default toolbox for the agent, including two functioons, LLM() and TalkWithHuman()
     self.tool_box=UsableTools()
-
 
     self.do_check("Today is 2024-5-26, search internet to find the top 10 meme coins ranked by their real-time current market capitalization.", show_response = True)
 
@@ -23,7 +22,7 @@ def hacker_news_decisiontree(self):
     self.do_check("Make a list using the information of the top 10 meme crypto coins, and show it to me. ")
 
 
-search_bot = Puppy(decisiontree=hacker_news_decisiontree)
+search_bot = Puppy(decisiontree=decisiontree)
 search_bot.tool_box.load_tool(Search())
 
 search_bot.run()
