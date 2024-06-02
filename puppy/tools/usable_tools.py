@@ -45,12 +45,6 @@ class UsableTools(EnvBase):
         for tool in self.sub_env_list:
             self.__thread_instance.runtime_vars_dict.update({tool.name: tool.func})
 
-    def remove_tool(self, name):
-
-        self.sub_env_list.pop(name)
-
-        self.thread_instance.exec_environment.pop(name)
-
 
 if __name__ == "__main__":
     tool_box = (UsableTools(thread_instance=PuppyBase()))

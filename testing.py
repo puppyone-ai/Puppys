@@ -8,12 +8,10 @@ def designing(data_list):
     list=[]
     for data in data_list:
 
-        result=Mei.do(data,action_name="把这组数据处理一下" ,mode= "return")
+        result=Mei.do(data,action_name="把这组数据处理一下，按照从大到小排列一下" ,mode= "return")
         list.append(result)
 
     return list
-
-
 
 
 
