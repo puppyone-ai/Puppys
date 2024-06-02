@@ -26,3 +26,36 @@ def Hacker_News_Reporter():
 
     return LLM_related_news
 
+result = Hacker_News_Reporter()
+
+
+def Hacker_News_Reporter(self):
+
+    self.HTML = Mei.do(action_name="Hacker_news网站的 HTML" , mode= "return")
+
+    self.news = Mei.do(action_name="Hacker_news的前十条消息", mode="return")
+
+    self.LLM_related_news= Mei.do(action_name="LLM相关的消息", mode="return")
+
+
+    return self.LLM_related_news
+
+Mei=Puppy(decisiontree=Hacker_News_Reporter)
+
+result=Mei.run()
+
+
+def Hacker_News_Reporter(self):
+    self.HTML = Mei.do(action_name="Hacker_news网站的 HTML", mode="return")
+
+    self.news = Mei.do(action_name="Hacker_news的前十条消息", mode="return")
+
+    self.LLM_related_news = Mei.do(action_name="LLM相关的消息", mode="return")
+
+    return self.LLM_related_news
+
+
+Mei = Puppy(decisiontree=Hacker_News_Reporter)
+
+result = Mei.run()
+
