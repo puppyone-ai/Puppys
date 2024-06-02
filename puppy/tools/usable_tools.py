@@ -59,7 +59,7 @@ class UsableTools(EnvBase):
 
         self.usable_tools_dict.update({tool.name: tool.intro})
 
-        self.__thread_instance.runtime_vars_dict.update({tool.name: tool.func})
+        self.thread_instance.runtime_vars_dict.update({tool.name: tool.func})
 
     def remove_tool(self, name):
 
