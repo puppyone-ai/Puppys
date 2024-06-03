@@ -40,7 +40,9 @@ class UsableTools(EnvBase):
         return self.__thread_instance
 
     # once a tool_instance has been loaded into the list, we make a global func
+
     def load_tool(self):
+
 
         for tool in self.sub_env_list:
             self.__thread_instance.runtime_vars_dict.update({tool.name: tool.func})

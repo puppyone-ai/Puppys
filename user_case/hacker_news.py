@@ -10,6 +10,7 @@ from puppy.tools.usable_tools import UsableTools
 #os.environ["OPENAI_API_KEY"] = ""
 
 def hacker_news_decisiontree(self):
+    # set available default toolbox for the agent, including two functioons, LLM() and TalkWithHuman()
     self.tool_box=UsableTools()
 
     self.do_check("go to https://news.ycombinator.com/ show the HTML", show_response = True)
