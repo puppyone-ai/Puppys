@@ -5,8 +5,6 @@
 
 from puppy.pp.main import Puppy
 from puppy.pp.main import puppy_run
-from puppy.llm.openAI import open_ai_chat
-from puppy.environment.chatting import ChattingHistory
 
 # define the lawyer_1's setting
 debater_1_setting = """You are defending yourself. You lost a wallet at the train station, and now you have found someone
@@ -30,6 +28,8 @@ You can:
 # define the decisiontree for both pp
 def chatting_decisiontree(self, system_prompt, max_loop_num = 5):
 
+    from puppy.environment.chatting import ChattingHistory
+    from puppy.llm.openAI import open_ai_chat
     self.chat_history=ChattingHistory()
 
     self.chat_history.add(words=system_prompt, role='system')

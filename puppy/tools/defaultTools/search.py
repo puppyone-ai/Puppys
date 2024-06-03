@@ -10,7 +10,7 @@ class Search(FuncBase):
         {
             "FuncBase": {
                 "name": "",
-                "intro": "",
+                "description": "",
                 "tag": "func",
                 "__env_instance": None,
                 "__func": None,
@@ -23,15 +23,15 @@ class Search(FuncBase):
 
         self.name = "search_engine"
         self.func = self.search_engine
-        self.intro = """
+        self.description = """
 Search Engine, use it when the user request to find some real-time information online. 
 For example, when user want to know the weather, asset price or economy indicators. 
 
 for example:
 ## search the weather in Amsterdam
 query = "what is the weather today in Amsterdam?"
-searchResults = search_engine(query)
-        """
+searchResults = search_engine(query)"""
+
 
     @staticmethod
     def search_engine(query):

@@ -32,7 +32,7 @@ def do(puppy_instance:PuppyBase, action_name: str = "", tool_list: list = [], sh
 
 You default function is writing python code, it's good at any task that python packages can achieve. But make sure that you write code to import the given package.
 You are also allowed to use the customized functions below:
-{puppy_instance.tool_box.detail}
+{puppy_instance.tool_box.explore(return_mode="sub_only")}
  """},
 
         # 2. provide the goal, current action, code history, code future, environment, knowledge
@@ -88,7 +88,6 @@ be similar with the example(ONLY CODE) and NOTHING ELSE. """}]
     new_code = new_code.replace("```python\n", "").replace("\n```", "")
 
     puppy_instance.actionflow.current_code += new_code
-
     puppy_instance.puppy_exec(new_code)
 
     return new_code

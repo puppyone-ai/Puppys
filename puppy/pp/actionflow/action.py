@@ -8,7 +8,7 @@ class Action(EnvBase):
         {
             "EnvBase": {
                 "name": "",
-                "intro": "",
+                "description": "",
                 "tag": "env",
                 "__visibility": False
             }

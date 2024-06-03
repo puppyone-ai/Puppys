@@ -16,7 +16,7 @@ class UsableTools(EnvBase):
         {
             "EnvBase": {
                 "name": "",
-                "intro": "",
+                "description": "",
                 "tag": "env",
                 "__visibility": False
             }
@@ -24,20 +24,13 @@ class UsableTools(EnvBase):
         """
 
         super().__init__(name='tool_box',
-                         intro="a Tool Box that full of default functions",
+                         description="a Tool Box that full of default functions",
                          visibile=False, **kwargs)
 
         self.__thread_instance = thread_instance
 
-        # the all tools' detail
-        self.usable_tools_dict = {}
-
-        # the default tools
-        self.default_tools = [TalkWithHuman(self.__thread_instance), LLM()]
-
-        self.talk_with_Human=TalkWithHuman
-
-        self.language_model=LLM()
+        # default tool list
+        self.sub_env_list = [TalkWithHuman(self.__thread_instance), LLM()]
 
 
         # TODO: Search path to collect all the default funcs
@@ -46,28 +39,15 @@ class UsableTools(EnvBase):
     def thread_instance(self):
         return self.__thread_instance
 
-    @property
-    def detail(self):
-        tools_list = []
-        for tool in self.default_tools:
-            tools_list.append({tool.name: tool.intro})
-
-        return tools_list
-
     # once a tool_instance has been loaded into the list, we make a global func
-    def load_tool(self, tool):
 
-        self.usable_tools_dict.update({tool.name: tool.intro})
+    def load_tool(self):
 
-        self.thread_instance.runtime_vars_dict.update({tool.name: tool.func})
 
-    def remove_tool(self, name):
-
-        self.usable_tools_dict.pop(name)
-
-        self.thread_instance.exec_environment.pop(name)
+        for tool in self.sub_env_list:
+            self.__thread_instance.runtime_vars_dict.update({tool.name: tool.func})
 
 
 if __name__ == "__main__":
     tool_box = (UsableTools(thread_instance=PuppyBase()))
-    print(tool_box.expose)
+    print(tool_box.explore)
