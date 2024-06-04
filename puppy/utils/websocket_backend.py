@@ -1,14 +1,27 @@
 import websockets
+import asyncio
 
 
-async def send_message_to_frontend(message: str) -> None:
-    async with websockets.connect('ws://localhost:9000/notify') as websocket:
+# async def send_message_to_frontend(message: str) -> None:
+#     async with websockets.connect('ws://localhost/notify') as websocket:
+#         await websocket.send(message)
+
+
+async def request_feedback_from_frontend(message: str) -> str:
+
+    async with websockets.connect('ws://localhost/notify') as websocket:
         await websocket.send(message)
 
-
-async def recv_message_from_frontend(message: str) -> str:
-    await send_message_to_frontend(message)
-    async with websockets.connect('ws://localhost:9000/feedback') as websocket:
-        response = await websocket.recv()
-        return response
+    async with websockets.connect('ws://localhost/feedback') as websocket:
+        while True:
+            try:
+                response = await websocket.recv()
+                return response
+            except websockets.ConnectionClosed:
+                # 如果连接关闭，重新连接
+                websocket = await websockets.connect('ws://localhost:9001/feedback')
+            except Exception as e:
+                # 处理其他可能的异常
+                print(f"An error occurred: {e}")
+                await asyncio.sleep(1)  # 等待一段时间后重试
     

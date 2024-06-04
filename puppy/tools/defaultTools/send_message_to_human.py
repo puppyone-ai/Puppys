@@ -1,7 +1,14 @@
 from puppy.environment.func import FuncBase
 from contextlib import redirect_stdout
 from puppy.thread.base import ThreadBase
+from puppy.utils.websocket_backend import request_feedback_from_frontend
 import sys
+import asyncio
+from concurrent.futures import Future
+import multiprocessing
+
+# notify_message_queue = multiprocessing.Queue()
+# feedback_message_queue = multiprocessing.Queue()
 
 
 class SendMessageToHuman(FuncBase):
@@ -36,15 +43,61 @@ send_message_to_human("\U0001F600: What's the phone number of your boss?")
 
         self.__thread_instance = thread_instance
 
-    def send_message_to_human(self, question):
+    def reflex(self):
+        self.func = self.send_message_to_frontend
 
-        with redirect_stdout(sys.__stdout__):
-            user_input = input(str(question) + "\n" + "Your response:")
+    def send_message_to_human(self, question: str):
 
-        chat_history = "\n" + "your message:" + str(question) + "\n" + "# User's response: " + user_input + "\n"
+        question = str(question)
+
+        # with redirect_stdout(sys.__stdout__):
+        user_input = input(question + "\n" + "Your response:")
+
+        chat_history = "\n" + "your message:" + question + "\n" + "# User's response: " + user_input + "\n"
 
         # TODO: create a thread to modify on going code
         self.__thread_instance.actionflow.on_going.code += chat_history
+
+    # def send_message_to_human_multiprocessing(self, question: str):
+    #
+    #     question = str(question)
+    #
+    #     notify_message_queue.put(question)
+    #
+    #     while True:
+    #         if not feedback_message_queue.empty():
+    #             user_input = feedback_message_queue.get()
+    #             chat_history = "\n" + "your message:" + question + "\n" + "# User's response: " + user_input + "\n"
+    #
+    #             # TODO: create a thread to modify on going code
+    #             self.__thread_instance.actionflow.on_going.code += chat_history
+    #
+    #             break
+
+    def send_message_to_frontend(self, question: str):
+
+        """
+        Send the question to the frontend asynchronously, and wait for the response.
+        Until receive a response, keep pending
+        After receive a response, add it to the on_going code
+        """
+
+        question = str(question)
+
+        def add2history(ft: Future):
+
+            chat_history = "\n" + "your message:" + question + "\n" + "# User's response: " + ft.result() + "\n"
+
+            # TODO: create a thread to modify on going code
+            self.__thread_instance.actionflow.on_going.code += chat_history
+
+        # asyncio.set_event_loop(self.__thread_instance.loop)
+
+        # loop = asyncio.get_event_loop()
+
+        future = asyncio.run_coroutine_threadsafe(request_feedback_from_frontend(question), self.__thread_instance.loop)
+
+        future.add_done_callback(add2history)
 
 
 if __name__ == "__main__":

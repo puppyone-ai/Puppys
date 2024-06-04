@@ -217,7 +217,7 @@ f"""The code you generate will be run, and your formally-defined parameters and 
 You are allowed to use the given functions below. But make sure that you write code to import the given package.
 
 Your customized functions and their examples are:
-{thread_instance.tool_box.tool_dict}
+{thread_instance.tool_box.usable_tools_dict}
  """},
 
 

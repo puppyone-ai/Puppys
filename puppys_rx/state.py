@@ -1,10 +1,12 @@
-import os
-import queue
-import websockets
 import asyncio
 
 import reflex as rx
 from typing import Union
+from puppys_rx import notify_message_queue, feedback_message_queue, handle_websocket
+
+import websockets
+# from puppy.tools.defaultTools.send_message_to_human import notify_message_queue, feedback_message_queue
+
 
 # # Checking if the API key is set properly
 # if not os.getenv("OPENAI_API_KEY"):
@@ -76,44 +78,29 @@ class State(rx.State):
         """
         return list(self.chats.keys())
 
-    def load(self):
-        async def compose_server():
-            async with websockets.serve(self.handler, 'localhost', 9000):
-                await asyncio.Future()
-
-        self.message_queue = asyncio.Queue()
-
-        asyncio.create_task(compose_server())
-
-    async def handler(self, websocket, path):
-        if path == "/notify":
-            await self.recv_massage(websocket)
-        elif path == "/feedback":
-            await self.send_massage(websocket)
+    @rx.background
+    async def start_websocket_server(self):
+        server = await websockets.serve(handle_websocket, 'localhost', 9001)
+        print("WebSocket server started on ws://localhost:9001")
+        await server.wait_closed()
 
     @rx.background
-    async def recv_massage(self, websocket):
+    async def recv_message_by_websocket(self):
         while True:
-            async with self:
-                message = await websocket.recv()
-                self.chats[self.current_chat].append(A(question=message))
+            """Receive a message from the server."""
+            if not notify_message_queue.empty():
+                message = await notify_message_queue.get()
+                print(message)
+                async with self:
+                    self.chats[self.current_chat].append(A(question=message))
+                    self.processing = False
+            await asyncio.sleep(3)
 
-    @rx.background
-    async def send_massage(self, websocket):
-        while True:
-            async with self:
-                message = await self.message_queue.get()  # 从队列中获取消息
-                await websocket.send(message)
-
-    async def send_human_feedback(self, form_data: dict[str, str]):
+    async def send_human_feedback_by_websocket(self, form_data: dict[str, str]):
         """
                 Args:
                     form_data: A dict with the current question.
         """
-
-        # Toggle the processing flag.
-        self.processing = False
-        yield
 
         # Get the question from the form
         human_feedback = form_data["question"]
@@ -122,19 +109,41 @@ class State(rx.State):
         if human_feedback == "":
             return
 
-        await self.message_queue.put(human_feedback)
+        await feedback_message_queue.put(human_feedback)
         self.chats[self.current_chat].append(Q(question=human_feedback))
 
         # Clear the input and start the processing.
         self.processing = True
 
-
-# message_queue = asyncio.Queue()
-
-#
-# async def compose_server():
-#     async with websockets.serve(State.handler, 'localhost', 9000):
-#         await asyncio.Future()
-#
-#
-# asyncio.run(compose_server())
+    # @rx.background
+    # async def recv_message_by_queue(self):
+    #     while True:
+    #         """Receive a message from the server."""
+    #         if not notify_message_queue.empty():
+    #             message = await asyncio.to_thread(notify_message_queue.get)
+    #             print(message)
+    #             async with self:
+    #                 self.chats[self.current_chat].append(A(question=message))
+    #                 self.processing = False
+    #         await asyncio.sleep(3)
+    #
+    # async def send_human_feedback_by_queue(self, form_data: dict[str, str]):
+    #     """
+    #             Args:
+    #                 form_data: A dict with the current question.
+    #     """
+    #
+    #     # Get the question from the form
+    #     human_feedback = form_data["question"]
+    #
+    #     # Check if the question is empty
+    #     if human_feedback == "":
+    #         return
+    #
+    #     # await send_message_queue.put(human_feedback)
+    #     await asyncio.to_thread(feedback_message_queue.put, human_feedback)
+    #     # await self.send_massage()
+    #     self.chats[self.current_chat].append(Q(question=human_feedback))
+    #
+    #     # Clear the input and start the processing.
+    #     self.processing = True

@@ -1,9 +1,11 @@
 from .base import ThreadBase
 from puppy.thread.actionflow.actionflow import Actionflow
 
+from puppy.tools.defaultTools.send_message_to_human import SendMessageToHuman
+
 from puppy.thread.do import plan_next_action, check_if_action_achieved, achieve_action
 from contextlib import redirect_stdout, redirect_stderr
-from puppy.utils.websocket_backend import recv_message_from_frontend, send_message_to_frontend
+# from puppy.utils.websocket_backend import recv_message_from_frontend, send_message_to_frontend
 
 from puppy.tools.usable_tools import UsableTools
 # from puppy.environment.base import EnvBase
@@ -99,7 +101,7 @@ class Thread(ThreadBase):
 
         while self.runtime_vars_dict["finishedOrNot"] is not True:
             # generate and write the code that can achieve the given action
-            action_plan = achieve_action(thread_instance=self, action=attention, show_prompt=False)
+            action_plan = achieve_action(thread_instance=self, action=attention, show_prompt=True)
 
             # execute the generated code in thread's environment
             self.thread_exec(action_plan.code)
@@ -117,9 +119,6 @@ class Thread(ThreadBase):
 
             # execute the code
             exec(code, self.global_var_dict, self.runtime_vars_dict)
-
-            # # monitor the stdout and stdin during the execution
-            # self.output_updated.set()
 
     @property
     def vars_preview(self, characters_num=300):
@@ -140,38 +139,19 @@ class Thread(ThreadBase):
         # end the code thread
         thread_code.join()
 
-    def send_message_to_frontend(self, message: str) -> None:
-        asyncio.run_coroutine_threadsafe(send_message_to_frontend(message), self.loop)
-
-    def request_message_from_frontend(self, instruction: str) -> None:
-
-        future = asyncio.run_coroutine_threadsafe(recv_message_from_frontend(instruction), self.loop)
-        self.input_stream.write(future.result())
-        self.input_stream.seek(0)
-
     def run_with_reflex(self) -> None:
 
-        # create the buffer for the output and error
-        # self.output_stream = io.StringIO()
-        # self.input_stream = io.StringIO()
-        # self.error_buffer = io.StringIO()
-
-        # websockets.server.serve(self.send_message_to_backend, 'localhost', 9000)
-
         self.loop = asyncio.new_event_loop()
+        #
+        # def start_event_loop(loop):
+        #     asyncio.set_event_loop(loop)
+        #     loop.run_forever()
 
-        # overwrite the input and output stream
-        self.global_var_dict.update({
-            'print': self.send_message_to_frontend,
-            'input': self.request_message_from_frontend})
-
-        def start_event_loop(loop):
-            asyncio.set_event_loop(loop)
-            loop.run_forever()
-
-        threading.Thread(target=start_event_loop, args=(self.loop,), daemon=True).start()
+        # threading.Thread(target=start_event_loop, args=(self.loop,), daemon=True).start()
 
         import webbrowser
         webbrowser.open('http://localhost:3000')
+
+        self.tool_box.send_message_to_human.reflex()
 
         self.run()

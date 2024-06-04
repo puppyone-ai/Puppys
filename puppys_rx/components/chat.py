@@ -30,7 +30,7 @@ message_style = dict(display="inline-block", padding="1em", border_radius="8px",
 #         )
 
 
-def message(qa: Union[Q,A]) -> rx.Component:
+def message(qa: Union[Q, A]) -> rx.Component:
     """A single answer message.
 
     Args:
@@ -128,7 +128,7 @@ def action_bar() -> rx.Component:
                     ),
                     is_disabled=State.processing,
                 ),
-                on_submit=State.send_human_feedback,
+                on_submit=State.send_human_feedback_by_websocket,
                 reset_on_submit=True,
             ),
             # rx.text(
