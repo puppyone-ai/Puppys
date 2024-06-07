@@ -15,28 +15,13 @@ class EnvBase:
             setattr(self, key, value)
 
     @property
-    def intro(self, as_json: bool = False, as_list: bool = False):
+    def window(self):
+        return []
 
-        """
-        Returns:
+    @property
+    def intro(self):
 
-        {"name":self.name
-         "description":self.description}
-        """
-
-        intro_dict = {"name": self.name,
-                      "description": self.description}
-
-        if as_json is True:
-            import json
-            intro_json = json.dumps(intro_dict)
-            return intro_json
-
-        elif as_list is True:
-            return [kv for kv in intro_dict]
-
-        else:
-            return intro_dict
+        return {"name": self.name, "description": self.description}
 
     def add_env(self, *args: EnvBase):
 
@@ -56,7 +41,9 @@ class EnvBase:
                     delattr(self, sub_env)
 
                 elif isinstance(sub_env, EnvBase):
+
                     keys_to_delete = [k for k, v in self.__dict__.items() if v == sub_env]
+
                     for key in keys_to_delete:
                         delattr(self, key)
 
@@ -70,10 +57,18 @@ class EnvBase:
         self.__dict__.clear()
 
     def __str__(self):
-        return str(self.__dict__)
+        try:
+            return str({k: str(v.attr_dict) for k, v in self.__dict__.items()})
+
+        except RecursionError as e:
+            print(e)
 
 
-def explore(env: EnvBase, return_mode: str = "default", vision_window: list[str] = None, recursive: bool = False):
+def explore(env: EnvBase,
+            return_mode: str = "default",
+            as_json: bool = False, as_list: bool = False,
+            recursive: bool = False
+            ):
 
     """
 
@@ -93,11 +88,23 @@ def explore(env: EnvBase, return_mode: str = "default", vision_window: list[str]
     }
     """
 
-    if vision_window is not None:
-        sub_env_dict = {var for var in vars(env) if var in vision_window}
+    sub_env_dict = {}
 
-    else:
-        sub_env_dict = {sub_env for sub_env in vars(env)}
+    for key, value in env.__dict__.items():
+
+        if value.window:
+
+            sub_env_dict.update({key: env.__dict__[key] for key in value.window})
+
+        else:
+
+            if not isinstance(value, EnvBase):
+
+                sub_env_dict.update({key: value})
+
+            if value.visibility is True:
+
+                sub_env_dict.update({key: value.intro}) if recursive is False else sub_env_dict.update({key: explore(value)})
 
     if return_mode == "sub_only":
         pass
@@ -105,7 +112,17 @@ def explore(env: EnvBase, return_mode: str = "default", vision_window: list[str]
     elif return_mode == "default":
         sub_env_dict.update(env.intro)
 
-    return sub_env_dict
+    if as_json is True:
+        import json
+
+        intro_json = json.dumps(sub_env_dict)
+        return intro_json
+
+    elif as_list is True:
+        return [kv for kv in sub_env_dict.items()]
+
+    else:
+        return sub_env_dict
 
 
 def creat_new_env(from_env: EnvBase = None, *args, **kwargs):
