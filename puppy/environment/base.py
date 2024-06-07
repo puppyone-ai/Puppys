@@ -1,127 +1,120 @@
 from __future__ import annotations
+from typing import Union
 
 
 class EnvBase:
 
-    def __init__(self,
-                 name: str = "",
-                 description: str = "",
-                 visibility: bool = None,
-                 sub_env_list: list = [],
-                 *args, **kwargs
-                 ):
+    visibility: bool = False
 
-        # the name of this environment var
-        self.__name = name
+    def __init__(self, name, description, *args, **kwargs):
 
-        # description of this environment var
-        self.__description = description
+        self.name = name
+        self.description = description
 
-        # the tag of this environment var
-        self.tag = "env"
-
-        # if this var is default visible for .expose() or not
-        self.__visibility = visibility if visibility is not None else False
-
-        # if the sub env list is empty
-        self.sub_env_list = sub_env_list
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
     @property
-    def name(self):
-        return self.__name
-
-    @name.setter
-    def name(self, value):
-        self.__name = value
-
-    @property
-    def visibility(self):
-        return self.__visibility
-
-    @visibility.setter
-    def visibility(self, value):
-        self.__visibility = value
-
-    @property
-    def description(self):
-        return self.__description
-
-    @description.setter
-    def description(self, value):
-        self.__description = value
-
-    """
-    vars(self): (current level) all 
-    self.intro: (current level) name and intro as a JSON
-    self.explore: (hierarchy) non-private 
-    """
-
-    @property
-    def intro(self):
+    def intro(self, as_json: bool = False, as_list: bool = False):
 
         """
-
         Returns:
 
         {"name":self.name
-        "description":self.description}
+         "description":self.description}
         """
 
-        intro_JSON = {"name": self.name,
+        intro_dict = {"name": self.name,
                       "description": self.description}
 
-        return intro_JSON
+        if as_json is True:
+            import json
+            intro_json = json.dumps(intro_dict)
+            return intro_json
 
-    # recursively show non-private attributes under this env
-    def explore(self, return_mode : str = "default"):
-
-        """
-
-        Returns:
-
-        {
-        intro:{}
-        sub_env_list:[
-        {intro:{}]
-        }
-        """
-
-        all_JSON = {}
-
-        sub_env_intro_list = []
-        for sub_env in self.sub_env_list:
-            sub_env_intro_list.append(sub_env.intro)
-
-        if return_mode == "default":
-            all_JSON["intro"] = self.intro
-            all_JSON["sub_env_list"] = sub_env_intro_list
-            return all_JSON
-
-        elif return_mode =="sub_only":
-            return sub_env_intro_list
+        elif as_list is True:
+            return [kv for kv in intro_dict]
 
         else:
-            raise ValueError("the explore return_mode must be 'default' or 'sub_only'")
+            return intro_dict
 
-    # Monkey Patching
-    # create a new env instance in this env instance
-    def create_new_env(self, *args, **kwargs):
-        instance = EnvBase(*args, **kwargs, parent=self)
-        self.sub_env_list.append(instance)
+    def add_env(self, *args: EnvBase):
 
-    # Monkey Patching
-    # add an existed env instance into this env instance
-    def add_new_env(self, env_example: EnvBase):
-        instance = env_example
-        self.sub_env_list.append(instance)
+        for sub_env in args:
+            if isinstance(sub_env, EnvBase):
+                setattr(self, sub_env.name, sub_env)
+            else:
+                raise TypeError('add_env() currently could only dynamically load and link instance from EnvBase.')
 
-    # clear all sub_env
+    def del_env(self, *args: Union[str, EnvBase]):
+
+        for sub_env in args:
+
+            try:
+
+                if type(sub_env) is str:
+                    delattr(self, sub_env)
+
+                elif isinstance(sub_env, EnvBase):
+                    keys_to_delete = [k for k, v in self.__dict__.items() if v == sub_env]
+                    for key in keys_to_delete:
+                        delattr(self, key)
+
+                else:
+                    raise TypeError()
+
+            except AttributeError:
+                continue
+
     def clear_env(self):
-        self.sub_env_list = []
+        self.__dict__.clear()
 
 
-def new_env(*args, **kwargs):
-    return EnvBase(*args, **kwargs)
+# recursively show sub_env under the env
+def explore(env: EnvBase, return_mode: str = "default", vision_window: list[str] = None, recursive: bool = False):
+
+    """
+
+    Returns:
+
+    {
+    name:*,
+    intro:*,
+    sub_evn_a:{
+               name:**,
+               intro:**,
+               },
+    sub_evn_b:{
+               name:***,
+               intro:***,
+               },
+    }
+    """
+
+    if vision_window is not None:
+        sub_env_dict = {var for var in vars(env) if var in vision_window}
+
+    else:
+        sub_env_dict = {sub_env for sub_env in vars(env)}
+
+    if return_mode == "sub_only":
+        pass
+
+    elif return_mode == "default":
+        sub_env_dict.update(env.intro)
+
+    return sub_env_dict
+
+
+def creat_new_env(from_env: EnvBase = None, *args, **kwargs):
+
+    new_env = EnvBase(*args, **kwargs)
+
+    if from_env is None:
+        return new_env
+
+    else:
+        setattr(from_env, new_env.name, new_env)
 
 
 if __name__ == "__main__":
@@ -134,27 +127,25 @@ if __name__ == "__main__":
 
     floor_1 = EnvBase(name='floor_1', visible=True)
 
-    building.add_new_env(floor_1)
+    building.add_env(floor_1)
 
-    print(building.explore)
+    print(explore(building))
 
     ## method 2 (with 'create_new_env' monkey patching)
     building = EnvBase(name='building', visible=True)
 
     building.clear_env()
-    building.create_new_env(name='floor_2', visible=True)
+    creat_new_env(front_env=building, name='floor_2', visible=True)
 
-    print(building.sub_env_list)
-    print(building.explore)
+    # print(building.sub_env_list)
+    print(explore(building))
 
     ## method 3 (Recommended, define an env method in a class)
     class Building(EnvBase):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
 
-            self.sub_env_list.clear()
-            self.sub_env_list.append(EnvBase(name='floor_3', visible=True))
+            self.add_env(EnvBase(name='floor_3', visible=True))
 
     building = Building(name='building', visible=True)
-    print(building.sub_env_list)
-    print(building.explore)
+    print(explore(building))

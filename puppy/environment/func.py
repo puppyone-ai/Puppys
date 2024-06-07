@@ -35,7 +35,6 @@ class FuncBase(EnvBase):
     @property
     def name(self):
         # return getattr(self, '__name', self.func.__name__)
-
         return self.__name
 
     @name.setter
@@ -66,7 +65,7 @@ class FuncBase(EnvBase):
 def new_func(env_instance=None):
 
     def wrapper(func):
-        return FuncBase( func=func, name=func.__name__, description=func.__doc__)
+        return FuncBase(func=func, name=func.__name__, description=func.__doc__)
 
     return wrapper
 
