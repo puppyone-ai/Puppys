@@ -7,7 +7,7 @@ class EnvBase:
                  name: str = "",
                  description: str = "",
                  visibility: bool = None,
-                 sub_env_list:list = [],
+                 sub_env_list: list = [],
                  *args, **kwargs
                  ):
 
@@ -67,8 +67,8 @@ class EnvBase:
         "description":self.description}
         """
 
-        intro_JSON={"name":self.name,
-        "description":self.description}
+        intro_JSON = {"name": self.name,
+                      "description": self.description}
 
         return intro_JSON
 
@@ -79,14 +79,16 @@ class EnvBase:
 
         Returns:
 
-        {intro:{}
+        {
+        intro:{}
         sub_env_list:[
-        {intro:{}]}
+        {intro:{}]
+        }
         """
 
         all_JSON = {}
 
-        sub_env_intro_list=[]
+        sub_env_intro_list = []
         for sub_env in self.sub_env_list:
             sub_env_intro_list.append(sub_env.intro)
 
@@ -104,7 +106,6 @@ class EnvBase:
     # Monkey Patching
     # create a new env instance in this env instance
     def create_new_env(self, *args, **kwargs):
-
         instance = EnvBase(*args, **kwargs, parent=self)
         self.sub_env_list.append(instance)
 
@@ -145,7 +146,6 @@ if __name__ == "__main__":
 
     print(building.sub_env_list)
     print(building.explore)
-
 
     ## method 3 (Recommended, define an env method in a class)
     class Building(EnvBase):

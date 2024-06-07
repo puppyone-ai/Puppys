@@ -35,7 +35,7 @@ talk_with_human(" What's the phone number of your boss?")"""
 
         self.__puppy_instance = puppy_instance
 
-        self.visible= True
+        self.visible = True
 
     def send_message_to_human(self, question):
 
