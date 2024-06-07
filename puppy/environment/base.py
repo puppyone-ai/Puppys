@@ -69,8 +69,10 @@ class EnvBase:
     def clear_env(self):
         self.__dict__.clear()
 
+    def __str__(self):
+        return str(self.__dict__)
 
-# recursively show sub_env under the env
+
 def explore(env: EnvBase, return_mode: str = "default", vision_window: list[str] = None, recursive: bool = False):
 
     """
@@ -118,29 +120,29 @@ def creat_new_env(from_env: EnvBase = None, *args, **kwargs):
 
 
 if __name__ == "__main__":
+
     """
-    Three method that can create a new env in an env:
+    Recommended three method that to compose a new env:
     """
 
-    # method 1 (with 'add_new_env' monkey patching)
     building = EnvBase(name='building', visible=True)
 
+    # method 1 (with 'add_env' monkey patching)
     floor_1 = EnvBase(name='floor_1', visible=True)
 
     building.add_env(floor_1)
 
     print(explore(building))
 
-    ## method 2 (with 'create_new_env' monkey patching)
-    building = EnvBase(name='building', visible=True)
+    building.del_env('floor_1')
 
-    building.clear_env()
+    # method 2 (with 'create_new_env' monkey patching)
+
     creat_new_env(front_env=building, name='floor_2', visible=True)
 
-    # print(building.sub_env_list)
     print(explore(building))
 
-    ## method 3 (Recommended, define an env method in a class)
+    # method 3 (Define an env method in a class)
     class Building(EnvBase):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
