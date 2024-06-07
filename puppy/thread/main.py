@@ -1,7 +1,7 @@
+import time
+
 from .base import ThreadBase
 from puppy.thread.actionflow.actionflow import Actionflow
-
-from puppy.tools.defaultTools.send_message_to_human import SendMessageToHuman
 
 from puppy.thread.do import plan_next_action, check_if_action_achieved, achieve_action
 from contextlib import redirect_stdout, redirect_stderr
@@ -12,7 +12,6 @@ from puppy.tools.usable_tools import UsableTools
 
 # import io
 import sys
-import asyncio
 # import websockets
 import threading
 
@@ -141,16 +140,17 @@ class Thread(ThreadBase):
 
     def run_with_reflex(self) -> None:
 
-        self.loop = asyncio.new_event_loop()
-        #
-        # def start_event_loop(loop):
-        #     asyncio.set_event_loop(loop)
-        #     loop.run_forever()
+        # import os
+        # print(os.getcwd()) # Puppys/useCases
 
-        # threading.Thread(target=start_event_loop, args=(self.loop,), daemon=True).start()
+        import subprocess
 
-        import webbrowser
-        webbrowser.open('http://localhost:3000')
+        subprocess.run("reflex run --env prod", shell=True, cwd='p')
+
+        time.sleep(3)
+
+        # import webbrowser
+        # webbrowser.open('http://localhost:3000')
 
         self.tool_box.send_message_to_human.reflex()
 

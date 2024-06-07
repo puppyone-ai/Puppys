@@ -5,7 +5,14 @@ from puppys_rx.state import Q, A, State
 from typing import Union
 
 
-message_style = dict(display="inline-block", padding="1em", border_radius="8px", max_width=["30em", "30em", "50em", "50em", "50em", "50em"])
+message_style = dict(
+    display="inline-block",
+    padding="1em",
+    border_radius="8px",
+    max_width=["30em", "30em", "50em", "50em", "50em", "50em"],
+    margin_y="0.5em",
+    box_shadow="rgba(0, 0, 0, 0.15) 0px 2px 8px",
+)
 
 
 # def message_q(q: Q) -> rx.Component:
@@ -39,11 +46,11 @@ def message(qa: Union[Q, A]) -> rx.Component:
     Returns:
         A component displaying the answer.
     """
-    question_box = None
-    answer_box = None
+
+    text_box = None
 
     if isinstance(qa, Q):
-        question_box = rx.box(
+        text_box = rx.box(
             rx.markdown(
                 qa.question,
                 background_color=rx.color("mauve", 4),
@@ -52,25 +59,23 @@ def message(qa: Union[Q, A]) -> rx.Component:
             ),
             text_align="right",
             margin_top="1em",
+            width="100%",
         )
 
     if isinstance(qa, A):
-        answer_box = rx.box(
+        text_box = rx.box(
             rx.markdown(
-                qa.answer,
+                qa.question,
                 background_color=rx.color("accent", 4),
                 color=rx.color("accent", 12),
                 **message_style,
             ),
             text_align="left",
             padding_top="1em",
+            width="100%",
         )
 
-    return rx.box(
-        question_box if question_box else rx.box(),
-        answer_box if answer_box else rx.box(),
-        width="100%",
-    )
+    return rx.box(text_box) if text_box else rx.box()
 
 
 def chat() -> rx.Component:
@@ -101,21 +106,21 @@ def action_bar() -> rx.Component:
             rx.chakra.form(
                 rx.chakra.form_control(
                     rx.hstack(
-                        rx.radix.text_field.root(
-                            rx.radix.text_field.input(
-                                placeholder="Ask puppy...",
-                                id="question",
-                                width=["10em", "15em", "20em", "30em", "40em", "50em"],
-                                height="3em",
-                                borderRadius="13px",
-                            ),
+                        # rx.radix.text_field.root(
+                        rx.input(
+                            placeholder="Ask puppy...",
+                            id="question",
+                            width=["10em", "15em", "20em", "30em", "40em", "50em"],
+                            height="3em",
+                            borderRadius="13px",
+                        ),
                             # rx.radix.text_field.slot(
                             #     rx.tooltip(
                             #         rx.icon("info", size=18),
                             #         content="Enter a question to get a response.",
                             #     )
                             # ),
-                        ),
+                        # ),
                         rx.button(
                             rx.cond(
                                 State.processing,

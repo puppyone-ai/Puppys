@@ -84,20 +84,17 @@ send_message_to_human("\U0001F600: What's the phone number of your boss?")
 
         question = str(question)
 
-        def add2history(ft: Future):
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
 
-            chat_history = "\n" + "your message:" + question + "\n" + "# User's response: " + ft.result() + "\n"
+        ft = loop.run_until_complete(request_feedback_from_frontend(question))
 
-            # TODO: create a thread to modify on going code
-            self.__thread_instance.actionflow.on_going.code += chat_history
+        chat_history = "\n" + "your message:" + question + "\n" + "# User's response: " + ft + "\n"
 
-        # asyncio.set_event_loop(self.__thread_instance.loop)
+        # TODO: create a thread to modify on going code
+        self.__thread_instance.actionflow.on_going.code += chat_history
 
-        # loop = asyncio.get_event_loop()
-
-        future = asyncio.run_coroutine_threadsafe(request_feedback_from_frontend(question), self.__thread_instance.loop)
-
-        future.add_done_callback(add2history)
+        loop.close()
 
 
 if __name__ == "__main__":
