@@ -3,6 +3,7 @@ litellm
 beautifulsoup4
 
 pandas
+pdoc
 python-dotenv
 
 requests
