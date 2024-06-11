@@ -1,25 +1,52 @@
 from __future__ import annotations
 from typing import Union
+from meta import EnvMeta
 
 
-class EnvBase:
+class EnvBase(metaclass=EnvMeta):
 
-    visibility: bool = False
+    sub_env_list: list = []
 
-    def __init__(self, name, description, *args, **kwargs):
+    def __init__(self,
+                 core: any,
+                 name: str = None,
+                 description: str = None,
+                 *args, **kwargs):
 
-        self.name = name
-        self.description = description
+        self.core = core  # value
+        self.name = name  # key
+        self.description = description  # context
 
         for key, value in kwargs.items():
+            if not isinstance(value, EnvBase):
+                raise TypeError('EnvBase could only accept EnvBase instance as key word arguments.')
             setattr(self, key, value)
 
-    @property
-    def window(self):
-        return []
+    @classmethod
+    def window_add(cls, *args: str):
+        cls.sub_env_list.extend(args)
+
+    @classmethod
+    def window_del(cls, *args: str):
+        for arg in args:
+            if arg in cls.sub_env_list:
+                cls.sub_env_list.remove(arg)
 
     @property
-    def intro(self):
+    def env_list(self) -> list:
+
+        result = []
+
+        for k in self.sub_env_list:
+            if not isinstance(self.__dict__[k], EnvBase):
+                result.append(self.__dict__[k])
+            else:
+                result.append(self.__dict__[k].intro)
+
+        return result
+
+    @property
+    def intro(self) -> dict:
 
         return {"name": self.name, "description": self.description}
 
@@ -53,76 +80,8 @@ class EnvBase:
             except AttributeError:
                 continue
 
-    def clear_env(self):
-        self.__dict__.clear()
-
-    def __str__(self):
-        try:
-            return str({k: str(v.attr_dict) for k, v in self.__dict__.items()})
-
-        except RecursionError as e:
-            print(e)
-
-
-def explore(env: EnvBase,
-            return_mode: str = "default",
-            as_json: bool = False, as_list: bool = False,
-            recursive: bool = False
-            ):
-
-    """
-
-    Returns:
-
-    {
-    name:*,
-    intro:*,
-    sub_evn_a:{
-               name:**,
-               intro:**,
-               },
-    sub_evn_b:{
-               name:***,
-               intro:***,
-               },
-    }
-    """
-
-    sub_env_dict = {}
-
-    for key, value in env.__dict__.items():
-
-        if value.window:
-
-            sub_env_dict.update({key: env.__dict__[key] for key in value.window})
-
-        else:
-
-            if not isinstance(value, EnvBase):
-
-                sub_env_dict.update({key: value})
-
-            if value.visibility is True:
-
-                sub_env_dict.update({key: value.intro}) if recursive is False else sub_env_dict.update({key: explore(value)})
-
-    if return_mode == "sub_only":
-        pass
-
-    elif return_mode == "default":
-        sub_env_dict.update(env.intro)
-
-    if as_json is True:
-        import json
-
-        intro_json = json.dumps(sub_env_dict)
-        return intro_json
-
-    elif as_list is True:
-        return [kv for kv in sub_env_dict.items()]
-
-    else:
-        return sub_env_dict
+    def isolated(self):
+        self.sub_env_list.clear()
 
 
 def creat_new_env(from_env: EnvBase = None, *args, **kwargs):
@@ -149,7 +108,7 @@ if __name__ == "__main__":
 
     building.add_env(floor_1)
 
-    print(explore(building))
+    print(building)
 
     building.del_env('floor_1')
 
@@ -157,7 +116,7 @@ if __name__ == "__main__":
 
     creat_new_env(front_env=building, name='floor_2', visible=True)
 
-    print(explore(building))
+    print(building)
 
     # method 3 (Define an env method in a class)
     class Building(EnvBase):
@@ -167,4 +126,4 @@ if __name__ == "__main__":
             self.add_env(EnvBase(name='floor_3', visible=True))
 
     building = Building(name='building', visible=True)
-    print(explore(building))
+    print(building)

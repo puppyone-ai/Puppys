@@ -4,70 +4,46 @@ from puppy.environment.base import EnvBase
 
 class FuncBase(EnvBase):
 
-    def __init__(self,
-                 func=None,
-                 description="",
-                 *args, **kwargs):
+    def __init__(self, *args, **kwargs):
 
         """
         {
             "EnvBase": {
                 "name": "",
                 "description": "",
-                "tag": "env",
-                "__visibility": False
+                "value": None,
             }
         }
         """
 
         super().__init__(*args, **kwargs)
 
-        self.tag = "func"
-
-        self.func = func
-
-        self.__description = description
-
-        self.visible = True
-
-        self.__name = None
-
     @property
     def name(self):
-        # return getattr(self, '__name', self.func.__name__)
-        return self.__name
+        return self.__dict__['name'] if self.__dict__['name'] else self.core.__name__
 
     @name.setter
     def name(self, value):
-        self.__name = value
+        self.__dict__['name'] = value
 
     @property
     def description(self):
-        return self.__description
+        return self.__dict__["description"] if self.__dict__["description"] else self.core.__doc__
 
     @description.setter
     def description(self, value: str):
-        self.__description = value
-
-    @property
-    def func(self):
-        return self.__func
-
-    @func.setter
-    def func(self, value):
-        self.__func = value
+        self.__dict__['description'] = value
 
     def run(self, *args, **kwargs):
-        return self.func(*args, **kwargs)
+        return self.core(*args, **kwargs)
 
 
 # (decorator) Rapidly create a new func instance under the env instance
-def new_func(env_instance=None):
+def new_func(func, env_instance=None):
 
-    def wrapper(func):
-        return FuncBase(func=func, name=func.__name__, description=func.__doc__)
+    func_env = FuncBase(func, name=func.__name__, description=func.__doc__)
 
-    return wrapper
+    return FuncBase
 
 
 if __name__ == "__main__":
@@ -77,7 +53,7 @@ if __name__ == "__main__":
     """
 
     # method_1: use @new_func decorator
-    @new_func()
+    @new_func
     def send_message_to_human():
 
         """
