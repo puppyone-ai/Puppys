@@ -5,6 +5,12 @@ on:
   push:
     branches:
       - main
+      - dev_yuning
+    # add merge requests to the list of triggers
+  pull_request:
+    branches:
+      - main
+      - qubits
     # Alternative: only build for tags.
     # tags:
     #   - '*'
