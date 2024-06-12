@@ -4,3 +4,7 @@
 **/.llm_cache
 /useCases/user_case_history/
 .env
+**/user_case_history/
+*.egg-info/
+*.whl
+*.tar.gz

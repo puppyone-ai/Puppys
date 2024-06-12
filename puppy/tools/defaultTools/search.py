@@ -3,14 +3,14 @@ from openai import OpenAI
 import os
 
 
-class SearchNative(FuncBase):
+class Search(FuncBase):
     def __init__(self, *args, **kwargs):
 
         """
         {
             "FuncBase": {
                 "name": "",
-                "intro": "",
+                "description": "",
                 "tag": "func",
                 "__env_instance": None,
                 "__func": None,
@@ -21,27 +21,27 @@ class SearchNative(FuncBase):
 
         super().__init__(*args, **kwargs)
 
-        self.name = "search_native"
-        self.func = self.search_native
-        self.intro = """
-Search Engine, use it when you want to search something from websites with a SPECIFIC QUESTION.
-The result will be text-based answer with citations.
+        self.name = "search_engine"
+        self.func = self.search_engine
+        self.description = """
+Search Engine, use it when the user request to find some real-time information online. 
+For example, when user want to know the weather, asset price or economy indicators. 
 
 for example:
-## search the query
-query = "how should I install the package of openAI"
-searchResults = search_native(query)
-        """
+## search the weather in Amsterdam
+query = "what is the weather today in Amsterdam?"
+searchResults = search_engine(query)"""
+
 
     @staticmethod
-    def search_native(query):
+    def search_engine(query):
 
         messages = [
             {
                 "role": "system",
                 "content": (
-                    """You are an artificial intelligence assistant and you need to 
-                    engage in a helpful, detailed, polite conversation with a user."""
+                    "You are an artificial intelligence assistant and you need to "
+                    "engage in a helpful, detailed, polite conversation with a user."
                 ),
             },
             {
@@ -79,9 +79,9 @@ searchResults = search_native(query)
 
 if __name__ == "__main__":
 
-    search_content = "how’s the weather today in New York?"
+    search_content = "how’s the weather today in Amsterdam?"
 
-    search = SearchNative()
+    search = Search()
     results = search.run(search_content)
 
     print(results)

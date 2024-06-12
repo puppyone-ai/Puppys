@@ -8,7 +8,7 @@ class Action(EnvBase):
         {
             "EnvBase": {
                 "name": "",
-                "intro": "",
+                "description": "",
                 "tag": "env",
                 "__visibility": False
             }
@@ -17,6 +17,7 @@ class Action(EnvBase):
 
         super().__init__(*args, **kwargs)
 
+        self.name = ""
         self.tag = "action"
 
         self.code = ""

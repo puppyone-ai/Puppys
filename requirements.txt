@@ -1,8 +1,9 @@
 openai>=1.0.0
 litellm
-zhipuai
-google-api-python-client
+beautifulsoup4
 
 pandas
 python-dotenv
+
 requests
+google-api-python-client
