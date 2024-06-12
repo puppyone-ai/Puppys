@@ -4,7 +4,7 @@ import textwrap
 import json
 from puppy.llm.openAI import open_ai_chat
 from openai import OpenAI
-
+import os
 
 # soft decoder
 def parse_code2list2(source_code: str) -> list:
