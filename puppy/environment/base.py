@@ -5,13 +5,19 @@ from meta import EnvMeta
 
 class EnvBase(metaclass=EnvMeta):
 
-    sub_env_list: list = []
+    sub_env: list = []
+    as_list: bool = False
 
-    def __init__(self,
+    def __new__(cls, *args, as_list: bool, sub_env: list, **kwargs):
+        cls.as_list = as_list
+        cls.sub_env = sub_env
+        return super().__new__(cls)
+
+    def __init__(self, *args,
                  value: any,
-                 name: str = None,
-                 description: str = None,
-                 *args, **kwargs):
+                 name: str,
+                 description: str,
+                 **kwargs):
 
         self.value = value  # value
 
@@ -25,20 +31,20 @@ class EnvBase(metaclass=EnvMeta):
 
     @classmethod
     def sub_env_add(cls, *args: str):
-        cls.sub_env_list.extend(args)
+        cls.sub_env.extend(args)
 
     @classmethod
     def sub_env_del(cls, *args: str):
         for arg in args:
-            if arg in cls.sub_env_list:
-                cls.sub_env_list.remove(arg)
+            if arg in cls.sub_env:
+                cls.sub_env.remove(arg)
 
     @property
     def env_list(self) -> list:
 
         result = []
 
-        for k in self.sub_env_list:
+        for k in self.sub_env:
             if not isinstance(self.__dict__[k], EnvBase):
                 result.append(self.__dict__[k])
             else:
@@ -56,7 +62,7 @@ class EnvBase(metaclass=EnvMeta):
         for sub_env in args:
             if isinstance(sub_env, EnvBase):
                 setattr(self, sub_env.name, sub_env)
-                self.sub_env_list.append(sub_env.name)
+                self.sub_env.append(sub_env.name)
 
             else:
                 raise TypeError('add_env() currently could only dynamically load and link instance from EnvBase.')
@@ -69,7 +75,7 @@ class EnvBase(metaclass=EnvMeta):
 
                 if type(sub_env) is str:
                     delattr(self, sub_env)
-                    self.sub_env_list.remove(sub_env)
+                    self.sub_env.remove(sub_env)
 
                 elif isinstance(sub_env, EnvBase):
 
@@ -77,7 +83,7 @@ class EnvBase(metaclass=EnvMeta):
 
                     for key in keys_to_delete:
                         delattr(self, key)
-                        self.sub_env_list.remove(key)
+                        self.sub_env.remove(key)
 
                 else:
                     raise TypeError()
@@ -86,7 +92,7 @@ class EnvBase(metaclass=EnvMeta):
                 continue
 
     def isolated(self):
-        self.sub_env_list.clear()
+        self.sub_env.clear()
 
     def __str__(self):
         return self.intro

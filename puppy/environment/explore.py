@@ -25,7 +25,7 @@ def explore(env: EnvBase,
     }
     """
 
-    sub_env_dict = env.env_list if env.sub_env_list else {}
+    sub_env_dict = env.env_list if env.sub_env else {}
 
     if return_mode == "window_only":
         pass

@@ -8,7 +8,7 @@ class EnvMeta(type):
         # 如果父类有 window 属性，合并它们
         for base in bases:
             if hasattr(base, 'window'):
-                window = list(set(window) | set(base.sub_env_list))
+                window = list(set(window) | set(base.sub_env))
 
         class_dict['window'] = window
 
