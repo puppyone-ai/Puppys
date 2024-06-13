@@ -8,12 +8,13 @@ class EnvBase(metaclass=EnvMeta):
     sub_env_list: list = []
 
     def __init__(self,
-                 core: any,
+                 value: any,
                  name: str = None,
                  description: str = None,
                  *args, **kwargs):
 
-        self.core = core  # value
+        self.value = value  # value
+
         self.name = name  # key
         self.description = description  # context
 
@@ -23,11 +24,11 @@ class EnvBase(metaclass=EnvMeta):
             setattr(self, key, value)
 
     @classmethod
-    def window_add(cls, *args: str):
+    def sub_env_add(cls, *args: str):
         cls.sub_env_list.extend(args)
 
     @classmethod
-    def window_del(cls, *args: str):
+    def sub_env_del(cls, *args: str):
         for arg in args:
             if arg in cls.sub_env_list:
                 cls.sub_env_list.remove(arg)
@@ -55,6 +56,8 @@ class EnvBase(metaclass=EnvMeta):
         for sub_env in args:
             if isinstance(sub_env, EnvBase):
                 setattr(self, sub_env.name, sub_env)
+                self.sub_env_list.append(sub_env.name)
+
             else:
                 raise TypeError('add_env() currently could only dynamically load and link instance from EnvBase.')
 
@@ -66,6 +69,7 @@ class EnvBase(metaclass=EnvMeta):
 
                 if type(sub_env) is str:
                     delattr(self, sub_env)
+                    self.sub_env_list.remove(sub_env)
 
                 elif isinstance(sub_env, EnvBase):
 
@@ -73,6 +77,7 @@ class EnvBase(metaclass=EnvMeta):
 
                     for key in keys_to_delete:
                         delattr(self, key)
+                        self.sub_env_list.remove(key)
 
                 else:
                     raise TypeError()
@@ -82,6 +87,9 @@ class EnvBase(metaclass=EnvMeta):
 
     def isolated(self):
         self.sub_env_list.clear()
+
+    def __str__(self):
+        return self.intro
 
 
 def creat_new_env(from_env: EnvBase = None, *args, **kwargs):

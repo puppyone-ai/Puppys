@@ -25,25 +25,25 @@ def explore(env: EnvBase,
     }
     """
 
-    sub_envs = env.env_list if env.sub_env_list else {}
+    sub_env_dict = env.env_list if env.sub_env_list else {}
 
     if return_mode == "window_only":
         pass
 
     elif return_mode == "default":
-        sub_envs.update(env.intro)
+        sub_env_dict.update(env.intro)
 
     elif return_mode == "full":
-        sub_envs.update({k: v.intro for k, v in env.__dict__.items()})
+        sub_env_dict.update({k: v.intro for k, v in env.__dict__.items()})
 
     if as_json is True:
         import json
 
-        intro_json = json.dumps(sub_envs)
+        intro_json = json.dumps(sub_env_dict)
         return intro_json
 
     elif as_list is True:
-        return [kv for kv in sub_envs.items()]
+        return [kv for kv in sub_env_dict.items()]
 
     else:
-        return sub_envs
+        return sub_env_dict
