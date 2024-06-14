@@ -30,6 +30,7 @@ class Actionflow(EnvBase):
 
         self.all_code = ""
         self.current_code = ""
+        self.exception = ""
 
 
 
