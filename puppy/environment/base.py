@@ -5,28 +5,26 @@ from meta import EnvMeta
 
 class EnvBase(metaclass=EnvMeta):
 
-    sub_env: list = []
+    sub_env: list[str] = []
     as_list: bool = False
 
-    def __new__(cls, *args, as_list: bool, sub_env: list, **kwargs):
+    def __new__(cls, *args,
+                as_list: bool, sub_env: list,
+                value: any, name: str, description: str,
+                **kwargs):
+
         cls.as_list = as_list
         cls.sub_env = sub_env
+
+        cls.value = value  # value
+        cls.name = name  # key
+        cls.description = description  # context
+
         return super().__new__(cls)
 
-    def __init__(self, *args,
-                 value: any,
-                 name: str,
-                 description: str,
-                 **kwargs):
-
-        self.value = value  # value
-
-        self.name = name  # key
-        self.description = description  # context
+    def __init__(self, *args, **kwargs):
 
         for key, value in kwargs.items():
-            if not isinstance(value, EnvBase):
-                raise TypeError('EnvBase could only accept EnvBase instance as key word arguments.')
             setattr(self, key, value)
 
     @classmethod
@@ -44,13 +42,34 @@ class EnvBase(metaclass=EnvMeta):
 
         result = []
 
-        for k in self.sub_env:
+        sub_env_keys = self.sub_env if self.sub_env else self.__dict__.keys()
+
+        for k in sub_env_keys:
             if not isinstance(self.__dict__[k], EnvBase):
                 result.append(self.__dict__[k])
             else:
                 result.append(self.__dict__[k].intro)
 
         return result
+
+    @property
+    def env_dict(self) -> dict:
+
+        result = {}
+
+        sub_env_keys = self.sub_env if self.sub_env else self.__dict__.keys()
+
+        for k in sub_env_keys:
+            if not isinstance(self.__dict__[k], EnvBase):
+                result.update({k: self.__dict__[k]})
+            else:
+                result.update({k: self.__dict__[k].intro})
+
+        return result
+
+    @property
+    def sub_env_collections(self) -> Union[list, dict]:
+        return self.env_list if self.as_list else self.env_dict
 
     @property
     def intro(self) -> dict:
