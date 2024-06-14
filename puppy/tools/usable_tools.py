@@ -32,6 +32,7 @@ class UsableTools(EnvBase):
         # default tool list
         self.sub_env_list = [TalkWithHuman(self.__thread_instance), LLM()]
 
+
         # TODO: Search path to collect all the default funcs
 
     @property
@@ -41,6 +42,7 @@ class UsableTools(EnvBase):
     # once a tool_instance has been loaded into the list, we make a global func
 
     def load_tool(self):
+
 
         for tool in self.sub_env_list:
             self.__thread_instance.runtime_vars_dict.update({tool.name: tool.func})

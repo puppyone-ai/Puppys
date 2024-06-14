@@ -3,29 +3,23 @@
 #import os
 #sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from puppy.actions import check, do, score
-from puppy import light, Puppy
+from puppy.pp.main import Puppy
+from puppy.tools.usable_tools import UsableTools
 
 # change the API key to your own
 #os.environ["OPENAI_API_KEY"] = ""
-Mei = Puppy(name="Mei")
 
-url = "https://news.ycombinator.com/"
+def hacker_news_decisiontree(self):
+    # set available default toolbox for the agent, including two functioons, LLM() and TalkWithHuman()
+    self.tool_box=UsableTools()
 
-Mei.test()
+    self.do_check("go to https://news.ycombinator.com/ show the HTML", show_response = True)
 
-@light
-def hacker_news():
+    self.do_check("show the top 10 news, and send it to me", show_response = True)
 
-    html = Mei.do(f"go to {url} show the HTML")
+    self.do_check("pick the news that related to Large Language Models, summarize all the news, and send it to me")
 
-    news = Mei.do(f"extract the news from the {html}")
+hacker_news = Puppy(decisiontree=hacker_news_decisiontree)
 
-    for stuff in news:
-        related_score = score(f'how {stuff} is related to Large Language Models)')
-        if check(f'{related_score} is higher than 5'):  # if related_score>5:
-            Mei.do(f"summarize the {stuff}, and send it to me")
+hacker_news.run()
 
-
-if __name__ == "__main__":
-    hacker_news()
