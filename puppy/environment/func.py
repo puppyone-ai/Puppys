@@ -1,74 +1,45 @@
 from __future__ import annotations
 from puppy.environment.base import EnvBase
+from puppy.pp.base import PuppyBase
 
 
 class FuncBase(EnvBase):
 
-    def __init__(self,
-                 func=None,
-                 description="",
-                 *args, **kwargs):
-
-        """
-        {
-            "EnvBase": {
-                "name": "",
-                "description": "",
-                "tag": "env",
-                "__visibility": False
-            }
-        }
-        """
-
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        self.tag = "func"
-
-        self.func = func
-
-        self.__description = description
-
-        self.visible = True
-
-        self.__name = None
 
     @property
     def name(self):
-        # return getattr(self, '__name', self.func.__name__)
-
-        return self.__name
+        return self.__dict__['name'] if self.__dict__['name'] else self.value.__name__
 
     @name.setter
     def name(self, value):
-        self.__name = value
+        self.__dict__['name'] = value
 
     @property
     def description(self):
-        return self.__description
+        return self.__dict__["description"] if self.__dict__["description"] else self.value.__doc__
 
     @description.setter
     def description(self, value: str):
-        self.__description = value
-
-    @property
-    def func(self):
-        return self.__func
-
-    @func.setter
-    def func(self, value):
-        self.__func = value
+        self.__dict__['description'] = value
 
     def run(self, *args, **kwargs):
-        return self.func(*args, **kwargs)
+        return self.value(*args, **kwargs)
 
 
 # (decorator) Rapidly create a new func instance under the env instance
-def new_func(env_instance=None):
+def new_func(puppy: PuppyBase = None):
+    def decorator(func):
+        func_env = FuncBase(value=func)
+        if puppy:
+            setattr(puppy, func.__name__, func_env)
+        return func  # 返回原始函数或包装后的函数
 
-    def wrapper(func):
-        return FuncBase( func=func, name=func.__name__, description=func.__doc__)
+    if puppy:
+        return decorator(puppy)
 
-    return wrapper
+    return decorator
 
 
 if __name__ == "__main__":
@@ -94,12 +65,10 @@ if __name__ == "__main__":
 
         print("全体起立向我看齐，我宣布个事儿，我是个傻逼！")
 
-    func_send_message = send_message_to_human
-
-    func_send_message.run()
+    send_message_to_human.run()
 
     # method_2 use FuncBase
-    description="""
+    description = """
         Use it when you have no idea how to achieve an action based on the current information knowledge, or functions. or you want to convey a message to the user
             If you feel confused about any knowledge that are essential for following actions. You can stop keeping going and only ask human for help. You don't need to finish all the actions in one time.
             use emoji to make the conversation more interesting. For example, happy/ sad/ sorry/ angry/ question/ etc.
@@ -113,5 +82,5 @@ if __name__ == "__main__":
     def send_message_to_human():
         print("全体起立向我看齐，我宣布个事儿，我是个傻逼！")
 
-    func_send_message = FuncBase(func=send_message_to_human, name="send_message_to_human", description=description)
-    func_send_message.run()
+    func_send_message = FuncBase(value=send_message_to_human, name="send_message_to_human", description=description)
+    send_message_to_human.run()

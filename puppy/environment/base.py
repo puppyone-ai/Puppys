@@ -1,160 +1,143 @@
 from __future__ import annotations
+from typing import Union
+from meta import EnvMeta
 
 
-class EnvBase:
+class EnvBase(metaclass=EnvMeta):
 
-    def __init__(self,
-                 name: str = "",
-                 description: str = "",
-                 visibility: bool = None,
-                 sub_env_list:list = [],
-                 *args, **kwargs
-                 ):
+    sub_env: list = []
+    as_list: bool = False
 
-        # the name of this environment var
-        self.__name = name
+    def __new__(cls, *args, as_list: bool, sub_env: list, **kwargs):
+        cls.as_list = as_list
+        cls.sub_env = sub_env
+        return super().__new__(cls)
 
-        # description of this environment var
-        self.__description = description
+    def __init__(self, *args,
+                 value: any,
+                 name: str,
+                 description: str,
+                 **kwargs):
 
-        # the tag of this environment var
-        self.tag = "env"
+        self.value = value  # value
 
-        # if this var is default visible for .expose() or not
-        self.__visibility = visibility if visibility is not None else False
+        self.name = name  # key
+        self.description = description  # context
 
-        # if the sub env list is empty
-        self.sub_env_list = sub_env_list
+        for key, value in kwargs.items():
+            if not isinstance(value, EnvBase):
+                raise TypeError('EnvBase could only accept EnvBase instance as key word arguments.')
+            setattr(self, key, value)
 
-    @property
-    def name(self):
-        return self.__name
+    @classmethod
+    def sub_env_add(cls, *args: str):
+        cls.sub_env.extend(args)
 
-    @name.setter
-    def name(self, value):
-        self.__name = value
-
-    @property
-    def visibility(self):
-        return self.__visibility
-
-    @visibility.setter
-    def visibility(self, value):
-        self.__visibility = value
+    @classmethod
+    def sub_env_del(cls, *args: str):
+        for arg in args:
+            if arg in cls.sub_env:
+                cls.sub_env.remove(arg)
 
     @property
-    def description(self):
-        return self.__description
+    def env_list(self) -> list:
 
-    @description.setter
-    def description(self, value):
-        self.__description = value
+        result = []
 
-    """
-    vars(self): (current level) all 
-    self.intro: (current level) name and intro as a JSON
-    self.explore: (hierarchy) non-private 
-    """
+        for k in self.sub_env:
+            if not isinstance(self.__dict__[k], EnvBase):
+                result.append(self.__dict__[k])
+            else:
+                result.append(self.__dict__[k].intro)
+
+        return result
 
     @property
-    def intro(self):
+    def intro(self) -> dict:
 
-        """
+        return {"name": self.name, "description": self.description}
 
-        Returns:
+    def add_env(self, *args: EnvBase):
 
-        {"name":self.name
-        "description":self.description}
-        """
+        for sub_env in args:
+            if isinstance(sub_env, EnvBase):
+                setattr(self, sub_env.name, sub_env)
+                self.sub_env.append(sub_env.name)
 
-        intro_JSON={"name":self.name,
-        "description":self.description}
+            else:
+                raise TypeError('add_env() currently could only dynamically load and link instance from EnvBase.')
 
-        return intro_JSON
+    def del_env(self, *args: Union[str, EnvBase]):
 
-    # recursively show non-private attributes under this env
-    def explore(self, return_mode : str = "default"):
+        for sub_env in args:
 
-        """
+            try:
 
-        Returns:
+                if type(sub_env) is str:
+                    delattr(self, sub_env)
+                    self.sub_env.remove(sub_env)
 
-        {intro:{}
-        sub_env_list:[
-        {intro:{}]}
-        """
+                elif isinstance(sub_env, EnvBase):
 
-        all_JSON = {}
+                    keys_to_delete = [k for k, v in self.__dict__.items() if v == sub_env]
 
-        sub_env_intro_list=[]
-        for sub_env in self.sub_env_list:
-            sub_env_intro_list.append(sub_env.intro)
+                    for key in keys_to_delete:
+                        delattr(self, key)
+                        self.sub_env.remove(key)
 
-        if return_mode == "default":
-            all_JSON["intro"] = self.intro
-            all_JSON["sub_env_list"] = sub_env_intro_list
-            return all_JSON
+                else:
+                    raise TypeError()
 
-        elif return_mode =="sub_only":
-            return sub_env_intro_list
+            except AttributeError:
+                continue
 
-        else:
-            raise ValueError("the explore return_mode must be 'default' or 'sub_only'")
+    def isolated(self):
+        self.sub_env.clear()
 
-    # Monkey Patching
-    # create a new env instance in this env instance
-    def create_new_env(self, *args, **kwargs):
-
-        instance = EnvBase(*args, **kwargs, parent=self)
-        self.sub_env_list.append(instance)
-
-    # Monkey Patching
-    # add an existed env instance into this env instance
-    def add_new_env(self, env_example: EnvBase):
-        instance = env_example
-        self.sub_env_list.append(instance)
-
-    # clear all sub_env
-    def clear_env(self):
-        self.sub_env_list = []
+    def __str__(self):
+        return self.intro
 
 
-def new_env(*args, **kwargs):
-    return EnvBase(*args, **kwargs)
+def creat_new_env(from_env: EnvBase = None, *args, **kwargs):
+
+    new_env = EnvBase(*args, **kwargs)
+
+    if from_env is None:
+        return new_env
+
+    else:
+        setattr(from_env, new_env.name, new_env)
 
 
 if __name__ == "__main__":
+
     """
-    Three method that can create a new env in an env:
+    Recommended three method that to compose a new env:
     """
 
-    # method 1 (with 'add_new_env' monkey patching)
     building = EnvBase(name='building', visible=True)
 
+    # method 1 (with 'add_env' monkey patching)
     floor_1 = EnvBase(name='floor_1', visible=True)
 
-    building.add_new_env(floor_1)
+    building.add_env(floor_1)
 
-    print(building.explore)
+    print(building)
 
-    ## method 2 (with 'create_new_env' monkey patching)
-    building = EnvBase(name='building', visible=True)
+    building.del_env('floor_1')
 
-    building.clear_env()
-    building.create_new_env(name='floor_2', visible=True)
+    # method 2 (with 'create_new_env' monkey patching)
 
-    print(building.sub_env_list)
-    print(building.explore)
+    creat_new_env(front_env=building, name='floor_2', visible=True)
 
+    print(building)
 
-    ## method 3 (Recommended, define an env method in a class)
+    # method 3 (Define an env method in a class)
     class Building(EnvBase):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
 
-            self.sub_env_list.clear()
-            self.sub_env_list.append(EnvBase(name='floor_3', visible=True))
+            self.add_env(EnvBase(name='floor_3', visible=True))
 
     building = Building(name='building', visible=True)
-    print(building.sub_env_list)
-    print(building.explore)
+    print(building)

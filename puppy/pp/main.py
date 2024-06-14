@@ -12,9 +12,8 @@ import textwrap
 from puppy.pp.do_and_check import do_check, do, check
 
 
-
 class Puppy(PuppyBase):
-    def __init__(self , name ="default_puppy", decisiontree = None,  print_mode='terminal', **kwargs):
+    def __init__(self, name="default_puppy", decisiontree=None,  print_mode='terminal', **kwargs):
 
         super().__init__()
 
@@ -27,7 +26,6 @@ class Puppy(PuppyBase):
         self.runtime_vars_dict = {}
         self.runtime_vars_dict.update({'self': self})
         self.trigger = threading.Event()
-
 
         # cache print from exec_environment
         import io
@@ -47,8 +45,7 @@ class Puppy(PuppyBase):
         self.tool_box = UsableTools(thread_instance=self)
 
         # set the decisiontree
-        self._decisiontree= decisiontree
-
+        self._decisiontree = decisiontree
 
     def decisiontree(self):
         return self._decisiontree(self, **self.args)
@@ -68,13 +65,12 @@ class Puppy(PuppyBase):
     def puppy_exec(self, code):
         # redirect the stdout and stderr to the buffer
         with redirect_stdout(self.output_buffer), redirect_stderr(self.error_buffer):
-            local_vars=locals()
+            local_vars = locals()
 
             self.runtime_vars_dict.update(local_vars)
 
             # execute the code
             exec(code, self.global_var_dict, self.runtime_vars_dict)
-
 
     def run(self) -> None:
 
@@ -91,9 +87,9 @@ class Puppy(PuppyBase):
         source_code_without_def = '\n'.join(full_source_code.splitlines()[1:])
 
         # 使用 textwrap.dedent() 去除因为 def 引起的缩进
-        dedented_source_code = textwrap.dedent(source_code_without_def)
+        dedent_source_code = textwrap.dedent(source_code_without_def)
 
-        self.actionflow.all_code = dedented_source_code
+        self.actionflow.all_code = dedent_source_code
 
         # set the env of tool_box
         self.tool_box = UsableTools(thread_instance=self)
@@ -103,7 +99,6 @@ class Puppy(PuppyBase):
 
     def puppy_env_update(self, vars_dict):
         self.runtime_vars_dict.update(vars_dict)
-
 
     def do_check(self, *args, **kwargs):
         return do_check(self, *args, **kwargs)
@@ -115,11 +110,11 @@ class Puppy(PuppyBase):
         return do(self, *args, **kwargs)
 
 
-def puppy_run(Puppy_list:list):
+def puppy_run(puppy_list: list):
     threads = []
 
     # 为列表中的每个线程对象创建一个线程
-    for puppy in Puppy_list:
+    for puppy in puppy_list:
         thread = threading.Thread(target=puppy.run)  # 注意这里传递的是方法引用，不是方法调用
         thread.daemon = False
         threads.append(thread)
