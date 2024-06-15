@@ -11,7 +11,7 @@ class TalkWithHuman(FuncBase):
         {
             "FuncBase": {
                 "name": "",
-                "intro": "",
+                "description": "",
                 "tag": "func",
                 "__env_instance": None,
                 "__func": None,
@@ -23,18 +23,19 @@ class TalkWithHuman(FuncBase):
         super().__init__(*args, **kwargs)
 
         self.name = "talk_with_human"
-        self.intro = """
+        self.description = """
 Use it when you have no idea how to achieve an action based on the current information knowledge, or functions. or you want to send a message to the user or let the user know your result.
 If you feel confused about any knowledge that are essential for following actions. You can stop keeping going and only ask human for help.
 
-
 for example:
 ## Ask the user about the phone number of his boss
-talk_with_human(" What's the phone number of your boss?")
-        """
+talk_with_human(" What's the phone number of your boss?")"""
+
         self.func = self.send_message_to_human
 
         self.__puppy_instance = puppy_instance
+
+        self.visible= True
 
     def send_message_to_human(self, question):
 

@@ -2,10 +2,11 @@ from puppy.pp.base import   PuppyBase
 from puppy.llm.openAI import open_ai_chat
 import os
 
-def do(puppy_instance:PuppyBase, action_name: str = "", tool_list: list = [], show_prompt=False, show_response=False):
+def do(puppy_instance:PuppyBase, action_name: str = "", tool_list: list = [], show_prompt=False, show_response=False, retries=2):
     """
     write code to achieve the action
     """
+    attempt = 0
     prompt = [
         # 1. define your agent type and name
         {"role": "system",
@@ -32,7 +33,7 @@ def do(puppy_instance:PuppyBase, action_name: str = "", tool_list: list = [], sh
 
 You default function is writing python code, it's good at any task that python packages can achieve. But make sure that you write code to import the given package.
 You are also allowed to use the customized functions below:
-{puppy_instance.tool_box.detail}
+{puppy_instance.tool_box.explore(return_mode="sub_only")}
  """},
 
         # 2. provide the goal, current action, code history, code future, environment, knowledge
@@ -57,7 +58,10 @@ For example: (current action: search the location of the NBA in 2019@ google sea
 response:
 # To answer where is the NBA in 2019, I need to search the information about NBA in 2019. The function returns as a string.
 location=google_search("Where is the NBA in 2019"
-location= zhihu_search("Where is the NBA in 2019")"""},
+location= zhihu_search("Where is the NBA in 2019").
+
+Now, only consider the following prompt when {puppy_instance.actionflow.exception} has some exception information. Take a thorough look at it
+and think of a solution to solve it. For solution, you will need to provide all the code."""},
 
         # 4. provide the code of the action
         {"role": "user",
@@ -89,8 +93,14 @@ be similar with the example(ONLY CODE) and NOTHING ELSE. """}]
 
     puppy_instance.actionflow.current_code += new_code
 
-    puppy_instance.puppy_exec(new_code)
-
+    try:
+        puppy_instance.puppy_exec(new_code)
+    except Exception as e:
+        puppy_instance.actionflow.exception += repr(e)
+        if attempt == retries:
+            raise RuntimeError(f"Puppy is not able to resolve the error: {repr(e)}")
+        attempt += 1
+        do(puppy_instance, action_name, tool_list, show_prompt, show_response, retries - attempt)
     return new_code
 
 

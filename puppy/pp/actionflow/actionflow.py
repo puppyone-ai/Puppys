@@ -14,7 +14,7 @@ class Actionflow(EnvBase):
         {
             "EnvBase": {
                 "name": "",
-                "intro": "",
+                "description": "",
                 "tag": "env",
                 "__visibility": False
             }
@@ -22,7 +22,7 @@ class Actionflow(EnvBase):
         """
 
         super().__init__(name="actionflow",
-                         intro="an actionflow that governs all actionflow_list in the Puppy",
+                         description="an actionflow that governs all actionflow_list in the Puppy",
                          visible=False, **kwargs)
 
         self.__thread_instance = puppy_instance
@@ -30,6 +30,7 @@ class Actionflow(EnvBase):
 
         self.all_code = ""
         self.current_code = ""
+        self.exception = ""
 
 
 
