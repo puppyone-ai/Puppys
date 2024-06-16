@@ -1,28 +1,33 @@
 from __future__ import annotations
 from typing import Union
-from meta import EnvMeta
 
 
-class EnvBase(metaclass=EnvMeta):
+class Env:
 
-    sub_env: list[str] = []
-    as_list: bool = False
+    """
+    Use to build the environment for the puppy to retrival.
+    """
+
+    sub_env: list[str]   # Optional collector for sub-env, has higher priority than __dict__.keys()
+    as_list: bool
+    name: str
 
     def __new__(cls, *args,
-                as_list: bool, sub_env: list,
-                value: any, name: str, description: str,
+                as_list: bool = False,
+                sub_env: list = None,
+                name: str = None,
                 **kwargs):
 
         cls.as_list = as_list
-        cls.sub_env = sub_env
-
-        cls.value = value  # value
-        cls.name = name  # key
-        cls.description = description  # context
+        cls.sub_env = sub_env if sub_env else []
+        cls.name = name if name else cls.name if hasattr(cls, 'name') else cls.__name__
 
         return super().__new__(cls)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, value, description=None, **kwargs):
+
+        self.value = value
+        self.description = description
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -40,35 +45,35 @@ class EnvBase(metaclass=EnvMeta):
     @property
     def env_list(self) -> list:
 
-        result = []
+        res = []
 
         sub_env_keys = self.sub_env if self.sub_env else self.__dict__.keys()
 
         for k in sub_env_keys:
-            if not isinstance(self.__dict__[k], EnvBase):
-                result.append(self.__dict__[k])
+            if isinstance(self.__dict__[k], Env):
+                res.append(self.__dict__[k].intro)
             else:
-                result.append(self.__dict__[k].intro)
+                res.append(self.__dict__[k])
 
-        return result
+        return res
 
     @property
     def env_dict(self) -> dict:
 
-        result = {}
+        res = {}
 
         sub_env_keys = self.sub_env if self.sub_env else self.__dict__.keys()
 
         for k in sub_env_keys:
-            if not isinstance(self.__dict__[k], EnvBase):
-                result.update({k: self.__dict__[k]})
+            if isinstance(self.__dict__[k], Env):
+                res.update({k: self.__dict__[k].intro})
             else:
-                result.update({k: self.__dict__[k].intro})
+                res.update({k: self.__dict__[k]})
 
-        return result
+        return res
 
     @property
-    def sub_env_collections(self) -> Union[list, dict]:
+    def env_read(self) -> Union[list, dict]:
         return self.env_list if self.as_list else self.env_dict
 
     @property
@@ -76,17 +81,17 @@ class EnvBase(metaclass=EnvMeta):
 
         return {"name": self.name, "description": self.description}
 
-    def add_env(self, *args: EnvBase):
+    def add_env(self, *args: Env):
 
-        for sub_env in args:
-            if isinstance(sub_env, EnvBase):
-                setattr(self, sub_env.name, sub_env)
-                self.sub_env.append(sub_env.name)
+        for env in args:
+            if isinstance(env, Env):
+                setattr(self, env.name, env)
+                self.sub_env.append(env.name)
 
             else:
                 raise TypeError('add_env() currently could only dynamically load and link instance from EnvBase.')
 
-    def del_env(self, *args: Union[str, EnvBase]):
+    def del_env(self, *args: Union[str, Env]):
 
         for sub_env in args:
 
@@ -96,7 +101,7 @@ class EnvBase(metaclass=EnvMeta):
                     delattr(self, sub_env)
                     self.sub_env.remove(sub_env)
 
-                elif isinstance(sub_env, EnvBase):
+                elif isinstance(sub_env, Env):
 
                     keys_to_delete = [k for k, v in self.__dict__.items() if v == sub_env]
 
@@ -114,12 +119,12 @@ class EnvBase(metaclass=EnvMeta):
         self.sub_env.clear()
 
     def __str__(self):
-        return self.intro
+        return str(self.intro)
 
 
-def creat_new_env(from_env: EnvBase = None, *args, **kwargs):
+def creat_new_env(from_env: Env = None, *args, **kwargs):
 
-    new_env = EnvBase(*args, **kwargs)
+    new_env = Env(*args, **kwargs)
 
     if from_env is None:
         return new_env
@@ -134,10 +139,10 @@ if __name__ == "__main__":
     Recommended three method that to compose a new env:
     """
 
-    building = EnvBase(name='building', visible=True)
+    building = Env(name='building', visible=True)
 
     # method 1 (with 'add_env' monkey patching)
-    floor_1 = EnvBase(name='floor_1', visible=True)
+    floor_1 = Env(name='floor_1', visible=True)
 
     building.add_env(floor_1)
 
@@ -152,11 +157,11 @@ if __name__ == "__main__":
     print(building)
 
     # method 3 (Define an env method in a class)
-    class Building(EnvBase):
+    class Building(Env):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
 
-            self.add_env(EnvBase(name='floor_3', visible=True))
+            self.add_env(Env(name='floor_3', visible=True))
 
     building = Building(name='building', visible=True)
     print(building)

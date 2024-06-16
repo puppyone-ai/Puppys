@@ -1,25 +1,20 @@
-from .base import PuppyBase
-from puppy.pp.actionflow.actionflow import Actionflow
 from contextlib import redirect_stdout, redirect_stderr
-from puppy.llm.openAI import open_ai_chat
-import os
 
-from puppy.tools.usable_tools import UsableTools
 import threading
 import inspect
 import textwrap
 
-from puppy.pp.do_and_check import do_check, do, check
+from .actions import explore
+from puppy.environment import Env, FuncEnv
 
 
-class Puppy(PuppyBase):
-    def __init__(self, name="default_puppy", decisiontree=None,  print_mode='terminal', **kwargs):
+class Puppy(Env):
 
-        super().__init__()
+    name = "default_puppy"
 
-        self.name = name
-        self.description = ""
-        self.args = kwargs
+    def __init__(self, *args,  print_mode='terminal', **kwargs):
+
+        super().__init__(*args, **kwargs)
 
         # add exec_environment for the pp
         self.global_var_dict = globals()
@@ -38,20 +33,24 @@ class Puppy(PuppyBase):
             self.output_buffer = io.StringIO()
             self.error_buffer = io.StringIO()
 
-        # set the env of actionflow
-        self.actionflow = Actionflow(thread_instance=self)
-
-        # set the env of tool_box
-        self.tool_box = UsableTools(thread_instance=self)
-
         # set the decisiontree
-        self._decisiontree = decisiontree
+        self._decisiontree = self.value
+
+        self.all_code = ""
+        self.current_code = ""
 
     def decisiontree(self):
-        return self._decisiontree(self, **self.args)
+        return self._decisiontree(self
+                                  # , **self.args
+                                  )
+
+    @staticmethod
+    def explore(*args, **kwargs):
+        return explore(*args, **kwargs)
 
     @property
     def vars_preview(self, characters_num=300):
+
         dict_temp = {}
 
         for key, value in self.runtime_vars_dict.items():
@@ -63,6 +62,7 @@ class Puppy(PuppyBase):
 
     # execute the code as the pp mode
     def puppy_exec(self, code):
+
         # redirect the stdout and stderr to the buffer
         with redirect_stdout(self.output_buffer), redirect_stderr(self.error_buffer):
             local_vars = locals()
@@ -72,7 +72,25 @@ class Puppy(PuppyBase):
             # execute the code
             exec(code, self.global_var_dict, self.runtime_vars_dict)
 
+    def _load_tool(self):
+
+        self.runtime_vars_dict.update(self.env_use)
+
+    @property
+    def env_use(self) -> dict:
+
+        res = {}
+
+        sub_env_keys = self.sub_env if self.sub_env else self.__dict__.keys()
+
+        for k in sub_env_keys:
+            if isinstance(self.__dict__[k], FuncEnv):
+                res.update({k: self.__dict__[k]})
+        return res
+
     def run(self) -> None:
+
+        self._load_tool()
 
         # 获取函数的参数
         signature = inspect.signature(self._decisiontree)
@@ -89,25 +107,12 @@ class Puppy(PuppyBase):
         # 使用 textwrap.dedent() 去除因为 def 引起的缩进
         dedent_source_code = textwrap.dedent(source_code_without_def)
 
-        self.actionflow.all_code = dedent_source_code
-
-        # set the env of tool_box
-        self.tool_box = UsableTools(thread_instance=self)
-        self.tool_box.load_tool()
+        self.all_code = dedent_source_code
 
         self.decisiontree()
 
     def puppy_env_update(self, vars_dict):
         self.runtime_vars_dict.update(vars_dict)
-
-    def do_check(self, *args, **kwargs):
-        return do_check(self, *args, **kwargs)
-
-    def check(self, *args, **kwargs):
-        return check(self, *args, **kwargs)
-
-    def do(self, *args, **kwargs):
-        return do(self, *args, **kwargs)
 
 
 def puppy_run(puppy_list: list):

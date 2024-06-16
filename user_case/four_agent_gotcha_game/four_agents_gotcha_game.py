@@ -6,7 +6,8 @@
 from puppy.pp.main import Puppy
 from puppy.pp.main import puppy_run
 from puppy.llm.openAI import open_ai_chat
-from puppy.environment.chatting import ChattingHistory
+
+from .chatting import ChattingHistory
 
 
 def holder_decisiontree(self):

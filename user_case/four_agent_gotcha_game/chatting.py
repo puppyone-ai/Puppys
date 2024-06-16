@@ -1,8 +1,8 @@
 from __future__ import annotations
-from puppy.environment.base import EnvBase
+from puppy.environment.env import Env
 
 
-class ChattingHistory(EnvBase):
+class ChattingHistory(Env):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.value = []

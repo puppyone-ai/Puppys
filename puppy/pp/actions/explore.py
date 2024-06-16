@@ -1,8 +1,8 @@
-from .base import EnvBase
+from puppy.environment.env import Env
 
 
-def explore(env: EnvBase,
-            return_mode: str = "default",
+def explore(env: Env,
+            sub_only: bool = False,
             as_json: bool = False,
             ):
 
@@ -24,19 +24,15 @@ def explore(env: EnvBase,
     }
     """
 
-    sub_env_collection = env.sub_env_collections
+    res = {} if sub_only else env.intro
 
-    if return_mode == "window_only":
-        pass
-
-    elif return_mode == "default":
-        sub_env_collection.update(env.intro)
+    res.update(env.env_dict)
 
     if as_json is True:
         import json
 
-        intro_json = json.dumps(sub_env_collection)
+        intro_json = json.dumps(res)
         return intro_json
 
     else:
-        return sub_env_collection
+        return res
