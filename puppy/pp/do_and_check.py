@@ -6,7 +6,6 @@ def do(puppy_instance:PuppyBase, action_name: str = "", tool_list: list = [], sh
     """
     write code to achieve the action
     """
-    attempt = 0
     prompt = [
         # 1. define your agent type and name
         {"role": "system",
@@ -95,12 +94,13 @@ be similar with the example(ONLY CODE) and NOTHING ELSE. """}]
 
     try:
         puppy_instance.puppy_exec(new_code)
+        # reset errors
+        puppy_instance.actionflow.exception = ""
     except Exception as e:
         puppy_instance.actionflow.exception += repr(e)
-        if attempt == retries:
+        if retries <= 0:
             raise RuntimeError(f"Puppy is not able to resolve the error: {repr(e)}")
-        attempt += 1
-        do(puppy_instance, action_name, tool_list, show_prompt, show_response, retries - attempt)
+        do(puppy_instance, action_name, tool_list, show_prompt, show_response, retries - 1)
     return new_code
 
 
