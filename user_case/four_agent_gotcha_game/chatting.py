@@ -1,16 +1,17 @@
 from __future__ import annotations
-from puppy.environment.base import EnvBase
+from puppy.env.env import Env
 
-class ChattingHistory(EnvBase):
+
+class ChattingHistory(Env):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.value=[]
+        self.value = []
 
     # add the chatting content to chat_history
     def add(self, words: str, role: str):
-        chatting={"role": role,
-        "content": words}
+        chatting = {"role": role,
+                    "content": words}
         self.value.append(chatting)
 
-    def pop(self,num : int =0):
+    def pop(self, num: int = 0):
         return self.value.pop(num)
