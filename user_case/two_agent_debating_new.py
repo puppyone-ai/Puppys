@@ -26,9 +26,9 @@ You can:
 """
 
 # define the decisiontree for both pp
-def chatting_decisiontree(self, system_prompt, max_loop_num = 5):
+def chatting_decisiontree(self, system_prompt, max_loop_num=5):
 
-    from puppy.environment.chatting import ChattingHistory
+    from user_case.four_agent_gotcha_game.chatting import ChattingHistory
     from puppy.llm.openAI import open_ai_chat
     self.chat_history=ChattingHistory()
 
