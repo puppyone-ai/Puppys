@@ -10,7 +10,7 @@ class Env:
 
     visible: bool
     as_list: bool
-    default_keys: str = ['value', 'name', 'description']
+    private_keys: str = ['value', 'name', 'description']
 
     def __init__(self, value: any, *args, name=None, description=None, sub_env: list = None, **kwargs):
 
@@ -30,7 +30,7 @@ class Env:
 
     @property
     def env_dict(self) -> dict:
-        return {k: v for k, v in self.__dict__.items() if k not in self.default_keys}
+        return {k: v for k, v in self.__dict__.items() if k not in self.private_keys}
 
     @property
     def env_list(self) -> list:

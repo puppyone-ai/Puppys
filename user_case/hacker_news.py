@@ -21,6 +21,6 @@ def hacker_news_decisiontree(self):
     self.do_check("pick the news that related to Large Language Models, summarize all the news, and send it to me")
 
 
-hacker_news = Mei(value=hacker_news_decisiontree)
+hacker_news = Mei(hacker_news_decisiontree)
 
 hacker_news.run()

@@ -21,7 +21,7 @@ def decisiontree(self):
     self.do_check("Make a list using the information of the top 10 meme crypto coins, and show it to me. ")
 
 
-search_bot = Mei(value=decisiontree)
+search_bot = Mei(decisiontree)
 
 search_bot.add(search)
 
