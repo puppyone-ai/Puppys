@@ -2,7 +2,7 @@ from puppy.llm.openAI import open_ai_chat
 import os
 
 
-def check(puppy_instance, action_name: str = "", tool_list: list = [], show_prompt=False, show_response=False):
+def check(puppy_instance, action_name: str = "", tool_list: list = [], model="gpt-4-turbo",show_prompt=False, show_response=False):
     """
     check if it finished or not
     """
@@ -81,7 +81,7 @@ def check(puppy_instance, action_name: str = "", tool_list: list = [], show_prom
             print(chunk['content'])
 
     new_code = open_ai_chat(prompt=prompt,
-                            model="gpt-4-turbo",
+                            model=model,
                             temperature=0.1,
                             api_key=os.environ["OPENAI_API_KEY"],
                             max_tokens=4096,

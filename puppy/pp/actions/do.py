@@ -3,7 +3,7 @@ from puppy.env.func_env import FuncEnv
 import os
 
 
-def do(puppy_instance, action_name: str, tool_list: list, show_prompt=False, show_response=False):
+def do(puppy_instance, action_name: str, tool_list: list, model="gpt-4-turbo", show_prompt=False, show_response=False):
 
     """
     write code to achieve the action
@@ -71,7 +71,7 @@ Now generate your answer as code:
             print(chunk['content'])
 
     new_code = open_ai_chat(prompt=prompt,
-                            model="gpt-4-turbo",
+                            model=model,
                             temperature=0.1,
                             api_key=os.environ["OPENAI_API_KEY"],
                             max_tokens=4096,
