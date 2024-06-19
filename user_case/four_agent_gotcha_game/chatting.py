@@ -1,5 +1,5 @@
 from __future__ import annotations
-from puppy.environment.env import Env
+from puppy.env.env import Env
 
 
 class ChattingHistory(Env):

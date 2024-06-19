@@ -1,18 +1,10 @@
 from openai import OpenAI
 import os
 import requests
+from puppy.decorator import new_func
 
 
 def perplexity_search(query):
-
-    """
-    Search Engine, use it when the user request to find some real-time information online.
-    For example, when user want to know the weather, asset price or economy indicators.
-
-    for example:
-    ## search the weather in Amsterdam
-    query = "what is the weather today in Amsterdam?"
-    searchResults = search_engine(query)"""
 
     messages = [
         {
@@ -55,18 +47,27 @@ def google_search(query):
     return response.json()
 
 
+@new_func
 def search(query):
+    """
+    Search Engine, use it when the user request to find some real-time information online.
+    For example, when user want to know the weather, asset price or economy indicators.
+
+    for example:
+    ## search the weather in Amsterdam
+    query = "what is the weather today in Amsterdam?"
+    searchResults = search(query)"""
     try:
         return perplexity_search(query)
     except Exception as e:
         print(e)
 
-    try:
-        return google_search(query)
+        try:
+            return google_search(query)
 
-    except Exception as e:
-        print(e)
-        return "I am sorry, I couldn't find the information you are looking for. Please try again later."
+        except Exception as e:
+            print(e)
+            return "I am sorry, I couldn't find the information you are looking for. Please try again later."
 
 
 if __name__ == "__main__":

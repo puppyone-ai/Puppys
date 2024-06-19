@@ -3,7 +3,7 @@ from puppy.pp.main import Puppy
 import sys
 
 
-def talk_with_human(question, *, from_puppy):
+def talk_with_human(puppy, question):
 
     """
     Use it when you have no idea how to achieve an action based on the current information knowledge, or functions. or you want to send a message to the user or let the user know your result.
@@ -15,15 +15,15 @@ def talk_with_human(question, *, from_puppy):
     """
 
     with redirect_stdout(sys.__stdout__):
-        user_input = input(f"{from_puppy.name}" + ": " + str(question) + "\n" + "Your response:")
+        user_input = input(f"{puppy.name}" + ": " + str(question) + "\n" + "Your response:")
 
     chat_history = "\n" + "# your message:" + str(question) + "\n" + "# User's response: " + user_input + "\n"
 
-    from_puppy.current_code += chat_history
+    puppy.current_code += chat_history
 
 
 if __name__ == "__main__":
 
     text = "how should I install the package of openAI"
 
-    talk_with_human(text, from_puppy=Puppy(value=None))
+    talk_with_human(Puppy(value=None), text)

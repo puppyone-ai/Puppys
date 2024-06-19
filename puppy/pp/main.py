@@ -5,16 +5,16 @@ import inspect
 import textwrap
 
 from .actions import explore
-from puppy.environment import Env, FuncEnv
+from puppy.env import Env, FuncEnv
 
 
 class Puppy(Env):
 
-    name = "default_puppy"
-
     def __init__(self, *args,  print_mode='terminal', **kwargs):
 
         super().__init__(*args, **kwargs)
+
+        self.name = "default_puppy"
 
         # add exec_environment for the pp
         self.global_var_dict = globals()
@@ -56,7 +56,7 @@ class Puppy(Env):
         for key, value in self.runtime_vars_dict.items():
             string_data = str(value)
             preview_info = string_data[:characters_num]
-            dict_temp.update({key: {"type: ": type(value), "preview:": preview_info}})
+            dict_temp.update({key: {"type": type(value), "preview": preview_info}})
 
         return dict_temp
 
@@ -72,25 +72,22 @@ class Puppy(Env):
             # execute the code
             exec(code, self.global_var_dict, self.runtime_vars_dict)
 
-    def _load_tool(self):
-
-        self.runtime_vars_dict.update(self.env_use)
-
     @property
     def env_use(self) -> dict:
 
         res = {}
 
-        sub_env_keys = self.sub_env if self.sub_env else self.__dict__.keys()
-
-        for k in sub_env_keys:
+        for k in self.__dict__.keys():
             if isinstance(self.__dict__[k], FuncEnv):
                 res.update({k: self.__dict__[k]})
+
         return res
 
     def run(self) -> None:
 
-        self._load_tool()
+        tools_dict = explore(self, target=FuncEnv, sub_only=True)
+
+        self.runtime_vars_dict.update(tools_dict)
 
         # 获取函数的参数
         signature = inspect.signature(self._decisiontree)
@@ -111,8 +108,8 @@ class Puppy(Env):
 
         self.decisiontree()
 
-    def puppy_env_update(self, vars_dict):
-        self.runtime_vars_dict.update(vars_dict)
+    # def puppy_env_update(self, vars_dict):
+    #     self.runtime_vars_dict.update(vars_dict)
 
 
 def puppy_run(puppy_list: list):

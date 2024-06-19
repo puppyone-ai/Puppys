@@ -1,6 +1,8 @@
 from litellm import completion
+from puppy.decorator import new_func
 
 
+@new_func
 def llm(prompt, *, model="gpt-3.5-turbo-0125", temperature=0.7, max_tokens=2048) -> str:
 
     """
@@ -19,8 +21,6 @@ def llm(prompt, *, model="gpt-3.5-turbo-0125", temperature=0.7, max_tokens=2048)
                         model=model,
                         temperature=temperature,
                         max_tokens=max_tokens)
-
-    return result.choices[0].message.content
 
     return result.choices[0].message.content
 

@@ -1,4 +1,5 @@
 from puppy.llm.openAI import open_ai_chat
+from puppy.env.func_env import FuncEnv
 import os
 
 
@@ -34,10 +35,10 @@ def do(puppy_instance, action_name: str, tool_list: list, show_prompt=False, sho
 
 You default function is writing python code, it's good at any task that python packages can achieve. But make sure that you write code to import the given package.
 You are also allowed to use the customized functions below:
-{puppy_instance.explore(puppy_instance, sub_only=True)}
+{puppy_instance.explore(puppy_instance, target=FuncEnv, sub_only=True)}
  """},
 
-        # 2. provide the goal, current action, code history, code future, environment, knowledge
+        # 2. provide the goal, current action, code history, code future, env, knowledge
         {"role": "system",
          "content":
              f"""and your current action is:
