@@ -2,7 +2,7 @@ from puppy.llm.openAI import open_ai_chat
 import os
 
 
-def check(puppy_instance, action_name: str = "", tool_list: list = [], show_prompt=False, show_response=False):
+def check(puppy_instance, action_name: str = "", tool_list: list = [], model="gpt-4-turbo",show_prompt=False, show_response=False):
     """
     check if it finished or not
     """
@@ -20,11 +20,8 @@ def check(puppy_instance, action_name: str = "", tool_list: list = [], show_prom
      after you write it. If you assume any hypothetical function, the the system will crash. 
 
     3. Your response cannot only be comment. You HAVE to write codes
-    """},
 
-        # 2. set the standard of if the action is done or not
-        {"role": "system",
-         "content": f""" You justify if your current action is done or not, you have two choices: 1. Done: That means 
+     You justify if your current action is done or not, you have two choices: 1. Done: That means 
     you don't need to write code to achieve it again. The action history shows that you have already know what 
     you want to know or have already achieve the action. In this case, you should write Python code to return 
     Ture, and your generated code should be: isFinished=True
@@ -57,7 +54,7 @@ def check(puppy_instance, action_name: str = "", tool_list: list = [], show_prom
     isFinished=True"""},
 
         # 2. provide the current var and usable tools
-        {"role": "system",
+        {"role": "user",
          "content":
              f"""Your formally-defined parameters and their previewing are as follows: 
     {puppy_instance.vars_preview}
@@ -84,7 +81,7 @@ def check(puppy_instance, action_name: str = "", tool_list: list = [], show_prom
             print(chunk['content'])
 
     new_code = open_ai_chat(prompt=prompt,
-                            model="gpt-4-turbo",
+                            model=model,
                             temperature=0.1,
                             api_key=os.environ["OPENAI_API_KEY"],
                             max_tokens=4096,
