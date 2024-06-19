@@ -72,17 +72,6 @@ class Puppy(Env):
             # execute the code
             exec(code, self.global_var_dict, self.runtime_vars_dict)
 
-    @property
-    def env_use(self) -> dict:
-
-        res = {}
-
-        for k in self.__dict__.keys():
-            if isinstance(self.__dict__[k], FuncEnv):
-                res.update({k: self.__dict__[k]})
-
-        return res
-
     def run(self) -> None:
 
         tools_dict = explore(self, target=FuncEnv, sub_only=True)
