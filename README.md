@@ -4,7 +4,7 @@
 
 <div align="center">
 
-*Code-Native AI Agents framework*
+*Code-Driven AI Agentic system framework*
 
 [![Twitter Follow](https://img.shields.io/twitter/follow/PuppyAgentTech?label=PuppyAgent_Lab&style=social)](https://twitter.com/PuppyAgentTech) &ensp;
 </div>
@@ -19,10 +19,9 @@
 
 </div>
 
-* **Code-Native**: Puppys is a code-native agent framework. Every agent's action is code.
-* **Multi-Threads**: Puppys enable you to build an agent with multi-thread.
-* **Human-Agent Interacts**: Your agent will ask you when it cannot understand what you said.
-* **turing-machine-like agent**: program an agent by programming the agent's decision tree and its environment.
+* **Code-Driven**: The agent's thought and response are entirely code, instead of chat, meaning more interpretable and more controllable.
+* **Plug and Play**: Agentic capabilities can be integrated into ANY part of your enterprise's codebase
+* **Lite**: Minimal dependencies and minimal wrappers, mean that enterprises can develop flexibly and scalably.
 
 <div align="center">
 
