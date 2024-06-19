@@ -38,8 +38,9 @@ in your final response as code. When the do(XXX) appears, you HAVE TO change it 
 {puppy_instance.vars_preview}
 
 You default function is writing python code, it's good at any task that python packages can achieve. But make sure that you write code to import the given package.
-You are also allowed to use the customized functions below:
+You are also allowed to use the customized functions below, use them by just writing code as the example. the description shows how to use them.
 {puppy_instance.explore(puppy_instance, target=FuncEnv, sub_only=True)}
+
 The code for historical, current, and future actionflow shown as code are:{puppy_instance.all_code}.
 Now you write code to achieve your action(Note that the tools after@ is recommended tools, if it exists): {action_name}
 
