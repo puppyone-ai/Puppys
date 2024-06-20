@@ -1,8 +1,8 @@
-from puppy.pp.actionflow.action import Action
+import os
 import textwrap
 
 import json
-from puppy.llm.openAI import open_ai_chat
+from puppy.llm.open_ai import open_ai_chat
 from openai import OpenAI
 
 
@@ -80,7 +80,7 @@ def parse_code2list2(source_code: str) -> list:
     action_list = []
 
     for action in medium:
-        action_list.append(Action())
+        #action_list.append(Action())
         action_list[-1].name = action["name"]
         action_list[-1].code = action["code"]
 
@@ -115,7 +115,7 @@ def parse_code2list(source_code: str) -> list:
             # Calculate the current line's indentation
             current_indent = len(line) - len(line.lstrip())
 
-            action_list.append(Action())
+            #action_list.append(Action())
             action_list[-1].name = line.split('##', 1)[1].strip()
             action_list[-1].code += f'{line.lstrip()}\n'
         else:

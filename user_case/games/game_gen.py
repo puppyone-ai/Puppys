@@ -7,7 +7,7 @@ from puppy.pp.main import Puppy
 from puppy.pp.main import puppy_run
 
 from puppy.environment.chatting import ChattingHistory
-from puppy.llm.openAI import open_ai_chat
+from puppy.llm.open_ai import open_ai_chat
 
 background="""在中世纪的一个小镇上，巫术和神秘力量一直在暗中流传。统治者利用猎巫行动，抓捕了“大巫女”和她的部分信徒，实际上大巫女是小镇最有名的医师，
 她发现统治者设下诅咒，使人们容易劳累，健康值不断下降，只能依赖统治者垄断的高价药物。同时统治者在小镇广泛修建诅咒之塔来监管小镇所有的建筑，

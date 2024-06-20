@@ -28,8 +28,8 @@ You can:
 # define the decisiontree for both pp
 def chatting_decisiontree(self, system_prompt, max_loop_num=5):
 
-    from user_case.four_agent_gotcha_game.chatting import ChattingHistory
-    from puppy.llm.openAI import open_ai_chat
+    from user_case.games.four_agent_gotcha_game.chatting import ChattingHistory
+    from puppy.llm.open_ai import open_ai_chat
     self.chat_history=ChattingHistory()
 
     self.chat_history.add(words=system_prompt, role='system')
