@@ -14,8 +14,19 @@ class Mei(Puppy):
         self.name = "Mei"
         self.description = "A puppy that could help to intelligent your code"
         self.version = "0.0.1"
-        self.llm = llm  # wrapped in the /puppy/tools/defaultTools/llm.py
-        self.talk_with_human = FuncEnv(value=custom_partial(talk_with_human, self))
+
+        # the first tool
+        self.llm = FuncEnv(value=llm,
+                           name=llm.__name__,
+                           description=llm.__doc__,
+                           free_params=["prompt"])
+
+        # the second tool
+        self.talk_with_human = FuncEnv(value=talk_with_human,
+                                       name=talk_with_human.__name__,
+                                       description=talk_with_human.__doc__,
+                                       fixed_params={"puppy": self},
+                                       free_params=["text"])
 
     def do_check(self, *args, **kwargs):
         return do_check(self, *args, **kwargs)

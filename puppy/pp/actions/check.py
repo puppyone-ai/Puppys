@@ -1,4 +1,4 @@
-from puppy.llm.openAI import open_ai_chat
+from puppy.llm.open_ai import open_ai_chat
 import os
 
 

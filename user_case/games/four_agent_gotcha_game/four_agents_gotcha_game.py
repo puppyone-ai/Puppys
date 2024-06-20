@@ -5,7 +5,7 @@
 
 from puppy.pp.main import Puppy
 from puppy.pp.main import puppy_run
-from puppy.llm.openAI import open_ai_chat
+from puppy.llm.open_ai import open_ai_chat
 
 from .chatting import ChattingHistory
 

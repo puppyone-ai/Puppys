@@ -47,7 +47,7 @@ class Env:
     def add(self, *args: Env):
 
         """
-        Add the env instance to the current env instance.
+        Add the environment instance to the current environment instance.
         """
 
         for env in args:
@@ -100,7 +100,7 @@ def creat(*args, **kwargs):
 if __name__ == "__main__":
 
     """
-    Recommended three method that to compose a new env:
+    Recommended three method that to compose a new environment:
     """
 
     #####################
@@ -128,7 +128,7 @@ if __name__ == "__main__":
     #
 
     ####################
-    # method 3 (Define an env as a class)
+    # method 3 (Define an environment as a class)
     #
     # class Museum(Env):
     #
