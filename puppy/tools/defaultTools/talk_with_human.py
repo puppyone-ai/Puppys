@@ -1,5 +1,7 @@
 from contextlib import redirect_stdout
 from puppy.pp.main import Puppy
+from puppy.env.func_env import FuncEnv
+from puppy.pp.actions.explore import explore
 import sys
 
 
@@ -11,7 +13,7 @@ def talk_with_human(puppy, message):
 
     for example:
     ## Ask the user about the phone number of his boss
-    talk_with_human(" What's the phone number of your boss?")
+    talk_with_human(message=" What's the phone number of your boss?")
     """
 
     with redirect_stdout(sys.__stdout__):
@@ -24,6 +26,19 @@ def talk_with_human(puppy, message):
 
 if __name__ == "__main__":
 
-    text = "how should I install the package of openAI"
+    # define an agent
+    puppy=Puppy(name="Puppy")
 
-    talk_with_human(Puppy(value=None), text)
+    # define the tool in the agent
+    puppy.tools_talk_with_human = FuncEnv(name="talk_with_human",
+                            description=talk_with_human.__doc__,
+                            value=talk_with_human,
+                            fixed_params={"puppy": puppy}, free_params=["message"])
+
+    # run the tool
+    puppy.tools_talk_with_human(message="hello world")
+
+    print(explore(puppy, target=FuncEnv))
+
+    for key, e in explore(puppy, target=FuncEnv).items():
+        print(e)

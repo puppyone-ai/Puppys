@@ -29,8 +29,10 @@ def llm(prompt, *, model="gpt-3.5-turbo-0125", temperature=0.7, max_tokens=2048)
 if __name__ == "__main__":
     text = "how should I install the package of openAI"
 
+    # define the tool
     LLM= FuncEnv(value=llm, name=llm.__name__, description=llm.__doc__,
                  free_params=["prompt"])
 
+    #print the response from tool
     res = LLM(prompt=text)
     print(res)

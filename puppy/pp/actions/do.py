@@ -39,7 +39,7 @@ in your final response as code. When the do(XXX) appears, you HAVE TO change it 
 
 You default function is writing python code, it's good at any task that python packages can achieve. But make sure that you write code to import the given package.
 You are also allowed to use the customized functions below, use them by just writing code as the example. the description shows how to use them.
-{puppy_instance.explore(puppy_instance, target=FuncEnv, sub_only=True)}
+{puppy_instance.explore(puppy_instance, target=FuncEnv, output_content_mode="attribute", attributes=[ "name", "description"])}
 
 The code for historical, current, and future actionflow shown as code are:{puppy_instance.all_code}.
 Now you write code to achieve your action(Note that the tools after@ is recommended tools, if it exists): {action_name}
