@@ -2,55 +2,84 @@ from typing import Type, Any, Dict
 from puppy.env.env import Env
 
 
-def env_to_dict(environment: Env) -> Dict[str, Any]:
+def env_to_dict(environment: Env, attributes: list) -> Dict[str, Any]:
     """
     Convert an Env object to a dictionary that can be JSON serialized.
     """
-    return {
-        "value": environment.value,
-        "name": environment.name,
-        "description": environment.description
-    }
+    res = {}
+    for k in attributes:
+        res[k] = getattr(environment, k)
+
+    return res
 
 
 def explore(environment: Env,
             target: Type[Env] = None,
-            sub_only: bool = False,
+            output_content_mode="instance",
+            attributes: list = None,
+            with_source_env: bool = False,
             as_json: bool = False
             ):
     """
-    Explore the environment and sub_environments, optionally filtering by type and formatting as JSON.
+    A function that explores the environment based on the specified parameters and returns the result.
 
     Args:
-        environment: The main environment instance.
-        target: A subclass of Env to filter the sub_environments.
-        sub_only: If True, only sub_environments are included in the output.
-        as_json: If True, output will be JSON formatted.
+        environment (Env): The environment to explore.
+        target (Type[Env], optional): The target environment type to filter by. Defaults to None.
+        output_content_mode (str, optional): The mode for output content ("instance" or "attribute"). Defaults to "instance".
+        attributes (list, optional): The list of attributes to include in the output. Defaults to None.
+        with_source_env (bool, optional): Flag indicating whether to include the source environment. Defaults to False.
+        as_json (bool, optional): Flag indicating whether to return the result as JSON format. Defaults to False.
 
-    Returns:
-        A dictionary or JSON string of the environment details:
-    {
-    name:*,
-    intro:*,
-    sub_evn_a:{
-               name:**,
-               intro:**,
-               },
-    sub_evn_b:{
-               name:***,
-               intro:***,
-               },
-    }
+
+    For example:
+
+    env = Env(value="museum in Paris", name="the maple", description="It's a beautiful place")
+    env.Louvre = Env(value="good", name="Louvre", description="It's a beautiful museum")
+
+
+    Returns(if with_source_env is False, output_content_mode is "instance"):
+        {'Louvre': <puppy.env.env.Env object at 0x1078f91d0>}
+
+    Returns(if with_source_env is True, output_content_mode is "instance"):
+        [<puppy.env.env.Env object at 0x11ffb0dd0>, {'Louvre': <puppy.env.env.Env object at 0x11ffb11d0>}]
+
+    Returns(if with_source_env is False, output_content_mode is "attribute", attributes is ["value", "name", "description"]):
+        {'value': 'good', 'name': 'Louvre', 'description': "It's a beautiful museum"}
+
+    Returns(if with_source_env is True, output_content_mode is "attribute", attributes is ["value", "name", "description"]):
+        [{'value': 'museum in Paris', 'name': 'the maple', 'description': "It's a beautiful place"}, {'value': 'good', 'name': 'Louvre', 'description': "It's a beautiful museum"}]
     """
 
-    # Initialize the result dictionary
-    res = {} if sub_only else {'name': environment.name, 'intro': environment.description}
+    # output content mode
+    if output_content_mode == "instance":
+        target_env_dict = {}
+        for k, v in environment.env_dict.items():
 
-    # Filter sub_environments if a target type is specified, else include all
-    sub_env_dict = {k: env_to_dict(v) for k, v in environment.env_dict.items() if not target or isinstance(v, target)}
+            if isinstance(v, target):
+                target_env_dict[k] = v
 
-    # Update the result with sub_environments
-    res.update({'sub_environments': sub_env_dict})
+        self_env_dict = environment
+
+    elif output_content_mode == "attribute":
+
+        target_env_dict = {}
+        for k, v in environment.env_dict.items():
+
+            if isinstance(v, target):
+                target_env_dict = env_to_dict(v, attributes)
+
+        self_env_dict = env_to_dict(environment, attributes)
+
+    else:
+        raise ValueError("output_content_mode must be either 'instance' or 'dict'.")
+
+    # with the source env or not
+    if with_source_env is False:
+        res = target_env_dict
+
+    else:
+        res = [self_env_dict, target_env_dict]
 
     # Convert to JSON if requested
     if as_json:
@@ -61,8 +90,10 @@ def explore(environment: Env,
 
 
 if __name__ == "__main__":
-
     env = Env(value="museum in Paris", name="the maple", description="It's a beautiful place")
 
-    env.Louvre = Env(value="Louvre Museum", name="Louvre", description="It's a beautiful museum")
-    print(explore(env))
+    env.Louvre = Env(value="good", name="Louvre", description="It's a beautiful museum")
+
+    print(explore(env, target=Env,
+                  attributes=["value", "name", "description"], output_content_mode="attribute",
+                  with_source_env=True))

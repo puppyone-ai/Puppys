@@ -12,7 +12,7 @@ class Env:
     as_list: bool
     private_keys: str = ['value', 'name', 'description']
 
-    def __init__(self, value: any, *args, name=None, description=None, sub_env: list = None, **kwargs):
+    def __init__(self, value: any = None, *args, name=None, description=None, sub_env: list = None, **kwargs):
 
         self.value = value
 
@@ -82,12 +82,12 @@ class Env:
     def isolated(self):
         self.__dict__.clear()
 
-    def __repr__(self) -> str:
+    #def __repr__(self) -> str:
         # res = self.intro
         # res.update(self.env_dict)
         # return f"{res}"
 
-        return f"{self.intro}"
+        #return f"{self.intro}"
 
 
 def creat(*args, **kwargs):
