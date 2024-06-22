@@ -55,7 +55,7 @@ note that before this action is historical code, and it has been ran. You don't 
 For example: (current action: search the location of the NBA in 2019@ google search @zhihu search)
 response:
 # To answer where is the NBA in 2019, I need to search the information about NBA in 2019. The function returns as a string.
-location=google_search("Where is the NBA in 2019"
+location=google_search("Where is the NBA in 2019")
 location= zhihu_search("Where is the NBA in 2019")
 
 Now generate your answer as code: 
