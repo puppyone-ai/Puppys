@@ -22,7 +22,7 @@
   <path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
 </svg>                &nbsp;puppy.tools.defaultTools</a>
 
-            <img src="assets/PuppysHorizon.png" class="logo" alt="project logo"/>
+            <img src="../assets/PuppyHorizon.png" class="logo" alt="project logo"/>
 
             <input type="search" placeholder="Search..." role="searchbox" aria-label="search"
                    pattern=".+" required>
@@ -32,28 +32,7 @@
             <h2>API Documentation</h2>
                 <ul class="memberlist">
             <li>
-                    <a class="class" href="#TalkWithHuman">TalkWithHuman</a>
-                            <ul class="memberlist">
-                        <li>
-                                <a class="function" href="#TalkWithHuman.__init__">TalkWithHuman</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#TalkWithHuman.puppy_instance">puppy_instance</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#TalkWithHuman.name">name</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#TalkWithHuman.intro">intro</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#TalkWithHuman.func">func</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#TalkWithHuman.send_message_to_human">send_message_to_human</a>
-                        </li>
-                </ul>
-
+                    <a class="function" href="#talk_with_human">talk_with_human</a>
             </li>
     </ul>
 
@@ -76,294 +55,96 @@
 
                         <label class="view-source-button" for="mod-talk_with_human-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">from</span> <span class="nn">puppy.environment.func</span> <span class="kn">import</span> <span class="n">FuncBase</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">redirect_stdout</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">from</span> <span class="nn">puppy.pp.base</span> <span class="kn">import</span> <span class="n">PuppyBase</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="kn">import</span> <span class="nn">sys</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">redirect_stdout</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">from</span> <span class="nn">puppy.pp.main</span> <span class="kn">import</span> <span class="n">Puppy</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">from</span> <span class="nn">puppy.env.func_env</span> <span class="kn">import</span> <span class="n">FuncEnv</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="kn">from</span> <span class="nn">puppy.pp.actions.explore</span> <span class="kn">import</span> <span class="n">explore</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">import</span> <span class="nn">sys</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="k">class</span> <span class="nc">TalkWithHuman</span><span class="p">(</span><span class="n">FuncBase</span><span class="p">):</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">puppy_instance</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="k">def</span> <span class="nf">talk_with_human</span><span class="p">(</span><span class="n">puppy</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="sd">        {</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="sd">            &quot;FuncBase&quot;: {</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="sd">                &quot;name&quot;: &quot;&quot;,</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="sd">                &quot;intro&quot;: &quot;&quot;,</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="sd">                &quot;tag&quot;: &quot;func&quot;,</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="sd">                &quot;__env_instance&quot;: None,</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">                &quot;__func&quot;: None,</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="sd">                &quot;__visibility&quot;: True</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="sd">            }</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="sd">        }</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">puppy_instance</span><span class="o">=</span> <span class="n">puppy_instance</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;talk_with_human&quot;</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">intro</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="s2">Use it when you have no idea how to achieve an action based on the current information knowledge, or functions. or you want to send a message to the user or let the user know your result.</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a><span class="s2">If you feel confused about any knowledge that are essential for following actions. You can stop keeping going and only ask human for help.</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a><span class="s2">for example:</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="s2">## Ask the user about the phone number of his boss</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a><span class="s2">talk_with_human(&quot; What&#39;s the phone number of your boss?&quot;)</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a><span class="s2">        &quot;&quot;&quot;</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_message_to_human</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__puppy_instance</span> <span class="o">=</span> <span class="n">puppy_instance</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="k">def</span> <span class="nf">send_message_to_human</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">question</span><span class="p">):</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="sd">    Use it when you have no idea how to achieve an action based on the current information knowledge, or functions. or you want to send a message to the user or let the user know your result.</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="sd">    If you feel confused about any knowledge that are essential for following actions. You can stop keeping going and only ask human for help.</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="sd">    for example:</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="sd">    ## Ask the user about the phone number of his boss</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="sd">    talk_with_human(message=&quot; What&#39;s the phone number of your boss?&quot;)</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>    <span class="k">with</span> <span class="n">redirect_stdout</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">__stdout__</span><span class="p">):</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>        <span class="n">user_input</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">puppy</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">message</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;Your response:&quot;</span><span class="p">)</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="n">chat_history</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;# your message:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">message</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;# User&#39;s response: &quot;</span> <span class="o">+</span> <span class="n">user_input</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>    <span class="n">puppy</span><span class="o">.</span><span class="n">current_code</span> <span class="o">+=</span> <span class="n">chat_history</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>    <span class="c1"># define an agent</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>    <span class="n">puppy</span><span class="o">=</span><span class="n">Puppy</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Puppy&quot;</span><span class="p">)</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="c1"># define the tool in the agent</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>    <span class="n">puppy</span><span class="o">.</span><span class="n">tools_talk_with_human</span> <span class="o">=</span> <span class="n">FuncEnv</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;talk_with_human&quot;</span><span class="p">,</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>                            <span class="n">description</span><span class="o">=</span><span class="n">talk_with_human</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">,</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>                            <span class="n">value</span><span class="o">=</span><span class="n">talk_with_human</span><span class="p">,</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>                            <span class="n">fixed_params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;puppy&quot;</span><span class="p">:</span> <span class="n">puppy</span><span class="p">},</span> <span class="n">free_params</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">])</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>    <span class="c1"># run the tool</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="n">puppy</span><span class="o">.</span><span class="n">tools_talk_with_human</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s2">&quot;hello world&quot;</span><span class="p">)</span>
 </span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>        <span class="k">with</span> <span class="n">redirect_stdout</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">__stdout__</span><span class="p">):</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>            <span class="n">user_input</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">puppy_instance</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">question</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;Your response:&quot;</span><span class="p">)</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>        <span class="n">chat_history</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;# your message:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">question</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;# User&#39;s response: &quot;</span> <span class="o">+</span> <span class="n">user_input</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__puppy_instance</span><span class="o">.</span><span class="n">actionflow</span><span class="o">.</span><span class="n">current_code</span> <span class="o">+=</span> <span class="n">chat_history</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>    <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;how should I install the package of openAI&quot;</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>
-</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>    <span class="kn">from</span> <span class="nn">puppy.pp.base</span> <span class="kn">import</span> <span class="n">PuppyBase</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>
-</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>    <span class="n">thread</span> <span class="o">=</span> <span class="n">PuppyBase</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot; Mr.Walter&quot;</span><span class="p">)</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>
-</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>    <span class="n">sender</span> <span class="o">=</span> <span class="n">TalkWithHuman</span><span class="p">(</span><span class="n">puppy_instance</span><span class="o">=</span><span class="n">thread</span><span class="p">)</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>
-</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>    <span class="n">sender</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>    <span class="nb">print</span><span class="p">(</span><span class="n">explore</span><span class="p">(</span><span class="n">puppy</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">FuncEnv</span><span class="p">))</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">explore</span><span class="p">(</span><span class="n">puppy</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">FuncEnv</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 </span></pre></div>
 
 
             </section>
-                <section id="TalkWithHuman">
-                            <input id="TalkWithHuman-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr class">
-            
-    <span class="def">class</span>
-    <span class="name">TalkWithHuman</span><wbr>(<span class="base"><a href="../../environment/func.html#FuncBase">puppy.environment.func.FuncBase</a></span>):
-
-                <label class="view-source-button" for="TalkWithHuman-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#TalkWithHuman"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="TalkWithHuman-8"><a href="#TalkWithHuman-8"><span class="linenos"> 8</span></a><span class="k">class</span> <span class="nc">TalkWithHuman</span><span class="p">(</span><span class="n">FuncBase</span><span class="p">):</span>
-</span><span id="TalkWithHuman-9"><a href="#TalkWithHuman-9"><span class="linenos"> 9</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">puppy_instance</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="TalkWithHuman-10"><a href="#TalkWithHuman-10"><span class="linenos">10</span></a>
-</span><span id="TalkWithHuman-11"><a href="#TalkWithHuman-11"><span class="linenos">11</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="TalkWithHuman-12"><a href="#TalkWithHuman-12"><span class="linenos">12</span></a><span class="sd">        {</span>
-</span><span id="TalkWithHuman-13"><a href="#TalkWithHuman-13"><span class="linenos">13</span></a><span class="sd">            &quot;FuncBase&quot;: {</span>
-</span><span id="TalkWithHuman-14"><a href="#TalkWithHuman-14"><span class="linenos">14</span></a><span class="sd">                &quot;name&quot;: &quot;&quot;,</span>
-</span><span id="TalkWithHuman-15"><a href="#TalkWithHuman-15"><span class="linenos">15</span></a><span class="sd">                &quot;intro&quot;: &quot;&quot;,</span>
-</span><span id="TalkWithHuman-16"><a href="#TalkWithHuman-16"><span class="linenos">16</span></a><span class="sd">                &quot;tag&quot;: &quot;func&quot;,</span>
-</span><span id="TalkWithHuman-17"><a href="#TalkWithHuman-17"><span class="linenos">17</span></a><span class="sd">                &quot;__env_instance&quot;: None,</span>
-</span><span id="TalkWithHuman-18"><a href="#TalkWithHuman-18"><span class="linenos">18</span></a><span class="sd">                &quot;__func&quot;: None,</span>
-</span><span id="TalkWithHuman-19"><a href="#TalkWithHuman-19"><span class="linenos">19</span></a><span class="sd">                &quot;__visibility&quot;: True</span>
-</span><span id="TalkWithHuman-20"><a href="#TalkWithHuman-20"><span class="linenos">20</span></a><span class="sd">            }</span>
-</span><span id="TalkWithHuman-21"><a href="#TalkWithHuman-21"><span class="linenos">21</span></a><span class="sd">        }</span>
-</span><span id="TalkWithHuman-22"><a href="#TalkWithHuman-22"><span class="linenos">22</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="TalkWithHuman-23"><a href="#TalkWithHuman-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">puppy_instance</span><span class="o">=</span> <span class="n">puppy_instance</span>
-</span><span id="TalkWithHuman-24"><a href="#TalkWithHuman-24"><span class="linenos">24</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="TalkWithHuman-25"><a href="#TalkWithHuman-25"><span class="linenos">25</span></a>
-</span><span id="TalkWithHuman-26"><a href="#TalkWithHuman-26"><span class="linenos">26</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;talk_with_human&quot;</span>
-</span><span id="TalkWithHuman-27"><a href="#TalkWithHuman-27"><span class="linenos">27</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">intro</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-</span><span id="TalkWithHuman-28"><a href="#TalkWithHuman-28"><span class="linenos">28</span></a><span class="s2">Use it when you have no idea how to achieve an action based on the current information knowledge, or functions. or you want to send a message to the user or let the user know your result.</span>
-</span><span id="TalkWithHuman-29"><a href="#TalkWithHuman-29"><span class="linenos">29</span></a><span class="s2">If you feel confused about any knowledge that are essential for following actions. You can stop keeping going and only ask human for help.</span>
-</span><span id="TalkWithHuman-30"><a href="#TalkWithHuman-30"><span class="linenos">30</span></a>
-</span><span id="TalkWithHuman-31"><a href="#TalkWithHuman-31"><span class="linenos">31</span></a>
-</span><span id="TalkWithHuman-32"><a href="#TalkWithHuman-32"><span class="linenos">32</span></a><span class="s2">for example:</span>
-</span><span id="TalkWithHuman-33"><a href="#TalkWithHuman-33"><span class="linenos">33</span></a><span class="s2">## Ask the user about the phone number of his boss</span>
-</span><span id="TalkWithHuman-34"><a href="#TalkWithHuman-34"><span class="linenos">34</span></a><span class="s2">talk_with_human(&quot; What&#39;s the phone number of your boss?&quot;)</span>
-</span><span id="TalkWithHuman-35"><a href="#TalkWithHuman-35"><span class="linenos">35</span></a><span class="s2">        &quot;&quot;&quot;</span>
-</span><span id="TalkWithHuman-36"><a href="#TalkWithHuman-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_message_to_human</span>
-</span><span id="TalkWithHuman-37"><a href="#TalkWithHuman-37"><span class="linenos">37</span></a>
-</span><span id="TalkWithHuman-38"><a href="#TalkWithHuman-38"><span class="linenos">38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__puppy_instance</span> <span class="o">=</span> <span class="n">puppy_instance</span>
-</span><span id="TalkWithHuman-39"><a href="#TalkWithHuman-39"><span class="linenos">39</span></a>
-</span><span id="TalkWithHuman-40"><a href="#TalkWithHuman-40"><span class="linenos">40</span></a>    <span class="k">def</span> <span class="nf">send_message_to_human</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">question</span><span class="p">):</span>
-</span><span id="TalkWithHuman-41"><a href="#TalkWithHuman-41"><span class="linenos">41</span></a>
-</span><span id="TalkWithHuman-42"><a href="#TalkWithHuman-42"><span class="linenos">42</span></a>        <span class="k">with</span> <span class="n">redirect_stdout</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">__stdout__</span><span class="p">):</span>
-</span><span id="TalkWithHuman-43"><a href="#TalkWithHuman-43"><span class="linenos">43</span></a>            <span class="n">user_input</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">puppy_instance</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">question</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;Your response:&quot;</span><span class="p">)</span>
-</span><span id="TalkWithHuman-44"><a href="#TalkWithHuman-44"><span class="linenos">44</span></a>
-</span><span id="TalkWithHuman-45"><a href="#TalkWithHuman-45"><span class="linenos">45</span></a>        <span class="n">chat_history</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;# your message:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">question</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;# User&#39;s response: &quot;</span> <span class="o">+</span> <span class="n">user_input</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
-</span><span id="TalkWithHuman-46"><a href="#TalkWithHuman-46"><span class="linenos">46</span></a>
-</span><span id="TalkWithHuman-47"><a href="#TalkWithHuman-47"><span class="linenos">47</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__puppy_instance</span><span class="o">.</span><span class="n">actionflow</span><span class="o">.</span><span class="n">current_code</span> <span class="o">+=</span> <span class="n">chat_history</span>
-</span></pre></div>
-
-
-    
-
-                            <div id="TalkWithHuman.__init__" class="classattr">
-                                        <input id="TalkWithHuman.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="name">TalkWithHuman</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">puppy_instance</span>, </span><span class="param"><span class="o">*</span><span class="n">args</span>, </span><span class="param"><span class="o">**</span><span class="n">kwargs</span></span>)</span>
-
-                <label class="view-source-button" for="TalkWithHuman.__init__-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#TalkWithHuman.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="TalkWithHuman.__init__-9"><a href="#TalkWithHuman.__init__-9"><span class="linenos"> 9</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">puppy_instance</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="TalkWithHuman.__init__-10"><a href="#TalkWithHuman.__init__-10"><span class="linenos">10</span></a>
-</span><span id="TalkWithHuman.__init__-11"><a href="#TalkWithHuman.__init__-11"><span class="linenos">11</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="TalkWithHuman.__init__-12"><a href="#TalkWithHuman.__init__-12"><span class="linenos">12</span></a><span class="sd">        {</span>
-</span><span id="TalkWithHuman.__init__-13"><a href="#TalkWithHuman.__init__-13"><span class="linenos">13</span></a><span class="sd">            &quot;FuncBase&quot;: {</span>
-</span><span id="TalkWithHuman.__init__-14"><a href="#TalkWithHuman.__init__-14"><span class="linenos">14</span></a><span class="sd">                &quot;name&quot;: &quot;&quot;,</span>
-</span><span id="TalkWithHuman.__init__-15"><a href="#TalkWithHuman.__init__-15"><span class="linenos">15</span></a><span class="sd">                &quot;intro&quot;: &quot;&quot;,</span>
-</span><span id="TalkWithHuman.__init__-16"><a href="#TalkWithHuman.__init__-16"><span class="linenos">16</span></a><span class="sd">                &quot;tag&quot;: &quot;func&quot;,</span>
-</span><span id="TalkWithHuman.__init__-17"><a href="#TalkWithHuman.__init__-17"><span class="linenos">17</span></a><span class="sd">                &quot;__env_instance&quot;: None,</span>
-</span><span id="TalkWithHuman.__init__-18"><a href="#TalkWithHuman.__init__-18"><span class="linenos">18</span></a><span class="sd">                &quot;__func&quot;: None,</span>
-</span><span id="TalkWithHuman.__init__-19"><a href="#TalkWithHuman.__init__-19"><span class="linenos">19</span></a><span class="sd">                &quot;__visibility&quot;: True</span>
-</span><span id="TalkWithHuman.__init__-20"><a href="#TalkWithHuman.__init__-20"><span class="linenos">20</span></a><span class="sd">            }</span>
-</span><span id="TalkWithHuman.__init__-21"><a href="#TalkWithHuman.__init__-21"><span class="linenos">21</span></a><span class="sd">        }</span>
-</span><span id="TalkWithHuman.__init__-22"><a href="#TalkWithHuman.__init__-22"><span class="linenos">22</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="TalkWithHuman.__init__-23"><a href="#TalkWithHuman.__init__-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">puppy_instance</span><span class="o">=</span> <span class="n">puppy_instance</span>
-</span><span id="TalkWithHuman.__init__-24"><a href="#TalkWithHuman.__init__-24"><span class="linenos">24</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="TalkWithHuman.__init__-25"><a href="#TalkWithHuman.__init__-25"><span class="linenos">25</span></a>
-</span><span id="TalkWithHuman.__init__-26"><a href="#TalkWithHuman.__init__-26"><span class="linenos">26</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;talk_with_human&quot;</span>
-</span><span id="TalkWithHuman.__init__-27"><a href="#TalkWithHuman.__init__-27"><span class="linenos">27</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">intro</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-</span><span id="TalkWithHuman.__init__-28"><a href="#TalkWithHuman.__init__-28"><span class="linenos">28</span></a><span class="s2">Use it when you have no idea how to achieve an action based on the current information knowledge, or functions. or you want to send a message to the user or let the user know your result.</span>
-</span><span id="TalkWithHuman.__init__-29"><a href="#TalkWithHuman.__init__-29"><span class="linenos">29</span></a><span class="s2">If you feel confused about any knowledge that are essential for following actions. You can stop keeping going and only ask human for help.</span>
-</span><span id="TalkWithHuman.__init__-30"><a href="#TalkWithHuman.__init__-30"><span class="linenos">30</span></a>
-</span><span id="TalkWithHuman.__init__-31"><a href="#TalkWithHuman.__init__-31"><span class="linenos">31</span></a>
-</span><span id="TalkWithHuman.__init__-32"><a href="#TalkWithHuman.__init__-32"><span class="linenos">32</span></a><span class="s2">for example:</span>
-</span><span id="TalkWithHuman.__init__-33"><a href="#TalkWithHuman.__init__-33"><span class="linenos">33</span></a><span class="s2">## Ask the user about the phone number of his boss</span>
-</span><span id="TalkWithHuman.__init__-34"><a href="#TalkWithHuman.__init__-34"><span class="linenos">34</span></a><span class="s2">talk_with_human(&quot; What&#39;s the phone number of your boss?&quot;)</span>
-</span><span id="TalkWithHuman.__init__-35"><a href="#TalkWithHuman.__init__-35"><span class="linenos">35</span></a><span class="s2">        &quot;&quot;&quot;</span>
-</span><span id="TalkWithHuman.__init__-36"><a href="#TalkWithHuman.__init__-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_message_to_human</span>
-</span><span id="TalkWithHuman.__init__-37"><a href="#TalkWithHuman.__init__-37"><span class="linenos">37</span></a>
-</span><span id="TalkWithHuman.__init__-38"><a href="#TalkWithHuman.__init__-38"><span class="linenos">38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__puppy_instance</span> <span class="o">=</span> <span class="n">puppy_instance</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>{
-    "FuncBase": {
-        "name": "",
-        "intro": "",
-        "tag": "func",
-        "__env_instance": None,
-        "__func": None,
-        "__visibility": True
-    }
-}</p>
-</div>
-
-
-                            </div>
-                            <div id="TalkWithHuman.puppy_instance" class="classattr">
-                                <div class="attr variable">
-            <span class="name">puppy_instance</span>
-
-        
-    </div>
-    <a class="headerlink" href="#TalkWithHuman.puppy_instance"></a>
-    
-    
-
-                            </div>
-                            <div id="TalkWithHuman.name" class="classattr">
-                                        <input id="TalkWithHuman.name-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr variable">
-            <span class="name">name</span>
-
-                <label class="view-source-button" for="TalkWithHuman.name-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#TalkWithHuman.name"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="TalkWithHuman.name-37"><a href="#TalkWithHuman.name-37"><span class="linenos">37</span></a>    <span class="nd">@property</span>
-</span><span id="TalkWithHuman.name-38"><a href="#TalkWithHuman.name-38"><span class="linenos">38</span></a>    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="TalkWithHuman.name-39"><a href="#TalkWithHuman.name-39"><span class="linenos">39</span></a>        <span class="c1"># return getattr(self, &#39;__name&#39;, self.func.__name__)</span>
-</span><span id="TalkWithHuman.name-40"><a href="#TalkWithHuman.name-40"><span class="linenos">40</span></a>
-</span><span id="TalkWithHuman.name-41"><a href="#TalkWithHuman.name-41"><span class="linenos">41</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__name</span>
-</span></pre></div>
-
-
-    
-
-                            </div>
-                            <div id="TalkWithHuman.intro" class="classattr">
-                                        <input id="TalkWithHuman.intro-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr variable">
-            <span class="name">intro</span>
-
-                <label class="view-source-button" for="TalkWithHuman.intro-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#TalkWithHuman.intro"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="TalkWithHuman.intro-47"><a href="#TalkWithHuman.intro-47"><span class="linenos">47</span></a>    <span class="nd">@property</span>
-</span><span id="TalkWithHuman.intro-48"><a href="#TalkWithHuman.intro-48"><span class="linenos">48</span></a>    <span class="k">def</span> <span class="nf">intro</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="TalkWithHuman.intro-49"><a href="#TalkWithHuman.intro-49"><span class="linenos">49</span></a>        <span class="c1"># return getattr(self, &#39;__intro&#39;, self.func.__doc__)</span>
-</span><span id="TalkWithHuman.intro-50"><a href="#TalkWithHuman.intro-50"><span class="linenos">50</span></a>
-</span><span id="TalkWithHuman.intro-51"><a href="#TalkWithHuman.intro-51"><span class="linenos">51</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__intro</span>
-</span></pre></div>
-
-
-    
-
-                            </div>
-                            <div id="TalkWithHuman.func" class="classattr">
-                                        <input id="TalkWithHuman.func-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr variable">
-            <span class="name">func</span>
-
-                <label class="view-source-button" for="TalkWithHuman.func-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#TalkWithHuman.func"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="TalkWithHuman.func-57"><a href="#TalkWithHuman.func-57"><span class="linenos">57</span></a>    <span class="nd">@property</span>
-</span><span id="TalkWithHuman.func-58"><a href="#TalkWithHuman.func-58"><span class="linenos">58</span></a>    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="TalkWithHuman.func-59"><a href="#TalkWithHuman.func-59"><span class="linenos">59</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__func</span>
-</span></pre></div>
-
-
-    
-
-                            </div>
-                            <div id="TalkWithHuman.send_message_to_human" class="classattr">
-                                        <input id="TalkWithHuman.send_message_to_human-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                <section id="talk_with_human">
+                            <input id="talk_with_human-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">send_message_to_human</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">question</span></span><span class="return-annotation">):</span></span>
+        <span class="name">talk_with_human</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">puppy</span>, </span><span class="param"><span class="n">message</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="TalkWithHuman.send_message_to_human-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="talk_with_human-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#TalkWithHuman.send_message_to_human"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="TalkWithHuman.send_message_to_human-40"><a href="#TalkWithHuman.send_message_to_human-40"><span class="linenos">40</span></a>    <span class="k">def</span> <span class="nf">send_message_to_human</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">question</span><span class="p">):</span>
-</span><span id="TalkWithHuman.send_message_to_human-41"><a href="#TalkWithHuman.send_message_to_human-41"><span class="linenos">41</span></a>
-</span><span id="TalkWithHuman.send_message_to_human-42"><a href="#TalkWithHuman.send_message_to_human-42"><span class="linenos">42</span></a>        <span class="k">with</span> <span class="n">redirect_stdout</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">__stdout__</span><span class="p">):</span>
-</span><span id="TalkWithHuman.send_message_to_human-43"><a href="#TalkWithHuman.send_message_to_human-43"><span class="linenos">43</span></a>            <span class="n">user_input</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">puppy_instance</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">question</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;Your response:&quot;</span><span class="p">)</span>
-</span><span id="TalkWithHuman.send_message_to_human-44"><a href="#TalkWithHuman.send_message_to_human-44"><span class="linenos">44</span></a>
-</span><span id="TalkWithHuman.send_message_to_human-45"><a href="#TalkWithHuman.send_message_to_human-45"><span class="linenos">45</span></a>        <span class="n">chat_history</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;# your message:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">question</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;# User&#39;s response: &quot;</span> <span class="o">+</span> <span class="n">user_input</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
-</span><span id="TalkWithHuman.send_message_to_human-46"><a href="#TalkWithHuman.send_message_to_human-46"><span class="linenos">46</span></a>
-</span><span id="TalkWithHuman.send_message_to_human-47"><a href="#TalkWithHuman.send_message_to_human-47"><span class="linenos">47</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__puppy_instance</span><span class="o">.</span><span class="n">actionflow</span><span class="o">.</span><span class="n">current_code</span> <span class="o">+=</span> <span class="n">chat_history</span>
+    <a class="headerlink" href="#talk_with_human"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="talk_with_human-9"><a href="#talk_with_human-9"><span class="linenos"> 9</span></a><span class="k">def</span> <span class="nf">talk_with_human</span><span class="p">(</span><span class="n">puppy</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+</span><span id="talk_with_human-10"><a href="#talk_with_human-10"><span class="linenos">10</span></a>
+</span><span id="talk_with_human-11"><a href="#talk_with_human-11"><span class="linenos">11</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="talk_with_human-12"><a href="#talk_with_human-12"><span class="linenos">12</span></a><span class="sd">    Use it when you have no idea how to achieve an action based on the current information knowledge, or functions. or you want to send a message to the user or let the user know your result.</span>
+</span><span id="talk_with_human-13"><a href="#talk_with_human-13"><span class="linenos">13</span></a><span class="sd">    If you feel confused about any knowledge that are essential for following actions. You can stop keeping going and only ask human for help.</span>
+</span><span id="talk_with_human-14"><a href="#talk_with_human-14"><span class="linenos">14</span></a>
+</span><span id="talk_with_human-15"><a href="#talk_with_human-15"><span class="linenos">15</span></a><span class="sd">    for example:</span>
+</span><span id="talk_with_human-16"><a href="#talk_with_human-16"><span class="linenos">16</span></a><span class="sd">    ## Ask the user about the phone number of his boss</span>
+</span><span id="talk_with_human-17"><a href="#talk_with_human-17"><span class="linenos">17</span></a><span class="sd">    talk_with_human(message=&quot; What&#39;s the phone number of your boss?&quot;)</span>
+</span><span id="talk_with_human-18"><a href="#talk_with_human-18"><span class="linenos">18</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="talk_with_human-19"><a href="#talk_with_human-19"><span class="linenos">19</span></a>
+</span><span id="talk_with_human-20"><a href="#talk_with_human-20"><span class="linenos">20</span></a>    <span class="k">with</span> <span class="n">redirect_stdout</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">__stdout__</span><span class="p">):</span>
+</span><span id="talk_with_human-21"><a href="#talk_with_human-21"><span class="linenos">21</span></a>        <span class="n">user_input</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">puppy</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">message</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;Your response:&quot;</span><span class="p">)</span>
+</span><span id="talk_with_human-22"><a href="#talk_with_human-22"><span class="linenos">22</span></a>
+</span><span id="talk_with_human-23"><a href="#talk_with_human-23"><span class="linenos">23</span></a>    <span class="n">chat_history</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;# your message:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">message</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;# User&#39;s response: &quot;</span> <span class="o">+</span> <span class="n">user_input</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+</span><span id="talk_with_human-24"><a href="#talk_with_human-24"><span class="linenos">24</span></a>
+</span><span id="talk_with_human-25"><a href="#talk_with_human-25"><span class="linenos">25</span></a>    <span class="n">puppy</span><span class="o">.</span><span class="n">current_code</span> <span class="o">+=</span> <span class="n">chat_history</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Use it when you have no idea how to achieve an action based on the current information knowledge, or functions. or you want to send a message to the user or let the user know your result.
+If you feel confused about any knowledge that are essential for following actions. You can stop keeping going and only ask human for help.</p>
 
-                            </div>
-                            <div class="inherited">
-                                <h5>Inherited Members</h5>
-                                <dl>
-                                    <div><dt><a href="../../environment/func.html#FuncBase">puppy.environment.func.FuncBase</a></dt>
-                                <dd id="TalkWithHuman.tag" class="variable"><a href="../../environment/func.html#FuncBase.tag">tag</a></dd>
-                <dd id="TalkWithHuman.env_instance" class="variable"><a href="../../environment/func.html#FuncBase.env_instance">env_instance</a></dd>
-                <dd id="TalkWithHuman.visible" class="variable"><a href="../../environment/func.html#FuncBase.visible">visible</a></dd>
-                <dd id="TalkWithHuman.run" class="function"><a href="../../environment/func.html#FuncBase.run">run</a></dd>
+<p>for example:</p>
 
-            </div>
-            <div><dt><a href="../../environment/base.html#EnvBase">puppy.environment.base.EnvBase</a></dt>
-                                <dd id="TalkWithHuman.detail" class="variable"><a href="../../environment/base.html#EnvBase.detail">detail</a></dd>
-                <dd id="TalkWithHuman.expose" class="variable"><a href="../../environment/base.html#EnvBase.expose">expose</a></dd>
-                <dd id="TalkWithHuman.create_new_env" class="function"><a href="../../environment/base.html#EnvBase.create_new_env">create_new_env</a></dd>
-                <dd id="TalkWithHuman.add_new_env" class="function"><a href="../../environment/base.html#EnvBase.add_new_env">add_new_env</a></dd>
+<h2 id="ask-the-user-about-the-phone-number-of-his-boss">Ask the user about the phone number of his boss</h2>
 
-            </div>
-                                </dl>
-                            </div>
+<p>talk_with_human(message=" What's the phone number of your boss?")</p>
+</div>
+
+
                 </section>
     </main>
 <script>
