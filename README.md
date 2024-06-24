@@ -1,12 +1,11 @@
 
 
-<p align="center">
+<div align="center">
     <picture>
-      <img src="./assets/PuppyAgentLOGOBig.png" alt="Image" height="120
-      ">
+      <img src="./assets/PuppyAgentLOGOBig.png" alt="Image" height=120>
     </picture>
     <h1 align="center">Puppys</h1>
-</p>
+</div>
 
 <div align="center">
 
