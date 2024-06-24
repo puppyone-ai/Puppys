@@ -5,9 +5,6 @@
       <img src="./assets/PuppyAgentLOGOBig.png" alt="Image" height=120>
     </picture>
     <h1 align="center">Puppys</h1>
-</div>
-
-<div align="center">
 
 **Framework for Plug-and-Play Agentic System**
 
