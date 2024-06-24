@@ -1,54 +1,68 @@
 
-<img src="./assets/PuppysHorizon.png" alt="Image">
 
+<p align="center">
+    <picture>
+      <img src="./assets/PuppyAgentLOGOBig.png" alt="Image" height="120
+      ">
+    </picture>
+    <h1 align="center">Puppys</h1>
+</p>
 
 <div align="center">
 
-*Code-Driven AI Agentic system framework*
-
-[![Twitter Follow](https://img.shields.io/twitter/follow/PuppyAgentTech?label=PuppyAgent_Lab&style=social)](https://twitter.com/PuppyAgentTech) &ensp;
-</div>
-
-<div align="center">
+**Framework for Plug-and-Play Agentic System**
 
 **📜 [Document](https://mulberry-magician-e0a.notion.site/Puppys-document-83e2e55cfd27449589a6a721402ff4bc?pvs=4)**
-&ensp;|&ensp;
+&ensp;&ensp;
 **🔌 [Install](https://mulberry-magician-e0a.notion.site/Install-453ccfa356a04eda865c68e489d0e6bf?pvs=4)**
-&ensp;|&ensp;
+&ensp;&ensp;
 **⚽ [QuickStart](https://mulberry-magician-e0a.notion.site/Quick-Start-f4f383324012448180049f78035ccfa2?pvs=74)**
 
+[![Twitter](https://img.shields.io/badge/-PuppyAgent-1DA1F2?style=flat&logo=X&logoColor=ffffff&color=%23000000&)](https://twitter.com/PuppyAgentTech) &ensp;
+[![Discord](https://img.shields.io/badge/-PuppyAgent-7289DA.svg?logo=discord&labelColor=%235462eb&logoColor=%23ffffff&color=%235462eb&label=&style=flat)](https://discord.com/channels/1249674961199829053/1249674961644163164)
+
+
 </div>
 
-* **Code-Driven**: The agent's thought and response are entirely code, instead of chat, meaning more interpretable and more controllable.
-* **Plug and Play**: Agentic capabilities can be integrated into ANY part of your enterprise's codebase
-* **Lite**: Minimal dependencies and minimal wrappers, mean that enterprises can develop flexibly and scalably.
+<hr>
 
 <div align="center">
 
-**-------------  🔥 Version 0.0.26 (30-May-2024):  -------------**
 
+-**Plug and Play**-
+
+*Insert agentic ability into anywhere your existing enterprise code.*
+
+-**Make Agent Robust**-
+
+*Instruct agents via code, leading configurable and robust.*
+
+-**Lite**-
+
+*Less dependency, more scalability.*
 </div>
-
-1. **Redesigned Grammar**: Now you use do(action) instead of ##action do().
-2. **Supporting Parameters in Decisiontree**: parameter can be customized in decisiontree.
-3. **Decouple Doing and Checking**: Checking and doing an action is different, now you can define them.
-4. **Another User Case**: Playing Gotcha Game with 4 agents!
-
-## Building an agent just like building a Turing machine
-
-When programming an agent, what exactly are we programming?
-
-We can draw some inspiration from the history of computer science. Consider a Turing machine:
-
-We need to define its decision tree (finite state machine) and the environment (tape) in which the agent operates.
-
-The advantage is that by defining a confined environment, we can effectively explore continuous learning within a specific domain.
 
 <div align="center">
-<img src="./assets/decisionTree_Enviroment.png" alt="Image" width="800">
+<img src="./assets/intro_diagram.png" alt="Image" width="800">
 </div>
 
-## Hybrid solution of Agent and RPA
+
+
+<div align="center">
+
+## Plug-and-Play
+
+<img src="./assets/plug&play.png" alt="Image" width="800">
+</div>
+
+
+
+
+<div align="center">
+
+## Make Agent Robust
+
+</div>
 
 **Agents** can do tasks by themselves and work in many situations, but only be able to solve very simple problems.
 **RPA** (Robotic Process Automation), on the other hand, can handle complex tasks but isn't very flexible. So, here is a question: **what if we make a hybrid agent that mix the advantages of agents and RPA?** Could this idea work?
@@ -64,7 +78,7 @@ Giving the agent a confined environment, and let the agent evolves in the confin
 
 
 
-## Agent's planning: Talk is shit, show me your code!
+## Code-Driven
 
 When an agent perceives its environment, thinks, and acts, what language does it use? Is it **natural language**, or **code language**?
 

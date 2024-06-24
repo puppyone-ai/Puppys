@@ -12,7 +12,7 @@ from puppy.pp.mei import Mei
 
 def hacker_news_decisiontree(self):
 
-    self.do_check("go to https://news.ycombinator.com/ show the HTML", show_prompt=True, show_response=True)
+    self.do_check("go to https://news.ycombinator.com/ show the HTML", show_response=True)
 
     self.do_check("show the top 10 news @llm, and send it to me", show_response=True)
 

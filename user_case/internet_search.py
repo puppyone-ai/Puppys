@@ -7,7 +7,7 @@ from puppy.env.func_env import FuncEnv
 from puppy.pp.mei import Mei
 
 # change the API key to your own
-os.environ['PERPLEXITY_API_KEY'] = "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"
+# os.environ['PERPLEXITY_API_KEY'] = ""
 # os.environ["OPENAI_API_KEY"] = ""
 
 

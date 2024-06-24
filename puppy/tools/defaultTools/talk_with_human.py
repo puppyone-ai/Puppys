@@ -13,7 +13,8 @@ def talk_with_human(puppy, message):
 
     for example:
     ## Ask the user about the phone number of his boss
-    talk_with_human(message=" What's the phone number of your boss?")
+    question="What's the phone number of your boss?"
+    talk_with_human(message=question) # the message is essential
     """
 
     with redirect_stdout(sys.__stdout__):

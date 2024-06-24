@@ -1,9 +1,9 @@
 from puppy.llm.open_ai import open_ai_chat
 from puppy.env.func_env import FuncEnv
 import os
+from puppy.pp.actions.explore import explore
 
-
-def do(puppy_instance, action_name: str, tool_list: list, model="gpt-4-turbo", show_prompt=False, show_response=False):
+def do(puppy_instance, action_name: str, tool_list: list = None, model="gpt-4-turbo", show_prompt=False, show_response=False):
 
     """
     write code to achieve the action
@@ -39,7 +39,7 @@ in your final response as code. When the do(XXX) appears, you HAVE TO change it 
 
 You default function is writing python code, it's good at any task that python packages can achieve. But make sure that you write code to import the given package.
 You are also allowed to use the customized functions below, use them by just writing code as the example. the description shows how to use them.
-{puppy_instance.explore(puppy_instance, target=FuncEnv, output_content_mode="attribute", attributes=[ "name", "description"])}
+{explore(puppy_instance, target=FuncEnv, output_content_mode="attribute", attributes=[ "name", "description"])}
 
 The code for historical, current, and future actionflow shown as code are:{puppy_instance.all_code}.
 Now you write code to achieve your action(Note that the tools after@ is recommended tools, if it exists): {action_name}
