@@ -69,15 +69,12 @@ class Puppy(Env):
 
             self.runtime_vars_dict.update(local_vars)
 
-            print(code,code, "/n", self.global_var_dict, "/n", self.runtime_vars_dict)
-
             # execute the code
             exec(code, self.global_var_dict, self.runtime_vars_dict)
 
     def run(self) -> None:
 
         tools_dict = explore(self, target=FuncEnv)
-        print("the tool dict is:/n ", tools_dict)
 
         self.runtime_vars_dict.update(tools_dict.items())
 

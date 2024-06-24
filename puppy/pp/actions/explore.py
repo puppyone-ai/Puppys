@@ -67,7 +67,7 @@ def explore(environment: Env,
         for k, v in environment.env_dict.items():
 
             if isinstance(v, target):
-                target_env_dict = env_to_dict(v, attributes)
+                target_env_dict[k] = env_to_dict(v, attributes)
 
         self_env_dict = env_to_dict(environment, attributes)
 
@@ -93,6 +93,7 @@ if __name__ == "__main__":
     env = Env(value="museum in Paris", name="the maple", description="It's a beautiful place")
 
     env.Louvre = Env(value="good", name="Louvre", description="It's a beautiful museum")
+    env.Eiffel = Env(value="bad", name="Eiffel", description="It's a ugly tower")
 
     print(explore(env, target=Env,
                   attributes=["value", "name", "description"], output_content_mode="attribute",

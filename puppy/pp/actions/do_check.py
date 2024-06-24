@@ -1,6 +1,6 @@
 def do_check(puppy_instance,
              action_name: str = "",
-             tool_list: list = [],
+             tool_list: list = None,
              model="gpt-4-turbo",
              show_prompt=False, show_response=False):
 

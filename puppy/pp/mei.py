@@ -27,6 +27,7 @@ class Mei(Puppy):
                                        fixed_params={"puppy": self},
                                        free_params=["message"])
 
+
     def do_check(self, *args, **kwargs):
         return do_check(self, *args, **kwargs)
 

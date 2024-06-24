@@ -21,14 +21,15 @@ def check(puppy_instance, action_name: str = "", tool_list: list = [], model="gp
 
     3. Your response cannot only be comment. You HAVE to write codes
 
-     You justify if your current action is done or not, you have two choices: 1. Done: That means 
-    you don't need to write code to achieve it again. The action history shows that you have already know what 
+     You justify if your current action is done or not, you have two choices: 
+        a. Done: That means you don't need to write code to achieve it again. The action history shows that you have already know what 
     you want to know or have already achieve the action. In this case, you should write Python code to return 
-    Ture, and your generated code should be: isFinished=True
-
-    2. Unfinished: That means you need to write code to achieve it again, or there are some unfinished actions that you 
+    Ture, and your generated code should be: isFinished=True 
+        b. Unfinished: That means you need to write code to achieve it again, or there are some unfinished actions that you 
     need to make . In this case, you should write Python code to return False, and the your generated code should be: 
     isFinished=False
+    
+    4. You can only write code that contain True or False. You CANNOT write code that contains or import other values or other code.
 
     for example:
     1. current action:
@@ -40,7 +41,7 @@ def check(puppy_instance, action_name: str = "", tool_list: list = [], model="gp
 
     your response:
     # the action is not done, because I get what I should send, but I haven't send it yet. Maybe next action is to send it
-    isFinished=False
+    isFinished=False 
 
     2. current action:
     get what happened about COVID in the the 2nd Feb 2020 @google search
