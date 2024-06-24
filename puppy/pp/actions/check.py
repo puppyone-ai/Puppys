@@ -17,16 +17,18 @@ def check(puppy_instance, action_name: str = "", tool_list: list = [], model="gp
 
     2. DON'T ASSUME you know any unclear knowledge or information that you don't know. DON'T 
      ASSUME that you have non-existent functions or hypothetical function. Your code will be run immediately 
-     after you write it. If you assume any hypothetical function, the the system will crash. 
+     after you write it. If you assume any hypothetical function, then the system will crash. 
 
     3. Your response cannot only be comment. You HAVE to write codes
 
      You justify if your current action is done or not, you have two choices: 
         a. Done: That means you don't need to write code to achieve it again. The action history shows that you have already know what 
     you want to know or have already achieve the action. In this case, you should write Python code to return 
+
     Ture, and your generated code should be: isFinished=True 
         b. Unfinished: That means you need to write code to achieve it again, or there are some unfinished actions that you 
     need to make . In this case, you should write Python code to return False, and the your generated code should be: 
+
     isFinished=False
     
     4. You can only write code that contain True or False. You CANNOT write code that contains or import other values or other code.
