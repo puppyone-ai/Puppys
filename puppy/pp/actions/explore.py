@@ -90,11 +90,13 @@ def explore(environment: Env,
 
 
 if __name__ == "__main__":
-    env = Env(value="museum in Paris", name="the maple", description="It's a beautiful place")
+    Museum = Env(value="museum in Paris", name="the maple", description="It's a beautiful place")
 
-    env.Louvre = Env(value="good", name="Louvre", description="It's a beautiful museum")
-    env.Eiffel = Env(value="bad", name="Eiffel", description="It's a ugly tower")
+    Museum.Louvre = Env(value="good", name="Louvre", description="It's a beautiful museum")
+    Museum.Eiffel = Env(value="bad", name="Eiffel", description="It's a ugly tower")
 
-    print(explore(env, target=Env,
+    result=explore(Museum, target=Env,
                   attributes=["value", "name", "description"], output_content_mode="attribute",
-                  with_source_env=True))
+                  with_source_env=False)
+
+    print(result)
