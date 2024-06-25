@@ -2,7 +2,7 @@
 
 <div align="center">
     <picture>
-      <img src="./assets/PuppyAgentLOGOBig.png" alt="Image" height=120>
+      <img src="./assets/PuppyAgentLOGOBig.png" alt="Image" height="120">
     </picture>
     <h1 align="center">Puppys</h1>
 
@@ -17,10 +17,11 @@
 [![Twitter](https://img.shields.io/badge/-PuppyAgent-1DA1F2?style=flat&logo=X&logoColor=ffffff&color=%23000000&)](https://twitter.com/PuppyAgentTech) &ensp;
 [![Discord](https://img.shields.io/badge/-PuppyAgent-7289DA.svg?logo=discord&labelColor=%235462eb&logoColor=%23ffffff&color=%235462eb&label=&style=flat)](https://discord.com/channels/1249674961199829053/1249674961644163164)
 
-
+## 
 </div>
 
-<hr>
+
+
 
 <div align="center">
 
@@ -47,8 +48,16 @@
 <div align="center">
 
 ## Plug-and-Play
+</div>
+
+Embed the agent's action into any your existing code, transforming your original code into an agentic system/
+
+No DSL. No Workflow. Only Python (We understand that you don't like DSL or Workflow)
+
+<div align="center">
 
 <img src="./assets/plug&play.png" alt="Image" width="800">
+
 </div>
 
 
@@ -60,29 +69,28 @@
 
 </div>
 
-**Agents** can do tasks by themselves and work in many situations, but only be able to solve very simple problems.
-**RPA** (Robotic Process Automation), on the other hand, can handle complex tasks but isn't very flexible. So, here is a question: **what if we make a hybrid agent that mix the advantages of agents and RPA?** Could this idea work?
+**Autonomous Agents** can do tasks by themselves and work in many situations, but only be able to solve very simple problems.
 
-Our solution is that, actionflow is as a list in the environment, which need to be interpreted by a decision tree.
-Unlike previous agent frameworks, we placed the workflow within the environment, to be parsed by the decision tree, rather than a default flow.
+**RPA** (Robotic Process Automation), can handle complex tasks but isn't very flexible. 
 
-Giving the agent a confined environment, and let the agent evolves in the confined environment.
+We provide a hybrid solution of Agents and RPA.
 
 <div align="center">
 <img src="./assets/AgentRPA.png" alt="Image" width="800">
 </div>
 
 
+<div align="center">
 
 ## Code-Driven
 
-When an agent perceives its environment, thinks, and acts, what language does it use? Is it **natural language**, or **code language**?
+</div>
 
-In fact, the biggest difference between an agent and an LLM is that **an LLM predicts the next token**, **an agent predicts the next action**. 
+ **An LLM predicts the next token**
 
-An action involves both the agent’s thoughts and decisions (natural language)and its execution  (code). Therefore, we made the atomic predicted unit of (natural language * code).
-This prevents an agent from planning actions that it can never actually carry out.
+ **An agent predicts the next action**. 
 
+We believe that an LLM-based agent needs to predict the next action; in reality, it predicts the **next code**. This is the philosophy of being code-driven.
 <div align="center">
 <img src="./assets/PuppyVsOthers.png" alt="Image" width="800">
 </div>
