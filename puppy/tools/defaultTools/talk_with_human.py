@@ -1,58 +1,45 @@
-from puppy.environment.func import FuncBase
 from contextlib import redirect_stdout
-from puppy.pp.base import PuppyBase
+from puppy.pp.main import Puppy
+from puppy.env.func_env import FuncEnv
+from puppy.pp.actions.explore import explore
 import sys
 
 
-class TalkWithHuman(FuncBase):
-    def __init__(self, puppy_instance, *args, **kwargs):
+def talk_with_human(puppy, message):
 
-        """
-        {
-            "FuncBase": {
-                "name": "",
-                "intro": "",
-                "tag": "func",
-                "__env_instance": None,
-                "__func": None,
-                "__visibility": True
-            }
-        }
-        """
-        self.puppy_instance= puppy_instance
-        super().__init__(*args, **kwargs)
+    """
+    Use it when you have no idea how to achieve an action based on the current information knowledge, or functions. or you want to send a message to the user or let the user know your result.
+    If you feel confused about any knowledge that are essential for following actions. You can stop keeping going and only ask human for help.
 
-        self.name = "talk_with_human"
-        self.intro = """
-Use it when you have no idea how to achieve an action based on the current information knowledge, or functions. or you want to send a message to the user or let the user know your result.
-If you feel confused about any knowledge that are essential for following actions. You can stop keeping going and only ask human for help.
+    for example:
+    ## Ask the user about the phone number of his boss
+    question="What's the phone number of your boss?"
+    talk_with_human(message=question) # the message is essential
+    """
 
+    with redirect_stdout(sys.__stdout__):
+        user_input = input(f"{puppy.name}" + ": " + str(message) + "\n" + "Your response:")
 
-for example:
-## Ask the user about the phone number of his boss
-talk_with_human(" What's the phone number of your boss?")
-        """
-        self.func = self.send_message_to_human
+    chat_history = "\n" + "# your message:" + str(message) + "\n" + "# User's response: " + user_input + "\n"
 
-        self.__puppy_instance = puppy_instance
-
-    def send_message_to_human(self, question):
-
-        with redirect_stdout(sys.__stdout__):
-            user_input = input(self.puppy_instance.name+": "+str(question) + "\n" + "Your response:")
-
-        chat_history = "\n" + "# your message:" + str(question) + "\n" + "# User's response: " + user_input + "\n"
-
-        self.__puppy_instance.actionflow.current_code += chat_history
+    puppy.current_code += chat_history
 
 
 if __name__ == "__main__":
-    text = "how should I install the package of openAI"
 
-    from puppy.pp.base import PuppyBase
+    # define an agent
+    puppy=Puppy(name="Puppy")
 
-    thread = PuppyBase(name=" Mr.Walter")
+    # define the tool in the agent
+    puppy.tools_talk_with_human = FuncEnv(name="talk_with_human",
+                            description=talk_with_human.__doc__,
+                            value=talk_with_human,
+                            fixed_params={"puppy": puppy}, free_params=["message"])
 
-    sender = TalkWithHuman(puppy_instance=thread)
+    # run the tool
+    puppy.tools_talk_with_human(message="hello world")
 
-    sender.run(text)
+    print(explore(puppy, target=FuncEnv))
+
+    for key, e in explore(puppy, target=FuncEnv).items():
+        print(e)

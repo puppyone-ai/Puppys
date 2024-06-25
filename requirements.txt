@@ -1,8 +1,8 @@
 openai>=1.0.0
 litellm
-beautifulsoup4
 
 pandas
+pdoc
 python-dotenv
 
 requests

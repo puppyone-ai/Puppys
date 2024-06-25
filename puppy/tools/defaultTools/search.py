@@ -1,86 +1,79 @@
-from puppy.environment.func import FuncBase
 from openai import OpenAI
 import os
+import requests
+from puppy.decorator import new_func
 
 
-class Search(FuncBase):
-    def __init__(self, *args, **kwargs):
+def perplexity_search(query):
 
-        """
+    messages = [
         {
-            "FuncBase": {
-                "name": "",
-                "intro": "",
-                "tag": "func",
-                "__env_instance": None,
-                "__func": None,
-                "__visibility": True
-            }
-        }
-        """
+            "role": "system",
+            "content": (
+                "You are an artificial intelligence assistant and you need to "
+                "engage in a helpful, detailed, polite conversation with a user."
+            ),
+        },
+        {
+            "role": "user",
+            "content": (
+                f"{query}"
+            ),
+        },
+    ]
 
-        super().__init__(*args, **kwargs)
+    client = OpenAI(api_key=os.environ['PERPLEXITY_API_KEY'], base_url="https://api.perplexity.ai")
 
-        self.name = "search_native"
-        self.func = self.search_native
-        self.intro = """
-Search Engine, use it when you want to search something from perplexity online
+    # chat completion without streaming
+    response = client.chat.completions.create(
+        model="mistral-7b-instruct",
+        messages=messages,
+    )
+    return response.choices[0].message.content
 
-for example:
-## search the query
-query = "how should I install the package of openAI"
-searchResults = search_native(query)
-        """
 
-    @staticmethod
-    def search_native(query):
+def google_search(query):
 
-        messages = [
-            {
-                "role": "system",
-                "content": (
-                    "You are an artificial intelligence assistant and you need to "
-                    "engage in a helpful, detailed, polite conversation with a user."
-                ),
-            },
-            {
-                "role": "user",
-                "content": (
-                    f"{query}"
-                ),
-            },
-        ]
+    url = "https://www.googleapis.com/customsearch/v1"
+    params = {"q": query,
+              "key": os.environ['GCP_API_KEY'],
+              "cx": os.environ['CSE_ID'],
+              }
+    print(params)
+    response = requests.get(url, params=params)
+    print(response.status_code)
+    if response.status_code != 200:
+        raise Exception(f"Failed to get the search result from google, status code: {response.status_code}")
+    return response.json()
 
-        client = OpenAI(api_key=os.environ['PERPLEXITY_API_KEY'], base_url="https://api.perplexity.ai")
 
-        # chat completion without streaming
-        response = client.chat.completions.create(
-            model="mistral-7b-instruct",
-            messages=messages,
-        )
-        return response.choices[0].message.content
+@new_func
+def search(query):
+    """
+    Search Engine, use it when the user request to find some real-time information online.
+    For example, when user want to know the weather, asset price or economy indicators.
 
-    # @staticmethod
-    # def google_search(query):
-    #
-    #     url = "https://www.googleapis.com/customsearch/v1"
-    #     params = {"q": query,
-    #               "key": os.environ['GCP_API_KEY'],
-    #               "cx": os.environ['CSE_ID'],
-    #               }
-    #     print(params)
-    #     response = requests.get(url, params=params)
-    #     print(response.status_code)
-    #     if response.status_code != 200:
-    #         raise Exception(f"Failed to get the search result from google, status code: {response.status_code}")
-    #     return response.json()
+    for example:
+    ## search the weather in Amsterdam
+    query = "what is the weather today in Amsterdam?"
+    searchResults = search(query)"""
+    try:
+        return perplexity_search(query)
+    except Exception as e:
+        print(e)
+
+        try:
+            return google_search(query)
+
+        except Exception as e:
+            print(e)
+            return "I am sorry, I couldn't find the information you are looking for. Please try again later."
 
 
 if __name__ == "__main__":
 
-    search_content = "how’s the weather today in New York?"
+    search_content = "how’s the weather today in Amsterdam?"
 
-    search = Search()
-    results = search.run(search_content)
+    results = search(search_content)
 
     print(results)

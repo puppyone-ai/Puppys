@@ -1,22 +1,34 @@
 [build-system]
-requires = ["setuptools", "setuptools-scm"]
+requires = ["setuptools", "setuptools-scm", "pdoc"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "Puppys"
-description = ""
+description = "An open-source Code-Native AI Agents framework"
 version = "0.0.25"
 authors = [
     { name = "Puppys" }
 ]
-
+readme = "README.md"
+requires-python = ">=3.9"
 dynamic = ["dependencies"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
+
+[project.urls]
+Homepage = "https://github.com/PuppyAgent/Puppys"
+Issues = "https://github.com/PuppyAgent/Puppys/issues"
 
 [project.optional-dependencies]
 dev = ["pytest"]
 
 [tool.setuptools]
 packages = ["puppy"]
+
+[tool.poetry.dependencies]
+pdoc = "^12.0.0" 
