@@ -30,7 +30,7 @@ Test_Agent=Test_Agent(value=test_sub_tool_decesiontree)
 def create_block(puppy_instance, query):
     puppy_instance.env_node=puppy_instance.tool_create
     load_env(puppy_instance=puppy_instance, env_node=puppy_instance.tool_create)
-    puppy_instance.do(query, show_response=True, show_prompt=True)
+    puppy_instance.do(query, show_response=True, show_prompt=False)
 
 def create_block_todo(puppy_instance, query):
     puppy_instance.env_node=puppy_instance.tool_create.create_type_todo
