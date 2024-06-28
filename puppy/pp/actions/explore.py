@@ -51,6 +51,9 @@ def explore(environment: Env,
         [{'value': 'museum in Paris', 'name': 'the maple', 'description': "It's a beautiful place"}, {'value': 'good', 'name': 'Louvre', 'description': "It's a beautiful museum"}]
     """
 
+    if target is None:
+        target = Env
+
     # output content mode
     if output_content_mode == "instance":
         target_env_dict = {}
