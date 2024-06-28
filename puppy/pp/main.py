@@ -6,6 +6,7 @@ import textwrap
 
 from .actions import explore
 from puppy.env import Env, FuncEnv
+from puppy.pp.actions.load_env import load_env
 
 
 class Puppy(Env):
@@ -39,14 +40,18 @@ class Puppy(Env):
         self.all_code = ""
         self.current_code = ""
 
+        self.env_node = self
+
     def decisiontree(self):
         return self._decisiontree(self
                                   # , **self.args
                                   )
 
-    @staticmethod
-    def explore(*args, **kwargs):
-        return explore(*args, **kwargs)
+    def explore(self, *args, **kwargs):
+        return explore(self, *args, **kwargs)
+
+    def load_env(self, *args, **kwargs):
+        return load_env(self, *args, **kwargs)
 
     @property
     def vars_preview(self, characters_num=300):
@@ -74,9 +79,8 @@ class Puppy(Env):
 
     def run(self) -> None:
 
-        tools_dict = explore(self, target=FuncEnv)
-
-        self.runtime_vars_dict.update(tools_dict.items())
+        # load tools
+        self.load_env(self, target=FuncEnv)
 
         # 获取函数的参数
         signature = inspect.signature(self._decisiontree)

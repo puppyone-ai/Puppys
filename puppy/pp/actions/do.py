@@ -1,9 +1,10 @@
 from puppy.llm.open_ai import open_ai_chat
 from puppy.env.func_env import FuncEnv
-import os
 from puppy.pp.actions.explore import explore
+import os
 
-def do(puppy_instance, action_name: str, tool_list: list = None, model="gpt-4-turbo", show_prompt=False, show_response=False):
+def do(puppy_instance, action_name: str,  tool_list: list = None, model="gpt-4-turbo", show_prompt=False, show_response=False,
+       with_source_env=False):
 
     """
     write code to achieve the action
@@ -38,8 +39,8 @@ in your final response as code. When the do(XXX) appears, you HAVE TO change it 
 {puppy_instance.vars_preview}
 
 You default function is writing python code, it's good at any task that python packages can achieve. But make sure that you write code to import the given package.
-You are also allowed to use the customized functions below, use them by just writing code as the example. the description shows how to use them.
-{explore(puppy_instance, target=FuncEnv, output_content_mode="attribute", attributes=[ "name", "description"])}
+You are also allowed to use the customized functions below, use them by just writing code as the example. the description shows how to use them. You are not allowed to call functions that out of the given range and python popular package:
+{explore(environment=puppy_instance.env_node, target=FuncEnv, output_content_mode="attribute", attributes=[ "name", "description"])}
 
 The code for historical, current, and future actionflow shown as code are:{puppy_instance.all_code}.
 Now you write code to achieve your action(Note that the tools after@ is recommended tools, if it exists): {action_name}
@@ -80,6 +81,7 @@ Now generate your answer as code:
     new_code = new_code.replace("```python\n", "").replace("\n```", "")
 
     puppy_instance.current_code += new_code
+    puppy_instance.current_code += "\n"
     puppy_instance.puppy_exec(new_code)
 
     return new_code

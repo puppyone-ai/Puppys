@@ -1,5 +1,7 @@
 from puppy.env import FuncEnv
-
+from puppy.pp.main import Puppy
+from puppy.env.func_env import FuncEnv
+from puppy.pp.actions.explore import explore
 
 # Rapidly create a new func instance with decorator
 def new_func(fixed_params=None, free_params=None, name=None, description=None):
@@ -44,4 +46,11 @@ if __name__ == "__main__":
 
         print(what_to_say)
 
-    say(what_to_say="全体起立向我看齐，我宣布个事儿，我是个傻逼！")
+
+    puppy=Puppy(name="Puppy")
+
+    puppy.tool = say
+
+    print(explore(puppy, target=FuncEnv, output_content_mode="attribute", attributes=["name","description","value"]))
+
+    puppy.tool(what_to_say="全体起立向我看齐，我宣布个事儿，我是个傻逼！")
