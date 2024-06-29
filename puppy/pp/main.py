@@ -43,9 +43,7 @@ class Puppy(Env):
         self.env_node = self
 
     def decisiontree(self):
-        return self._decisiontree(self
-                                  # , **self.args
-                                  )
+        return self._decisiontree(self)
 
     def explore(self, *args, **kwargs):
         return explore(self, *args, **kwargs)
