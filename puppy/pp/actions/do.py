@@ -3,9 +3,8 @@ from puppy.env.func_env import FuncEnv
 from puppy.pp.actions.explore import explore
 import os
 
-def do(puppy_instance, action_name: str,  tool_list: list = None, model="gpt-4-turbo", show_prompt=False, show_response=False,
+def do(puppy_instance, action_name: str, tool_list: list = None, model=None, show_prompt=False, show_response=False,
        with_source_env=False):
-
     """
     write code to achieve the action
     """
@@ -40,7 +39,7 @@ in your final response as code. When the do(XXX) appears, you HAVE TO change it 
 
 You default function is writing python code, it's good at any task that python packages can achieve. But make sure that you write code to import the given package.
 You are also allowed to use the customized functions below, use them by just writing code as the example. the description shows how to use them. You are not allowed to call functions that out of the given range and python popular package:
-{explore(environment=puppy_instance.env_node, target=FuncEnv, output_content_mode="attribute", attributes=[ "name", "description"])}
+{explore(environment=puppy_instance.env_node, target=FuncEnv, output_content_mode="attribute", attributes=["name", "description"])}
 
 The code for historical, current, and future actionflow shown as code are:{puppy_instance.all_code}.
 Now you write code to achieve your action(Note that the tools after@ is recommended tools, if it exists): {action_name}
@@ -72,7 +71,7 @@ Now generate your answer as code:
             print(chunk['content'])
 
     new_code = open_ai_chat(prompt=prompt,
-                            model=model,
+                            model=os.environ["OPENAI_MODEL"],
                             temperature=0.1,
                             api_key=os.environ["OPENAI_API_KEY"],
                             max_tokens=4096,

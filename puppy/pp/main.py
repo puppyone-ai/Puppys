@@ -65,16 +65,14 @@ class Puppy(Env):
 
     # execute the code as the pp mode
     def puppy_exec(self, code):
-
-        # redirect the stdout and stderr to the buffer
+        # Redirect the stdout and stderr to the buffer
         with redirect_stdout(self.output_buffer), redirect_stderr(self.error_buffer):
-            local_vars = locals()
-
-            self.runtime_vars_dict.update(local_vars)
-
-            # execute the code
-            exec(code, self.global_var_dict, self.runtime_vars_dict)
-
+            try:
+                local_vars = locals()
+                self.runtime_vars_dict.update(local_vars)
+                exec(code, self.global_var_dict, self.runtime_vars_dict)
+            except Exception as e:
+                print(f"Error executing code: {e}", file=self.error_buffer)
     def run(self) -> None:
 
         # load tools
