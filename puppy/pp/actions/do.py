@@ -42,12 +42,12 @@ You default function is writing python code, it's good at any task that python p
 You are also allowed to use the customized functions below, use them by just writing code as the example. the description shows how to use them. You are not allowed to call functions that out of the given range and python popular package:
 {explore(environment=puppy_instance.env_node, target=FuncEnv, output_content_mode="attribute", attributes=[ "name", "description"])}
 
-The code for historical, current, and future actionflow shown as code are:{puppy_instance.all_code}.
+The code for historical, current, and future actionflow shown as code are:{puppy_instance.actionflow.all_code}
 Now you write code to achieve your action(Note that the tools after@ is recommended tools, if it exists): {action_name}
 
 For this action, you have already tried following code, but not finish yet. Think about it, maybe you should use a different function or
 try a new way to achieve the action, don't always repeat the same action:
-{puppy_instance.current_code}
+{puppy_instance.actionflow.current_code}
 
 Try to understand the meaning of each function and its parameter, and decide the best function and use the function 
 for this step to accomplish the action. You are only allowed to generate code that replace self.do({action_name}) part.
@@ -79,9 +79,7 @@ Now generate your answer as code:
                             printing=show_response, stream=True)
 
     new_code = new_code.replace("```python\n", "").replace("\n```", "")
-
-    puppy_instance.current_code += new_code
-    puppy_instance.current_code += "\n"
     puppy_instance.puppy_exec(new_code)
+
 
     return new_code

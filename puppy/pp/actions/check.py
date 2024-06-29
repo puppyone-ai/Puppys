@@ -63,13 +63,13 @@ def check(puppy_instance, action_name: str = "", tool_list: list = [], model="gp
     {puppy_instance.vars_preview}
 
     The code for historical, current, and future actionflow shown as code are:
-    {puppy_instance.all_code}
+    {puppy_instance.actionflow.all_code}
 
     Now you are at this action: 
     {action_name}
 
     For this action, you have already tried:
-    {puppy_instance.current_code}
+    {puppy_instance.actionflow.current_code}
 
     Try to understand the meaning of each function and its parameter, before you are sure that one action has been finished, 
     think about if you can find the corresponding defined parameters and its reasonable value that in this environment.
@@ -93,8 +93,5 @@ def check(puppy_instance, action_name: str = "", tool_list: list = [], model="gp
     new_code = new_code.replace("```python\n", "").replace("\n```", "")
 
     puppy_instance.puppy_exec(new_code)
-
-    if puppy_instance.runtime_vars_dict["isFinished"] == True:
-        puppy_instance.current_code = ""
 
     return puppy_instance.runtime_vars_dict["isFinished"]

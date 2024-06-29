@@ -14,30 +14,44 @@ def load_env(puppy_instance, env_node : Env = None, target: Type[Env] = None):
         target = Env
 
 
-    tools_dict = explore(environment=env_node, target=target)
+    sub_env_dict = explore(environment=env_node, target=target)
 
 
     name_instance_dict = {}
-    for key, value in tools_dict.items():
+    for key, value in sub_env_dict.items():
         name_instance_dict.update({value.name: value})
 
     puppy_instance.runtime_vars_dict.update(name_instance_dict.items())
 
-    dict = explore(environment=env_node, with_source_env=True, target=target)
 
 
-"""
-if __name__ == "__main__":
-    puppy_test=Puppy(name="Puppy")
+def unload_env(puppy_instance, env_node : Env = None, target: Type[Env] = None):
 
-    puppy_test.map=Env(value="museum in Paris", name="the maple", description="It's a beautiful place")
-    puppy_test.map.Louvre_instance=Env(value="good", name="Louvre", description="It's a beautiful museum")
+    # if the env_node is None, use the current environment
+    if env_node is None:
+        env_node = puppy_instance
+
+    if target is None:
+        target = Env
 
 
-    load_env(puppy_instance=puppy_test)
-    print(puppy_test.runtime_vars_dict) # return the list with instance of 'the maple'
+    sub_env_dict = explore(environment=env_node, target=target)
 
-    load_env(puppy_instance=puppy_test, env_node = puppy_test.map)
-    print(puppy_test.runtime_vars_dict) # return the list with instance of 'Louvre'
-"""
+    name_instance_dict = {}
+    for key, value in sub_env_dict.items():
+        name_instance_dict.update({value.name: value})
+
+    for key in name_instance_dict.keys():
+        del puppy_instance.runtime_vars_dict[key]
+
+
+
+
+
+
+
+
+
+
+
 

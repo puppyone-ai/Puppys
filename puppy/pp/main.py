@@ -7,11 +7,12 @@ import textwrap
 from .actions import explore
 from puppy.env import Env, FuncEnv
 from puppy.pp.actions.load_env import load_env
+from puppy.pp.default_env.actionflow import Actionflow
 
 
 class Puppy(Env):
 
-    def __init__(self, *args,  print_mode='terminal', **kwargs):
+    def __init__(self, value, *args,  print_mode='terminal', **kwargs):
 
         super().__init__(*args, **kwargs)
 
@@ -34,16 +35,11 @@ class Puppy(Env):
             self.output_buffer = io.StringIO()
             self.error_buffer = io.StringIO()
 
-        # set the decisiontree
-        self._decisiontree = self.value
 
-        self.all_code = ""
-        self.current_code = ""
+        self.actionflow = Actionflow(self, function=value)
 
         self.env_node = self
 
-    def decisiontree(self):
-        return self._decisiontree(self)
 
     def explore(self, *args, **kwargs):
         return explore(self, *args, **kwargs)
@@ -68,9 +64,6 @@ class Puppy(Env):
 
         # redirect the stdout and stderr to the buffer
         with redirect_stdout(self.output_buffer), redirect_stderr(self.error_buffer):
-            local_vars = locals()
-
-            self.runtime_vars_dict.update(local_vars)
 
             # execute the code
             exec(code, self.global_var_dict, self.runtime_vars_dict)
@@ -80,24 +73,7 @@ class Puppy(Env):
         # load tools
         self.load_env(self, target=FuncEnv)
 
-        # 获取函数的参数
-        signature = inspect.signature(self._decisiontree)
-
-        # 或者使用 getfullargspec 来获取更详细的参数信息
-        args_spec = inspect.getfullargspec(self._decisiontree)
-
-        # 获取函数的完整源代码
-        full_source_code = inspect.getsource(self._decisiontree)
-
-        # 去除第一行（函数定义行）
-        source_code_without_def = '\n'.join(full_source_code.splitlines()[1:])
-
-        # 使用 textwrap.dedent() 去除因为 def 引起的缩进
-        dedent_source_code = textwrap.dedent(source_code_without_def)
-
-        self.all_code = dedent_source_code
-
-        self.decisiontree()
+        return self.actionflow.run()
 
     # def puppy_env_update(self, vars_dict):
     #     self.runtime_vars_dict.update(vars_dict)
