@@ -22,7 +22,7 @@ def talk_with_human(puppy, message):
 
     chat_history = "\n" + "# your message:" + str(message) + "\n" + "# User's response: " + user_input + "\n"
 
-    puppy.current_code += chat_history
+    puppy.actionflow.current_action_code += chat_history
 
 
 if __name__ == "__main__":

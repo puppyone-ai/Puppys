@@ -13,12 +13,14 @@ def open_ai_chat(prompt,
 
     if api_key == None:
         client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", api_key))
-
     else:
         client = OpenAI(api_key=api_key)
 
+    if model == None:
+        model = os.environ.get("OPENAI_MODEL", model)
+
     completion = client.chat.completions.create(
-        model=os.environ["OPENAI_MODEL"],
+        model=model,
         messages=prompt,
         temperature=temperature,
         max_tokens=max_tokens,
