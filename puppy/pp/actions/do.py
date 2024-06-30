@@ -3,8 +3,8 @@ from puppy.env.func_env import FuncEnv
 from puppy.pp.actions.explore import explore
 import os
 
-def do(puppy_instance, action_name: str, tool_list: list = None, model=None, show_prompt=False, show_response=False,
-       with_source_env=False):
+
+def do(puppy_instance, action_name: str, model="gpt-4-turbo", show_prompt=False, show_response=False):
     """
     write code to achieve the action
     """
@@ -35,18 +35,18 @@ in your final response as code. When the do(XXX) appears, you HAVE TO change it 
         {"role": "user",
          "content":
              f"""Your formally-defined parameters and their previewing are as follows: 
-{puppy_instance.vars_preview}
+{puppy_instance.puppy_vars.preview()}
 
 You default function is writing python code, it's good at any task that python packages can achieve. But make sure that you write code to import the given package.
 You are also allowed to use the customized functions below, use them by just writing code as the example. the description shows how to use them. You are not allowed to call functions that out of the given range and python popular package:
 {explore(environment=puppy_instance.env_node, target=FuncEnv, output_content_mode="attribute", attributes=["name", "description"])}
 
-The code for historical, current, and future actionflow shown as code are:{puppy_instance.all_code}.
+The code for historical, current, and future actionflow shown as code are:{puppy_instance.actionflow.all_code}
 Now you write code to achieve your action(Note that the tools after@ is recommended tools, if it exists): {action_name}
 
-For this action, you have already tried following code, but not finish yet. Think about it, maybe you should use a different function or
-try a new way to achieve the action, don't always repeat the same action:
-{puppy_instance.current_code}
+For this action, you have already tried following code, but not finish yet. Think about it, You need to keep writing it.
+maybe you should use a different function or try a new way to achieve the action, don't repeat the same code:
+{puppy_instance.actionflow.current_action_code}
 
 Try to understand the meaning of each function and its parameter, and decide the best function and use the function 
 for this step to accomplish the action. You are only allowed to generate code that replace self.do({action_name}) part.
@@ -71,7 +71,7 @@ Now generate your answer as code:
             print(chunk['content'])
 
     new_code = open_ai_chat(prompt=prompt,
-                            model=os.environ["OPENAI_MODEL"],
+                            model=model,
                             temperature=0.1,
                             api_key=os.environ["OPENAI_API_KEY"],
                             max_tokens=4096,
@@ -79,8 +79,11 @@ Now generate your answer as code:
 
     new_code = new_code.replace("```python\n", "").replace("\n```", "")
 
-    puppy_instance.current_code += new_code
-    puppy_instance.current_code += "\n"
-    puppy_instance.puppy_exec(new_code)
+    # add the ran code into the current code until the checking result is true
+    puppy_instance.actionflow.current_action_code += new_code
+    puppy_instance.actionflow.current_action_code += "\n"
+
+    # run the code
+    puppy_instance.actionflow.puppy_exec(new_code)
 
     return new_code

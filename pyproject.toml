@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "Puppys"
-description = "An open-source Code-Native AI Agents framework"
-version = "0.0.25"
+description = "Framework for Plug-and-Play Agentic System"
+version = "0.0.27"
 authors = [
     { name = "Puppys" }
 ]

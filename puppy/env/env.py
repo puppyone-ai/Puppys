@@ -8,7 +8,7 @@ class Env:
     Use to build the environments for the puppy to retrival.
     """
 
-    visible: bool
+    visible: bool = True
     as_list: bool
     private_keys: str = ['value', 'name', 'description']
 
