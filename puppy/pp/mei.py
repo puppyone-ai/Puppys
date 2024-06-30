@@ -15,13 +15,13 @@ class Mei(Puppy):
         self.version = "0.0.1"
 
         # the first tool
-        self.llm_ins = FuncEnv(value=llm,
+        self.llm = FuncEnv(value=llm,
                            name=llm.__name__,
                            description=llm.__doc__,
                            free_params=["prompt"])
 
         # the second tool
-        self.talk_with_human_ins = FuncEnv(value=talk_with_human,
+        self.talk_with_human = FuncEnv(value=talk_with_human,
                                        name=talk_with_human.__name__,
                                        description=talk_with_human.__doc__,
                                        fixed_params={"puppy": self},
