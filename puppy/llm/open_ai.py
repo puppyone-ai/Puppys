@@ -3,17 +3,21 @@ import os
 
 
 # using OpenAI API model
+
+
 def open_ai_chat(prompt,
-                 temperature=0.1, max_tokens=4096, model="gpt-4-turbo",
+                 temperature=0.1, max_tokens=4096, model=None,
                  api_key=None,
                  printing=False, stream=True
                  ):
 
     if api_key == None:
         client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", api_key))
-
     else:
         client = OpenAI(api_key=api_key)
+
+    if model == None:
+        model = os.environ.get("OPENAI_MODEL", model)
 
     completion = client.chat.completions.create(
         model=model,

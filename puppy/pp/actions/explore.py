@@ -51,12 +51,15 @@ def explore(environment: Env,
         [{'value': 'museum in Paris', 'name': 'the maple', 'description': "It's a beautiful place"}, {'value': 'good', 'name': 'Louvre', 'description': "It's a beautiful museum"}]
     """
 
+    if target is None:
+        target = Env
+
     # output content mode
     if output_content_mode == "instance":
         target_env_dict = {}
         for k, v in environment.env_dict.items():
 
-            if isinstance(v, target):
+            if isinstance(v, target) and v.visible is True:
                 target_env_dict[k] = v
 
         self_env_dict = environment
@@ -66,7 +69,7 @@ def explore(environment: Env,
         target_env_dict = {}
         for k, v in environment.env_dict.items():
 
-            if isinstance(v, target):
+            if isinstance(v, target) and v.visible is True:
                 target_env_dict[k] = env_to_dict(v, attributes)
 
         self_env_dict = env_to_dict(environment, attributes)
