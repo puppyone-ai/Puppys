@@ -69,7 +69,7 @@ def parse_code2list2(source_code: str) -> list:
     ]
 
     medium = open_ai_chat(prompt=prompt,
-                          model="gpt-4-turbo",
+                          model=os.environ["OPENAI_MODEL"],
                           temperature=0.3,
                           api_key=os.environ["OPENAI_API_KEY"],
                           max_tokens=4096,

@@ -19,8 +19,9 @@ def llm(prompt, *, model="gpt-3.5-turbo-0125", temperature=0.7, max_tokens=2048)
 
     result = completion(messages=[{"role": "user",
                                    "content": prompt}],
-                        model=model,
+                        model=os.environ["OPENAI_MODEL"],
                         temperature=temperature,
+                        base_url=os.environ["OPENAI_BASE_URL"],
                         max_tokens=max_tokens)
 
     return result.choices[0].message.content
