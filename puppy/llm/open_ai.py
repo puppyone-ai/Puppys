@@ -3,8 +3,10 @@ import os
 
 
 # using OpenAI API model
+
+
 def open_ai_chat(prompt,
-                 temperature=0.1, max_tokens=4096, model="gpt-4-turbo",
+                 temperature=0.1, max_tokens=4096, model=None,
                  api_key=None,
                  printing=False, stream=True
                  ):
@@ -16,7 +18,7 @@ def open_ai_chat(prompt,
         client = OpenAI(api_key=api_key)
 
     completion = client.chat.completions.create(
-        model=model,
+        model=os.environ["OPENAI_MODEL"],
         messages=prompt,
         temperature=temperature,
         max_tokens=max_tokens,

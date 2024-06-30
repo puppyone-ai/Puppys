@@ -35,11 +35,15 @@ class Puppy(Env):
             self.output_buffer = io.StringIO()
             self.error_buffer = io.StringIO()
 
+        # set the decisiontree
+        self._decisiontree = self.value
 
         self.actionflow = Actionflow(self, function=value)
 
         self.env_node = self
 
+    def decisiontree(self):
+        return self._decisiontree(self)
 
     def explore(self, *args, **kwargs):
         return explore(self, *args, **kwargs)
@@ -61,8 +65,7 @@ class Puppy(Env):
 
     # execute the code as the pp mode
     def puppy_exec(self, code):
-
-        # redirect the stdout and stderr to the buffer
+        # Redirect the stdout and stderr to the buffer
         with redirect_stdout(self.output_buffer), redirect_stderr(self.error_buffer):
 
             # execute the code
