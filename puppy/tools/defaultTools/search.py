@@ -2,6 +2,9 @@ from openai import OpenAI
 import os
 import requests
 from puppy.decorator import new_func
+from puppy.pp.main import Puppy
+from puppy.env.func_env import FuncEnv
+from puppy.pp.actions.explore import explore
 
 
 def perplexity_search(query):
@@ -47,7 +50,7 @@ def google_search(query):
     return response.json()
 
 
-@new_func
+@new_func(free_params=["query"])
 def search(query):
     """
     Search Engine, use it when the user request to find some real-time information online.
@@ -72,8 +75,12 @@ def search(query):
 
 if __name__ == "__main__":
 
-    search_content = "how’s the weather today in Amsterdam?"
+    # define an agent
+    puppy=Puppy(name="Puppy")
 
-    results = search(search_content)
+    # define the tool in the agent
+    puppy.tools_search = search
+    # run the tool
+    print(explore(puppy, target=FuncEnv))
 
-    print(results)
+

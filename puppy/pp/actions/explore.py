@@ -51,12 +51,15 @@ def explore(environment: Env,
         [{'value': 'museum in Paris', 'name': 'the maple', 'description': "It's a beautiful place"}, {'value': 'good', 'name': 'Louvre', 'description': "It's a beautiful museum"}]
     """
 
+    if target is None:
+        target = Env
+
     # output content mode
     if output_content_mode == "instance":
         target_env_dict = {}
         for k, v in environment.env_dict.items():
 
-            if isinstance(v, target):
+            if isinstance(v, target) and v.visible is True:
                 target_env_dict[k] = v
 
         self_env_dict = environment
@@ -66,8 +69,8 @@ def explore(environment: Env,
         target_env_dict = {}
         for k, v in environment.env_dict.items():
 
-            if isinstance(v, target):
-                target_env_dict = env_to_dict(v, attributes)
+            if isinstance(v, target) and v.visible is True:
+                target_env_dict[k] = env_to_dict(v, attributes)
 
         self_env_dict = env_to_dict(environment, attributes)
 
@@ -90,10 +93,13 @@ def explore(environment: Env,
 
 
 if __name__ == "__main__":
-    env = Env(value="museum in Paris", name="the maple", description="It's a beautiful place")
+    Museum = Env(value="museum in Paris", name="the maple", description="It's a beautiful place")
 
-    env.Louvre = Env(value="good", name="Louvre", description="It's a beautiful museum")
+    Museum.Louvre = Env(value="good", name="Louvre", description="It's a beautiful museum")
+    Museum.Eiffel = Env(value="bad", name="Eiffel", description="It's a ugly tower")
 
-    print(explore(env, target=Env,
+    result=explore(Museum, target=Env,
                   attributes=["value", "name", "description"], output_content_mode="attribute",
-                  with_source_env=True))
+                  with_source_env=False)
+
+    print(result)

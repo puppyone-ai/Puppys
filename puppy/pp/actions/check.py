@@ -2,7 +2,7 @@ from puppy.llm.open_ai import open_ai_chat
 import os
 
 
-def check(puppy_instance, action_name: str = "", tool_list: list = [], model="gpt-4-turbo",show_prompt=False, show_response=False):
+def check(puppy_instance, action_name: str = "", model="gpt-4-turbo",show_prompt=False, show_response=False):
     """
     check if it finished or not
     """
@@ -21,14 +21,17 @@ def check(puppy_instance, action_name: str = "", tool_list: list = [], model="gp
 
     3. Your response cannot only be comment. You HAVE to write codes
 
-     You justify if your current action is done or not, you have two choices: 1. Done: That means 
-    you don't need to write code to achieve it again. The action history shows that you have already know what 
+     You justify if your current action is done or not, you have two choices: 
+        a. Done: That means you don't need to write code to achieve it again. The action history shows that you have already know what 
     you want to know or have already achieve the action. In this case, you should write Python code to return 
-    Ture, and your generated code should be: isFinished=True
 
-    2. Unfinished: That means you need to write code to achieve it again, or there are some unfinished actions that you 
-    need to make. In this case, you should write Python code to return False, and then your generated code should be: 
+    Ture, and your generated code should be: isFinished=True 
+        b. Unfinished: That means you need to write code to achieve it again, or there are some unfinished actions that you 
+    need to make . In this case, you should write Python code to return False, and the your generated code should be: 
+
     isFinished=False
+    
+    4. You can only write code that contain True or False. You CANNOT write code that contains or import other values or other code.
 
     for example:
     1. current action:
@@ -40,7 +43,7 @@ def check(puppy_instance, action_name: str = "", tool_list: list = [], model="gp
 
     your response:
     # the action is not done, because I get what I should send, but I haven't send it yet. Maybe next action is to send it
-    isFinished=False
+    isFinished=False 
 
     2. current action:
     get what happened about COVID in the the 2nd Feb 2020 @google search
@@ -57,16 +60,16 @@ def check(puppy_instance, action_name: str = "", tool_list: list = [], model="gp
         {"role": "user",
          "content":
              f"""Your formally-defined parameters and their previewing are as follows: 
-    {puppy_instance.vars_preview}
+    {puppy_instance.puppy_vars.preview()}
 
     The code for historical, current, and future actionflow shown as code are:
-    {puppy_instance.all_code}
+    {puppy_instance.actionflow.all_code}
 
     Now you are at this action: 
     {action_name}
 
     For this action, you have already tried:
-    {puppy_instance.current_code}
+    {puppy_instance.actionflow.current_action_code}
 
     Try to understand the meaning of each function and its parameter, before you are sure that one action has been finished, 
     think about if you can find the corresponding defined parameters and its reasonable value that in this environment.
@@ -89,9 +92,6 @@ def check(puppy_instance, action_name: str = "", tool_list: list = [], model="gp
 
     new_code = new_code.replace("```python\n", "").replace("\n```", "")
 
-    puppy_instance.puppy_exec(new_code)
+    puppy_instance.actionflow.puppy_exec(new_code)
 
-    if puppy_instance.runtime_vars_dict["isFinished"] == True:
-        puppy_instance.current_code = ""
-
-    return puppy_instance.runtime_vars_dict["isFinished"]
+    return puppy_instance.puppy_vars.runtime_dict["isFinished"]
