@@ -1,8 +1,8 @@
 # If you are a VS Code users:
-# import sys
+import sys
 import os
-# sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from puppy.tools.defaultTools import search
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from puppy.tools.search import search
 from puppy.env.func_env import FuncEnv
 from puppy.pp.mei import Mei
 
@@ -20,7 +20,7 @@ def decisiontree(self):
     self.do_check("Make a list using the information of the top 10 meme crypto coins, and show it to me. ")
 
 
-search_bot = Mei(decisiontree)
+search_bot = Mei(value=decisiontree)
 
 search_bot.search = search
 

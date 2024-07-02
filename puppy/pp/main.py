@@ -1,13 +1,9 @@
-from contextlib import redirect_stdout, redirect_stderr
-
 import threading
-import inspect
-import textwrap
 
 from .actions import explore
-from puppy.env import Env, FuncEnv
+from puppy.env import Env
 from puppy.pp.actions.load_env import load_env
-from puppy.pp.default_env.actionflow import Actionflow
+from puppy.pp.default_env.actionflow.actionflow import Actionflow
 from puppy.pp.default_env.puppy_vars import PuppyVars
 
 

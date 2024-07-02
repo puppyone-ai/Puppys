@@ -1,7 +1,8 @@
 import inspect
 from puppy.env.env import Env
-from puppy.utils.parse import parse_code2str
+from puppy.pp.default_env.actionflow.parse import parse_code2str
 from puppy.pp.actions.load_env import load_env
+from puppy.pp.default_env.actionflow.puppy_ast_exec import puppy_exec
 import threading
 from contextlib import redirect_stdout, redirect_stderr
 import io
@@ -45,7 +46,7 @@ class Actionflow(Env):
     def puppy_exec(self, code):
         with redirect_stdout(self.output_buffer), redirect_stderr(self.error_buffer):
             # execute the code
-            exec(code, self.puppy_instance.puppy_vars.global_dict, self.puppy_instance.puppy_vars.runtime_dict)
+            puppy_exec(code, self.puppy_instance.puppy_vars.global_dict, self.puppy_instance.puppy_vars.runtime_dict)
 
     def run(self, **kwargs):
 

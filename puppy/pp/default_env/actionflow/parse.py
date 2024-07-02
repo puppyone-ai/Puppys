@@ -39,6 +39,30 @@ def parse_code2str(source_code: str) -> str:
     return function_body_code
 
 
+def code_segment_json(code):
+    # transit the code to AST
+    parsed_code = ast.parse(code)
+
+    # collect the first layer's code unit
+    first_layer_code = []
+
+    # go through the first layer
+    for node in parsed_code.body:
+
+        # save the node type
+        node_type = type(node).__name__
+
+        # save the node code
+        code_snippet = ast.unparse(node)
+
+        # save the type and code in a unit
+        code_unit={"type":node_type,"code":code_snippet}
+
+        # add the code to the list
+        first_layer_code.append(code_unit)
+
+    return first_layer_code
+
 
 # soft decoder
 def parse_code2list2(source_code: str) -> list:
@@ -175,3 +199,25 @@ def _check_status(action) -> None:
 
     else:
         action.status = "fixed"
+
+
+
+
+
+if __name__ == '__main__':
+    code = """
+import random
+num = 3
+if random.randint(1, 100) < 10:
+    num = 10
+def ok():
+    pass
+self.do_check('choose a number from 0 to 10, and send the number to me', show_response=True)
+self.do_check('go to the given url, show the HTML', show_response=True)
+self.do_check('show the top 10 news @llm, and send it to me', show_response=True, show_prompt=True)
+self.do_check('pick the news that related to Large Language Models, summarize all the news, and send it to me')
+"""
+
+    # Extract the desired segments from the parsed AST
+    json_segments = code_segment_json(code)
+    print(json_segments)
