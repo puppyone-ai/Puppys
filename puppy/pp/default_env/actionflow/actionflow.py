@@ -1,6 +1,6 @@
 import inspect
 from puppy.env.env import Env
-from puppy.utils.parse import parse_code2str
+from puppy.pp.default_env.actionflow.parse import parse_code2str
 from puppy.pp.actions.load_env import load_env
 from puppy.pp.default_env.actionflow.puppy_ast_exec import puppy_exec
 import threading
