@@ -5,7 +5,7 @@ from litellm import completion
 from puppy.env.func_env import FuncEnv
 
 
-def llm(prompt, *, model="gpt-3.5-turbo-0125", url=None, temperature=0.7, max_tokens=2048) -> str:
+def llm(prompt, *, model="gpt-4o", url=None, temperature=0.7, max_tokens=2048) -> str:
     """
     Large_Language_Model, ChatGPT, GPT4 or GPT3.5,
     Good at summarizing, retrieving, finding information, generating text, and answer message based on a reference. etc.
