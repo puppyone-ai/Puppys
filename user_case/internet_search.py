@@ -2,7 +2,7 @@
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from puppy.tools.defaultTools import search
+from puppy.tools.search import search
 from puppy.env.func_env import FuncEnv
 from puppy.pp.mei import Mei
 
