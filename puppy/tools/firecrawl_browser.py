@@ -30,5 +30,5 @@ def firecrawl_browser_func(url:str, api_key=None):
 
 
 if __name__ == "__main__":
-    result=firecrawl_browser_func(url="https://www.producthunt.com/", api_key="fc-5f8a0a35785a44c59a8f20c7e6246d84")
+    result=firecrawl_browser_func(url="https://www.producthunt.com/")
     print(result)
