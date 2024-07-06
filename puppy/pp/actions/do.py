@@ -1,6 +1,7 @@
 from puppy.llm.open_ai import open_ai_chat
 from puppy.env.func_env import FuncEnv
 from puppy.pp.actions.explore import explore
+from loguru import logger
 import os
 
 
@@ -67,12 +68,15 @@ Now generate your answer as code:
 
     # prompt finished *****************************************************************************************
 
-    print("[doing_action]" + action_name)
+    # print("[doing_action]" + action_name)
+    logger.debug("[doing_action]" + action_name)
 
     if show_prompt is True:
-        print("\t*******planning prompt********")
+        # print("\t*******planning prompt********")
+        logger.info("\t*******planning prompt********")
         for chunk in prompt:
-            print(chunk['content'])
+            # print(chunk['content'])
+            logger.info(chunk['content'])
 
     new_code = open_ai_chat(prompt=prompt,
                             model=model,
@@ -97,7 +101,8 @@ Now generate your answer as code:
         # store error message
         puppy_instance.actionflow.errors += repr(e)
         if retries <= 0:
-            print(f"Puppy is not able to resolve the error: {repr(e)}")
+            # print(f"Puppy is not able to resolve the error: {repr(e)}")
+            logger.error(f"Puppy is not able to resolve the error: {repr(e)}")
             return
         else:
             do(puppy_instance, action_name, model, show_prompt, show_response, retries - 1)
