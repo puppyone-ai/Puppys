@@ -4,9 +4,10 @@ from puppy.pp.actions.explore import explore
 import os
 
 
-def do(puppy_instance, action_name: str, model="gpt-4-turbo", show_prompt=False, show_response=False):
+def do(puppy_instance, action_name: str, model="gpt-4-turbo", show_prompt=False, show_response=False, retries=2):
     """
     write code to achieve the action
+    retry when error occurs, defaulted to 2 times
     """
 
     prompt = [
@@ -58,6 +59,9 @@ response:
 location=google_search("Where is the NBA in 2019")
 location= zhihu_search("Where is the NBA in 2019")
 
+Now, there is one more important thing, if there is an error: {puppy_instance.actionflow.erros} (this part might be blank), you
+will need to analyse it and try to solve it. When generating the code, you need to try to resolve this.
+
 Now generate your answer as code: 
 """}]
 
@@ -84,6 +88,16 @@ Now generate your answer as code:
     puppy_instance.actionflow.current_action_code += "\n"
 
     # run the code
-    puppy_instance.actionflow.puppy_exec(new_code)
-
-    return new_code
+    try:
+        puppy_instance.actionflow.puppy_exec(new_code)
+        # reset error
+        puppy_instance.actionflow.erros = ""
+        return new_code
+    except Exception as e:
+        # store error message
+        puppy_instance.actionflow.errors += repr(e)
+        if retries <= 0:
+            print(f"Puppy is not able to resolve the error: {repr(e)}")
+            return
+        else:
+            do(puppy_instance, action_name, model, show_prompt, show_response, retries - 1)
