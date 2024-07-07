@@ -8,7 +8,7 @@ from puppy.pp.actions.explore import explore
 def load_env(puppy_instance, env_node: Env = None, target: Type[Env] = None):
     # if the env_node is None, use the current environment
     if env_node is None:
-        env_node = puppy_instance
+        env_node = puppy_instance.env_node
 
     if target is None:
         target = Env
