@@ -5,7 +5,7 @@ from loguru import logger
 import os
 
 
-def do(puppy_instance, action_name: str, model="gpt-4-turbo", show_prompt=False, show_response=False, retries=2):
+def do(puppy_instance, action_name: str, model="gpt-4-turbo", show_prompt=False, show_response=False, retries=3):
     """
     write code to achieve the action
     retry when error occurs, defaulted to 2 times
@@ -60,7 +60,7 @@ response:
 location=google_search("Where is the NBA in 2019")
 location= zhihu_search("Where is the NBA in 2019")
 
-Now, there is one more important thing, if there is an error: {puppy_instance.actionflow.erros} (this part might be blank), you
+Now, there is one more important thing, if there is an error: {puppy_instance.actionflow.errors} (this part might be blank), you
 will need to analyse it and try to solve it. When generating the code, you need to try to resolve this.
 
 Now generate your answer as code: 
