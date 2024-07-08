@@ -3,7 +3,7 @@ import textwrap
 import re
 import ast
 import json
-from puppy.llm.open_ai import open_ai_chat
+from puppys.llm.open_ai import open_ai_chat
 from openai import OpenAI
 
 
@@ -97,7 +97,7 @@ def parse_code2list2(source_code: str) -> list:
             for i in range(5):
                 print("I am AI\n")
                 for i in range(5):
-                    puppy.do()
+                    puppys.do()
             "
 
             your output:
@@ -112,7 +112,7 @@ def parse_code2list2(source_code: str) -> list:
              for i in range(5):
                 print("I am AI\n")
                 for i in range(5):
-                    puppy.do()"}
+                    puppys.do()"}
             ]
             </example>
             """

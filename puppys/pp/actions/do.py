@@ -1,6 +1,6 @@
-from puppy.llm.open_ai import open_ai_chat
-from puppy.env.func_env import FuncEnv
-from puppy.pp.actions.explore import explore
+from puppys.llm.open_ai import open_ai_chat
+from puppys.env.func_env import FuncEnv
+from puppys.pp.actions.explore import explore
 from loguru import logger
 import os
 import re
@@ -91,8 +91,10 @@ Now generate your answer as code:
 
     # print("[doing_action]" + action_name)
     GREEN= "\033[32m"
+    RED = "\033[31m"
     GREY = "\033[90m"
     RESET = "\033[0m"
+
     print(GREEN+"[doing_action]" + action_name + RESET)
 
     if show_prompt is True:
@@ -134,6 +136,7 @@ Now generate your answer as code:
         puppy_instance.actionflow.erros = ""
         return new_code
     except Exception as e:
+        print(RED+"Error:"+ e +RESET)
         # store error message
         puppy_instance.actionflow.errors += repr(e)
         if retries <= 0:

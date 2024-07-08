@@ -2,9 +2,9 @@
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from puppy.tools.search import search
-from puppy.env.func_env import FuncEnv
-from puppy.pp.mei import Mei
+from puppys.tools.search import search
+from puppys.env.func_env import FuncEnv
+from puppys.pp.mei import Mei
 
 # change the API key to your own
 # os.environ['PERPLEXITY_API_KEY'] = ""

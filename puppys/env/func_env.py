@@ -1,5 +1,5 @@
 from __future__ import annotations
-from puppy.env.env import Env
+from puppys.env.env import Env
 import inspect
 
 
@@ -68,6 +68,6 @@ if __name__ == "__main__":
     send_message_to_human = FuncEnv(name="ok", description=description, value=send_message_to_human,
                                     fixed_params={"max_num": 3}, free_params=["intro"])
 
-    send_message_to_human(intro="puppy", ok=3)
+    send_message_to_human(intro="puppys", ok=3)
 
-    exec("send_message_to_human(intro= 'puppy', ok=3)")
+    exec("send_message_to_human(intro= 'puppys', ok=3)")

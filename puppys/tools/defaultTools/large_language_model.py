@@ -2,7 +2,7 @@ import os
 
 from litellm import completion
 
-from puppy.env.func_env import FuncEnv
+from puppys.env.func_env import FuncEnv
 
 
 def llm(prompt, *, model="gpt-4o", url=None, temperature=0.7, max_tokens=2048) -> str:

@@ -1,10 +1,10 @@
 from openai import OpenAI
 import os
 import requests
-from puppy.decorator import new_func
-from puppy.pp.main import Puppy
-from puppy.env.func_env import FuncEnv
-from puppy.pp.actions.explore import explore
+from puppys.decorator import new_func
+from puppys.pp.main import Puppy
+from puppys.env.func_env import FuncEnv
+from puppys.pp.actions.explore import explore
 
 
 def perplexity_search(query):
