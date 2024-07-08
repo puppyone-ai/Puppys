@@ -90,14 +90,17 @@ Now generate your answer as code:
     # prompt finished *****************************************************************************************
 
     # print("[doing_action]" + action_name)
-    logger.debug("[doing_action]" + action_name)
+    GREEN= "\033[32m"
+    GREY = "\033[90m"
+    RESET = "\033[0m"
+    print(GREEN+"[doing_action]" + action_name + RESET)
 
     if show_prompt is True:
         # print("\t*******planning prompt********")
-        logger.info("\t*******planning prompt********")
+        print(GREY+"\t*******doing prompt********"+RESET)
         for chunk in prompt:
             # print(chunk['content'])
-            logger.info(chunk['content'])
+            print(GREY+chunk['content']+RESET)
 
     new_code = open_ai_chat(prompt=prompt,
                             model=model,

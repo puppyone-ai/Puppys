@@ -77,15 +77,17 @@ def check(puppy_instance, action_name: str = "", model="gpt-4-turbo",show_prompt
     and Now you need to write code to justify if the action of {action_name} is done or not:
     Your response should be similar to the response example(ONLY CODE, and COMMENT) and NOTHING ELSE."""}]
 
-    # print("[checking_action]" + action_name)
-    logger.debug("[checking_action]" + action_name)
+    YELLOW = "\033[33m"
+    GREY = "\033[90m"
+    RESET = "\033[0m"
+    print(YELLOW+"[checking_action]" + action_name + RESET)
 
     if show_prompt is True:
         # print(f"\t*******planning prompt********")
-        logger.info(f"\t*******planning prompt********")
+        print(GREY+f"\t*******checking prompt********"+RESET)
         for chunk in prompt:
             # print(chunk['content'])
-            logger.info(chunk['content'])
+            print(GREY+chunk['content']+RESET)
 
     new_code = open_ai_chat(prompt=prompt,
                             model=model,
