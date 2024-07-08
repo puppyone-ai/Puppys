@@ -2,27 +2,6 @@ from puppy.llm.open_ai import open_ai_chat
 from puppy.env.func_env import FuncEnv
 from puppy.pp.actions.explore import explore
 import os
-import re
-
-
-def write_to_py_file(code: str):
-    """
-    Write the code to a python file
-    """
-    root_path = "TempActionCode"
-    file_name = "temp_decision_tree_code.py"
-
-    if not os.path.exists(root_path):
-        os.makedirs(root_path)
-
-    file_path = os.path.join(root_path, file_name)
-
-    # write the code inside a function
-    code_with_indentation = "\n".join(["    " + line for line in code.split("\n")])
-    code = f"def decisiontree(self):\n" + code_with_indentation
-
-    with open(file_path, "w") as f:
-        f.write(code + '\n')
 
 
 def do(puppy_instance, action_name: str, model="gpt-4-turbo", show_prompt=False, show_response=False):
@@ -103,18 +82,6 @@ Now generate your answer as code:
     # add the ran code into the current code until the checking result is true
     puppy_instance.actionflow.current_action_code += new_code
     puppy_instance.actionflow.current_action_code += "\n"
-
-    # replace the action code in the all code
-    all_code = puppy_instance.actionflow.all_code
-    for action in all_code.split("\n"):
-        leading_whitespaces = re.match(r"\s*", action).group()
-        if action_name in action:
-            new_code_to_add = "\n".join([leading_whitespaces + line for line in new_code.split("\n")]) + "\n"
-            puppy_instance.actionflow.all_code = all_code.replace(action, new_code_to_add)
-            break
-
-    # write new code to a temp python file
-    write_to_py_file(puppy_instance.actionflow.all_code)
 
     # run the code
     puppy_instance.actionflow.puppy_exec(new_code)
