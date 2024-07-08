@@ -9,7 +9,7 @@ from puppy.pp.default_env.puppy_vars import PuppyVars
 
 class Puppy(Env):
 
-    def __init__(self, value, *args,  printing_mode='terminal',  **kwargs):
+    def __init__(self, value=None, *args,  printing_mode='terminal',  **kwargs):
 
         super().__init__(*args, **kwargs)
 

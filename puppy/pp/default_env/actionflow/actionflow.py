@@ -41,6 +41,7 @@ class Actionflow(Env):
         # set up the all code for actionflow, and current code for the running action
         self.all_code = parse_code2str(self.source_code)
         self.current_action_code = ""
+        self.errors = ""
 
 
     def puppy_exec(self, code):
