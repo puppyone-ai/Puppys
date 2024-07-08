@@ -17,8 +17,11 @@ def talk_with_human(puppy, message):
     talk_with_human(message=question) # the message is essential
     """
 
+    BLUE = "\033[34m"
+    RESET = "\033[0m"
+
     with redirect_stdout(sys.__stdout__):
-        user_input = input(f"{puppy.name}" + ": " + str(message) + "\n" + "Your response:")
+        user_input = input(f"{BLUE}{puppy.name}: {message}\nYour response: {RESET}")
 
     chat_history = "\n" + "# your message:" + str(message) + "\n" + "# User's response: " + user_input + "\n"
 
