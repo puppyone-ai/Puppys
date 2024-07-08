@@ -1,4 +1,4 @@
-from puppy.env.env import Env
+from puppys.env.env import Env
 
 # a default essential env for agent
 class PuppyVars(Env):

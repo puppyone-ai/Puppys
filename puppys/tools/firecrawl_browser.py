@@ -1,8 +1,8 @@
 import os
-from puppy.pp.main import Puppy
-from puppy.env.func_env import FuncEnv
-from puppy.pp.actions.explore import explore
-from puppy.decorator import new_func
+from puppys.pp.main import Puppy
+from puppys.env.func_env import FuncEnv
+from puppys.pp.actions.explore import explore
+from puppys.decorator import new_func
 
 
 @new_func(free_params=["url"])

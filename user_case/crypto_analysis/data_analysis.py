@@ -8,7 +8,7 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 #os.environ["OPENAI_API_KEY"] = ""
 
 
-from puppy.pp.mei import Mei
+from puppys.pp.mei import Mei
 
 def crypto_analysis_decisiontree(self):
 

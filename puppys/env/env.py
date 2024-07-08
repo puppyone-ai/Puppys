@@ -5,7 +5,7 @@ from typing import Union
 class Env:
 
     """
-    Use to build the environments for the puppy to retrival.
+    Use to build the environments for the puppys to retrival.
     """
 
     visible: bool = True

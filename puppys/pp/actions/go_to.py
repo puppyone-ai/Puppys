@@ -1,7 +1,7 @@
-from puppy.pp.actions.load_env import load_env, unload_env
-from puppy.pp.actions.explore import explore
-from puppy.env.env import Env
-from puppy.pp.main import Puppy
+from puppys.pp.actions.load_env import load_env, unload_env
+from puppys.pp.actions.explore import explore
+from puppys.env.env import Env
+from puppys.pp.main import Puppy
 
 
 def go_to(puppy_instance, new_env_node):

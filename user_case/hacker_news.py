@@ -5,7 +5,7 @@
 
 import os
 
-from puppy.pp.mei import Mei
+from puppys.pp.mei import Mei
 
 # change the API key to your own
 # os.environ["OPENAI_API_KEY"] = ""

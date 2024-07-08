@@ -1,4 +1,4 @@
-from puppy.llm.open_ai import open_ai_chat
+from puppys.llm.open_ai import open_ai_chat
 from loguru import logger
 import os
 

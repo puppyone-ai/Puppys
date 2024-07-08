@@ -1,15 +1,15 @@
-from puppy.pp.main import Puppy
-from puppy.pp.actions import do_check, check, do
-from puppy.env.func_env import FuncEnv
-from puppy.pp.actions.load_env import load_env
-from puppy.pp.actions.go_to import go_to
+from puppys.pp.main import Puppy
+from puppys.pp.actions import do_check, check, do
+from puppys.env.func_env import FuncEnv
+from puppys.pp.actions.load_env import load_env
+from puppys.pp.actions.go_to import go_to
 
 class Test_Agent(Puppy):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.name = "Mei"
-        self.description = "A puppy that could help to intelligent your code"
+        self.description = "A puppys that could help to intelligent your code"
         self.version = "0.0.1"
 
     def do_check(self, *args, **kwargs):

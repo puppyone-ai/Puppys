@@ -1,5 +1,5 @@
 from typing import Type, Any, Dict
-from puppy.env.env import Env
+from puppys.env.env import Env
 
 
 def env_to_dict(environment: Env, attributes: list) -> Dict[str, Any]:
@@ -39,10 +39,10 @@ def explore(environment: Env,
 
 
     Returns(if with_source_env is False, output_content_mode is "instance"):
-        {'Louvre': <puppy.env.env.Env object at 0x1078f91d0>}
+        {'Louvre': <puppys.env.env.Env object at 0x1078f91d0>}
 
     Returns(if with_source_env is True, output_content_mode is "instance"):
-        [<puppy.env.env.Env object at 0x11ffb0dd0>, {'Louvre': <puppy.env.env.Env object at 0x11ffb11d0>}]
+        [<puppys.env.env.Env object at 0x11ffb0dd0>, {'Louvre': <puppys.env.env.Env object at 0x11ffb11d0>}]
 
     Returns(if with_source_env is False, output_content_mode is "attribute", attributes is ["value", "name", "description"]):
         {'value': 'good', 'name': 'Louvre', 'description': "It's a beautiful museum"}

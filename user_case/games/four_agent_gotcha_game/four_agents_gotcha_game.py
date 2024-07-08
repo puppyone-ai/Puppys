@@ -3,9 +3,9 @@
 #import os
 #sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from puppy.pp.main import Puppy
-from puppy.pp.main import puppy_run
-from puppy.llm.open_ai import open_ai_chat
+from puppys.pp.main import Puppy
+from puppys.pp.main import puppy_run
+from puppys.llm.open_ai import open_ai_chat
 
 from .chatting import ChattingHistory
 
