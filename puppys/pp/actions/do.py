@@ -6,12 +6,10 @@ import os
 import re
 
 
-def write_to_py_file(code: str):
+def write_to_py_file(code: str, root_path: str = "TempActionCode", file_name: str = "temp_decision_tree_code.py"):
     """
     Write the code to a python file
     """
-    root_path = "TempActionCode"
-    file_name = "temp_decision_tree_code.py"
 
     if not os.path.exists(root_path):
         os.makedirs(root_path)
