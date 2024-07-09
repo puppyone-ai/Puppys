@@ -3,8 +3,8 @@
 #import os
 #sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from puppy.pp.main import Puppy
-from puppy.pp.main import puppy_run
+from puppys.pp.main import Puppy
+from puppys.pp.main import puppy_run
 
 # define the lawyer_1's setting
 debater_1_setting = """You are defending yourself. You lost a wallet at the train station, and now you have found someone
@@ -29,7 +29,7 @@ You can:
 def chatting_decisiontree(self, system_prompt, max_loop_num=5):
 
     from user_case.games.four_agent_gotcha_game.chatting import ChattingHistory
-    from puppy.llm.open_ai import open_ai_chat
+    from puppys.llm.open_ai import open_ai_chat
     self.chat_history=ChattingHistory()
 
     self.chat_history.add(words=system_prompt, role='system')

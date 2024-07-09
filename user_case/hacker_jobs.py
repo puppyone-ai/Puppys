@@ -4,7 +4,7 @@
 # sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
-from puppy.pp.mei import Mei
+from puppys.pp.mei import Mei
 
 # change the API key to your own
 # os.environ["OPENAI_API_KEY"] = ""

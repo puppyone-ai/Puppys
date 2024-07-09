@@ -8,7 +8,7 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 #os.environ["OPENAI_API_KEY"] = ""
 
 
-from puppy.pp.mei import Mei
+from puppys.pp.mei import Mei
 
 def crypto_analysis_decisiontree(self):
 
@@ -16,7 +16,7 @@ def crypto_analysis_decisiontree(self):
     btc_data = pd.read_csv('data/btc_data.csv')
     eth_data = pd.read_csv('data/eth_data.csv')
 
-    self.do_check("Calculate the correlation function between BTC and ETH price, plot it, and send the result to me.", show_prompt=True, show_response= True)
+    self.do_check("Calculate the correlation function between BTC and ETH price, plot it, and send the result to me.", show_response= True)
     
     self.do_check("Calculate the one-sided Fourier transform and power spectral density (PSD) of BTC price and ETH prices, plot them in two subplots. Save the figure and send the result to me."
     , show_prompt=True, show_response= True)
@@ -26,5 +26,3 @@ def crypto_analysis_decisiontree(self):
 data_analyzer = Mei(value=crypto_analysis_decisiontree)
 
 data_analyzer.run()
-
-
