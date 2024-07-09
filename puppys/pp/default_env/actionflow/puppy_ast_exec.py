@@ -18,7 +18,11 @@ def puppy_ast_exec(node: ast.Module, global_dict: dict, local_dict: dict):
         # Handle 'for' loop
         iter_obj = eval(compile(ast.Expression(node.iter), filename="<ast>", mode="eval"), global_dict, local_dict)
         for item in iter_obj:
-            local_dict[node.target.id] = item
+            if isinstance(node.target, ast.Tuple):
+                for idx, target in enumerate(node.target.elts):
+                    local_dict[target.id] = item[idx]
+            else:
+                local_dict[node.target.id] = item
             for stmt in node.body:
                 puppy_ast_exec(stmt, global_dict, local_dict)
 

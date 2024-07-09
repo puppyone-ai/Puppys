@@ -4,9 +4,10 @@ from puppys.pp.actions.explore import explore
 from loguru import logger
 import os
 import re
+import traceback
 
 
-def write_to_py_file(code: str, root_path: str = "TempActionCode", file_name: str = "temp_decision_tree_code.py"):
+def write_to_py_file(code: str, root_path: str = "user_case_history", file_name: str = "temp_actionflow_code.py"):
     """
     Write the code to a python file
     """
@@ -18,10 +19,30 @@ def write_to_py_file(code: str, root_path: str = "TempActionCode", file_name: st
 
     # write the code inside a function
     code_with_indentation = "\n".join(["    " + line for line in code.split("\n")])
-    code = f"def decisiontree(self):\n" + code_with_indentation
+    code = f"def actionflow(self):\n" + code_with_indentation
 
-    with open(file_path, "w") as f:
-        f.write(code + '\n')
+    try:
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write(code + '\n')
+    except Exception as e:
+        print(f"Unexpected Error: {e}")
+
+
+def get_concise_traceback(exc, num_of_lines=20):
+    """
+    Get the concise traceback if the error occurs
+    """
+    tb = traceback.TracebackException.from_exception(exc)
+    concise_traceback = ''.join(tb.format_exception_only())
+    detailed_traceback = ''.join(tb.format())
+    traceback_lines = detailed_traceback.split('\n')
+    relevant_lines = traceback_lines[-num_of_lines:]
+    filtered_relevant_lines = [line for line in relevant_lines if 'File' not in line and 'line' not in line and 'Exception' not in line]
+
+    if filtered_relevant_lines:
+        concise_traceback += "Relevant error details:" + "\n".join(filtered_relevant_lines)
+
+    return concise_traceback
 
 
 def do(puppy_instance, action_name: str, model="gpt-4-turbo", show_prompt=False, show_response=False, retries=3):
@@ -87,21 +108,22 @@ Now generate your answer as code:
 
     # prompt finished *****************************************************************************************
 
-    # print("[doing_action]" + action_name)
+    # printing color
     GREEN= "\033[32m"
     RED = "\033[31m"
     GREY = "\033[90m"
     RESET = "\033[0m"
 
+    # print the action name
     print(GREEN+"[doing_action]" + action_name + RESET)
 
+    # if show_prompt is true, show the prompt
     if show_prompt is True:
-        # print("\t*******planning prompt********")
         print(GREY+"\t*******doing prompt********"+RESET)
         for chunk in prompt:
-            # print(chunk['content'])
             print(GREY+chunk['content']+RESET)
 
+    # call LLM
     new_code = open_ai_chat(prompt=prompt,
                             model=model,
                             temperature=0.1,
@@ -133,13 +155,16 @@ Now generate your answer as code:
         # reset error
         puppy_instance.actionflow.erros = ""
         return new_code
+
+    # if there is an error, try to fix it
     except Exception as e:
-        print(RED+"Error:"+ e +RESET)
+        print(RED + "Error:", e, RESET)
+
         # store error message
-        puppy_instance.actionflow.errors += repr(e)
+        error_details = get_concise_traceback(e)
+        puppy_instance.actionflow.errors += error_details
         if retries <= 0:
-            # print(f"Puppy is not able to resolve the error: {repr(e)}")
-            logger.error(f"Puppy is not able to resolve the error: {repr(e)}")
+            logger.error(f"Puppy is not able to resolve the error: {error_details}")
             return
         else:
             do(puppy_instance, action_name, model, show_prompt, show_response, retries - 1)
