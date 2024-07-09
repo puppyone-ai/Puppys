@@ -1,15 +1,15 @@
 import threading
 
 from .actions import explore
-from puppy.env import Env
-from puppy.pp.actions.load_env import load_env
-from puppy.pp.default_env.actionflow.actionflow import Actionflow
-from puppy.pp.default_env.puppy_vars import PuppyVars
+from puppys.env import Env
+from puppys.pp.actions.load_env import load_env
+from puppys.pp.default_env.actionflow.actionflow import Actionflow
+from puppys.pp.default_env.puppy_vars import PuppyVars
 
 
 class Puppy(Env):
 
-    def __init__(self, value, *args,  printing_mode='terminal',  **kwargs):
+    def __init__(self, value=None, *args,  printing_mode='terminal',  **kwargs):
 
         super().__init__(*args, **kwargs)
 

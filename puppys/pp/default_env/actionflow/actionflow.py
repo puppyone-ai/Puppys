@@ -1,8 +1,8 @@
 import inspect
-from puppy.env.env import Env
-from puppy.pp.default_env.actionflow.parse import parse_code2str
-from puppy.pp.actions.load_env import load_env
-from puppy.pp.default_env.actionflow.puppy_ast_exec import puppy_exec
+from puppys.env.env import Env
+from puppys.pp.default_env.actionflow.parse import parse_code2str
+from puppys.pp.actions.load_env import load_env
+from puppys.pp.default_env.actionflow.puppy_ast_exec import puppy_exec
 import threading
 from contextlib import redirect_stdout, redirect_stderr
 import io
@@ -41,6 +41,7 @@ class Actionflow(Env):
         # set up the all code for actionflow, and current code for the running action
         self.all_code = parse_code2str(self.source_code)
         self.current_action_code = ""
+        self.errors = ""
 
 
     def puppy_exec(self, code):

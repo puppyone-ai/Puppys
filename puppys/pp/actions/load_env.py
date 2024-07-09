@@ -1,14 +1,14 @@
 from typing import Type
 
-from puppy.env.env import Env
-from puppy.pp.actions.explore import explore
+from puppys.env.env import Env
+from puppys.pp.actions.explore import explore
 
 
-# load the sub_env into the puppy's runtime_vars_dict
+# load the sub_env into the puppys's runtime_vars_dict
 def load_env(puppy_instance, env_node: Env = None, target: Type[Env] = None):
     # if the env_node is None, use the current environment
     if env_node is None:
-        env_node = puppy_instance
+        env_node = puppy_instance.env_node
 
     if target is None:
         target = Env
@@ -21,7 +21,7 @@ def load_env(puppy_instance, env_node: Env = None, target: Type[Env] = None):
     for key, value in sub_env_dict.items():
         name_instance_dict.update({value.name: value})
 
-    # update the vars as a dict into puppy's runtime_vars_dict
+    # update the vars as a dict into puppys's runtime_vars_dict
     puppy_instance.puppy_vars.runtime_dict.update(name_instance_dict.items())
 
 
@@ -41,6 +41,6 @@ def unload_env(puppy_instance, env_node: Env = None, target: Type[Env] = None):
     for key, value in sub_env_dict.items():
         name_instance_dict.update({value.name: value})
 
-    # delete the vars in the puppy's runtime_vars_dict
+    # delete the vars in the puppys's runtime_vars_dict
     for key in name_instance_dict.keys():
         del puppy_instance.puppy_vars.runtime_dict[key]

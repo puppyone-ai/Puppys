@@ -1,8 +1,8 @@
 import os
-from puppy.pp.main import Puppy
-from puppy.env.func_env import FuncEnv
-from puppy.pp.actions.explore import explore
-from puppy.decorator import new_func
+from puppys.pp.main import Puppy
+from puppys.env.func_env import FuncEnv
+from puppys.pp.actions.explore import explore
+from puppys.decorator import new_func
 
 
 @new_func(free_params=["url"])
@@ -30,5 +30,5 @@ def firecrawl_browser_func(url:str, api_key=None):
 
 
 if __name__ == "__main__":
-    result=firecrawl_browser_func(url="https://www.producthunt.com/", api_key="fc-5f8a0a35785a44c59a8f20c7e6246d84")
+    result=firecrawl_browser_func(url="https://www.producthunt.com/")
     print(result)

@@ -1,7 +1,7 @@
-from puppy.env import FuncEnv
-from puppy.pp.main import Puppy
-from puppy.env.func_env import FuncEnv
-from puppy.pp.actions.explore import explore
+from puppys.env import FuncEnv
+from puppys.pp.main import Puppy
+from puppys.env.func_env import FuncEnv
+from puppys.pp.actions.explore import explore
 
 # Rapidly create a new func instance with decorator
 def new_func(fixed_params=None, free_params=None, name=None, description=None):

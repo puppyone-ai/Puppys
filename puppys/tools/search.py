@@ -1,10 +1,10 @@
 from openai import OpenAI
 import os
 import requests
-from puppy.decorator import new_func
-from puppy.pp.main import Puppy
-from puppy.env.func_env import FuncEnv
-from puppy.pp.actions.explore import explore
+from puppys.decorator import new_func
+from puppys.pp.main import Puppy
+from puppys.env.func_env import FuncEnv
+from puppys.pp.actions.explore import explore
 
 
 def perplexity_search(query):
@@ -60,17 +60,9 @@ def search(query):
     ## search the weather in Amsterdam
     query = "what is the weather today in Amsterdam?"
     searchResults = search(query)"""
-    try:
-        return perplexity_search(query)
-    except Exception as e:
-        print(e)
 
-        try:
-            return google_search(query)
+    return perplexity_search(query)
 
-        except Exception as e:
-            print(e)
-            return "I am sorry, I couldn't find the information you are looking for. Please try again later."
 
 
 if __name__ == "__main__":
