@@ -2,10 +2,10 @@ class EnvMeta(type):
 
     def __new__(cls, name, bases, class_dict):
 
-        # 获取 window 属性，如果存在的话
+        # get window property, if it exists
         window = class_dict.get('window', [])
 
-        # 如果父类有 window 属性，合并它们
+        # if the base class has a window property, add it to the window
         for base in bases:
             if hasattr(base, 'window'):
                 window = list(set(window) | set(base.sub_env))
