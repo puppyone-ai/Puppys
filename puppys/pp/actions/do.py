@@ -134,7 +134,7 @@ Now generate your answer as code:
         puppy_instance.actionflow.erros = ""
         return new_code
     except Exception as e:
-        print(RED+"Error:"+ e +RESET)
+        print(RED + "Error:", e, RESET)
         # store error message
         puppy_instance.actionflow.errors += repr(e)
         if retries <= 0:
