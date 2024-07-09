@@ -3,6 +3,10 @@ def do_check(puppy_instance,
              model="gpt-4-turbo",
              show_prompt=False, show_response=False):
 
+    """
+    do the action and check if it finished or not
+    """
+
     if hasattr(puppy_instance, 'do') and hasattr(puppy_instance, 'check'):
 
         checking_result = False

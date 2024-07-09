@@ -5,6 +5,10 @@ from puppys.pp.main import Puppy
 
 
 def go_to(puppy_instance, new_env_node):
+
+    """
+    change the env_node to another env
+    """
     pre_env_node = puppy_instance.env_node
     unload_env(puppy_instance=puppy_instance, env_node=pre_env_node)
     puppy_instance.env_node = new_env_node

@@ -3,7 +3,6 @@ from typing import Union
 
 
 class Env:
-
     """
     Use to build the environments for the puppys to retrival.
     """
@@ -82,23 +81,14 @@ class Env:
     def isolated(self):
         self.__dict__.clear()
 
-    #def __repr__(self) -> str:
-        # res = self.intro
-        # res.update(self.env_dict)
-        # return f"{res}"
-
-        #return f"{self.intro}"
-
 
 def creat(*args, **kwargs):
-
     new_env = Env(*args, **kwargs)
 
     return new_env
 
 
 if __name__ == "__main__":
-
     """
     Recommended three method that to compose a new environment:
     """
@@ -121,23 +111,23 @@ if __name__ == "__main__":
 
     ####################
     # method 2
-    #
-    # museum.October = creat('https://www.mbam.qc.ca/en/works/4577/', name='October', description='by James Tissot')
-    #
-    # print(museum)
-    #
+
+    museum.October = creat('https://www.mbam.qc.ca/en/works/4577/', name='October', description='by James Tissot')
+
+    print(museum)
+
 
     ####################
     # method 3 (Define an environment as a class)
-    #
-    # class Museum(Env):
-    #
-    #     def __init__(self, *args, **kwargs):
-    #         super().__init__(*args, **kwargs)
-    #
-    #         self.add(Env('https://www.mbam.qc.ca/en/works/4577/', name='October', description='by James Tissot'))
-    #
-    # museum = Museum(value='https://www.mbam.qc.ca/en/',
-    #                 name='Montreal Museum of Fine Arts')
-    #
-    # print(museum.env_dict)
+    class Museum(Env):
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+
+            self.add(Env('https://www.mbam.qc.ca/en/works/4577/', name='October', description='by James Tissot'))
+
+
+    museum = Museum(value='https://www.mbam.qc.ca/en/',
+                    name='Montreal Museum of Fine Arts')
+
+    print(museum.env_dict)

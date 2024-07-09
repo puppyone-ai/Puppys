@@ -2,6 +2,10 @@ from puppys.env.env import Env
 
 # a default essential env for agent
 class PuppyVars(Env):
+    """
+    An essential env for agent.
+    It shows the preview of the runtime variables.
+    """
     visible = False
 
     def __init__(self, puppy_instance, global_dict=None, runtime_dict=None, preview_num=300, *args, **kwargs):

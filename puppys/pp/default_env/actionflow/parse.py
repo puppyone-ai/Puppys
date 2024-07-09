@@ -1,38 +1,46 @@
-import os
-import textwrap
-import re
 import ast
-import json
+import os
+import re
+
 from puppys.llm.open_ai import open_ai_chat
-from openai import OpenAI
 
 
 def parse_code2str(source_code: str) -> str:
-    # 解析源代码
+    """
+    Parse the source code and extract the function body code.
+
+    Args:
+        source_code (str): The source code to parse.
+
+    Returns:
+        str: The function body code.
+
+    """
+    # Split the source code into lines and keep the line endings
     lines = source_code.splitlines(keepends=True)
 
-    # 找出第一个非空行的缩进量
+    # Find the first non-empty line and get its indentation
     first_non_empty_line = next(line for line in lines if line.strip())
     min_indent = len(re.match(r"^\s*", first_non_empty_line).group())
 
-    # 去除每行的最小缩进量
+    # Remove the minimum indentation from each line
     adjusted_lines = [line[min_indent:] if len(line.strip()) > 0 else line for line in lines]
 
-    # 重新组合调整后的代码
+    # Recombine the adjusted lines
     adjusted_source_code = ''.join(adjusted_lines)
 
+    # Parse the adjusted source code into an AST
     tree = ast.parse(adjusted_source_code)
 
-    # 初始化空字符串用来保存函数体代码
+    # Initialize an empty string to store the function body code
     function_body_code = ""
 
-    # 遍历 AST 节点，找到函数定义并提取其中的代码
+    # Walk through the AST and extract the function body code
     for node in ast.walk(tree):
         if isinstance(node, ast.FunctionDef):
-            # 遍历函数体中的每条语句
+            # Walk through the function body and extract the code
             for body_node in node.body:
-                # 将每条语句转换为源代码并添加到结果字符串
-                # noinspection PyTypeChecker
+                # Convert each statement to source code and append to the result
                 function_body_code += ast.unparse(body_node)
                 function_body_code += "\n"
 
@@ -40,25 +48,33 @@ def parse_code2str(source_code: str) -> str:
 
 
 def code_segment_json(code):
-    # transit the code to AST
+    """
+    Parse the input code to extract the first layer's code units.
+
+    Args:
+        code (str): The code to parse.
+
+    Returns:
+        list: A list of dictionaries containing the type and code snippet for each code unit in the first layer.
+    """
+    # Parse the code to AST
     parsed_code = ast.parse(code)
 
-    # collect the first layer's code unit
+    # Initialize an empty list to store the first layer's code units
     first_layer_code = []
 
-    # go through the first layer
+    # Iterate through the nodes in the parsed code
     for node in parsed_code.body:
-
-        # save the node type
+        # Get the type of the node
         node_type = type(node).__name__
 
-        # save the node code
+        # Get the code snippet of the node
         code_snippet = ast.unparse(node)
 
-        # save the type and code in a unit
-        code_unit={"type":node_type,"code":code_snippet}
+        # Create a dictionary with the type and code of the node
+        code_unit = {"type": node_type, "code": code_snippet}
 
-        # add the code to the list
+        # Add the code unit to the list
         first_layer_code.append(code_unit)
 
     return first_layer_code
@@ -148,9 +164,9 @@ def parse_code2list2(source_code: str) -> list:
 
     return action_list
 
+
 # TODO: abstract the parser to convert the source code to diverse properties
 def parse_code2list(source_code: str) -> list:
-
     """
     Load the action from source code so that we could trigger it in default_env
     """
@@ -189,7 +205,6 @@ def parse_code2list(source_code: str) -> list:
 
 # verify the status of the action
 def _check_status(action) -> None:
-
     if ".do()" in action.do:
 
         if not action.do:
@@ -199,9 +214,6 @@ def _check_status(action) -> None:
 
     else:
         action.status = "fixed"
-
-
-
 
 
 if __name__ == '__main__':
