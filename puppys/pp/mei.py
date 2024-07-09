@@ -4,8 +4,10 @@ from puppys.pp.actions import do_check, check, do
 from puppys.env.func_env import FuncEnv
 
 
-
 class Mei(Puppy):
+    """
+    A default puppy
+    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -17,17 +19,13 @@ class Mei(Puppy):
         # the first tool
         self.llm = FuncEnv(value=llm,
                            name=llm.__name__,
-                           description=llm.__doc__,
-                           free_params=["prompt"])
+                           description=llm.__doc__)
 
         # the second tool
         self.talk_with_human = FuncEnv(value=talk_with_human,
                                        name=talk_with_human.__name__,
                                        description=talk_with_human.__doc__,
-                                       fixed_params={"puppy": self},
-                                       free_params=["message"])
-
-
+                                       fixed_params={"puppy": self})
 
     def do_check(self, *args, **kwargs):
         return do_check(self, *args, **kwargs)
