@@ -5,7 +5,7 @@ from puppys.pp.actions.explore import explore
 from puppys.decorator import new_func
 
 
-@new_func(free_params=["url"])
+@new_func()
 def firecrawl_browser_func(url:str, api_key=None):
 
     if api_key is None:
