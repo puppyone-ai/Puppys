@@ -7,7 +7,7 @@ import re
 import traceback
 
 
-def write_to_py_file(code: str, root_path: str = "TempActionCode", file_name: str = "temp_decision_tree_code.py"):
+def write_to_py_file(code: str, root_path: str = "user_case_history", file_name: str = "temp_actionflow_code.py"):
     """
     Write the code to a python file
     """
@@ -19,7 +19,7 @@ def write_to_py_file(code: str, root_path: str = "TempActionCode", file_name: st
 
     # write the code inside a function
     code_with_indentation = "\n".join(["    " + line for line in code.split("\n")])
-    code = f"def decisiontree(self):\n" + code_with_indentation
+    code = f"def actionflow(self):\n" + code_with_indentation
 
     try:
         with open(file_path, "w", encoding="utf-8") as f:
@@ -29,6 +29,9 @@ def write_to_py_file(code: str, root_path: str = "TempActionCode", file_name: st
 
 
 def get_concise_traceback(exc, num_of_lines=20):
+    """
+    Get the concise traceback if the error occurs
+    """
     tb = traceback.TracebackException.from_exception(exc)
     concise_traceback = ''.join(tb.format_exception_only())
     detailed_traceback = ''.join(tb.format())
@@ -105,19 +108,22 @@ Now generate your answer as code:
 
     # prompt finished *****************************************************************************************
 
-    # print("[doing_action]" + action_name)
+    # printing color
     GREEN= "\033[32m"
     RED = "\033[31m"
     GREY = "\033[90m"
     RESET = "\033[0m"
 
+    # print the action name
     print(GREEN+"[doing_action]" + action_name + RESET)
 
+    # if show_prompt is true, show the prompt
     if show_prompt is True:
         print(GREY+"\t*******doing prompt********"+RESET)
         for chunk in prompt:
             print(GREY+chunk['content']+RESET)
 
+    # call LLM
     new_code = open_ai_chat(prompt=prompt,
                             model=model,
                             temperature=0.1,
@@ -149,8 +155,11 @@ Now generate your answer as code:
         # reset error
         puppy_instance.actionflow.erros = ""
         return new_code
+
+    # if there is an error, try to fix it
     except Exception as e:
         print(RED + "Error:", e, RESET)
+
         # store error message
         error_details = get_concise_traceback(e)
         puppy_instance.actionflow.errors += error_details
