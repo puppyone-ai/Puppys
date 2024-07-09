@@ -6,7 +6,7 @@ from puppys.env.func_env import FuncEnv
 
 class Mei(Puppy):
     """
-    A default puppy
+    A default puppy that contains llm and talk_with_human tools, and do, check, and do_check actions
     """
 
     def __init__(self, *args, **kwargs):

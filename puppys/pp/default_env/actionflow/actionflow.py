@@ -8,11 +8,15 @@ from contextlib import redirect_stdout, redirect_stderr
 import io
 import sys
 
-# a default essential env for agent
+
 class Actionflow(Env):
+    """
+    Actionflow is a default essential env for agent
+    It shows the agent's action over time
+    """
     visible = False
 
-    def __init__(self, puppy_instance, *args, function, printing_mode=None,  **kwargs):
+    def __init__(self, puppy_instance, *args, function, printing_mode=None, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.puppy_instance = puppy_instance
@@ -43,15 +47,23 @@ class Actionflow(Env):
         self.current_action_code = ""
         self.errors = ""
 
-
     def puppy_exec(self, code):
+
+        """
+        Executes the given code with redirected stdout and stderr.
+        Args:
+            code (str): The code to execute.
+        """
         with redirect_stdout(self.output_buffer), redirect_stderr(self.error_buffer):
             # execute the code
             puppy_exec(code, self.puppy_instance.puppy_vars.global_dict, self.puppy_instance.puppy_vars.runtime_dict)
 
     def run(self, **kwargs):
 
-        #check if the kwargs fits the arg
+        """
+        run the agent's actionflow by 'value'
+        """
+        # check if the kwargs fits the arg
         required_args = [arg for arg in self.args_spec.args if arg != 'self']
         missing_args = [arg for arg in required_args if arg not in kwargs]
 

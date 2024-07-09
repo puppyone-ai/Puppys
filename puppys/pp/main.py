@@ -8,6 +8,10 @@ from puppys.pp.default_env.puppy_vars import PuppyVars
 
 
 class Puppy(Env):
+    """
+    The main class of a puppy
+    An agent must call this class
+    """
 
     def __init__(self, value=None, *args,  printing_mode='terminal',  **kwargs):
 
@@ -28,23 +32,28 @@ class Puppy(Env):
         return load_env(self, *args, **kwargs)
 
     def run(self, **kwargs) -> None:
-
+        """
+        run the agent
+        """
         # run the actionflow
         return self.actionflow.run(**kwargs)
 
 
 
 def puppy_run(puppy_list: list):
+    """
+    Run all the agents in the list at the same time
+    """
     threads = []
 
-    # 为列表中的每个线程对象创建一个线程
+    # create and start threads
     for puppy in puppy_list:
-        thread = threading.Thread(target=puppy.run)  # 注意这里传递的是方法引用，不是方法调用
+        thread = threading.Thread(target=puppy.run)
         thread.daemon = False
         threads.append(thread)
-        thread.start()  # 启动线程
+        thread.start()
 
-    # 等待所有线程完成
+    # wait for threads to finish
     for thread in threads:
         thread.join()
 

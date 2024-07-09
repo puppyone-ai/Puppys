@@ -4,8 +4,11 @@ from puppys.env.env import Env
 from puppys.pp.actions.explore import explore
 
 
-# load the sub_env into the puppys's runtime_vars_dict
 def load_env(puppy_instance, env_node: Env = None, target: Type[Env] = None):
+    """
+    load the sub_env into the puppy's runtime_vars_dict
+    """
+
     # if the env_node is None, use the current environment
     if env_node is None:
         env_node = puppy_instance.env_node
@@ -26,6 +29,10 @@ def load_env(puppy_instance, env_node: Env = None, target: Type[Env] = None):
 
 
 def unload_env(puppy_instance, env_node: Env = None, target: Type[Env] = None):
+    """
+    unload the sub_env from the puppy's runtime_vars_dict
+    """
+
     # if the env_node is None, use the current environment
     if env_node is None:
         env_node = puppy_instance
