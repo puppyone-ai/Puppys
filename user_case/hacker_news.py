@@ -13,6 +13,8 @@ from puppys.pp.mei import Mei
 def hacker_news_decisiontree(self, url):
 
     self.do_check(f"go to the given {url}, save the page's HTML", show_response=True)
+    # if url:
+    #     print(f"abc{testvalue}")
 
     self.do_check("show the top 10 news @llm, and send it to me", show_response=True)
 

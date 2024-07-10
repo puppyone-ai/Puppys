@@ -52,6 +52,73 @@ def get_concise_traceback(
     return concise_traceback
 
 
+import ast
+
+def replace_formatted_string(
+    code: str, 
+    local_dict: dict
+    ) -> str:
+    """
+    Replace formatted string parts with their actual values from the local dictionary.
+    """
+
+    class FormatStringVisitor(ast.NodeVisitor):
+        def __init__(self):
+            self.formatted_strings = []
+
+        def visit_JoinedStr(self, node):
+            self.formatted_strings.append(node)
+            self.generic_visit(node)
+
+    class FormatStringReplacer(ast.NodeTransformer):
+        def __init__(self, local_dict):
+            self.local_dict = local_dict
+
+        def visit_JoinedStr(self, node):
+            # Replace formatted parts with actual values
+            new_values = []
+            for value in node.values:
+                if isinstance(value, ast.FormattedValue):
+                    eval_value = eval(ast.unparse(value.value), {}, self.local_dict)
+                    new_values.append(ast.Constant(value=str(eval_value)))
+                else:
+                    new_values.append(value)
+            node.values = new_values
+            return node
+        
+        def visit_JoinedStr(self, node):
+            # Replace formatted parts with actual values
+            new_values = []
+            for value in node.values:
+                if isinstance(value, ast.FormattedValue):
+                    try:
+                        eval_value = eval(ast.unparse(value.value), {}, self.local_dict)
+                        new_values.append(ast.Constant(value=str(eval_value)))
+                    except NameError:
+                        # If the variable is not found in local_dict, keep the original formatted value
+                        new_values.append(value)
+                else:
+                    new_values.append(value)
+            node.values = new_values
+            return node
+
+
+    # Parse the code into an AST
+    tree = ast.parse(code)
+
+    # Find all formatted strings
+    visitor = FormatStringVisitor()
+    visitor.visit(tree)
+
+    # Replace formatted strings with actual values
+    replacer = FormatStringReplacer(local_dict)
+    new_tree = replacer.visit(tree)
+
+    # Convert the modified AST back to source code
+    new_code = ast.unparse(new_tree)
+    return new_code
+
+
 def do(
     puppy_instance, 
     action_name: str, 
@@ -155,12 +222,14 @@ Now generate your answer as code:
     lines = all_code.split("\n")
     lines = [line for line in lines if line.strip()]
     new_lines = new_code.split("\n")
-    # print("runtime_dict: ", puppy_instance.puppy_vars.runtime_dict)
+
     for action in lines:
+        formatted_action = replace_formatted_string(action, puppy_instance.puppy_vars.runtime_dict)
+        all_code = all_code.replace(action, formatted_action)
         leading_whitespaces = re.match(r"\s*", action).group()
-        if action_name in action:
+        if action_name in formatted_action:
             new_code_to_add = "\n".join([leading_whitespaces + line for line in new_lines]) + "\n"
-            puppy_instance.actionflow.all_code = all_code.replace(action, new_code_to_add)
+            puppy_instance.actionflow.all_code = all_code.replace(formatted_action, new_code_to_add)
             break
     
     # write new code to a temp python file
