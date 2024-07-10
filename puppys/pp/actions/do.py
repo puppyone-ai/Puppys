@@ -7,7 +7,12 @@ import re
 import traceback
 
 
-def write_to_py_file(code: str, root_path: str = "user_case_history", file_name: str = "temp_actionflow_code.py"):
+def write_to_py_file(
+    code: str, 
+    sig_str: str,
+    root_path: str = "user_case_history", 
+    file_name: str = "temp_actionflow_code.py"
+    ) -> None:
     """
     Write the code to a python file
     """
@@ -19,7 +24,7 @@ def write_to_py_file(code: str, root_path: str = "user_case_history", file_name:
 
     # write the code inside a function
     code_with_indentation = "\n".join(["    " + line for line in code.split("\n")])
-    code = f"def actionflow(self):\n" + code_with_indentation
+    code = f"def actionflow{sig_str}:\n" + code_with_indentation
 
     try:
         with open(file_path, "w", encoding="utf-8") as f:
@@ -28,7 +33,10 @@ def write_to_py_file(code: str, root_path: str = "user_case_history", file_name:
         print(f"Unexpected Error: {e}")
 
 
-def get_concise_traceback(exc, num_of_lines=20):
+def get_concise_traceback(
+    exc: Exception, 
+    num_of_lines: int = 10
+    ) -> str:
     """
     Get the concise traceback if the error occurs
     """
@@ -37,15 +45,21 @@ def get_concise_traceback(exc, num_of_lines=20):
     detailed_traceback = ''.join(tb.format())
     traceback_lines = detailed_traceback.split('\n')
     relevant_lines = traceback_lines[-num_of_lines:]
-    filtered_relevant_lines = [line for line in relevant_lines if 'File' not in line and 'line' not in line and 'Exception' not in line]
 
-    if filtered_relevant_lines:
-        concise_traceback += "Relevant error details:" + "\n".join(filtered_relevant_lines)
+    if relevant_lines:
+        concise_traceback += "Relevant error details:" + "\n".join(relevant_lines)
 
     return concise_traceback
 
 
-def do(puppy_instance, action_name: str, model="gpt-4-turbo", show_prompt=False, show_response=False, retries=3):
+def do(
+    puppy_instance, 
+    action_name: str, 
+    model: str = "gpt-4-turbo", 
+    show_prompt: bool = False, 
+    show_response: bool = False, 
+    retries: int = 3
+    ) -> str:
     """
     write code to achieve the action
     retry when error occurs, defaulted to 2 times
@@ -134,20 +148,24 @@ Now generate your answer as code:
     new_code = new_code.replace("```python\n", "").replace("\n```", "")
 
     # add the ran code into the current code until the checking result is true
-    puppy_instance.actionflow.current_action_code += new_code
-    puppy_instance.actionflow.current_action_code += "\n"
+    puppy_instance.actionflow.current_action_code += new_code + "\n"
 
     # replace the action code in the all code
     all_code = puppy_instance.actionflow.all_code
-    for action in all_code.split("\n"):
+    lines = all_code.split("\n")
+    lines = [line for line in lines if line.strip()]
+    new_lines = new_code.split("\n")
+    # print("runtime_dict: ", puppy_instance.puppy_vars.runtime_dict)
+    for action in lines:
         leading_whitespaces = re.match(r"\s*", action).group()
         if action_name in action:
-            new_code_to_add = "\n".join([leading_whitespaces + line for line in new_code.split("\n")]) + "\n"
+            new_code_to_add = "\n".join([leading_whitespaces + line for line in new_lines]) + "\n"
             puppy_instance.actionflow.all_code = all_code.replace(action, new_code_to_add)
             break
-
+    
     # write new code to a temp python file
-    write_to_py_file(puppy_instance.actionflow.all_code)
+    sig_str = str(puppy_instance.actionflow.signature)
+    write_to_py_file(puppy_instance.actionflow.all_code, sig_str)
 
     # run the code
     try:
@@ -158,10 +176,9 @@ Now generate your answer as code:
 
     # if there is an error, try to fix it
     except Exception as e:
-        print(RED + "Error:", e, RESET)
-
         # store error message
         error_details = get_concise_traceback(e)
+        print(RED + "Error:", e, error_details, RESET)
         puppy_instance.actionflow.errors += error_details
         if retries <= 0:
             logger.error(f"Puppy is not able to resolve the error: {error_details}")
