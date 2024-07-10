@@ -5,7 +5,7 @@ import re
 from puppys.llm.open_ai import open_ai_chat
 
 
-def parse_code2str(source_code: str) -> str:
+def parse_code2str(source_code: str) -> list:
     """
     Parse the source code and extract the function body code.
 
@@ -33,7 +33,17 @@ def parse_code2str(source_code: str) -> str:
     tree = ast.parse(adjusted_source_code)
 
     # Initialize an empty string to store the function body code
-    function_body_code = ""
+    # function_body_code = ""
+
+    # # Walk through the AST and extract the function body code
+    # for node in ast.walk(tree):
+    #     if isinstance(node, ast.FunctionDef):
+    #         # Walk through the function body and extract the code
+    #         for body_node in node.body:
+    #             # Convert each statement to source code and append to the result
+    #             function_body_code += ast.unparse(body_node)
+    #             function_body_code += "\n"
+    function_body_code = []
 
     # Walk through the AST and extract the function body code
     for node in ast.walk(tree):
@@ -41,8 +51,7 @@ def parse_code2str(source_code: str) -> str:
             # Walk through the function body and extract the code
             for body_node in node.body:
                 # Convert each statement to source code and append to the result
-                function_body_code += ast.unparse(body_node)
-                function_body_code += "\n"
+                function_body_code.append(ast.unparse(body_node))
 
     return function_body_code
 

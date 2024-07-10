@@ -26,9 +26,11 @@ class Actionflow(Env):
         if printing_mode == 'buffer':
             self.output_buffer = io.StringIO()
             self.error_buffer = io.StringIO()
+            self.buffer_outputs = True
         else:
             self.output_buffer = sys.__stdout__
             self.error_buffer = sys.__stderr__
+            self.buffer_outputs = False
 
         # set the trigger
         self.trigger = threading.Event()
@@ -46,6 +48,8 @@ class Actionflow(Env):
         self.all_code = parse_code2str(self.source_code)
         self.current_action_code = ""
         self.errors = ""
+        self.current_code = ""
+
 
     def puppy_exec(self, code):
 
@@ -77,4 +81,23 @@ class Actionflow(Env):
         # update the runtime env
         self.puppy_instance.puppy_vars.runtime_dict.update(kwargs)
 
-        return self.puppy_exec(self.all_code)
+        # return self.puppy_exec(self.all_code)
+        
+        combined_output = []
+        combined_errors = []
+        
+        for current_code in self.all_code:
+            self.current_code = current_code
+            self.puppy_exec(current_code)
+            if self.buffer_outputs:
+                combined_output.append(self.output_buffer.getvalue())
+                combined_errors.append(self.error_buffer.getvalue())
+                self.output_buffer.truncate(0)
+                self.output_buffer.seek(0)
+                self.error_buffer.truncate(0)
+                self.error_buffer.seek(0)
+
+        if self.buffer_outputs:
+            return "\n".join(combined_output), "\n".join(combined_errors)
+        else:
+            return None, None
