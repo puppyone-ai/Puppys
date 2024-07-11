@@ -47,7 +47,6 @@ def puppy_ast_exec(node: ast.Module, global_dict: dict, local_dict: dict):
 def puppy_exec(code, global_dict: dict, local_dict: dict):
     try:
         parsed_ast = ast.parse(code)
-        # print("parsed_ast: ", ast.dump(parsed_ast, annotate_fields=True, include_attributes=True, indent=4))
         puppy_ast_exec(parsed_ast, global_dict, local_dict)
     except Exception as e:
         print("Error: ", e)
