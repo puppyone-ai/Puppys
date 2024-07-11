@@ -3,7 +3,6 @@ from puppys.env.env import Env
 from puppys.pp.default_env.actionflow.parse import parse_code2str
 from puppys.pp.actions.load_env import load_env
 from puppys.pp.default_env.actionflow.puppy_ast_exec import puppy_exec
-from puppys.pp.default_env.actionflow.split_all_code import indent_code_lines
 import threading
 from contextlib import redirect_stdout, redirect_stderr
 import io
@@ -46,8 +45,6 @@ class Actionflow(Env):
         self.args_spec = inspect.getfullargspec(self.function)
 
         # set up the all code for actionflow, and current code for the running action
-        # self.all_code = indent_code_lines(parse_code2str(self.source_code))
-        # print(self.all_code)
         self.all_code = ""
         self.current_action_code = ""
         self.errors = ""
@@ -95,6 +92,7 @@ class Actionflow(Env):
         for current_code in self.all_code:
             self.current_code = current_code
             self.puppy_exec(current_code)
+            
             if self.buffer_outputs:
                 combined_output.append(self.output_buffer.getvalue())
                 combined_errors.append(self.error_buffer.getvalue())

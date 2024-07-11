@@ -45,11 +45,9 @@ def puppy_ast_exec(node: ast.Module, global_dict: dict, local_dict: dict):
 
 
 def puppy_exec(code, global_dict: dict, local_dict: dict):
-    try:
-        parsed_ast = ast.parse(code)
-        puppy_ast_exec(parsed_ast, global_dict, local_dict)
-    except Exception as e:
-        print("Error: ", e)
+    global_dict.update(local_dict)
+    parsed_ast = ast.parse(code)
+    puppy_ast_exec(parsed_ast, global_dict, local_dict)
 
 
 if __name__ == "__main__":
