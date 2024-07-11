@@ -21,7 +21,7 @@ def write_to_py_file(
         os.makedirs(root_path)
 
     file_path = os.path.join(root_path, file_name)
-    code_with_indentation = "\n".join(["    " + line.strip() for lines in code for line in lines.splitlines(keepends=True) if line.strip()])
+    code_with_indentation = "".join(["    " + line for lines in code for line in lines.splitlines(keepends=True) if line.strip()])
     code = f"def actionflow{sig_str}:\n" + code_with_indentation
 
     try:
@@ -45,7 +45,7 @@ def get_concise_traceback(
     relevant_lines = traceback_lines[-num_of_lines:]
 
     if relevant_lines:
-        concise_traceback += "Relevant error details:" + "\n".join(relevant_lines)
+        concise_traceback += "\n".join(relevant_lines)
 
     return concise_traceback
 
@@ -151,11 +151,17 @@ Now generate your answer as code:
     # replace the action code in the all code
     all_code = puppy_instance.actionflow.all_code
     current_code = puppy_instance.actionflow.current_code
-    leading_whitespaces = re.match(r"\s*", current_code).group()
     new_lines = new_code.split("\n")
-    new_code_to_add = "\n".join([leading_whitespaces + line for line in new_lines]) + "\n"
     index = all_code.index(current_code)
-    all_code[index] = new_code_to_add
+    current_code_lines = current_code.splitlines(keepends=True)
+    for current_line in current_code_lines:
+        if action_name in current_line:
+            leading_whitespaces = re.match(r"\s*", current_line).group()
+            new_code_to_add = "\n".join([leading_whitespaces + line for line in new_lines]) + "\n"
+            current_code = current_code.replace(current_line, new_code_to_add)
+            all_code[index] = current_code
+            break
+    puppy_instance.actionflow.current_code = current_code
     puppy_instance.actionflow.all_code = all_code
 
     # write new code to a temp python file
@@ -173,7 +179,7 @@ Now generate your answer as code:
     except Exception as e:
         # store error message
         error_details = get_concise_traceback(e)
-        print(RED + "Error:", e, error_details, RESET)
+        print(RED + "Error:\n", e, error_details, RESET)
         puppy_instance.actionflow.errors += error_details
         if retries <= 0:
             logger.error(f"Puppy is not able to resolve the error: {error_details}")

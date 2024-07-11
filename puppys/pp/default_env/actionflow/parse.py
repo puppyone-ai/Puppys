@@ -5,7 +5,21 @@ import re
 from puppys.llm.open_ai import open_ai_chat
 
 
-def parse_code2str(source_code: str) -> list:
+def replace_formatted_strings(line: str, local_vars: dict) -> str:
+    """
+    Replace formatted parts of the string with actual values from local_vars.
+    """
+    pattern = re.compile(r'\{(.*?)\}')
+    matches = pattern.findall(line)
+    
+    for match in matches:
+        if match in local_vars:
+            line = line.replace(f'{{{match}}}', str(local_vars[match]))
+    return line
+
+
+
+def parse_code2str(source_code: str, local_vars: dict) -> list:
     """
     Parse the source code and extract the function body code.
 
@@ -16,8 +30,11 @@ def parse_code2str(source_code: str) -> list:
         str: The function body code.
 
     """
+    # Replace formatted strings with actual values from local_vars
+    replaced_code = replace_formatted_strings(source_code, local_vars)
+    
     # Split the source code into lines and keep the line endings
-    lines = source_code.splitlines(keepends=True)
+    lines = replaced_code.splitlines(keepends=True)
 
     # Find the first non-empty line and get its indentation
     first_non_empty_line = next(line for line in lines if line.strip())
@@ -31,6 +48,8 @@ def parse_code2str(source_code: str) -> list:
 
     # Parse the adjusted source code into an AST
     tree = ast.parse(adjusted_source_code)
+    
+    # all_code_lines = indent_code_lines(tree)
 
     # Initialize an empty string to store the function body code
     # function_body_code = ""
@@ -43,17 +62,24 @@ def parse_code2str(source_code: str) -> list:
     #             # Convert each statement to source code and append to the result
     #             function_body_code += ast.unparse(body_node)
     #             function_body_code += "\n"
+    
     function_body_code = []
-
     # Walk through the AST and extract the function body code
-    for node in ast.walk(tree):
+    # for node in ast.walk(tree):
+    for node in tree.body:
         if isinstance(node, ast.FunctionDef):
             # Walk through the function body and extract the code
             for body_node in node.body:
                 # Convert each statement to source code and append to the result
-                function_body_code.append(ast.unparse(body_node))
+                body_code_block = ast.unparse(body_node)
+                body_code_block = body_code_block + "\n" if not body_code_block.endswith("\n") else body_code_block
+                function_body_code.append(body_code_block)
 
     return function_body_code
+    
+    # return all_code_lines
+    
+    # return adjusted_lines
 
 
 def code_segment_json(code):
