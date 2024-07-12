@@ -7,6 +7,9 @@ def check(puppy_instance, action_name: str = "", model="gpt-4-turbo",show_prompt
     """
     check if it finished or not
     """
+    history_codes = "\n".join(puppy_instance.actionflow.history_codes)
+    future_codes = "\n".join(puppy_instance.actionflow.future_codes)
+    
     prompt = [
         # 1. define your agent type and name
         {"role": "system",
@@ -63,8 +66,10 @@ def check(puppy_instance, action_name: str = "", model="gpt-4-turbo",show_prompt
              f"""Your formally-defined parameters and their previewing are as follows: 
     {puppy_instance.puppy_vars.preview()}
 
-    The code for historical, current, and future actionflow shown as code are:
-    {puppy_instance.actionflow.all_code}
+    The code for [historical actionflow] are: {history_codes}
+    The code for [current actionflow]: {puppy_instance.actionflow.current_code}
+    The code for [future actionflow] are: {future_codes}
+    Note: The [future actionflow] is for referencing the next steps, you DO NOT need to write code and replace them!
 
     Now you are at this action: 
     {action_name}

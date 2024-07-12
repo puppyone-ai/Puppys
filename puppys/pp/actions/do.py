@@ -7,28 +7,37 @@ import re
 import traceback
 
 
-def write_to_py_file(
-    code: list, 
-    sig_str: str,
-    root_path: str = "user_case_history", 
-    file_name: str = "temp_actionflow_code.py"
+def replace_action_code(
+    puppy_instance, 
+    action_name: str, 
+    new_code: str
     ) -> None:
     """
-    Write the code to a python file
+    Replace the action code in the all code
     """
 
-    if not os.path.exists(root_path):
-        os.makedirs(root_path)
+    new_lines = new_code.split("\n")
 
-    file_path = os.path.join(root_path, file_name)
-    code_with_indentation = "".join(["    " + line for lines in code for line in lines.splitlines(keepends=True) if line.strip()])
-    code = f"def actionflow{sig_str}:\n" + code_with_indentation
+    # Reset temp_current_code if it exists in any of the history_codes
+    if any(puppy_instance.actionflow.temp_current_code in history_code for history_code in puppy_instance.actionflow.history_codes):
+        puppy_instance.actionflow.temp_current_code = ""
 
-    try:
-        with open(file_path, "w", encoding="utf-8") as f:
-            f.write(code + '\n')
-    except Exception as e:
-        print(f"Unexpected Error: {e}")
+    # If temp_current_code is set, replace it in current_code with new_code
+    if puppy_instance.actionflow.temp_current_code:
+        leading_whitespaces = re.match(r"\s*", puppy_instance.actionflow.temp_current_code).group()
+        new_code_to_add = "\n".join([leading_whitespaces + line for line in new_lines]) + "\n"
+        puppy_instance.actionflow.current_code = puppy_instance.actionflow.current_code.replace(puppy_instance.actionflow.temp_current_code, new_code_to_add)
+        puppy_instance.actionflow.temp_current_code = new_code_to_add
+
+    # Replace the line containing action_name
+    current_code_lines = puppy_instance.actionflow.current_code.splitlines(keepends=True)
+    for current_line in current_code_lines:
+        if action_name in current_line:
+            leading_whitespaces = re.match(r"\s*", current_line).group()
+            new_code_to_add = "\n".join([leading_whitespaces + line for line in new_lines]) + "\n"
+            puppy_instance.actionflow.current_code = puppy_instance.actionflow.current_code.replace(current_line, new_code_to_add)
+            puppy_instance.actionflow.temp_current_code = new_code_to_add
+            break
 
 
 def get_concise_traceback(
@@ -62,6 +71,8 @@ def do(
     write code to achieve the action
     retry when error occurs, defaulted to 2 times
     """
+    history_codes = "\n".join(puppy_instance.actionflow.history_codes)
+    future_codes = "\n".join(puppy_instance.actionflow.future_codes)
 
     prompt = [
         # 1. define your agent type and name
@@ -95,7 +106,10 @@ You default function is writing python code, it's good at any task that python p
 You are also allowed to use the customized functions below, use them by just writing code as the example. the description shows how to use them. You are not allowed to call functions that out of the given range and python popular package:
 {explore(environment=puppy_instance.env_node, target=FuncEnv, output_content_mode="attribute", attributes=["name", "description"])}
 
-The code for historical, current, and future actionflow shown as code are:{puppy_instance.actionflow.all_code}
+The code for [historical actionflow] are: {history_codes}
+The code for [current actionflow]: {puppy_instance.actionflow.current_code}
+The code for [future actionflow] are: {future_codes}
+Note: The [future actionflow] is for referencing the next steps, you DO NOT need to write code and replace them!
 Now you write code to achieve your action(Note that the tools after@ is recommended tools, if it exists): {action_name}
 
 For this action, you have already tried following code, but not finish yet. Think about it, You need to keep writing it.
@@ -103,7 +117,7 @@ maybe you should use a different function or try a new way to achieve the action
 {puppy_instance.actionflow.current_action_code}
 
 Try to understand the meaning of each function and its parameter, and decide the best function and use the function 
-for this step to accomplish the action. You are only allowed to generate code that replace self.do({action_name}) part.
+for this step to accomplish the action. You are only allowed to generate code that replace self.do(\"{action_name}\") and self.do_check(\"{action_name}\") part.
 note that before this action is historical code, and it has been ran. You don't need to write historical code again here.
 
 For example: (current action: search the location of the NBA in 2019@ google search @zhihu search)
@@ -149,30 +163,13 @@ Now generate your answer as code:
     puppy_instance.actionflow.current_action_code += new_code + "\n"
 
     # replace the action code in the all code
-    all_code = puppy_instance.actionflow.all_code
-    current_code = puppy_instance.actionflow.current_code
-    new_lines = new_code.split("\n")
-    index = all_code.index(current_code)
-    current_code_lines = current_code.splitlines(keepends=True)
-    for current_line in current_code_lines:
-        if action_name in current_line:
-            leading_whitespaces = re.match(r"\s*", current_line).group()
-            new_code_to_add = "\n".join([leading_whitespaces + line for line in new_lines]) + "\n"
-            current_code = current_code.replace(current_line, new_code_to_add)
-            all_code[index] = current_code
-            break
-    puppy_instance.actionflow.current_code = current_code
-    puppy_instance.actionflow.all_code = all_code
-
-    # write new code to a temp python file
-    sig_str = str(puppy_instance.actionflow.signature)
-    write_to_py_file(puppy_instance.actionflow.all_code, sig_str)
+    replace_action_code(puppy_instance, action_name, new_code)
 
     # run the code
     try:
         puppy_instance.actionflow.puppy_exec(new_code)
         # reset error
-        puppy_instance.actionflow.erros = ""
+        puppy_instance.actionflow.errors = ""
         return new_code
 
     # if there is an error, try to fix it

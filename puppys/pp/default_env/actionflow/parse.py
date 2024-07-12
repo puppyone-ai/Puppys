@@ -18,7 +18,6 @@ def replace_formatted_strings(line: str, local_vars: dict) -> str:
     return line
 
 
-
 def parse_code2str(source_code: str, local_vars: dict) -> list:
     """
     Parse the source code and extract the function body code.
@@ -49,26 +48,10 @@ def parse_code2str(source_code: str, local_vars: dict) -> list:
     # Parse the adjusted source code into an AST
     tree = ast.parse(adjusted_source_code)
     
-    # all_code_lines = indent_code_lines(tree)
-
-    # Initialize an empty string to store the function body code
-    # function_body_code = ""
-
-    # # Walk through the AST and extract the function body code
-    # for node in ast.walk(tree):
-    #     if isinstance(node, ast.FunctionDef):
-    #         # Walk through the function body and extract the code
-    #         for body_node in node.body:
-    #             # Convert each statement to source code and append to the result
-    #             function_body_code += ast.unparse(body_node)
-    #             function_body_code += "\n"
-    
     function_body_code = []
     # Walk through the AST and extract the function body code
-    # for node in ast.walk(tree):
     for node in tree.body:
         if isinstance(node, ast.FunctionDef):
-            # Walk through the function body and extract the code
             for body_node in node.body:
                 # Convert each statement to source code and append to the result
                 body_code_block = ast.unparse(body_node)
@@ -76,10 +59,6 @@ def parse_code2str(source_code: str, local_vars: dict) -> list:
                 function_body_code.append(body_code_block)
 
     return function_body_code
-    
-    # return all_code_lines
-    
-    # return adjusted_lines
 
 
 def code_segment_json(code):
