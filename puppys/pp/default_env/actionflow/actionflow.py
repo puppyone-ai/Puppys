@@ -112,7 +112,13 @@ class Actionflow(Env):
 
         while self.future_codes:
             self.current_code = self.future_codes.pop(0)
-            self.puppy_exec(self.current_code)
+
+            try:
+                self.puppy_exec(self.current_code)
+            except KeyboardInterrupt:
+                if self.save_actionflow:
+                    self.write_to_py_file(self.history_codes, str(self.signature))
+
             self.history_codes.append(self.current_code)
             
             if self.buffer_outputs:
