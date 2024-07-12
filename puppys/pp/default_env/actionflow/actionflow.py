@@ -5,6 +5,7 @@ from puppys.pp.actions.load_env import load_env
 from puppys.pp.default_env.actionflow.puppy_ast_exec import puppy_exec
 import threading
 from contextlib import redirect_stdout, redirect_stderr
+import os
 import io
 import sys
 
@@ -16,11 +17,14 @@ class Actionflow(Env):
     """
     visible = False
 
-    def __init__(self, puppy_instance, *args, function, printing_mode=None, **kwargs):
+    def __init__(self, puppy_instance, *args, function, printing_mode=None, save_actionflow=True, actionflow_root_path: str = "user_case_history", actionflow_file_name: str = "temp_actionflow_code.py", **kwargs):
         super().__init__(*args, **kwargs)
 
         self.puppy_instance = puppy_instance
         self.function = function
+        self.save_actionflow = save_actionflow
+        self.actionflow_root_path = actionflow_root_path
+        self.actionflow_file_name = actionflow_file_name
 
         # if the output mode is buffer, redirect the output to the buffer
         if printing_mode == 'buffer':
@@ -45,10 +49,12 @@ class Actionflow(Env):
         self.args_spec = inspect.getfullargspec(self.function)
 
         # set up the all code for actionflow, and current code for the running action
-        self.all_code = ""
-        self.current_action_code = ""
-        self.errors = ""
+        self.history_codes = []
         self.current_code = ""
+        self.future_codes = []
+        self.current_action_code = ""
+        self.temp_current_code = ""
+        self.errors = ""
 
 
     def puppy_exec(self, code):
@@ -61,6 +67,24 @@ class Actionflow(Env):
         with redirect_stdout(self.output_buffer), redirect_stderr(self.error_buffer):
             # execute the code
             puppy_exec(code, self.puppy_instance.puppy_vars.global_dict, self.puppy_instance.puppy_vars.runtime_dict)
+    
+    def write_to_py_file(self, code: list, sig_str: str) -> None:
+        """
+        Write the code to a python file
+        """
+
+        if not os.path.exists(self.actionflow_root_path):
+            os.makedirs(self.actionflow_root_path)
+
+        file_path = os.path.join(self.actionflow_root_path, self.actionflow_file_name)
+        code_with_indentation = "".join(["    " + line for lines in code for line in lines.splitlines(keepends=True) if line.strip()])
+        code = f"def actionflow{sig_str}:\n" + code_with_indentation
+
+        try:
+            with open(file_path, "w", encoding="utf-8") as f:
+                f.write(code + '\n')
+        except Exception as e:
+            print(f"Unexpected Error: {e}")
 
     def run(self, **kwargs):
 
@@ -80,22 +104,27 @@ class Actionflow(Env):
 
         # update the runtime env
         self.puppy_instance.puppy_vars.runtime_dict.update(kwargs)
-        
-        self.all_code = parse_code2str(self.source_code, self.puppy_instance.puppy_vars.runtime_dict)
-        print("self.all_code: ", self.all_code)
 
-        # return self.puppy_exec(self.all_code)
+        self.future_codes = parse_code2str(self.source_code, self.puppy_instance.puppy_vars.runtime_dict)
         
         combined_output = []
         combined_errors = []
-        
-        for current_code in self.all_code:
-            self.current_code = current_code
-            self.puppy_exec(current_code)
+
+        while self.future_codes:
+            self.current_code = self.future_codes.pop(0)
+            self.puppy_exec(self.current_code)
+            self.history_codes.append(self.current_code)
             
             if self.buffer_outputs:
-                combined_output.append(self.output_buffer.getvalue())
-                combined_errors.append(self.error_buffer.getvalue())
+                # get and store the output and error buffer values
+                output_buffer_value = self.output_buffer.getvalue()
+                error_buffer_value = self.error_buffer.getvalue()
+                if output_buffer_value.strip():
+                    combined_output.append(output_buffer_value)
+                if error_buffer_value.strip():
+                    combined_errors.append(error_buffer_value)
+
+                # reset the buffer
                 self.output_buffer.truncate(0)
                 self.output_buffer.seek(0)
                 self.error_buffer.truncate(0)
@@ -107,4 +136,6 @@ class Actionflow(Env):
             self.errors = error_str
             return output_str, error_str
         else:
+            if self.save_actionflow:
+                self.write_to_py_file(self.history_codes, str(self.signature))
             return None, None
