@@ -106,7 +106,7 @@ pip install git+https://github.com/PuppyAgent/Puppys.git
 
 1. 📢 *Hacker News Reporter*
 
-```
+```python
 from puppy.pp.mei import Mei
 
 # change the API key to your own
