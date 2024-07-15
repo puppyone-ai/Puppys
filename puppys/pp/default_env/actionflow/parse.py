@@ -18,6 +18,23 @@ def replace_formatted_strings(line: str, local_vars: dict) -> str:
     return line
 
 
+def replace_function_arguments(line: str, local_vars: dict) -> str:
+    """
+    Replace function arguments in the line with actual values from local_vars.
+    """
+    # Parse the line into an AST
+    tree = ast.parse(line, mode='exec')
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
+            for idx, arg in enumerate(node.args):
+                if isinstance(arg, ast.Name) and arg.id in local_vars:
+                    node.args[idx] = ast.Constant(value=local_vars[arg.id], kind=None)
+
+    # Unparse the modified AST back into a string
+    new_line = ast.unparse(tree)
+    return new_line
+
+
 def parse_code2str(source_code: str, local_vars: dict) -> list:
     """
     Parse the source code and extract the function body code.
