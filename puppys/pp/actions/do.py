@@ -31,6 +31,7 @@ def replace_action_code(
 
     # Replace the line containing action_name
     current_code_lines = puppy_instance.actionflow.current_code.splitlines(keepends=True)
+    action_name = action_name.strip().replace('\n', '\\n')
     for current_line in current_code_lines:
         if action_name in current_line:
             leading_whitespaces = re.match(r"\s*", current_line).group()
