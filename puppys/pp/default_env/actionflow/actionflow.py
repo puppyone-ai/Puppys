@@ -53,7 +53,7 @@ class Actionflow(Env):
         self.current_code = ""
         self.future_codes = []
         self.current_action_code = ""
-        self.temp_current_code = ""
+        self.temp_current_code = {}
         self.errors = ""
 
 
@@ -77,7 +77,7 @@ class Actionflow(Env):
             os.makedirs(self.actionflow_root_path)
 
         file_path = os.path.join(self.actionflow_root_path, self.actionflow_file_name)
-        code_with_indentation = "".join(["    " + line for lines in code for line in lines.splitlines(keepends=True) if line.strip()])
+        code_with_indentation = "\n".join(["    " + line.rstrip('\n') for lines in code for line in lines.splitlines(keepends=True) if line.strip()])
         code = f"def actionflow{sig_str}:\n" + code_with_indentation
 
         try:
@@ -115,6 +115,7 @@ class Actionflow(Env):
 
             try:
                 self.current_code = replace_function_arguments(self.current_code, self.puppy_instance.puppy_vars.runtime_dict)
+                print("self.current_code: ", self.current_code)
                 self.puppy_exec(self.current_code)
             except KeyboardInterrupt:
                 if self.save_actionflow:

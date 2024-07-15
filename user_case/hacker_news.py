@@ -11,15 +11,21 @@ from puppys.pp.mei import Mei
 # os.environ["OPENAI_API_KEY"] = ""
 
 def hacker_news_decisiontree(self, url):
-    self.do_check(f"go to the given {url}, save the page's HTML", show_response=True)
     if url:
-        self.do_check("Show me the url link.", show_response=True)
-        # self.do_check("Write codes with var not defined error.", show_response=True)
+        self.do("Write codes with var not defined error.", show_response=True)
+        self.do("Return a list of 10 random numbers.", show_response=True)
+        self.do("Write codes with var not defined error.", show_response=True)
     else:
-        self.do_check("Ask human to provide the URL", show_response=True)
-    self.do_check("show the top 10 news @llm, and send it to me", show_response=True)
+        self.do("Write codes with var not defined error.", show_response=True)
+    # self.do_check(f"go to the given {url}, save the page's HTML", show_response=True)
+    # if url:
+    #     self.do_check("Show me the url link.", show_response=True)
+    #     # self.do_check("Write codes with var not defined error.", show_response=True)
+    # else:
+    #     self.do_check("Ask human to provide the URL", show_response=True)
+    # self.do_check("show the top 10 news @llm, and send it to me", show_response=True)
 
-    self.do_check("pick the news that related to Large Language Models, summarize all the news, and send it to me", show_response=True)
+    # self.do_check("pick the news that related to Large Language Models, summarize all the news, and send it to me", show_response=True)
 
 
 hacker_news = Mei(hacker_news_decisiontree)
