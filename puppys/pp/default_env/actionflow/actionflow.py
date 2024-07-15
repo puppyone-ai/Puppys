@@ -1,6 +1,6 @@
 import inspect
 from puppys.env.env import Env
-from puppys.pp.default_env.actionflow.parse import parse_code2str
+from puppys.pp.default_env.actionflow.parse import parse_code2str, replace_function_arguments
 from puppys.pp.actions.load_env import load_env
 from puppys.pp.default_env.actionflow.puppy_ast_exec import puppy_exec
 import threading
@@ -114,6 +114,7 @@ class Actionflow(Env):
             self.current_code = self.future_codes.pop(0)
 
             try:
+                self.current_code = replace_function_arguments(self.current_code, self.puppy_instance.puppy_vars.runtime_dict)
                 self.puppy_exec(self.current_code)
             except KeyboardInterrupt:
                 if self.save_actionflow:
