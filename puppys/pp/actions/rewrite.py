@@ -1,6 +1,7 @@
 import os
 from puppys.env.func_env import FuncEnv
-from puppys.llm.open_ai import open_ai_chat
+from puppys.llm.open_ai import OpenAIChat
+from puppys.llm.gemini import GeminiChat
 from puppys.pp.actions.explore import explore
 
 
@@ -50,12 +51,11 @@ def rewrite(puppy_instance, user_prompt: str, show_prompt: bool = False, show_re
         for chunk in prompt_messages:
             print(GREY+chunk['content']+RESET)
 
-    result = open_ai_chat(prompt = prompt_messages,
-                          model = model,
-                          temperature = temperature,
-                          api_key = os.environ["OPENAI_API_KEY"],
-                          max_tokens = max_tokens,
-                          printing = show_response, 
-                          stream = True)
+    if model == 'gpt-4-turbo':
+        openai_chat = OpenAIChat(printing=True, stream=True)
+        result = openai_chat.chat(prompt=prompt_messages)
+    else:
+        gemini_chat = GeminiChat(printing=True, stream=True)
+        result = gemini_chat.chat(prompt=prompt_messages)
 
     return result

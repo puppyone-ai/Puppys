@@ -2,7 +2,8 @@ import ast
 import os
 import re
 
-from puppys.llm.open_ai import open_ai_chat
+from puppys.llm.open_ai import OpenAIChat
+from puppys.llm.gemini import GeminiChat
 
 
 def replace_formatted_strings(line: str, local_vars: dict) -> str:
@@ -173,12 +174,15 @@ def parse_code2list2(source_code: str) -> list:
 
     ]
 
-    medium = open_ai_chat(prompt=prompt,
-                          model=os.environ["OPENAI_MODEL"],
-                          temperature=0.3,
-                          api_key=os.environ["OPENAI_API_KEY"],
-                          max_tokens=4096,
-                          printing=True, stream=True)
+
+    openai_chat = OpenAIChat(temperature = 0.3, printing=True, stream=True)
+    medium = openai_chat.chat(prompt=prompt)
+    # if model == 'gpt-4-turbo':
+    #     openai_chat = OpenAIChat(temperature = 0.3, printing=True, stream=True)
+    #     medium = openai_chat.chat(prompt=prompt)
+    # else:
+    #     gemini_chat = GeminiChat(printing=True, stream=True)
+    #     medium = gemini_chat.chat(prompt=prompt)
 
     medium = eval(medium)  # [{"name":action1.name,"code":action1.code},{"name":action2.name,"code":action2.code},...]
 

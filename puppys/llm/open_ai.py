@@ -1,5 +1,5 @@
 import os
-from models import ChatModel
+from puppys.llm.models import ChatModel
 
 class OpenAIChat(ChatModel):
     def __init__(self, api_key_env="OPENAI_API_KEY", model_default=None, **kwargs):

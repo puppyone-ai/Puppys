@@ -1,5 +1,5 @@
 import os
-from models import ChatModel
+from puppys.llm.models import ChatModel
 
 class GeminiChat(ChatModel):
     def __init__(self, api_key_env="GEMINI_API_KEY", model_default='gemini/gemini-1.5-pro-latest', **kwargs):
