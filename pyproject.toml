@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "Puppys"
-description = "Framework for Plug-and-Play Agentic System"
-version = "0.0.27"
+description = "Framework for Developing an Agentic System"
+version = "0.0.30"
 authors = [
     { name = "Puppys" }
 ]
@@ -28,7 +28,7 @@ Issues = "https://github.com/PuppyAgent/Puppys/issues"
 dev = ["pytest"]
 
 [tool.setuptools]
-packages = ["puppy"]
+packages = ["puppys"]
 
 [tool.poetry.dependencies]
 pdoc = "^12.0.0" 

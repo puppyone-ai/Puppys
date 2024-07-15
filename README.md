@@ -4,7 +4,7 @@
       <img src="./assets/PuppyAgentLOGOBig.png" alt="Image" height="120">
     <h1 align="center">Puppys</h1>
 
-**Framework for Plug-and-Play Agentic System**
+**Framework for Developing an Agentic System**
 
 **📜 [Document](https://mulberry-magician-e0a.notion.site/Puppys-document-83e2e55cfd27449589a6a721402ff4bc?pvs=4)**
 &ensp;&ensp;
@@ -48,7 +48,7 @@
 ## Plug-and-Play
 </div>
 
-Embed the agent's action into any your existing code, transforming your original code into an agentic system/
+Embed the agent's action into any your existing code, transforming your original code into an agentic system
 
 No DSL. No Workflow. Only Python (We understand that you don't like DSL or Workflow)
 
