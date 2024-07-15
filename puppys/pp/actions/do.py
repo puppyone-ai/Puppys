@@ -10,7 +10,8 @@ import traceback
 def replace_action_code(
     puppy_instance, 
     action_name: str, 
-    new_code: str
+    new_code: str,
+    retries: int
     ) -> None:
     """
     Replace the action code in the all code
@@ -18,27 +19,28 @@ def replace_action_code(
 
     new_lines = new_code.split("\n")
 
-    # Reset temp_current_code if it exists in any of the history_codes
-    if any(puppy_instance.actionflow.temp_current_code in history_code for history_code in puppy_instance.actionflow.history_codes):
-        puppy_instance.actionflow.temp_current_code = ""
-
-    # If temp_current_code is set, replace it in current_code with new_code
-    if puppy_instance.actionflow.temp_current_code:
-        leading_whitespaces = re.match(r"\s*", puppy_instance.actionflow.temp_current_code).group()
+    if action_name in puppy_instance.actionflow.temp_current_code and puppy_instance.actionflow.temp_current_code[action_name][1] in puppy_instance.actionflow.current_code:
+        leading_whitespaces = puppy_instance.actionflow.temp_current_code[action_name][0]
+        code_to_replace = puppy_instance.actionflow.temp_current_code[action_name][1]
         new_code_to_add = "\n".join([leading_whitespaces + line for line in new_lines]) + "\n"
-        puppy_instance.actionflow.current_code = puppy_instance.actionflow.current_code.replace(puppy_instance.actionflow.temp_current_code, new_code_to_add)
-        puppy_instance.actionflow.temp_current_code = new_code_to_add
+        puppy_instance.actionflow.current_code = puppy_instance.actionflow.current_code.replace(code_to_replace, new_code_to_add, 1)
+        puppy_instance.actionflow.temp_current_code[action_name] = (leading_whitespaces, new_code_to_add)
+        if retries == 0:
+            puppy_instance.actionflow.temp_current_code = {}
+    else:
+        # Replace the line containing action_name
+        current_code_lines = puppy_instance.actionflow.current_code.splitlines(keepends=True)
+        action_name = action_name.strip().replace('\n', '\\n')
+        for current_line in current_code_lines:
+            if action_name in current_line:
+                leading_whitespaces = re.match(r"\s*", current_line).group()
+                new_code_to_add = "\n".join([leading_whitespaces + line for line in new_lines]) + "\n"
+                puppy_instance.actionflow.current_code = puppy_instance.actionflow.current_code.replace(current_line, new_code_to_add, 1)
+                puppy_instance.actionflow.temp_current_code[action_name] = (leading_whitespaces, new_code_to_add)
+                break
 
-    # Replace the line containing action_name
-    current_code_lines = puppy_instance.actionflow.current_code.splitlines(keepends=True)
-    action_name = action_name.strip().replace('\n', '\\n')
-    for current_line in current_code_lines:
-        if action_name in current_line:
-            leading_whitespaces = re.match(r"\s*", current_line).group()
-            new_code_to_add = "\n".join([leading_whitespaces + line for line in new_lines]) + "\n"
-            puppy_instance.actionflow.current_code = puppy_instance.actionflow.current_code.replace(current_line, new_code_to_add)
-            puppy_instance.actionflow.temp_current_code = new_code_to_add
-            break
+
+
 
 
 def get_concise_traceback(
@@ -164,7 +166,7 @@ Now generate your answer as code:
     puppy_instance.actionflow.current_action_code += new_code + "\n"
 
     # replace the action code in the all code
-    replace_action_code(puppy_instance, action_name, new_code)
+    replace_action_code(puppy_instance, action_name, new_code, retries)
 
     # run the code
     try:
