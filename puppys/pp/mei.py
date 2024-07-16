@@ -1,6 +1,6 @@
 from puppys.pp.main import Puppy
 from puppys.tools.defaultTools import talk_with_human, llm
-from puppys.pp.actions import do_check, check, do
+from puppys.pp.actions import do_check, check, do, rewrite
 from puppys.env.func_env import FuncEnv
 
 
@@ -35,3 +35,6 @@ class Mei(Puppy):
 
     def do(self, *args, **kwargs):
         return do(self, *args, **kwargs)
+
+    def rewrite(self, *args, **kwargs):
+        return rewrite(self, *args, **kwargs)

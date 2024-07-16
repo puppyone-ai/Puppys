@@ -1,10 +1,9 @@
-import os
 from puppys.env.func_env import FuncEnv
-from puppys.llm.open_ai import open_ai_chat
+from puppys.pp.actions.action import Action
 from puppys.pp.actions.explore import explore
 
 
-def rewrite(puppy_instance, user_prompt: str, show_prompt: bool = False, show_response: bool = False, model: str = "gpt-4o", temperature: float = 0.7, max_tokens: int = 2048) -> str:
+def rewrite(puppy_instance, user_prompt: str, show_prompt: bool = False, show_response: bool = False, model: str = "gpt-4o", temperature: float = 0.7, max_tokens: int = 512) -> str:
     """
     Rewrite user instructions to be more specific and aligned with available tools.
     """
@@ -38,24 +37,15 @@ def rewrite(puppy_instance, user_prompt: str, show_prompt: bool = False, show_re
         {"role": "user", "content": user_prompt}
     ]
     
-    GREEN= "\033[32m"
-    RED = "\033[31m"
-    GREY = "\033[90m"
-    RESET = "\033[0m"
+    action = Action(puppy_instance, user_prompt, model, show_prompt, show_response, retries = 0)
 
-    print(GREEN+"[rewriting_prompt]" + user_prompt + RESET)
+    action.highlighting("rewriting_prompt", prompt_messages)
 
-    if show_prompt is True:
-        print(GREY+"\t*******doing prompt********"+RESET)
-        for chunk in prompt_messages:
-            print(GREY+chunk['content']+RESET)
+    result = action.llm_api_call(prompt_messages, temperature, max_tokens)
 
-    result = open_ai_chat(prompt = prompt_messages,
-                          model = model,
-                          temperature = temperature,
-                          api_key = os.environ["OPENAI_API_KEY"],
-                          max_tokens = max_tokens,
-                          printing = show_response, 
-                          stream = True)
+    rewrite_replace = "rewrote_action = \"" + result.replace("\n", "\\n") + "\""
+    action.replace_action_code(rewrite_replace)
+
+    puppy_instance = action.get_puppy_instance()
 
     return result

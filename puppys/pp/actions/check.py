@@ -1,6 +1,4 @@
-from puppys.llm.open_ai import open_ai_chat
-from loguru import logger
-import os
+from puppys.pp.actions.action import Action
 
 
 def check(puppy_instance, action_name: str = "", model="gpt-4-turbo",show_prompt=False, show_response=False):
@@ -82,26 +80,15 @@ def check(puppy_instance, action_name: str = "", model="gpt-4-turbo",show_prompt
     and Now you need to write code to justify if the action of {action_name} is done or not:
     Your response should be similar to the response example(ONLY CODE, and COMMENT) and NOTHING ELSE."""}]
 
-    YELLOW = "\033[33m"
-    GREY = "\033[90m"
-    RESET = "\033[0m"
-    print(YELLOW+"[checking_action]" + action_name + RESET)
+    action = Action(puppy_instance, action_name, model, show_prompt, show_response, retries = 0)
 
-    if show_prompt is True:
-        # print(f"\t*******planning prompt********")
-        print(GREY+f"\t*******checking prompt********"+RESET)
-        for chunk in prompt:
-            # print(chunk['content'])
-            print(GREY+chunk['content']+RESET)
+    action.highlighting(action_type = "checking_action", prompt = prompt, prompt_action="checking")
 
-    new_code = open_ai_chat(prompt=prompt,
-                            model=model,
-                            temperature=0.1,
-                            api_key=os.environ["OPENAI_API_KEY"],
-                            max_tokens=4096,
-                            printing=show_response, stream=True)
+    new_code = action.llm_api_call(prompt)
 
-    new_code = new_code.replace("```python\n", "").replace("\n```", "")
+    new_code = action.clean_llm_code(new_code, add_code = False)
+
+    puppy_instance = action.get_puppy_instance()
 
     puppy_instance.actionflow.puppy_exec(new_code)
 
