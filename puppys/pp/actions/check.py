@@ -1,5 +1,4 @@
-from puppys.llm.open_ai import OpenAIChat
-from puppys.llm.gemini import GeminiChat
+from puppys.llm.models import chat
 from loguru import logger
 import os
 
@@ -95,12 +94,7 @@ def check(puppy_instance, action_name: str = "", model="gpt-4-turbo",show_prompt
             # print(chunk['content'])
             print(GREY+chunk['content'])
 
-    if model == 'gpt-4-turbo':
-        openai_chat = OpenAIChat(printing=True, stream=True)
-        new_code = openai_chat.chat(prompt=prompt)
-    else:
-        gemini_chat = GeminiChat(printing=True, stream=True)
-        new_code = gemini_chat.chat(prompt=prompt)
+    new_code = chat(model, prompt, printing=True, stream=True)
 
     new_code = new_code.replace("```python\n", "").replace("\n```", "")
 

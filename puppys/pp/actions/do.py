@@ -1,5 +1,4 @@
-from puppys.llm.open_ai import OpenAIChat
-from puppys.llm.gemini import GeminiChat
+from puppys.llm.models import chat
 from puppys.env.func_env import FuncEnv
 from puppys.pp.actions.explore import explore
 from loguru import logger
@@ -153,12 +152,7 @@ Now generate your answer as code:
         for chunk in prompt:
             print(GREY+chunk['content']+RESET)
 
-    if model == 'gpt-4-turbo':
-        openai_chat = OpenAIChat(printing=True, stream=True)
-        new_code = openai_chat.chat(prompt=prompt)
-    else:
-        gemini_chat = GeminiChat(printing=True, stream=True)
-        new_code = gemini_chat.chat(prompt=prompt)
+    new_code = chat(model, prompt, printing=True, stream=True)
 
     new_code = new_code.replace("```python\n", "").replace("\n```", "")
 
