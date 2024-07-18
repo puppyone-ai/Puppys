@@ -3,13 +3,21 @@ from puppys.pp.actions.action import Action
 from puppys.pp.actions.explore import explore
 
 
-def rewrite(puppy_instance, user_prompt: str, show_prompt: bool = False, show_response: bool = False, model: str = "gpt-4o", temperature: float = 0.7, max_tokens: int = 512) -> str:
+def rewrite(
+    puppy_instance: any, 
+    user_prompt: str, 
+    show_prompt: bool = False, 
+    show_response: bool = False, 
+    model: str = "gpt-4o", 
+    temperature: float = 0.7, 
+    max_tokens: int = 512
+) -> str:
     """
     Rewrite user instructions to be more specific and aligned with available tools.
     """
     
     descriptions = explore(environment=puppy_instance.env_node, target=FuncEnv, output_content_mode="attribute", attributes=["name", "description"])
-    descriptions_str = "\n".join([f"{tool_name}: {details['description']}" for tool_name, details in descriptions.items()])
+    descriptions_str = "\n".join([f"{tool_name}: {details["description"]}" for tool_name, details in descriptions.items()])
     sys_prompt = f"""
     Your job is to rewrite user instructions to be more specific and aligned with available tools. Each user instruction should be transformed into one or more tool actions.
 
@@ -37,7 +45,7 @@ def rewrite(puppy_instance, user_prompt: str, show_prompt: bool = False, show_re
         {"role": "user", "content": user_prompt}
     ]
     
-    action = Action(puppy_instance, user_prompt, model, show_prompt, show_response, retries = 0)
+    action = Action(puppy_instance, user_prompt, model, show_prompt, show_response, retries=0)
 
     action.highlighting("rewriting_prompt", prompt_messages)
 

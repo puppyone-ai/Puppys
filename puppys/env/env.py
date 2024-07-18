@@ -9,12 +9,18 @@ class Env:
 
     visible: bool = True
     as_list: bool
-    private_keys: str = ['value', 'name', 'description']
+    private_keys: str = ["value", "name", "description"]
 
-    def __init__(self, value: any = None, *args, name=None, description=None, sub_env: list = None, **kwargs):
-
+    def __init__(
+        self, 
+        value: any = None, 
+        *args, 
+        name=None, 
+        description=None, 
+        sub_env: list = None, 
+        **kwargs
+    ):
         self.value = value
-
         self.name = name
         self.description = description
 
@@ -23,7 +29,7 @@ class Env:
             for env in sub_env:
 
                 if not isinstance(env, Env):
-                    raise TypeError('sub_env must be a list of Env instance.')
+                    raise TypeError("sub_env must be a list of Env instance.")
 
                 setattr(self, env.name, env)
 
@@ -44,7 +50,6 @@ class Env:
         return {"name": self.name, "description": self.description}
 
     def add(self, *args: Env):
-
         """
         Add the environment instance to the current environment instance.
         """
@@ -54,7 +59,7 @@ class Env:
                 setattr(self, env.name, env)
 
             else:
-                raise TypeError('Method: add() currently could only dynamically load Env instances.')
+                raise TypeError("Method: add() currently could only dynamically load Env instances.")
 
     def remove(self, *args: Union[str, Env]):
 
@@ -73,7 +78,7 @@ class Env:
                         delattr(self, key)
 
                 else:
-                    raise TypeError('remove() could only be delivered the key or the obj.')
+                    raise TypeError("remove() could only be delivered the key or the obj.")
 
             except AttributeError:
                 continue
@@ -82,7 +87,7 @@ class Env:
         self.__dict__.clear()
 
 
-def creat(*args, **kwargs):
+def create(*args, **kwargs):
     new_env = Env(*args, **kwargs)
 
     return new_env
@@ -94,40 +99,57 @@ if __name__ == "__main__":
     """
 
     #####################
-    # method 1
+    # Method 1
 
-    museum = Env('https://www.mbam.qc.ca/en/', name='Montreal Museum of Fine Arts')
+    museum = Env(
+        "https://www.mbam.qc.ca/en/", 
+        name="Montreal Museum of Fine Arts"
+    )
     print(museum)
 
-    painting = Env('https://www.mbam.qc.ca/en/works/4577/', name='October', description='by James Tissot')
+    painting = Env(
+        "https://www.mbam.qc.ca/en/works/4577/", 
+        name="October", 
+        description="by James Tissot"
+    )
     print(painting)
 
     museum.add(painting)
     print(museum)
 
-    # museum.remove('October')
+    # museum.remove("October")
     museum.remove(painting)
     print(museum)
 
     ####################
-    # method 2
+    # Method 2
 
-    museum.October = creat('https://www.mbam.qc.ca/en/works/4577/', name='October', description='by James Tissot')
+    museum.October = create(
+        "https://www.mbam.qc.ca/en/works/4577/", 
+        name="October", 
+        description="by James Tissot"
+    )
 
     print(museum)
 
 
     ####################
-    # method 3 (Define an environment as a class)
+    # Method 3 (Define an environment as a class)
     class Museum(Env):
 
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
 
-            self.add(Env('https://www.mbam.qc.ca/en/works/4577/', name='October', description='by James Tissot'))
+            self.add(Env(
+                "https://www.mbam.qc.ca/en/works/4577/", 
+                name="October", 
+                description="by James Tissot"
+            ))
 
 
-    museum = Museum(value='https://www.mbam.qc.ca/en/',
-                    name='Montreal Museum of Fine Arts')
+    museum = Museum(
+        value="https://www.mbam.qc.ca/en/",
+        name="Montreal Museum of Fine Arts"
+    )
 
     print(museum.env_dict)

@@ -1,20 +1,20 @@
-# If you are a VS Code users:
-import sys
 import os
 
+# If you are a VS Code users:
+import sys
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-# change the API key to your own
-#os.environ["OPENAI_API_KEY"] = ""
-
+# Change the API key to your own
+# os.environ["OPENAI_API_KEY"] = ""
 
 from puppys.pp.mei import Mei
 
-def crypto_analysis_decisiontree(self):
 
+def crypto_analysis_decisiontree(self):
     import pandas as pd
-    btc_data = pd.read_csv('data/btc_data.csv')
-    eth_data = pd.read_csv('data/eth_data.csv')
+
+    btc_data = pd.read_csv("data/btc_data.csv")
+    eth_data = pd.read_csv("data/eth_data.csv")
 
     self.do_check("Calculate the correlation function between BTC and ETH price, plot it, and send the result to me.", show_response= True)
     

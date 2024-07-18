@@ -14,8 +14,8 @@ from puppys.pp.default_env.actionflow.parse import parse_code2str, replace_funct
 
 class Actionflow(Env):
     """
-    Actionflow is a default essential env for agent
-    It shows the agent's action over time
+    Actionflow is a default essential env for agent.
+    It shows the agent's action over time.
     """
     visible = False
 
@@ -36,8 +36,8 @@ class Actionflow(Env):
         self.save_actionflow = save_actionflow
         self.save_instance = save_instance
 
-        # if the output mode is buffer, redirect the output to the buffer
-        if printing_mode == 'buffer':
+        # If the output mode is buffer, redirect the output to the buffer
+        if printing_mode == "buffer":
             self.output_buffer = io.StringIO()
             self.error_buffer = io.StringIO()
             self.buffer_outputs = True
@@ -46,19 +46,19 @@ class Actionflow(Env):
             self.error_buffer = sys.__stderr__
             self.buffer_outputs = False
 
-        # set the trigger
+        # Set the trigger
         self.trigger = threading.Event()
 
-        # get the full source code
+        # Get the full source code
         self.source_code = inspect.getsource(self.function)
 
-        # get the function signature
+        # Get the function signature
         self.signature = inspect.signature(self.function)
 
-        # or use  get full args pec to get more specific information
+        # Use get full args pec to get more specific information
         self.args_spec = inspect.getfullargspec(self.function)
 
-        # set up the all code for actionflow, and current code for the running action
+        # Set up the all code for actionflow, and current code for the running action
         self.history_codes = []
         self.current_code = ""
         self.future_codes = []
@@ -66,12 +66,11 @@ class Actionflow(Env):
         self.temp_current_code = {}
         self.errors = ""
         
-        # set the color for printing
+        # Set the color for printing
         self.GREEN = "\033[32m"
         self.GREY = "\033[90m"
         self.RED = "\033[31m"
         self.RESET = "\033[0m"
-
 
     def puppy_exec(
         self, 
@@ -84,9 +83,9 @@ class Actionflow(Env):
         """
 
         with redirect_stdout(self.output_buffer), redirect_stderr(self.error_buffer):
-            # execute the code
+            # Execute the code
             puppy_exec(code, self.puppy_instance.puppy_vars.global_dict, self.puppy_instance.puppy_vars.runtime_dict)
-    
+
     def write_to_py_file(
         self, 
         code: list, 
@@ -102,12 +101,12 @@ class Actionflow(Env):
             os.makedirs(actionflow_root_path)
 
         file_path = os.path.join(actionflow_root_path, actionflow_file_name)
-        code_with_indentation = "\n".join(["    " + line.rstrip('\n') for lines in code for line in lines.splitlines(keepends=True) if line.strip()])
+        code_with_indentation = "\n".join(["    " + line.rstrip("\n") for lines in code for line in lines.splitlines(keepends=True) if line.strip()])
         code = f"def actionflow{sig_str}:\n" + code_with_indentation
 
         try:
             with open(file_path, "w", encoding="utf-8") as f:
-                f.write(code + '\n')
+                f.write(code + "\n")
         except Exception as e:
             print(f"{self.RED}Fail writing file: {e}{self.RESET}")
 
@@ -146,7 +145,7 @@ class Actionflow(Env):
         file_path = os.path.join(root_path, file_name)
 
         try:
-            with open(file_path, 'rb') as input_file:
+            with open(file_path, "rb") as input_file:
                 loaded_instance = dill.load(input_file)
             if isinstance(loaded_instance, self.puppy_instance.__class__):
                 return loaded_instance
@@ -165,7 +164,7 @@ class Actionflow(Env):
         Redirect the output and error buffer values to the combined output and error lists.
         """
 
-        # get and store the output and error buffer values
+        # Get and store the output and error buffer values
         output_buffer_value = self.output_buffer.getvalue()
         error_buffer_value = self.error_buffer.getvalue()
         if output_buffer_value.strip():
@@ -173,7 +172,7 @@ class Actionflow(Env):
         if error_buffer_value.strip():
             combined_errors.append(error_buffer_value)
 
-        # reset the buffer
+        # Reset the buffer
         self.output_buffer.truncate(0)
         self.output_buffer.seek(0)
         self.error_buffer.truncate(0)
@@ -183,8 +182,9 @@ class Actionflow(Env):
         self, 
         node_num: int, 
         num_of_action: int, 
-        handle_exceptions: bool = True, 
-        use_command_line: bool = False, 
+        handle_exceptions: bool,
+        max_length: int,
+        use_command_line: bool, 
         updates: dict = None
     ) -> list:
         """
@@ -193,7 +193,14 @@ class Actionflow(Env):
         
         puppy_instance = self.load_puppy_instance()
         test_actionflow = TestActionflow(puppy_instance)
-        results = test_actionflow.test_run(node_num, num_of_action, handle_exceptions, use_command_line, updates)
+        results = test_actionflow.test_run(
+            node_num, 
+            num_of_action, 
+            handle_exceptions,
+            max_length,
+            use_command_line,
+            updates
+        )
 
         return results
 
@@ -202,21 +209,21 @@ class Actionflow(Env):
         **kwargs
     ) -> tuple:
         """
-        run the agent's actionflow by 'value'
+        Run the agent"s actionflow by "value'
         """
 
-        # check if the kwargs fits the arg
-        required_args = [arg for arg in self.args_spec.args if arg != 'self']
+        # Check if the kwargs fits the arg
+        required_args = [arg for arg in self.args_spec.args if arg != "self"]
         missing_args = [arg for arg in required_args if arg not in kwargs]
 
-        # if missing an arg, then raise an error
+        # If missing an arg, then raise an error
         if missing_args:
-            raise ValueError(f"Missing required arguments: {', '.join(missing_args)}")
+            raise ValueError(f"Missing required arguments: {", ".join(missing_args)}")
 
-        # load the pre-defined envs
+        # Load the pre-defined envs
         load_env(self.puppy_instance, target=Env)
 
-        # update the runtime env
+        # Update the runtime env
         self.puppy_instance.puppy_vars.runtime_dict.update(kwargs)
 
         self.future_codes = parse_code2str(self.source_code, self.puppy_instance.puppy_vars.runtime_dict)
@@ -228,7 +235,10 @@ class Actionflow(Env):
             self.current_code = self.future_codes.pop(0)
 
             try:
-                self.current_code = replace_function_arguments(self.current_code, self.puppy_instance.puppy_vars.runtime_dict)
+                self.current_code = replace_function_arguments(
+                    self.current_code, 
+                    self.puppy_instance.puppy_vars.runtime_dict
+                )
                 self.puppy_exec(self.current_code)
             except KeyboardInterrupt as e:
                 print(f"{self.RED}Error: KeyboardInterrupt{self.RESET}", file=sys.stderr)
@@ -254,3 +264,4 @@ class Actionflow(Env):
             return output_str, error_str
         else:
             return None, None
+

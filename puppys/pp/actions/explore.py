@@ -2,10 +2,14 @@ from typing import Type, Any, Dict
 from puppys.env.env import Env
 
 
-def env_to_dict(environment: Env, attributes: list) -> Dict[str, Any]:
+def env_to_dict(
+    environment: Env, 
+    attributes: list
+) -> Dict[str, Any]:
     """
     Convert an Env object to a dictionary that can be JSON serialized.
     """
+
     res = {}
     for k in attributes:
         res[k] = getattr(environment, k)
@@ -13,13 +17,14 @@ def env_to_dict(environment: Env, attributes: list) -> Dict[str, Any]:
     return res
 
 
-def explore(environment: Env,
-            target: Type[Env] = None,
-            output_content_mode="instance",
-            attributes: list = None,
-            with_source_env: bool = False,
-            as_json: bool = False
-            ):
+def explore(
+    environment: Env,
+    target: Type[Env] = None,
+    output_content_mode = "instance",
+    attributes: list = None,
+    with_source_env: bool = False,
+    as_json: bool = False
+):
     """
     A function that explores the environment based on the specified parameters and returns the result.
 
@@ -39,22 +44,22 @@ def explore(environment: Env,
 
 
     Returns(if with_source_env is False, output_content_mode is "instance"):
-        {'Louvre': <puppys.env.env.Env object at 0x1078f91d0>}
+        {"Louvre": <puppys.env.env.Env object at 0x1078f91d0>}
 
     Returns(if with_source_env is True, output_content_mode is "instance"):
-        [<puppys.env.env.Env object at 0x11ffb0dd0>, {'Louvre': <puppys.env.env.Env object at 0x11ffb11d0>}]
+        [<puppys.env.env.Env object at 0x11ffb0dd0>, {"Louvre": <puppys.env.env.Env object at 0x11ffb11d0>}]
 
     Returns(if with_source_env is False, output_content_mode is "attribute", attributes is ["value", "name", "description"]):
-        {'value': 'good', 'name': 'Louvre', 'description': "It's a beautiful museum"}
+        {"value": "good", "name": "Louvre", "description": "It's a beautiful museum"}
 
     Returns(if with_source_env is True, output_content_mode is "attribute", attributes is ["value", "name", "description"]):
-        [{'value': 'museum in Paris', 'name': 'the maple', 'description': "It's a beautiful place"}, {'value': 'good', 'name': 'Louvre', 'description': "It's a beautiful museum"}]
+        [{"value": "museum in Paris", "name": "the maple", "description": "It"s a beautiful place"}, {"value": "good", "name": "Louvre", "description": "It"s a beautiful museum"}]
     """
 
     if target is None:
         target = Env
 
-    # output content mode
+    # Output content mode
     if output_content_mode == "instance":
         target_env_dict = {}
         for k, v in environment.env_dict.items():
@@ -75,9 +80,9 @@ def explore(environment: Env,
         self_env_dict = env_to_dict(environment, attributes)
 
     else:
-        raise ValueError("output_content_mode must be either 'instance' or 'dict'.")
+        raise ValueError("output_content_mode must be either `instance` or `dict`.")
 
-    # with the source env or not
+    # With the source env or not
     if with_source_env is False:
         res = target_env_dict
 
@@ -93,13 +98,29 @@ def explore(environment: Env,
 
 
 if __name__ == "__main__":
-    Museum = Env(value="museum in Paris", name="the maple", description="It's a beautiful place")
+    Museum = Env(
+        value="museum in Paris", 
+        name="the maple", 
+        description="It's a beautiful place"
+    )
 
-    Museum.Louvre = Env(value="good", name="Louvre", description="It's a beautiful museum")
-    Museum.Eiffel = Env(value="bad", name="Eiffel", description="It's a ugly tower")
+    Museum.Louvre = Env(
+        value="good", 
+        name="Louvre", 
+        description="It's a beautiful museum"
+    )
+    Museum.Eiffel = Env(
+        value="bad", 
+        name="Eiffel", 
+        description="It's a ugly tower"
+    )
 
-    result=explore(Museum, target=Env,
-                  attributes=["value", "name", "description"], output_content_mode="attribute",
-                  with_source_env=False)
+    result=explore(
+        Museum, 
+        target=Env,
+        attributes=["value", "name", "description"], 
+        output_content_mode="attribute",
+        with_source_env=False
+    )
 
     print(result)

@@ -13,21 +13,22 @@ def do(
     retries: int = 3
     ) -> str:
     """
-    write code to achieve the action
-    retry when error occurs, defaulted to 2 times
+    Write code to achieve the action.
+    Retry when error occurs, defaulted to 2 times.
     """
+
     history_codes = "\n".join(puppy_instance.actionflow.history_codes)
     future_codes = "\n".join(puppy_instance.actionflow.future_codes)
 
     prompt = [
-        # 1. define your agent type and name
+        # 1. Define your agent type and name
         {"role": "system",
          "content":
              f"""You are an AI code assistant agent. 
 
 1. You always write Python code! You are really good at it. Your natural language output should be written as comment in python code.
 you can show your thinking and reason in the comment.
- for example: # Hello, I am an assistant. 
+ For example: # Hello, I am an assistant. 
 
 2. DON'T ASSUME you know any unclear knowledge or information that you don't know. DON'T 
  ASSUME that you have non-existent functions or hypothetical function. DON'T ASSUME you know the knowledge that you don't know. 
@@ -77,11 +78,11 @@ will need to analyse it and try to solve it. When generating the code, you need 
 Now generate your answer as code: 
 """}]
 
-    # prompt finished *****************************************************************************************
+    # Prompt Finished *****************************************************************************************
 
     action = Action(puppy_instance, action_name, model, show_prompt, show_response, retries)
 
-    action.highlighting(action_type = "doing_action", prompt = prompt, prompt_action="doing")
+    action.highlighting(action_type = "doing_action", prompt=prompt, prompt_action="doing")
 
     new_code = action.llm_api_call(prompt)
 
@@ -91,11 +92,11 @@ Now generate your answer as code:
 
     puppy_instance = action.get_puppy_instance()
 
-    # run the code
+    # Run the code
     try:
         return action.run_without_errors(new_code)
 
-    # if there is an error, try to fix it
+    # If there is an error, try to fix it
     except Exception as e:
         error_details = action.run_with_errors(e)
         if retries <= 0:
@@ -103,4 +104,3 @@ Now generate your answer as code:
             return
         else:
             do(puppy_instance, action_name, model, show_prompt, show_response, retries - 1)
-    

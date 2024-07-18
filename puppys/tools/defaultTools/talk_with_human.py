@@ -1,17 +1,19 @@
+import sys
 from contextlib import redirect_stdout
 from puppys.pp.main import Puppy
 from puppys.env.func_env import FuncEnv
 from puppys.pp.actions.explore import explore
-import sys
 
 
-def talk_with_human(puppy, message):
-
+def talk_with_human(
+    puppy: Puppy, 
+    message: str
+):
     """
     Use it when you have no idea how to achieve an action based on the current information knowledge, or functions. or you want to send a message to the user or let the user know your result.
     If you feel confused about any knowledge that are essential for following actions. You can stop keeping going and only ask human for help.
 
-    for example:
+    For example:
     ## Ask the user about the phone number of his boss
     question="What's the phone number of your boss?"
     talk_with_human(message=question) # the message is essential
@@ -30,16 +32,19 @@ def talk_with_human(puppy, message):
 
 if __name__ == "__main__":
 
-    # define an agent
-    puppy=Puppy(name="Puppy")
+    # Define an agent
+    puppy = Puppy(name="Puppy")
 
-    # define the tool in the agent
-    puppy.tools_talk_with_human = FuncEnv(name="talk_with_human",
-                            description=talk_with_human.__doc__,
-                            value=talk_with_human,
-                            fixed_params={"puppy": puppy}, free_params=["message"])
+    # Define the tool in the agent
+    puppy.tools_talk_with_human = FuncEnv(
+        name="talk_with_human",
+        description=talk_with_human.__doc__,
+        value=talk_with_human,
+        fixed_params={"puppy": puppy}, 
+        free_params=["message"]
+    )
 
-    # run the tool
+    # Run the tool
     puppy.tools_talk_with_human(message="hello world")
 
     print(explore(puppy, target=FuncEnv))

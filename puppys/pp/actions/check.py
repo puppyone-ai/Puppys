@@ -1,64 +1,70 @@
 from puppys.pp.actions.action import Action
 
 
-def check(puppy_instance, action_name: str = "", model="gpt-4-turbo",show_prompt=False, show_response=False):
+def check(
+    puppy_instance: any, 
+    action_name: str = "", 
+    model="gpt-4-turbo",
+    show_prompt = False, 
+    show_response = False
+) -> str:
     """
-    check if it finished or not
+    Check if it finished or not
     """
+
     history_codes = "\n".join(puppy_instance.actionflow.history_codes)
     future_codes = "\n".join(puppy_instance.actionflow.future_codes)
     
     prompt = [
-        # 1. define your agent type and name
+        # 1. Define your agent type and name
         {"role": "system",
          "content":
              f"""You are an AI code assistant agent. 
 
     1. You always write Python code! You are really good at it. Your natural language output should be written as comment in python code.
-     for example: # Hello, I am an assistant. 
+     For example: # Hello, I am an assistant. 
 
     2. DON'T ASSUME you know any unclear knowledge or information that you don't know. DON'T 
      ASSUME that you have non-existent functions or hypothetical function. Your code will be run immediately 
      after you write it. If you assume any hypothetical function, then the system will crash. 
 
-    3. Your response cannot only be comment. You HAVE to write codes
+    3. Your response cannot only be comment. You HAVE to write codes!
 
      You justify if your current action is done or not, you have two choices: 
         a. Done: That means you don't need to write code to achieve it again. The action history shows that you have already know what 
     you want to know or have already achieve the action. In this case, you should write Python code to return 
-
     Ture, and your generated code should be: isFinished=True 
         b. Unfinished: That means you need to write code to achieve it again, or there are some unfinished actions that you 
-    need to make . In this case, you should write Python code to return False, and the your generated code should be: 
+    need to make. In this case, you should write Python code to return False, and the your generated code should be: 
 
     isFinished=False
     
     4. You can only write code that contain True or False. You CANNOT write code that contains or import other values or other code.
 
-    for example:
-    1. current action:
+    For example:
+    1. Current action:
     发信息给我妈妈 @ask for help
-    current code:
+    Current code:
     # Since I don't have any information about the user's mother or the content of the message, I need to ask the user for help.
     message_content = XiaoMei.askHumanForHelp.run("What message would you like to send to your mom?")
-    # the user claimed that the message is "I love you mom"
+    # The user claimed that the message is "I love you mom"
 
-    your response:
-    # the action is not done, because I get what I should send, but I haven't send it yet. Maybe next action is to send it
+    Your response:
+    # The action is not done, because I get what I should send, but I haven't send it yet. Maybe next action is to send it
     isFinished=False 
 
-    2. current action:
-    get what happened about COVID in the the 2nd Feb 2020 @google search
-    current code:
+    2. Current action:
+    Get what happened about COVID in the the 2nd Feb 2020 @google search
+    Current code:
     # I need to search the information about what happened in the the 2nd Feb 2020. The function returns as a string.
     result=google_search("What happened in the the 2nd Feb 2020")
-    # the result is "First death resulting from Coronavirus outside China reported."
+    # The result is "First death resulting from Coronavirus outside China reported."
 
-    your response:
+    Your response:
     # I get what I should get, and I don't need to do anything else if there is no other action provide by human.
     isFinished=True"""},
 
-        # 2. provide the current var and usable tools
+        # 2. Provide the current var and usable tools
         {"role": "user",
          "content":
              f"""Your formally-defined parameters and their previewing are as follows: 
@@ -80,7 +86,7 @@ def check(puppy_instance, action_name: str = "", model="gpt-4-turbo",show_prompt
     and Now you need to write code to justify if the action of {action_name} is done or not:
     Your response should be similar to the response example(ONLY CODE, and COMMENT) and NOTHING ELSE."""}]
 
-    action = Action(puppy_instance, action_name, model, show_prompt, show_response, retries = 0)
+    action = Action(puppy_instance, action_name, model, show_prompt, show_response, retries=0)
 
     action.highlighting(action_type = "checking_action", prompt = prompt, prompt_action="checking")
 

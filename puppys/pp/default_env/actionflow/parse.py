@@ -1,29 +1,36 @@
-import ast
 import os
 import re
-
+import ast
 from puppys.llm.open_ai import open_ai_chat
 
 
-def replace_formatted_strings(line: str, local_vars: dict) -> str:
+def replace_formatted_strings(
+    line: str, 
+    local_vars: dict
+) -> str:
     """
     Replace formatted parts of the string with actual values from local_vars.
     """
-    pattern = re.compile(r'\{(.*?)\}')
+
+    pattern = re.compile(r"\{(.*?)\}")
     matches = pattern.findall(line)
     
     for match in matches:
         if match in local_vars:
-            line = line.replace(f'{{{match}}}', str(local_vars[match]))
+            line = line.replace(f"{{{match}}}", str(local_vars[match]))
     return line
 
 
-def replace_function_arguments(line: str, local_vars: dict) -> str:
+def replace_function_arguments(
+    line: str, 
+    local_vars: dict
+) -> str:
     """
     Replace function arguments in the line with actual values from local_vars.
     """
+
     # Parse the line into an AST
-    tree = ast.parse(line, mode='exec')
+    tree = ast.parse(line, mode="exec")
     for node in ast.walk(tree):
         if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
             for idx, arg in enumerate(node.args):
@@ -35,7 +42,10 @@ def replace_function_arguments(line: str, local_vars: dict) -> str:
     return new_line
 
 
-def parse_code2str(source_code: str, local_vars: dict) -> list:
+def parse_code2str(
+    source_code: str, 
+    local_vars: dict
+) -> list:
     """
     Parse the source code and extract the function body code.
 
@@ -44,8 +54,8 @@ def parse_code2str(source_code: str, local_vars: dict) -> list:
 
     Returns:
         str: The function body code.
-
     """
+
     # Replace formatted strings with actual values from local_vars
     replaced_code = replace_formatted_strings(source_code, local_vars)
     
@@ -60,7 +70,7 @@ def parse_code2str(source_code: str, local_vars: dict) -> list:
     adjusted_lines = [line[min_indent:] if len(line.strip()) > 0 else line for line in lines]
 
     # Recombine the adjusted lines
-    adjusted_source_code = ''.join(adjusted_lines)
+    adjusted_source_code = "".join(adjusted_lines)
 
     # Parse the adjusted source code into an AST
     tree = ast.parse(adjusted_source_code)
@@ -78,7 +88,7 @@ def parse_code2str(source_code: str, local_vars: dict) -> list:
     return function_body_code
 
 
-def code_segment_json(code):
+def code_segment_json(code: str) -> list:
     """
     Parse the input code to extract the first layer's code units.
 
@@ -88,6 +98,7 @@ def code_segment_json(code):
     Returns:
         list: A list of dictionaries containing the type and code snippet for each code unit in the first layer.
     """
+
     # Parse the code to AST
     parsed_code = ast.parse(code)
 
@@ -111,8 +122,10 @@ def code_segment_json(code):
     return first_layer_code
 
 
-# soft decoder
-def parse_code2list2(source_code: str) -> list:
+# Soft decoder
+def parse_code2list2(
+    source_code: str
+) -> list:
     """
     Load the action from source code through LLM
 
@@ -121,7 +134,7 @@ def parse_code2list2(source_code: str) -> list:
     """
 
     prompt = [
-        # 1.define the type of this agent
+        # 1.Define the type of this agent
         {
             "role": "system",
             "content": """
@@ -129,7 +142,7 @@ def parse_code2list2(source_code: str) -> list:
             """
         },
 
-        # 2.provide examples
+        # 2.Provide examples
         {
             "role": "system",
             "content": """
@@ -165,7 +178,7 @@ def parse_code2list2(source_code: str) -> list:
             """
         },
 
-        # 3.tell llm to output
+        # 3.Tell llm to output
         {
             "role": "user",
             "content": source_code
@@ -185,7 +198,7 @@ def parse_code2list2(source_code: str) -> list:
     action_list = []
 
     for action in medium:
-        #action_list.append(Action())
+        # action_list.append(Action())
         action_list[-1].name = action["name"]
         action_list[-1].code = action["code"]
 
@@ -196,37 +209,39 @@ def parse_code2list2(source_code: str) -> list:
     return action_list
 
 
-# TODO: abstract the parser to convert the source code to diverse properties
-def parse_code2list(source_code: str) -> list:
+# TODO: Abstract the parser to convert the source code to diverse properties
+def parse_code2list(
+    source_code: str
+) -> list:
     """
     Load the action from source code so that we could trigger it in default_env
     """
 
-    # clean source code
-    lines = source_code.split('\n')
+    # Clean source code
+    lines = source_code.split("\n")
     striped_lines = []
 
-    for line in lines[2:]:  # [2:] filter decorator and function name
+    for line in lines[2:]:  # [2:] Filter decorator and function name
         if line.strip():
             striped_lines.append(line)
 
-    # load source code to action list sequentially
+    # Load source code to action list sequentially
 
     action_list = []
     current_indent = 0
 
     for line in striped_lines:
-        if '##' in line:
+        if "##" in line:
             # Calculate the current line's indentation
             current_indent = len(line) - len(line.lstrip())
 
-            #action_list.append(Action())
-            action_list[-1].name = line.split('##', 1)[1].strip()
-            action_list[-1].code += f'{line.lstrip()}\n'
+            # action_list.append(Action())
+            action_list[-1].name = line.split("##", 1)[1].strip()
+            action_list[-1].code += f"{line.lstrip()}\n"
         else:
             # Remove the current indent from the line
-            line_without_indent = line[current_indent:] if line.startswith(' ' * current_indent) else line.lstrip()
-            action_list[-1].code += line_without_indent + '\n'
+            line_without_indent = line[current_indent:] if line.startswith(" " * current_indent) else line.lstrip()
+            action_list[-1].code += line_without_indent + "\n"
 
     for action in action_list:
         _check_status(action)
@@ -234,8 +249,10 @@ def parse_code2list(source_code: str) -> list:
     return action_list
 
 
-# verify the status of the action
-def _check_status(action) -> None:
+# Verify the status of the action
+def _check_status(
+    action: any
+) -> None:
     if ".do()" in action.do:
 
         if not action.do:
@@ -247,7 +264,7 @@ def _check_status(action) -> None:
         action.status = "fixed"
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     code = """
 import random
 num = 3
@@ -255,10 +272,10 @@ if random.randint(1, 100) < 10:
     num = 10
 def ok():
     pass
-self.do_check('choose a number from 0 to 10, and send the number to me', show_response=True)
-self.do_check('go to the given url, show the HTML', show_response=True)
-self.do_check('show the top 10 news @llm, and send it to me', show_response=True, show_prompt=True)
-self.do_check('pick the news that related to Large Language Models, summarize all the news, and send it to me')
+self.do_check("choose a number from 0 to 10, and send the number to me", show_response=True)
+self.do_check("go to the given url, show the HTML", show_response=True)
+self.do_check("show the top 10 news @llm, and send it to me", show_response=True, show_prompt=True)
+self.do_check("pick the news that related to Large Language Models, summarize all the news, and send it to me")
 """
 
     # Extract the desired segments from the parsed AST

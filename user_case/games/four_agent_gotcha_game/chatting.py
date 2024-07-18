@@ -7,10 +7,12 @@ class ChattingHistory(Env):
         super().__init__(*args, **kwargs)
         self.value = []
 
-    # add the chatting content to chat_history
+    # Add the chatting content to chat_history
     def add(self, words: str, role: str):
-        chatting = {"role": role,
-                    "content": words}
+        chatting = {
+            "role": role,
+            "content": words
+        }
         self.value.append(chatting)
 
     def pop(self, num: int = 0):

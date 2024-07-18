@@ -1,16 +1,17 @@
-from openai import OpenAI
 import os
+from openai import OpenAI
 
 
-# using OpenAI API model
-
-
-def open_ai_chat(prompt,
-                 temperature=0.1, max_tokens=4096, model=None,
-                 api_key=None,
-                 printing=False, stream=True
-                 ):
-
+# Using OpenAI API model
+def open_ai_chat(
+    prompt: str,
+    temperature = 0.1, 
+    max_tokens = 4096, 
+    model = None,
+    api_key = None,
+    printing = False, 
+    stream = True
+) -> str:
     if api_key == None:
         client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", api_key))
     else:
@@ -60,7 +61,9 @@ def open_ai_chat(prompt,
 
 
 if __name__ == "__main__":
-    response = open_ai_chat(prompt=[{"role": "user", "content": "Introduce yourself, with 20 words"}],
-                            printing=False, stream=True,
-                            api_key=os.environ["OPENAI_API_KEY"])
-
+    response = open_ai_chat(
+        prompt=[{"role": "user", "content": "Introduce yourself, with 20 words"}],
+        printing=False, 
+        stream=True,
+        api_key=os.environ["OPENAI_API_KEY"]
+    )
