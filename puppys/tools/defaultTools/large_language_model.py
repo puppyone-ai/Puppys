@@ -1,11 +1,16 @@
 import os
-
 from litellm import completion
-
 from puppys.env.func_env import FuncEnv
 
 
-def llm(prompt, *, model="gpt-4o", url=None, temperature=0.7, max_tokens=2048) -> str:
+def llm(
+    prompt: str, 
+    *, 
+    model: str = "gpt-4o", 
+    url: str = None, 
+    temperature: float = 0.7, 
+    max_tokens: int = 2048
+) -> str:
     """
     Large_Language_Model, ChatGPT, GPT4 or GPT3.5,
     Good at summarizing, retrieving, finding information, generating text, and answer message based on a reference. etc.
@@ -22,28 +27,38 @@ def llm(prompt, *, model="gpt-4o", url=None, temperature=0.7, max_tokens=2048) -
     else:
         pass
 
-    if url == None:
+    if url is None:
         url = os.getenv("OPENAI_BASE_URL")
     else:
         pass
 
-    result = completion(messages=[{"role": "user",
-                                   "content": prompt}],
-                        model=model,
-                        temperature=temperature,
-                        base_url=url,
-                        max_tokens=max_tokens)
+    result = completion(
+        messages=[
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        model=model,
+        temperature=temperature,
+        base_url=url,
+        max_tokens=max_tokens
+    )
 
     return result.choices[0].message.content
 
 
 if __name__ == "__main__":
-    text = "how should I install the package of openAI"
+    text = "How should I install the package of openAI"
 
-    # define the tool
-    LLM = FuncEnv(value=llm, name=llm.__name__, description=llm.__doc__,
-                  free_params=["prompt"])
+    # Define the tool
+    LLM = FuncEnv(
+        value=llm, 
+        name=llm.__name__, 
+        description=llm.__doc__,
+        free_params=["prompt"]
+    )
 
-    #print the response from tool
+    # Print the response from tool
     res = LLM(prompt=text)
     print(res)

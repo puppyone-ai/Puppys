@@ -1,14 +1,15 @@
-from openai import OpenAI
 import os
 import requests
-from puppys.decorator import new_func
+from openai import OpenAI
 from puppys.pp.main import Puppy
 from puppys.env.func_env import FuncEnv
+from puppys.decorator import new_func
 from puppys.pp.actions.explore import explore
 
 
-def perplexity_search(query):
-
+def perplexity_search(
+    query: str
+) -> str:
     messages = [
         {
             "role": "system",
@@ -19,15 +20,16 @@ def perplexity_search(query):
         },
         {
             "role": "user",
-            "content": (
-                f"{query}"
-            ),
+            "content": f"{query}",
         },
     ]
 
-    client = OpenAI(api_key=os.environ['PERPLEXITY_API_KEY'], base_url="https://api.perplexity.ai")
+    client = OpenAI(
+        api_key=os.environ["PERPLEXITY_API_KEY"], 
+        base_url="https://api.perplexity.ai"
+    )
 
-    # chat completion without streaming
+    # Chat completion without streaming
     response = client.chat.completions.create(
         model="mistral-7b-instruct",
         messages=messages,
@@ -35,14 +37,17 @@ def perplexity_search(query):
     return response.choices[0].message.content
 
 
-def google_search(query):
-
+def google_search(
+    query: str
+) -> dict:
     url = "https://www.googleapis.com/customsearch/v1"
-    params = {"q": query,
-              "key": os.environ['GCP_API_KEY'],
-              "cx": os.environ['CSE_ID'],
-              }
+    params = {
+        "q": query,
+        "key": os.environ["GCP_API_KEY"],
+        "cx": os.environ["CSE_ID"],
+    }
     print(params)
+
     response = requests.get(url, params=params)
     print(response.status_code)
     if response.status_code != 200:
@@ -51,28 +56,30 @@ def google_search(query):
 
 
 @new_func(free_params=["query"])
-def search(query):
+def search(
+    query: str
+) -> dict:
     """
     Search Engine, use it when the user request to find some real-time information online.
     For example, when user want to know the weather, asset price or economy indicators.
 
-    for example:
+    For example:
     ## search the weather in Amsterdam
     query = "what is the weather today in Amsterdam?"
-    searchResults = search(query)"""
+    searchResults = search(query)
+    """
 
     return perplexity_search(query)
 
 
-
 if __name__ == "__main__":
 
-    # define an agent
-    puppy=Puppy(name="Puppy")
+    # Define an agent
+    puppy = Puppy(name="Puppy")
 
-    # define the tool in the agent
+    # Define the tool in the agent
     puppy.tools_search = search
-    # run the tool
+    # Run the tool
     print(explore(puppy, target=FuncEnv))
 
 

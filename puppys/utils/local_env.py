@@ -1,6 +1,7 @@
 import os
 import json
 
+
 def sense_local_env():
     """
     This function senses the local environment by listing all files and directories in the current directory recursively.
@@ -24,8 +25,8 @@ def sense_local_env():
             current_level = current_level[part]
 
         # Add files and directories to the current level
-        current_level['files'] = filenames
-        current_level['directories'] = dir_names
+        current_level["files"] = filenames
+        current_level["directories"] = dir_names
 
     print(tree)
 

@@ -17,19 +17,19 @@ class TestActionflow():
     ):
         self.puppy_instance = puppy_instance
 
-        # set the color for printing
+        # Set the color for printing
         self.GREEN = "\033[32m"
         self.GREY = "\033[90m"
         self.RED = "\033[31m"
-        self.RESET = "\033[0m"
-    
+        self.RESET = "\033[0m" 
     
     def test_run(
         self, 
         node_num: int, 
         num_of_action: int, 
-        handle_exceptions: bool = True, 
-        use_command_line: bool = False, 
+        handle_exceptions: bool = True,
+        max_length: int = 1000,
+        use_command_line: bool = False,
         updates: dict = None
     ) -> list:
         """
@@ -40,7 +40,7 @@ class TestActionflow():
             The number of the node to start execution from. The node numbers are as follows:
             - 0: The current code.
             - 1: From the current code to all the future codes.
-            - -1: From the hitory codes to the current code.
+            - -1: From the history codes to the current code.
             - 2: All code nodes, including history_codes, the current code, and future_codes.
             - -2: The last node of the history codes, the current code, and the first node of the future codes.
 
@@ -51,7 +51,7 @@ class TestActionflow():
             Whether to handle exceptions during execution. If True, the function will stop and return the exception when an error occurs. If False, the exception message will be captured and included in the results list, and execution will continue.
 
         use_command_line (bool):
-            The mode of execution. It can be either inline or commandline.
+            The mode of execution. It can be either inline or command-line.
             - False: The function applies monkey patching to update the attribute values of the loaded puppy_instance from the local file based on the provided kwargs. The function then runs the code node(s) num_of_action times.
             - True: The function provides an interactive command-line interface for the developer to select which attributes to modify. The current value is displayed, and the developer can enter new values. After updating values, the developer can choose to test run or continue updating values.
 
@@ -61,32 +61,15 @@ class TestActionflow():
         Returns:
             A list of results from the executions, each element representing the output and error messages (if any) for one execution. If handle_exceptions is set to False, exceptions will be included in the list as well.
         """
+
         results = []
 
         # Update attributes
         if not use_command_line:
             self.inline_mode(updates)
+            results = self.execute_code_multiple_times(num_of_action, node_num, results, handle_exceptions, max_length)
         else:
-            self.command_line_mode()
-
-        # Execute the code
-        for _ in range(num_of_action):
-            try:
-                result = self.execute_code(node_num)
-                if isinstance(result, dict):
-                    results.append(result)
-                else:
-                    raise ValueError(f"{result}")
-            except Exception as e:
-                if handle_exceptions:
-                    raise e
-                results.append({"Exception": e})
-
-        results = self._find_differences(results)
-        
-        # Save the updated puppy_instance
-        self.save_updated_puppy_instance()
-        self.save_instance_to_json(self.puppy_instance)
+            results = self.command_line_mode(num_of_action, node_num, results, handle_exceptions)
 
         return results
 
@@ -105,8 +88,13 @@ class TestActionflow():
                 raise ValueError(f"Invalid key: {key}")
 
     def command_line_mode(
-        self
-    ) -> None:
+        self,
+        num_of_action: int,
+        node_num: int,
+        results: list,
+        handle_exceptions: bool,
+        max_length: int
+    ) -> list:
         """
         The command line mode for updating the attribute values of the puppy_instance.
         """
@@ -117,31 +105,70 @@ class TestActionflow():
             for attr, value in vars(self.puppy_instance).items():
                 print(f"{self.GREEN}{attr}:{self.RESET} \n{self._advanced_print(value)}")
 
-            modify = input("\nDo you want to modify any attribute? (yes/no): ").strip().lower()
-            if modify == 'yes':
+            execute = self._input_value("Execute codes (y) or change attributes (n)?: ", str).lower()
+            if execute == "y":
+                results = self.execute_code_multiple_times(num_of_action, node_num, results, handle_exceptions, max_length)
+                print("Results: \n", results, "\n\n")
+                exit = self._input_value("Exit test run? (y/n): ", str).lower()
+                if exit == "y":
+                    return results
+            elif execute == "n":
                 keep_modifying = True
                 while keep_modifying:
-                    attr_to_modify = input("Enter the attribute name: ").strip()
+                    attr_to_modify = input("Enter the attribute name to change: ").strip()
                     if self._has_nested_attr(self.puppy_instance, attr_to_modify):
                         current_value = self._get_nested_attr(self.puppy_instance, attr_to_modify)
                         print(f"Current value of {attr_to_modify}: {current_value}")
-                        
+
                         if isinstance(current_value, list):
                             self._modify_list(attr_to_modify, current_value)
                         else:
                             new_value = self._input_value("Enter the new value: ", type(current_value))
                             self._set_nested_attr(self.puppy_instance, attr_to_modify, new_value)
                             print(f"Updated value of {attr_to_modify}: {self._advanced_print(self._get_nested_attr(self.puppy_instance, attr_to_modify))}")
-        
-                        inner_modify = input("Do you want to modify any other attribute? (yes/no): ").strip().lower()
-                        if inner_modify == 'no':
+
+                        inner_modify = input("Do you want to modify any other attribute? (y/n): ").strip().lower()
+                        if inner_modify == "n":
                             keep_modifying = False
                     else:
                         print(f"Attribute {attr_to_modify} does not exist.")
-            elif modify == 'no':
-                break
             else:
-                print("Invalid input. Please enter 'yes' or 'no'.")
+                print("Invalid input. Please enter `y` or `n`.")
+
+    def execute_code_multiple_times(
+        self,
+        num_of_action: int,
+        node_num: int,
+        results: list,
+        handle_exceptions: bool,
+        max_length: int
+    ) -> list:
+        """
+        Execute the code multiple times and append the results to the results list.
+        The first element of the results list contains all the values, while the rest of the elements only contain the differences.
+        """
+
+        # Execute the code
+        for _ in range(num_of_action):
+            try:
+                result = self.execute_code(node_num)
+                if isinstance(result, dict):
+                    results.append(result)
+                else:
+                    raise ValueError(f"{result}")
+            except Exception as e:
+                if handle_exceptions:
+                    raise e
+                results.append({"Exception": e})
+
+        # Find the differences between the results
+        results = self._find_differences(results, max_length)
+
+        # Save the updated puppy_instance
+        self.save_updated_puppy_instance()
+        self.save_instance_to_json(self.puppy_instance)
+        
+        return results
 
     def execute_code(
         self, 
@@ -207,7 +234,7 @@ class TestActionflow():
 
         # Save the instance to a JSON file
         try:
-            with open(file_path, 'w', encoding='utf-8') as f:
+            with open(file_path, "w", encoding="utf-8") as f:
                 json.dump(instance_dict, f, ensure_ascii=False, indent=4)
         except Exception as e:
             print(f"{self.RED}Fail saving instance: {e}{self.RESET}")
@@ -259,7 +286,7 @@ class TestActionflow():
             indent: The current indentation level (used for nested structures).
         """
         
-        spacing = ' ' * (indent * 4)
+        spacing = " " * (indent * 4)
         
         value_to_print = ""
         
@@ -291,7 +318,7 @@ class TestActionflow():
             The number of the node to start execution from. The node numbers are as follows:
             - 0: The current code.
             - 1: From the current code to all the future codes.
-            - -1: From the hitory codes to the current code.
+            - -1: From the history codes to the current code.
             - 2: All code nodes, including history_codes, the current code, and future_codes.
             - -2: The last node of the history codes, the current code, and the first node of the future codes.
         """
@@ -337,10 +364,11 @@ class TestActionflow():
                 non_picklable_dict[key] = f"{type(value).__name__}: {repr(value)}"
 
         return picklable_dict, non_picklable_dict
-    
+
     def _find_differences(
         self, 
-        dict_list: list
+        dict_list: list,
+        max_length: int
     ) -> list:
         """
         Find the differences between dictionaries in a list.
@@ -351,6 +379,7 @@ class TestActionflow():
         Returns:
             A list of dictionaries representing the differences, the first element contains all the values while the rest elements only contain the difference.
         """
+
         if not dict_list:
             return {}
 
@@ -358,12 +387,20 @@ class TestActionflow():
         differences = [first_dict]
 
         for d in dict_list[1:]:
+            total_length = 0
+
             diff = {}
             for key, value in d.items():
+                value_str = str(value)
+                if total_length + len(value_str) > max_length:
+                    diff["..."] = "Output truncated due to length limits"
+                    break
                 if key in first_dict and first_dict[key] != value:
                     diff[key] = value
                 elif key not in first_dict:
                     diff[key] = value
+                total_length += len(value_str)
+
             differences.append(diff)
 
         return differences
@@ -382,9 +419,9 @@ class TestActionflow():
         elif target_type == float:
             return float(value)
         elif target_type == bool:
-            return value.lower() in ['true', '1', 'yes']
+            return value.lower() in ["true", "1", "yes"]
         elif target_type == list:
-            return value.strip('[]').split(',')
+            return value.strip("[]").split(",")
         elif target_type == dict:
             import ast
             return ast.literal_eval(value)
@@ -452,13 +489,13 @@ class TestActionflow():
             bool: True if the nested attribute exists, False otherwise.
         """
 
-        attrs = attr_path.split('.')
+        attrs = attr_path.split(".")
         for attr in attrs:
             if not hasattr(obj, attr):
                 return False
             obj = getattr(obj, attr)
         return True
-    
+
     def _get_nested_attr(
         self, 
         obj: any, 
@@ -475,7 +512,7 @@ class TestActionflow():
             The value of the nested attribute.
         """
 
-        attrs = attr_path.split('.')
+        attrs = attr_path.split(".")
         for attr in attrs:
             obj = getattr(obj, attr)
         return obj
@@ -495,7 +532,7 @@ class TestActionflow():
             value: The value to set.
         """
 
-        attrs = attr_path.split('.')
+        attrs = attr_path.split(".")
         for attr in attrs[:-1]:
             obj = getattr(obj, attr)
         setattr(obj, attrs[-1], value)

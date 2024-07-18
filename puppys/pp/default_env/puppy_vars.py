@@ -1,14 +1,24 @@
 from puppys.env.env import Env
 
-# a default essential env for agent
+
+# A default essential env for agent
 class PuppyVars(Env):
     """
     An essential env for agent.
     It shows the preview of the runtime variables.
     """
+
     visible = False
 
-    def __init__(self, puppy_instance, global_dict=None, runtime_dict=None, preview_num=300, *args, **kwargs):
+    def __init__(
+        self, 
+        puppy_instance: any, 
+        global_dict: dict = None, 
+        runtime_dict: dict = None, 
+        preview_num: int = 300, 
+        *args, 
+        **kwargs
+    ):
         super().__init__(*args, **kwargs)
 
         if runtime_dict is None:
@@ -21,15 +31,20 @@ class PuppyVars(Env):
         self.runtime_dict = runtime_dict
 
         self.global_dict.update(globals())
-        self.runtime_dict.update({'self': puppy_instance})
+        self.runtime_dict.update({"self": puppy_instance})
 
         self.preview_num=preview_num
 
-
-    def add_runtime_vars(self, dict: dict):
+    def add_runtime_vars(
+        self, 
+        dict: dict
+    ) -> None:
         self.runtime_dict.update(dict)
 
-    def delete_runtime_vars(self, keys: list):
+    def delete_runtime_vars(
+        self, 
+        keys: list
+    ) -> None:
         for key in keys:
             if key in self.runtime_dict:
                 del self.runtime_dict[key]

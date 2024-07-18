@@ -1,13 +1,12 @@
+import os
+
 # If you are a VS Code users:
 import sys
-import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-import os
 
 from puppys.pp.mei import Mei
 
-# change the API key to your own
+# Change the API key to your own
 # os.environ["OPENAI_API_KEY"] = ""
 
 def hacker_news_decisiontree(self, url):
@@ -35,6 +34,6 @@ hacker_news = Mei(hacker_news_decisiontree)
 # hacker_news.run(url="https://news.ycombinator.com/")
 
         
-# results = hacker_news.test_run(node_num=-1, num_of_action=2, handle_exceptions=False, use_command_line=True)
-results = hacker_news.test_run(node_num=-1, num_of_action=2, handle_exceptions=False, use_command_line=False, updates = {"actionflow.history_codes":["a = 1"]})
+# results = hacker_news.test_run(node_num=-1, num_of_action=2, handle_exceptions=False, max_length=1000, use_command_line=True)
+results = hacker_news.test_run(node_num=-1, num_of_action=3, handle_exceptions=False, max_length=40, use_command_line=False, updates = {"actionflow.history_codes":["a = 1"]})
 print(results)

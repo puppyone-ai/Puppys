@@ -1,7 +1,7 @@
 # If you are a VS Code users:
-#import sys
-#import os
-#sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# import sys
+# import os
+# sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from puppys.pp.main import Puppy
 from puppys.pp.main import puppy_run
@@ -11,32 +11,31 @@ from .chatting import ChattingHistory
 
 
 def holder_decisiontree(self):
-
     self.player_list = [player_1, player_2, player_3, player_4]
 
     gotcha = False
 
     while gotcha == False:
 
-        # chatting stage
+        # Chatting stage
         print("-----chatting-----")
-        # let agents describe their words
+        # Let agents describe their words
         for player in self.player_list:
-            self.trigger.clear()  # reset self trigger
-            player.trigger.set()  # let the player to start describe its word
-            self.trigger.wait()  # wait the player to finish
+            self.trigger.clear()  # Reset self trigger
+            player.trigger.set()  # Let the player to start describe its word
+            self.trigger.wait()  # Wait the player to finish
 
-        # discussing stage
+        # Discussing stage
         print("-----discussing-----")
         self.discussing_history = ChattingHistory()
 
-        # let all the players discuss who is the ghost
+        # Let all the players discuss who is the ghost
         for player in self.player_list:
-            self.trigger.clear()  # reset self trigger
-            player.trigger.set()  # let the player to start describe its word
-            self.trigger.wait()  # wait the player to finish
+            self.trigger.clear()  # Reset self trigger
+            player.trigger.set()  # Let the player to start describe its word
+            self.trigger.wait()  # Wait the player to finish
 
-        # select the ghost
+        # Select the ghost
         find_ghost_prompt = [{"role": "system",
                               "content":
             f"""你是《谁是卧底》的游戏主持者, 玩家列表是 {self.player_list}
@@ -48,29 +47,33 @@ def holder_decisiontree(self):
         print("经过讨论，鬼是：")
         the_ghost = open_ai_chat(prompt=find_ghost_prompt, printing=True, stream=True, temperature=0.9)
 
-        # remove the ghost from the list
+        # Remove the ghost from the list
         self.player_list.remove(eval(the_ghost))
 
-        # if the ghost has been removed
+        # If the ghost has been removed
         if eval(the_ghost).is_ghost == True:
             gotcha = True
             print("游戏结束，人类胜利")
 
-        # if the ghost has not been removed
+        # If the ghost has not been removed
         else:
-            # add the holder's response to the chat history
+            # Add the holder's response to the chat history
             for player in self.player_list:
                 player.chat_history.add(
-                    words=f"{eval(the_ghost).name} has been removed from the game, however, he is not the ghost. Think about it",
+                    words=f"{eval(the_ghost).name} has been removed from the game, however, he is not the ghost. Think about it.",
                     role="user")
 
-            # end the game
+            # End the game
             if len(self.player_list) <= 2:
                 gotcha = True
                 print("游戏结束，鬼胜利")
 
 
-def chatting_decisiontree(self, the_word, is_ghost):
+def chatting_decisiontree(
+    self, 
+    the_word: str, 
+    is_ghost: bool
+):
     self.the_word = the_word
 
     self.is_ghost = is_ghost
@@ -93,20 +96,25 @@ def chatting_decisiontree(self, the_word, is_ghost):
 
     "player_2: 这是一个让人变干净的事情。" """}]
 
-    self.chat_history=ChattingHistory()
+    self.chat_history = ChattingHistory()
 
-    # repeat chatting and discussing
+    # Repeat chatting and discussing
     while True:
         self.trigger.wait()
         print(f"[{self.name}]",f"[{self.the_word}]")
 
-        # response corresponding the chatting history
-        response = open_ai_chat(prompt=system_prompt + self.chat_history.value, printing=True, stream=True, temperature=0.9)
+        # Response corresponding to the chatting history
+        response = open_ai_chat(
+            prompt=system_prompt + self.chat_history.value, 
+            printing=True, 
+            stream=True, 
+            temperature=0.9
+        )
 
-        self.chat_history.add(words=response, role='assistant')
+        self.chat_history.add(words=response, role="assistant")
 
         for player in self.other_player_list:
-            player.chat_history.add(words=response, role='user')
+            player.chat_history.add(words=response, role="user")
 
         self.trigger.clear()
         self.holder.trigger.set()
@@ -129,17 +137,45 @@ def chatting_decisiontree(self, the_word, is_ghost):
         下面是其他的玩家的描述记录
         """}]
 
-        response = open_ai_chat(prompt=discuss_prompt + self.chat_history.value, printing=True, stream=True,temperature=0.9)
-        self.holder.discussing_history.add(words=response, role='assistant')
+        response = open_ai_chat(
+            prompt=discuss_prompt + self.chat_history.value, 
+            printing=True, 
+            stream=True,
+            temperature=0.9
+        )
+        self.holder.discussing_history.add(words=response, role="assistant")
 
         self.trigger.clear()
         self.holder.trigger.set()
 
-holder = Puppy(name="game_holder", decisiontree=holder_decisiontree)
-player_1 = Puppy(name="player_1", decisiontree=chatting_decisiontree, the_word='跳伞', is_ghost=False)
-player_2 = Puppy(name="player_2", decisiontree=chatting_decisiontree, the_word='跳伞', is_ghost=False)
-player_3 = Puppy(name="player_3", decisiontree=chatting_decisiontree, the_word='蹦极', is_ghost=True)
-player_4 = Puppy(name="player_4", decisiontree=chatting_decisiontree, the_word='跳伞', is_ghost=False)
+holder = Puppy(
+    name="game_holder", 
+    decisiontree=holder_decisiontree
+)
+player_1 = Puppy(
+    name="player_1", 
+    decisiontree=chatting_decisiontree, 
+    the_word="跳伞", 
+    is_ghost=False
+)
+player_2 = Puppy(
+    name="player_2", 
+    decisiontree=chatting_decisiontree, 
+    the_word="跳伞", 
+    is_ghost=False
+)
+player_3 = Puppy(
+    name="player_3", 
+    decisiontree=chatting_decisiontree, 
+    the_word="蹦极", 
+    is_ghost=True
+)
+player_4 = Puppy(
+    name="player_4", 
+    decisiontree=chatting_decisiontree, 
+    the_word="跳伞", 
+    is_ghost=False
+)
 
 player_1.other_player_list = [player_2, player_3, player_4]
 player_2.other_player_list = [player_1, player_3, player_4]
