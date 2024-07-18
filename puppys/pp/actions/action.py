@@ -108,13 +108,15 @@ class Action:
         """
         
         # Call the openai chat api
-        result = open_ai_chat(prompt = prompt,
-                              model = self.model,
-                              temperature = temperature,
-                              api_key = os.environ["OPENAI_API_KEY"],
-                              max_tokens = max_tokens,
-                              printing = self.show_response, 
-                              stream = True)
+        result = open_ai_chat(
+            prompt = prompt,
+            model = self.model,
+            temperature = temperature,
+            api_key = os.environ["OPENAI_API_KEY"],
+            max_tokens = max_tokens,
+            printing = self.show_response, 
+            stream = True
+        )
         
         return result
 

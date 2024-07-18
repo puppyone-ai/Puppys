@@ -10,7 +10,7 @@ from puppys.pp.main import puppy_run
 # Define the lawyer_1's setting
 debater_1_setting = """
 You are defending yourself. You lost a wallet at the train station, and now you have found someone
-who has your wallet but claims they didn"t steal it. Now, you need to win this argument and put this guy into jail. Don"t call police. You 
+who has your wallet but claims they didn't steal it. Now, you need to win this argument and put this guy into jail. Don't call police. You 
 MUST Win, or you will die. Be aggressive and rude always, try to irritate him. You can use catchy rhymes, exaggerate the argument, and metaphors. 用中文输出，不要超过 50 字。
 You can:
 1. Intentionally misrepresenting someone's argument to make it easier to attack and then knocking down that weakened argument.
@@ -36,12 +36,12 @@ def chatting_decisiontree(
 ):
     from user_case.games.four_agent_gotcha_game.chatting import ChattingHistory
     from puppys.llm.open_ai import open_ai_chat
-    
-    self.chat_history=ChattingHistory()
+
+    self.chat_history = ChattingHistory()
 
     self.chat_history.add(words=system_prompt, role="system")
 
-    loop_num=0
+    loop_num = 0
 
     # Repeat the chat for 5 loops
     while loop_num < max_loop_num:

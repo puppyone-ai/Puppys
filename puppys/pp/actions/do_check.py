@@ -6,7 +6,7 @@ def do_check(
     show_response = False
 ):
     """
-    do the action and check if it finished or not
+    Do the action and check if it finished or not
     """
 
     if hasattr(puppy_instance, "do") and hasattr(puppy_instance, "check"):

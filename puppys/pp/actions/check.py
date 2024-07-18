@@ -86,9 +86,20 @@ def check(
     and Now you need to write code to justify if the action of {action_name} is done or not:
     Your response should be similar to the response example(ONLY CODE, and COMMENT) and NOTHING ELSE."""}]
 
-    action = Action(puppy_instance, action_name, model, show_prompt, show_response, retries=0)
+    action = Action(
+        puppy_instance, 
+        action_name, 
+        model, 
+        show_prompt, 
+        show_response, 
+        retries=0
+    )
 
-    action.highlighting(action_type = "checking_action", prompt = prompt, prompt_action="checking")
+    action.highlighting(
+        action_type="checking_action", 
+        prompt=prompt, 
+        prompt_action="checking"
+    )
 
     new_code = action.llm_api_call(prompt)
 

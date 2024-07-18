@@ -8,12 +8,19 @@ class ChattingHistory(Env):
         self.value = []
 
     # Add the chatting content to chat_history
-    def add(self, words: str, role: str):
+    def add(
+        self, 
+        words: str, 
+        role: str
+    ) -> None:
         chatting = {
             "role": role,
             "content": words
         }
         self.value.append(chatting)
 
-    def pop(self, num: int = 0):
+    def pop(
+        self, 
+        num: int = 0
+    ) -> any:
         return self.value.pop(num)

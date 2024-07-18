@@ -6,7 +6,7 @@ from puppys.pp.actions import do_check, check, do, rewrite
 
 class Mei(Puppy):
     """
-    A default puppy that contains llm and talk_with_human tools, and do, check, and do_check actions
+    A default puppy that contains llm and talk_with_human tools, and do, check, and do_check actions.
     """
 
     def __init__(self, *args, **kwargs):

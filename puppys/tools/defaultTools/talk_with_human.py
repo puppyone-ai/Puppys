@@ -15,7 +15,7 @@ def talk_with_human(
 
     For example:
     ## Ask the user about the phone number of his boss
-    question="What's the phone number of your boss?"
+    question = "What's the phone number of your boss?"
     talk_with_human(message=question) # the message is essential
     """
 

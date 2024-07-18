@@ -58,7 +58,7 @@ if __name__ == "__main__":
         print(what_to_say)
 
 
-    puppy=Puppy(name="Puppy")
+    puppy = Puppy(name="Puppy")
 
     puppy.tool = say
 

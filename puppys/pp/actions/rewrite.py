@@ -16,8 +16,15 @@ def rewrite(
     Rewrite user instructions to be more specific and aligned with available tools.
     """
     
-    descriptions = explore(environment=puppy_instance.env_node, target=FuncEnv, output_content_mode="attribute", attributes=["name", "description"])
-    descriptions_str = "\n".join([f"{tool_name}: {details["description"]}" for tool_name, details in descriptions.items()])
+    descriptions = explore(
+        environment=puppy_instance.env_node, 
+        target=FuncEnv, 
+        output_content_mode="attribute", 
+        attributes=["name", "description"]
+    )
+    descriptions_str = "\n".join(
+        [f"{tool_name}: {details["description"]}" for tool_name, details in descriptions.items()]
+    )
     sys_prompt = f"""
     Your job is to rewrite user instructions to be more specific and aligned with available tools. Each user instruction should be transformed into one or more tool actions.
 
@@ -45,7 +52,14 @@ def rewrite(
         {"role": "user", "content": user_prompt}
     ]
     
-    action = Action(puppy_instance, user_prompt, model, show_prompt, show_response, retries=0)
+    action = Action(
+        puppy_instance, 
+        user_prompt, 
+        model, 
+        show_prompt, 
+        show_response, 
+        retries=0
+    )
 
     action.highlighting("rewriting_prompt", prompt_messages)
 

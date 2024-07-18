@@ -42,7 +42,7 @@ you can show your thinking and reason in the comment.
 in your final response as code. When the do(XXX) appears, you HAVE TO change it to other code. your response should be similar with the following example(ONLY CODE) and NOTHING ELSE.
 """},
 
-        # 2. provide the current var and usable tools
+        # 2. Provide the current var and usable tools
         {"role": "user",
          "content":
              f"""Your formally-defined parameters and their previewing are as follows: 
@@ -80,9 +80,20 @@ Now generate your answer as code:
 
     # Prompt Finished *****************************************************************************************
 
-    action = Action(puppy_instance, action_name, model, show_prompt, show_response, retries)
+    action = Action(
+        puppy_instance, 
+        action_name, 
+        model, 
+        show_prompt, 
+        show_response, 
+        retries
+    )
 
-    action.highlighting(action_type = "doing_action", prompt=prompt, prompt_action="doing")
+    action.highlighting(
+        action_type="doing_action", 
+        prompt=prompt, 
+        prompt_action="doing"
+    )
 
     new_code = action.llm_api_call(prompt)
 
