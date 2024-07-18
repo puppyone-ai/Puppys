@@ -13,13 +13,13 @@ class Puppy(Env):
     An agent must call this class
     """
 
-    def __init__(self, value=None, *args,  printing_mode='terminal',  **kwargs):
+    def __init__(self, value=None, *args,  printing_mode='terminal', save_actionflow=True, save_instance=True,  **kwargs):
 
         super().__init__(*args, **kwargs)
 
         self.name = "default_puppy"
 
-        self.actionflow = Actionflow(self, function=value, printing_mode=printing_mode)
+        self.actionflow = Actionflow(self, function=value, printing_mode=printing_mode, save_actionflow=save_actionflow, save_instance=save_instance)
 
         self.puppy_vars = PuppyVars(self, global_dict=globals())
 
