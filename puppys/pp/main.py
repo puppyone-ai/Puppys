@@ -31,6 +31,13 @@ class Puppy(Env):
     def load_env(self, *args, **kwargs):
         return load_env(self, *args, **kwargs)
 
+    def test_run(self, **kwargs) -> None:
+        """
+        debug the agent
+        """
+        # run the actionflow in test mode
+        return self.actionflow.test_run(**kwargs)
+
     def run(self, **kwargs) -> None:
         """
         run the agent
