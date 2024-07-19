@@ -28,7 +28,7 @@ def sense_local_env():
         current_level["files"] = filenames
         current_level["directories"] = dir_names
 
-    print(tree)
+    print("tree: ", tree)
 
     # Return the tree structure in JSON format
     return json.dumps(tree, indent=4)

@@ -5,13 +5,19 @@ from puppys.env.env import Env
 class FuncEnv(Env):
     """
     Use to build the environments for the puppy to retrival.
+
+    Init Args:
+        name (str): The name of the function. Defaults to None.
+        description (str): The description of the function. Defaults to None.
+        value (function): The function that the puppy will execute.
+        fixed_params (dict): The fixed params that the function will use. Defaults to None.
     """
 
     def __init__(
         self, 
         name: str, 
         description: str, 
-        value, 
+        value: any, 
         fixed_params: dict = None, 
         *args,
         **kwargs
@@ -47,8 +53,7 @@ if __name__ == "__main__":
     answer = ok(intro="my name is Lin")
     """
 
-    def send_message_to_human(intro, max_num, *args, **kwargs):
-
+    def send_message_to_human(intro, max_num):
         num = 0
         while num < max_num:
             print(f"hello, everyone, I am {intro}")
@@ -64,4 +69,4 @@ if __name__ == "__main__":
 
     send_message_to_human(intro="puppys", ok=3)
 
-    exec("send_message_to_human(intro= 'puppys', ok=3)")
+    exec("send_message_to_human(intro='puppys', ok=3)")

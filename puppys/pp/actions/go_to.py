@@ -4,9 +4,16 @@ from puppys.pp.actions.explore import explore
 from puppys.pp.actions.load_env import load_env, unload_env
 
 
-def go_to(puppy_instance, new_env_node):
+def go_to(
+    puppy_instance: any, 
+    new_env_node: any
+) -> None:
     """
-    Change the env_node to another env
+    Change the env_node to another env.
+
+    Args:
+        puppy_instance (any): The puppy instance.
+        new_env_node (any): The new env node.
     """
 
     pre_env_node = puppy_instance.env_node

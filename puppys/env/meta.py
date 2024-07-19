@@ -6,6 +6,9 @@ class EnvMeta(type):
         bases: list, 
         class_dict: dict
     ):
+        """
+        The metaclass for the Env class.
+        """
 
         # Get window property, if it exists
         window = class_dict.get("window", [])

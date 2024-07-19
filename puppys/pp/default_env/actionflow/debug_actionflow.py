@@ -10,6 +10,9 @@ from puppys.pp.default_env.actionflow.parse import replace_function_arguments
 class TestActionflow():
     """
     TestActionflow test a specific actionflow in debug mode.
+
+    Init Args:
+        puppy_instance (any): The instance of the puppy to test.
     """
     def __init__(
         self, 
@@ -34,8 +37,9 @@ class TestActionflow():
     ) -> list:
         """
         Test run the saved actionflow in debug mode.
-        
-        ## Parameters
+
+        Args:
+
         node_num (int): 
             The number of the node to start execution from. The node numbers are as follows:
             - 0: The current code.
@@ -69,7 +73,7 @@ class TestActionflow():
             self.inline_mode(updates)
             results = self.execute_code_multiple_times(num_of_action, node_num, results, handle_exceptions, max_length)
         else:
-            results = self.command_line_mode(num_of_action, node_num, results, handle_exceptions)
+            results = self.command_line_mode(num_of_action, node_num, results, handle_exceptions, max_length)
 
         return results
 
@@ -79,6 +83,9 @@ class TestActionflow():
     ) -> None:
         """
         The inline mode for updating the attribute values of the puppy_instance.
+
+        Args:
+            updates (dict): The dictionary used to update the attribute values of the puppy_instance.
         """
 
         for key, value in updates.items():
@@ -97,6 +104,16 @@ class TestActionflow():
     ) -> list:
         """
         The command line mode for updating the attribute values of the puppy_instance.
+
+        Args:
+            num_of_action (int): The number of times to execute the actionflow.
+            node_num (int): The number of the node to start execution from.
+            results (list): The list of results from the executions.
+            handle_exceptions (bool): Whether to handle exceptions during execution.
+            max_length (int): The maximum length of the output to display.
+
+        Returns:
+            A list of results from the executions.
         """
 
         print(self.RED + "*** Command Line Mode for Test Run ***" + self.RESET)
@@ -109,8 +126,8 @@ class TestActionflow():
             if execute == "y":
                 results = self.execute_code_multiple_times(num_of_action, node_num, results, handle_exceptions, max_length)
                 print("Results: \n", results, "\n\n")
-                exit = self._input_value("Exit test run? (y/n): ", str).lower()
-                if exit == "y":
+                is_exit = self._input_value("Exit test run? (y/n): ", str).lower()
+                if is_exit == "y":
                     return results
             elif execute == "n":
                 keep_modifying = True
@@ -146,6 +163,16 @@ class TestActionflow():
         """
         Execute the code multiple times and append the results to the results list.
         The first element of the results list contains all the values, while the rest of the elements only contain the differences.
+
+        Args:
+            num_of_action (int): The number of times to execute the actionflow.
+            node_num (int): The number of the node to start execution from.
+            results (list): The list of results from the executions.
+            handle_exceptions (bool): Whether to handle exceptions during execution.
+            max_length (int): The maximum length of the output to display.
+
+        Returns:
+            A list of results from the executions.
         """
 
         # Execute the code
@@ -167,7 +194,7 @@ class TestActionflow():
         # Save the updated puppy_instance
         self.save_updated_puppy_instance()
         self.save_instance_to_json(self.puppy_instance)
-        
+
         return results
 
     def execute_code(
@@ -176,6 +203,12 @@ class TestActionflow():
     ) -> dict:
         """
         Execute code from the specified node number.
+
+        Args:
+            node_num (int): The number of the node to start execution from.
+
+        Returns:
+            A dictionary containing the runtime values of the puppy_instance after executing the code.
         """
 
         codes_to_execute = self._set_code_node(node_num)
@@ -197,19 +230,30 @@ class TestActionflow():
         file_name: str = "puppy_instance_updated.pkl"
     ) -> None:
         """
-        Save the updated puppy_instance to a pickle file
+        Save the updated puppy_instance to a pickle file. Exceptions will be raised if the file cannot be saved.
+
+        Args:
+            root_path (str): The root path to save the file. Defaults to "user_case_history".
+            file_name (str): The name of the file. Defaults to "puppy_instance_updated.pkl".
         """
-        
+
         if not os.path.exists(root_path):
             os.makedirs(root_path)
 
         file_path = os.path.join(root_path, file_name)
-        
+
         try:
             with open(file_path, "wb") as output_file:
                 dill.dump(self.puppy_instance, output_file)
-        except Exception as e:
-            print(f"{self.RED}Fail saving instance: {e}{self.RESET}")
+            print(f"{self.GREEN}Updated Puppy instance saved to `{file_path}` successfully!{self.RESET}")
+        except Exception:
+            try:
+                serializable_instance = self._filter_non_serializable(self.puppy_instance)
+                with open(file_path, "wb") as output_file:
+                    dill.dump(serializable_instance, output_file)
+                print(f"{self.GREEN}Successfully save the instance to `{file_path}`!{self.RESET}")
+            except Exception as e:
+                print(f"{self.RED}Fail saving instance: {e}{self.RESET}")
 
     def save_instance_to_json(
         self, 
@@ -218,7 +262,12 @@ class TestActionflow():
         file_name: str = "puppy_instance_values.json"
     ) -> None:
         """
-        Save all key-value pairs of an instance to a JSON file.
+        Save all key-value pairs of an instance to a JSON file. Exceptions will be raised if the file cannot be saved.
+
+        Args:
+            instance (dict): The instance to save.
+            root_path (str): The root path to save the file. Defaults to "user_case_history".
+            file_name (str): The name of the file. Defaults to "puppy_instance_values
         """
 
         if not os.path.exists(root_path):
@@ -236,8 +285,21 @@ class TestActionflow():
         try:
             with open(file_path, "w", encoding="utf-8") as f:
                 json.dump(instance_dict, f, ensure_ascii=False, indent=4)
+            print(f"{self.GREEN}Attribute values saved to `{file_path}` successfully!{self.RESET}")
         except Exception as e:
             print(f"{self.RED}Fail saving instance: {e}{self.RESET}")
+
+    def _filter_non_serializable(self, obj):
+        serializable_obj = {}
+        for key, value in obj.__dict__.items():
+            try:
+                dill.dumps(value)
+                serializable_obj[key] = value
+            except dill.PicklingError:
+                continue
+            except TypeError:
+                continue
+        return serializable_obj
 
     def _parse_inner_json(
         self, 
@@ -246,10 +308,13 @@ class TestActionflow():
     ) -> dict:
         """
         Parse inner json function that parse the object into inner json objects.
-        
+
         Args:
             obj: The object to parse.
             indent: The current indentation level (used for nested structures).
+        
+        Returns:
+            The inner json object.
         """
 
         value_to_print = {}
@@ -280,10 +345,13 @@ class TestActionflow():
     ) -> str:
         """
         Advanced print function that prints both standard Python objects and self-defined types.
-        
+
         Args:
             obj: The object to print.
             indent: The current indentation level (used for nested structures).
+
+        Returns:
+            The formatted string to print.
         """
         
         spacing = " " * (indent * 4)
@@ -311,9 +379,10 @@ class TestActionflow():
         node_num: int
     ) -> list:
         """
-        Set the code node to test run.
-        
-        ## Parameters
+        Set the code node to test run. Exceptions will be raised if the node number is invalid.
+
+        Args:
+
         node_num (int): 
             The number of the node to start execution from. The node numbers are as follows:
             - 0: The current code.
@@ -321,6 +390,9 @@ class TestActionflow():
             - -1: From the history codes to the current code.
             - 2: All code nodes, including history_codes, the current code, and future_codes.
             - -2: The last node of the history codes, the current code, and the first node of the future codes.
+
+        Returns:
+            A list of codes to execute.
         """
 
         match node_num:
@@ -345,11 +417,11 @@ class TestActionflow():
         """
         Separate a dictionary into two dictionaries: one with picklable values and the other with non-picklable summary in string format.
 
-        Parameters:
-        runtime (dict): The input dictionary.
+        Args:
+            runtime (dict): The input dictionary.
 
         Returns:
-        tuple: A tuple containing two dictionaries: (picklable_dict, non_picklable_dict).
+            tuple: A tuple containing two dictionaries: (picklable_dict: picklable key-values, non_picklable_dict: non-picklable key-values in a summarized formatted string).
         """
         
         picklable_dict = {}
@@ -372,16 +444,17 @@ class TestActionflow():
     ) -> list:
         """
         Find the differences between dictionaries in a list.
-        
-        Parameters:
+
+        Args:
             dict_list (list): A list of dictionaries to compare.
-        
+            max_length (int): The maximum length of the output to display.
+
         Returns:
             A list of dictionaries representing the differences, the first element contains all the values while the rest elements only contain the difference.
         """
 
         if not dict_list:
-            return {}
+            return [{}]
 
         first_dict = dict_list[0]
         differences = [first_dict]
@@ -395,9 +468,7 @@ class TestActionflow():
                 if total_length + len(value_str) > max_length:
                     diff["..."] = "Output truncated due to length limits"
                     break
-                if key in first_dict and first_dict[key] != value:
-                    diff[key] = value
-                elif key not in first_dict:
+                if (key in first_dict and first_dict[key] != value) or (key not in first_dict):
                     diff[key] = value
                 total_length += len(value_str)
 
@@ -412,6 +483,13 @@ class TestActionflow():
     ) -> any:
         """
         Convert the input value to the target type if possible.
+
+        Args:
+            value (str): The input value.
+            target_type (type): The target type to convert to.
+
+        Returns:
+            The converted value with the target type.
         """
 
         if target_type == int:
@@ -435,6 +513,13 @@ class TestActionflow():
     ) -> any:
         """
         Keep asking for input until the input value is of the target type.
+
+        Args:
+            prompt (str): The prompt to display.
+            target_type (type): The target type to convert to.
+
+        Returns:
+            The converted value with the target type.
         """
 
         while True:
@@ -451,6 +536,10 @@ class TestActionflow():
     ) -> None:
         """
         Modify the list attribute of the puppy_instance by each element.
+
+        Args:
+            attr_to_modify (str): The attribute to modify.
+            current_list (list): The current list to modify.
         """
 
         if current_list:
@@ -467,7 +556,7 @@ class TestActionflow():
             else:
                 print("Invalid index.")
         else:
-            num_of_elements = self._input_value(f"Current list is empty, enter the number of elements to add: ", int)
+            num_of_elements = self._input_value("Current list is empty, enter the number of elements to add: ", int)
             for i in range(num_of_elements):
                 new_element = self._input_value(f"New element {i} (Only string type is supported): ", str)
                 current_list.append(new_element)
@@ -482,8 +571,8 @@ class TestActionflow():
         Check if the object has a nested attribute.
 
         Args:
-            obj: The object to check.
-            attr_path: The path to the attribute, separated by dots.
+            obj (any): The object to check.
+            attr_path (str): The path to the attribute, separated by dots.
 
         Returns:
             bool: True if the nested attribute exists, False otherwise.
@@ -505,8 +594,8 @@ class TestActionflow():
         Get the value of a nested attribute.
 
         Args:
-            obj: The object from which to get the attribute.
-            attr_path: The path to the attribute, separated by dots.
+            obj (any): The object from which to get the attribute.
+            attr_path (str): The path to the attribute, separated by dots.
 
         Returns:
             The value of the nested attribute.
@@ -527,9 +616,9 @@ class TestActionflow():
         Set the value of a nested attribute.
 
         Args:
-            obj: The object on which to set the attribute.
-            attr_path: The path to the attribute, separated by dots.
-            value: The value to set.
+            obj (any): The object on which to set the attribute.
+            attr_path (str): The path to the attribute, separated by dots.
+            value (any): The value to set.
         """
 
         attrs = attr_path.split(".")

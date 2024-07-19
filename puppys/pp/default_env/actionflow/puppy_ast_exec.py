@@ -2,12 +2,17 @@ import ast
 
 
 def puppy_ast_exec(
-    node: ast.Module, 
+    node: any, 
     global_dict: dict, 
     local_dict: dict
 ) -> None:
     """
     Execute AST nodes with proper context handling to maintain state across different parts of the AST.
+
+    Args:
+        node (any): The AST node to execute.
+        global_dict (dict): The global dictionary to use for execution.
+        local_dict (dict): The local dictionary to use for execution
     """
 
     if isinstance(node, ast.Module):
@@ -61,9 +66,9 @@ def puppy_exec(
 
 if __name__ == "__main__":
     test_code = """
-    import random
-    x=5
-    print("[RandomNum]", [random.randint(1, x) for _ in range(10)])
+import random
+x=5
+print("[RandomNum]", [random.randint(1, x) for _ in range(10)])
     """
 
     puppy_exec(test_code, {},{})

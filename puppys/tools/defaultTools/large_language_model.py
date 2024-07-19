@@ -17,20 +17,14 @@ def llm(
     Bad for real-time information, webpage and generating image.
 
     For example:
-    ## summarizing the web based on the html
+    ## Summarizing the web based on the html
     prompt = f"What does this mean, summarize it into 100 words: {self.html}"
     result = llm(prompt=prompt)
     """
 
-    if model is None:
-        model = os.environ["OPENAI_MODEL"]
-    else:
-        pass
+    model = model if model else os.environ.get("OPENAI_MODEL", "")
 
-    if url is None:
-        url = os.getenv("OPENAI_BASE_URL")
-    else:
-        pass
+    url = url if url else os.getenv("OPENAI_BASE_URL", "")
 
     result = completion(
         messages=[

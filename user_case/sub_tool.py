@@ -5,7 +5,7 @@ from puppys.pp.actions.load_env import load_env
 from puppys.pp.actions import do_check, check, do
 
 
-class Test_Agent(Puppy):
+class TestAgent(Puppy):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -27,7 +27,7 @@ def test_sub_tool_decisiontree(self):
     self.do("create a block of a database that contains the number of 12345678", show_response=True)
 
 
-Test_Agent = Test_Agent(value=test_sub_tool_decisiontree)
+Test_Agent = TestAgent(value=test_sub_tool_decisiontree)
 
 def create_block(puppy_instance, query):
 

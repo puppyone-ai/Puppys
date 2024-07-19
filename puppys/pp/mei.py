@@ -6,7 +6,7 @@ from puppys.pp.actions import do_check, check, do, rewrite
 
 class Mei(Puppy):
     """
-    A default puppy that contains llm and talk_with_human tools, and do, check, and do_check actions.
+    A default puppy that contains llm and talk_with_human tools, and do, check, do_check and rewrite actions.
     """
 
     def __init__(self, *args, **kwargs):
@@ -32,14 +32,29 @@ class Mei(Puppy):
         )
 
     def do_check(self, *args, **kwargs):
+        """
+        Do and Check the current action.
+        """
+
         return do_check(self, *args, **kwargs)
 
     def check(self, *args, **kwargs):
+        """
+        Check the current action.
+        """
+
         return check(self, *args, **kwargs)
 
     def do(self, *args, **kwargs):
+        """
+        Do the current action.
+        """
+
         return do(self, *args, **kwargs)
 
     def rewrite(self, *args, **kwargs):
-        return rewrite(self, *args, **kwargs)
+        """
+        Rewrite the current action prompt.
+        """
 
+        return rewrite(self, *args, **kwargs)

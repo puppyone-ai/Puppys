@@ -7,16 +7,21 @@ def load_env(
     puppy_instance: any, 
     env_node: Env = None, 
     target: Type[Env] = None
-):
+) -> None:
     """
-    Load the sub_env into the puppy's runtime_vars_dict
+    Load the sub_env into the puppy's runtime_vars_dict.
+
+    Args:
+        puppy_instance (any): The instance of the puppy.
+        env_node (Env, optional): The environment node to load. Defaults to None.
+        target (Type[Env], optional): The target environment type to filter by. Defaults to None.
     """
 
     # If the env_node is None, use the current environment
-    if env_node is None:
+    if not env_node:
         env_node = puppy_instance.env_node
 
-    if target is None:
+    if not target:
         target = Env
 
     # Create the dict that contains the sub_env in one env
@@ -35,16 +40,21 @@ def unload_env(
     puppy_instance: any, 
     env_node: Env = None, 
     target: Type[Env] = None
-):
+) -> None:
     """
-    Unload the sub_env from the puppy's runtime_vars_dict
+    Unload the sub_env from the puppy's runtime_vars_dict.
+
+    Args:
+        puppy_instance (any): The instance of the puppy.
+        env_node (Env, optional): The environment node to unload. Defaults to None.
+        target (Type[Env], optional): The target environment type to filter by. Defaults
     """
 
     # If the env_node is None, use the current environment
-    if env_node is None:
+    if not env_node:
         env_node = puppy_instance
 
-    if target is None:
+    if not target:
         target = Env
 
     # Create the dict that contains the sub_env in one env

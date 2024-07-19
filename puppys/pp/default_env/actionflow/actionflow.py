@@ -16,6 +16,16 @@ class Actionflow(Env):
     """
     Actionflow is a default essential env for agent.
     It shows the agent's action over time.
+    It inherits from the Env class as an invisible env.
+
+    Init Args:
+        puppy_instance (any): The puppy instance that runs all the actions.
+        *args: The arguments.
+        function (any): The function to run.
+        printing_mode (str): The printing mode, can either be `buffer` or `terminal`. The default is `terminal`.
+        save_actionflow (bool): Whether to save the actionflow. The default is True.
+        save_instance (bool): Whether to save the instance. The default is True.
+        **kwargs: The keyword arguments.
     """
     visible = False
 
@@ -24,7 +34,7 @@ class Actionflow(Env):
         puppy_instance: any, 
         *args, 
         function: any, 
-        printing_mode: bool = None, 
+        printing_mode: str = None, 
         save_actionflow: bool = True, 
         save_instance: bool = True, 
         **kwargs
@@ -58,14 +68,14 @@ class Actionflow(Env):
         # Use get full args pec to get more specific information
         self.args_spec = inspect.getfullargspec(self.function)
 
-        # Set up the all code for actionflow, and current code for the running action
+        # Set up the code storages for actionflow
         self.history_codes = []
         self.current_code = ""
         self.future_codes = []
         self.current_action_code = ""
         self.temp_current_code = {}
         self.errors = ""
-        
+
         # Set the color for printing
         self.GREEN = "\033[32m"
         self.GREY = "\033[90m"
@@ -78,6 +88,7 @@ class Actionflow(Env):
     ) -> None:
         """
         Executes the given code with redirected stdout and stderr.
+
         Args:
             code (str): The code to execute.
         """
@@ -94,7 +105,13 @@ class Actionflow(Env):
         actionflow_file_name: str = "temp_actionflow_code.py"
     ) -> None:
         """
-        Write the code to a python file
+        Write the code to a python file. Exceptions will be raised if the file cannot be written.
+
+        Args:
+            code (list): The code to write.
+            sig_str (str): The signature string.
+            actionflow_root_path (str): The root path to save the actionflow file. The default is "user_case_history".
+            actionflow_file_name (str): The actionflow file name. The default is "temp_actionflow.
         """
 
         if not os.path.exists(actionflow_root_path):
@@ -107,6 +124,7 @@ class Actionflow(Env):
         try:
             with open(file_path, "w", encoding="utf-8") as f:
                 f.write(code + "\n")
+            print(f"{self.GREEN}Successfully write the code to `{file_path}`!{self.RESET}")
         except Exception as e:
             print(f"{self.RED}Fail writing file: {e}{self.RESET}")
 
@@ -116,19 +134,42 @@ class Actionflow(Env):
         file_name: str = "puppy_instance.pkl"
     ) -> None:
         """
-        Save the puppy_instance to a pickle file
+        Save the puppy_instance to a pickle file. Exceptions will be raised if the instance cannot be saved.
+
+        Args:
+            root_path (str): The root path to save the instance file. The default is "user_case_history".
+            file_name (str): The instance file name. The default is "puppy_instance.pkl".
         """
-        
+
         if not os.path.exists(root_path):
             os.makedirs(root_path)
 
         file_path = os.path.join(root_path, file_name)
-        
+
         try:
             with open(file_path, "wb") as output_file:
                 dill.dump(self.puppy_instance, output_file)
-        except Exception as e:
-            print(f"{self.RED}Fail saving instance: {e}{self.RESET}")
+            print(f"{self.GREEN}Successfully save the instance to `{file_path}`!{self.RESET}")
+        except Exception:
+            try:
+                serializable_instance = self._filter_non_serializable(self.puppy_instance)
+                with open(file_path, "wb") as output_file:
+                    dill.dump(serializable_instance, output_file)
+                print(f"{self.GREEN}Successfully save the instance to `{file_path}`!{self.RESET}")
+            except Exception as e:
+                print(f"{self.RED}Fail saving instance: {e}{self.RESET}")
+
+    def _filter_non_serializable(self, obj):
+        serializable_obj = {}
+        for key, value in obj.__dict__.items():
+            try:
+                dill.dumps(value)
+                serializable_obj[key] = value
+            except dill.PicklingError:
+                continue
+            except TypeError:
+                continue
+        return serializable_obj
 
     def load_puppy_instance(
         self, 
@@ -136,9 +177,13 @@ class Actionflow(Env):
         file_name: str = "puppy_instance.pkl"
     ) -> any:
         """
-        Load the puppy_instance from a pickle file
+        Load the puppy_instance from a pickle file. Exceptions will be raised if the instance cannot be loaded.
+
+        Args:
+            root_path (str): The root path to load the instance file. The default is "user_case_history".
+            file_name (str): The instance file name. The default is "puppy_instance.pkl".
         """
-        
+
         if not os.path.exists(root_path):
             os.makedirs(root_path)
 
@@ -162,6 +207,10 @@ class Actionflow(Env):
     ) -> None:
         """
         Redirect the output and error buffer values to the combined output and error lists.
+
+        Args:
+            combined_output (list): The combined output list.
+            combined_errors (list): The combined error list.
         """
 
         # Get and store the output and error buffer values
@@ -189,8 +238,19 @@ class Actionflow(Env):
     ) -> list:
         """
         Test run the saved actionflow in debug mode.
+
+        Args:
+            node_num (int): The node number to run. If -1, then run all the nodes. 
+            num_of_action (int): The number of actions to run. 
+            handle_exceptions (bool): Whether to handle exceptions. 
+            max_length (int): The maximum length of the code to show. 
+            use_command_line (bool): Whether to use the command line. 
+            updates (dict): The updates to the runtime dict. The default is None for `use_command_line` is True. This argument is required if the `use_command_line` is False.
+
+        Returns:
+            list: The results of the test run. The first element contains the full output while the rest contains the difference to the first element to save the result length.
         """
-        
+
         puppy_instance = self.load_puppy_instance()
         test_actionflow = TestActionflow(puppy_instance)
         results = test_actionflow.test_run(
@@ -204,57 +264,92 @@ class Actionflow(Env):
 
         return results
 
+    def check_required_args(
+        self, 
+        kwargs
+    ) -> None:
+        """
+        Check if the required arguments are present in kwargs.
+
+        Args:
+            kwargs (dict): The keyword arguments.
+
+        Raises:
+            ValueError: If any required argument is missing.
+        """
+
+        required_args = [arg for arg in self.args_spec.args if arg != "self"]
+        missing_args = [arg for arg in required_args if arg not in kwargs]
+
+        if missing_args:
+            raise ValueError(f"Missing required arguments: {', '.join(missing_args)}")
+
+    def load_and_update_env(
+        self, 
+        kwargs
+    ) -> None:
+        """
+        Load the pre-defined environments and update the runtime environment.
+
+        Args:
+            kwargs (dict): The keyword arguments.
+        """
+
+        load_env(self.puppy_instance, target=Env)
+        self.puppy_instance.puppy_vars.runtime_dict.update(kwargs)
+        self.future_codes = parse_code2str(self.source_code, self.puppy_instance.puppy_vars.runtime_dict)
+
+    def execute_current_code(
+        self, 
+    ) -> None:
+        """
+        Execute the current code and handle exceptions.
+        """
+
+        try:
+            self.current_code = replace_function_arguments(
+                self.current_code,
+                self.puppy_instance.puppy_vars.runtime_dict
+            )
+            self.puppy_exec(self.current_code)
+        except KeyboardInterrupt:
+            print(f"{self.RED}Error: KeyboardInterrupt{self.RESET}", file=sys.stderr)
+            sys.exit(1)
+        except Exception as e:
+            print(f"{self.RED}Error: {e}{self.RESET}", file=sys.stderr)
+            sys.exit(1)
+        finally:
+            if self.save_actionflow:
+                code_to_write = self.history_codes + [self.current_code]
+                self.write_to_py_file(code_to_write, str(self.signature))
+            if self.save_instance:
+                self.save_puppy_instance()
+
+            self.history_codes.append(self.current_code)
+
     def run(
         self, 
         **kwargs
     ) -> tuple:
         """
-        Run the agent"s actionflow by "value'
+        Run the agent's actionflow by 'value'.
+
+        Args:
+            **kwargs: The keyword arguments.
+
+        Returns:
+            tuple: The combined output and error strings. Empty if the buffer_outputs is False, as the results are shown immediately in the terminal after each code execution.
         """
 
-        # Check if the kwargs fits the arg
-        required_args = [arg for arg in self.args_spec.args if arg != "self"]
-        missing_args = [arg for arg in required_args if arg not in kwargs]
+        self.check_required_args(kwargs)
+        self.load_and_update_env(kwargs)
 
-        # If missing an arg, then raise an error
-        if missing_args:
-            raise ValueError(f"Missing required arguments: {", ".join(missing_args)}")
-
-        # Load the pre-defined envs
-        load_env(self.puppy_instance, target=Env)
-
-        # Update the runtime env
-        self.puppy_instance.puppy_vars.runtime_dict.update(kwargs)
-
-        self.future_codes = parse_code2str(self.source_code, self.puppy_instance.puppy_vars.runtime_dict)
-        
         combined_output = []
         combined_errors = []
 
         while self.future_codes:
             self.current_code = self.future_codes.pop(0)
-
-            try:
-                self.current_code = replace_function_arguments(
-                    self.current_code, 
-                    self.puppy_instance.puppy_vars.runtime_dict
-                )
-                self.puppy_exec(self.current_code)
-            except KeyboardInterrupt as e:
-                print(f"{self.RED}Error: KeyboardInterrupt{self.RESET}", file=sys.stderr)
-                sys.exit(1)
-            except Exception as e:
-                print(f"{self.RED}Error: {e}{self.RESET}", file=sys.stderr)
-                sys.exit(1)
-            finally:
-                if self.save_actionflow:
-                    self.write_to_py_file(self.history_codes, str(self.signature))
-                if self.save_instance:
-                    self.save_puppy_instance()
-
-            # Update the history code
-            self.history_codes.append(self.current_code)
-            
+            self.execute_current_code()
             if self.buffer_outputs:
                 self.handle_buffer_outputs(combined_output, combined_errors)
 

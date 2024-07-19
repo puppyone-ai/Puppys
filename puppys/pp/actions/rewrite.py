@@ -14,6 +14,18 @@ def rewrite(
 ) -> str:
     """
     Rewrite user instructions to be more specific and aligned with available tools.
+
+    Args:
+        puppy_instance (any): The puppy instance.
+        user_prompt (str): The user prompt to rewrite.
+        show_prompt (bool): Whether to show the prompt. The default is False.
+        show_response (bool): Whether to show the response. The default is False.
+        model (str): The model to use for the Large Language Model. The default is "gpt-4o".
+        temperature (float): The temperature of the Large Language Model. The default is 0.7.
+        max_tokens (int): The maximum number of tokens to generate. The default is 512.
+
+    Returns:
+        str: The rewritten user instructions.
     """
     
     descriptions = explore(
@@ -23,7 +35,7 @@ def rewrite(
         attributes=["name", "description"]
     )
     descriptions_str = "\n".join(
-        [f"{tool_name}: {details["description"]}" for tool_name, details in descriptions.items()]
+        [f"{tool_name}: {details['description']}" for tool_name, details in descriptions.items()]
     )
     sys_prompt = f"""
     Your job is to rewrite user instructions to be more specific and aligned with available tools. Each user instruction should be transformed into one or more tool actions.
@@ -67,7 +79,5 @@ def rewrite(
 
     rewrite_replace = "rewrote_action = \"" + result.replace("\n", "\\n") + "\""
     action.replace_action_code(rewrite_replace)
-
-    puppy_instance = action.get_puppy_instance()
 
     return result

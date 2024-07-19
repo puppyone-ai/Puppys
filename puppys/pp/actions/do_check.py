@@ -1,21 +1,26 @@
 def do_check(
     puppy_instance: any,
     action_name: str = "",
-    model = "gpt-4-turbo",
-    show_prompt = False, 
-    show_response = False
-):
+    model: str = "gpt-4-turbo",
+    show_prompt: bool = False, 
+    show_response: bool = False
+) -> None:
     """
-    Do the action and check if it finished or not
+    Do the action and check if it finished or not.
+
+    Args:
+        puppy_instance (any): The puppy instance.
+        action_name (str): The name of the action. The default is an empty string.
+        model (str): The model to use for the Large Language Model. The default is "gpt-4-turbo".
+        show_prompt (bool): Whether to show the prompt. The default is False.
+        show_response (bool): Whether to show the response. The default is False
     """
 
     if hasattr(puppy_instance, "do") and hasattr(puppy_instance, "check"):
-
         checking_result = False
 
         # Do the action till the checking result is true
-        while checking_result == False:
-
+        while not checking_result:
             # Do the action and return the ran code
             puppy_instance.do(
                 action_name=action_name, 
@@ -33,6 +38,5 @@ def do_check(
             )
 
             # If the result is True, clear the current code and end the while loop
-            if checking_result is True:
+            if checking_result:
                 puppy_instance.actionflow.current_action_code = ""
-
