@@ -13,8 +13,18 @@ def do(
     retries: int = 3
     ) -> str:
     """
-    Write code to achieve the action.
-    Retry when error occurs, defaulted to 2 times.
+    Write code to achieve the action. Retry when error occurs.
+
+    Args:
+        puppy_instance (any): The puppy instance.
+        action_name (str): The name of the action.
+        model (str): The model to use for the Large Language Model. The default is "gpt-4-turbo".
+        show_prompt (bool): Whether to show the prompt. The default is False.
+        show_response (bool): Whether to show the response. The default is False.
+        retries (int): The number of retries for the action. The default is 3.
+
+    Returns:
+        str: The response result from the Large Language Model. Can either be the execution result of the code or the error message.
     """
 
     history_codes = "\n".join(puppy_instance.actionflow.history_codes)
@@ -23,29 +33,31 @@ def do(
     prompt = [
         # 1. Define your agent type and name
         {"role": "system",
-         "content":
-             f"""You are an AI code assistant agent. 
+         "content": """
+You are an AI code assistant agent. 
 
 1. You always write Python code! You are really good at it. Your natural language output should be written as comment in python code.
 you can show your thinking and reason in the comment.
  For example: # Hello, I am an assistant. 
 
-2. DON'T ASSUME you know any unclear knowledge or information that you don't know. DON'T 
- ASSUME that you have non-existent functions or hypothetical function. DON'T ASSUME you know the knowledge that you don't know. 
+2. DON'T ASSUME you know any unclear knowledge or information that you don't know. 
+ DON'T ASSUME that you have non-existent functions or hypothetical function. 
+ DON'T ASSUME you know the knowledge that you don't know. 
  Your code will be run immediately after you write it. If you assume any hypothetical function, the the system will crash. 
 
 3. If you cannot do the action, you are allowed to talk to human for help.
 
 4. Your response cannot only be comment. You HAVE to write codes
 
-5. make sure that the parameter in your respond code follow the type of the parameter in the function instruction. You are NOT allowed to write self.do(XXX) 
-in your final response as code. When the do(XXX) appears, you HAVE TO change it to other code. your response should be similar with the following example(ONLY CODE) and NOTHING ELSE.
+5. Make sure that the parameter in your respond code follow the type of the parameter in the function instruction. 
+ You are NOT allowed to write self.do(XXX) in your final response as code. 
+ When the do(XXX) appears, you HAVE TO change it to other code. 
+ Your response should be similar with the following example(ONLY CODE) and NOTHING ELSE.
 """},
-
         # 2. Provide the current var and usable tools
         {"role": "user",
-         "content":
-             f"""Your formally-defined parameters and their previewing are as follows: 
+         "content": f"""
+Your formally-defined parameters and their previewing are as follows: 
 {puppy_instance.puppy_vars.preview()}
 
 You default function is writing python code, it's good at any task that python packages can achieve. But make sure that you write code to import the given package.
@@ -62,15 +74,15 @@ For this action, you have already tried following code, but not finish yet. Thin
 maybe you should use a different function or try a new way to achieve the action, don't repeat the same code:
 {puppy_instance.actionflow.current_action_code}
 
-Try to understand the meaning of each function and its parameter, and decide the best function and use the function 
-for this step to accomplish the action. You are only allowed to generate code that replace self.do(\"{action_name}\") and self.do_check(\"{action_name}\") part.
+Try to understand the meaning of each function and its parameter, and decide the best function and use the function for this step to accomplish the action. 
+You are only allowed to generate code that replace self.do(\"{action_name}\") and self.do_check(\"{action_name}\") part.
 note that before this action is historical code, and it has been ran. You don't need to write historical code again here.
 
-For example: (current action: search the location of the NBA in 2019@ google search @zhihu search)
-response:
+For example: (current actionflow: search the location of the NBA in 2019@ google search @zhihu search)
+Response:
 # To answer where is the NBA in 2019, I need to search the information about NBA in 2019. The function returns as a string.
-location=google_search("Where is the NBA in 2019")
-location= zhihu_search("Where is the NBA in 2019")
+location = google_search("Where is the NBA in 2019")
+location = zhihu_search("Where is the NBA in 2019")
 
 Now, there is one more important thing, if there is an error: {puppy_instance.actionflow.errors} (this part might be blank), you
 will need to analyse it and try to solve it. When generating the code, you need to try to resolve this.
@@ -97,7 +109,7 @@ Now generate your answer as code:
 
     new_code = action.llm_api_call(prompt)
 
-    new_code = action.clean_llm_code(new_code, add_code = True)
+    new_code = action.clean_llm_code(new_code, add_code=True)
 
     action.replace_action_code(new_code)
 
@@ -112,6 +124,6 @@ Now generate your answer as code:
         error_details = action.run_with_errors(e)
         if retries <= 0:
             logger.error(f"Puppy is not able to resolve the error: {error_details}")
-            return
+            return ""
         else:
             do(puppy_instance, action_name, model, show_prompt, show_response, retries - 1)

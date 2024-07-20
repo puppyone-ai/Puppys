@@ -3,11 +3,10 @@
 # import os
 # sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from .chatting import ChattingHistory
 from puppys.pp.main import Puppy
 from puppys.pp.main import puppy_run
 from puppys.llm.open_ai import open_ai_chat
-
-from .chatting import ChattingHistory
 
 
 def holder_decisiontree(self):
@@ -15,8 +14,7 @@ def holder_decisiontree(self):
 
     gotcha = False
 
-    while gotcha == False:
-
+    while not gotcha:
         # Chatting stage
         print("-----chatting-----")
         # Let agents describe their words

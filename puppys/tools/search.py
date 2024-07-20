@@ -46,12 +46,10 @@ def google_search(
         "key": os.environ["GCP_API_KEY"],
         "cx": os.environ["CSE_ID"],
     }
-    print(params)
 
     response = requests.get(url, params=params)
-    print(response.status_code)
     if response.status_code != 200:
-        raise Exception(f"Failed to get the search result from google, status code: {response.status_code}")
+        raise ValueError(f"Failed to get the search result from google, status code: {response.status_code}")
     return response.json()
 
 
@@ -69,7 +67,10 @@ def search(
     searchResults = search(query)
     """
 
-    return perplexity_search(query)
+    try:
+        return perplexity_search(query)
+    except Exception:
+        return google_search(query)
 
 
 if __name__ == "__main__":
@@ -81,5 +82,3 @@ if __name__ == "__main__":
     puppy.tools_search = search
     # Run the tool
     print(explore(puppy, target=FuncEnv))
-
-

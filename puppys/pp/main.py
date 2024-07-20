@@ -10,6 +10,13 @@ class Puppy(Env):
     """
     The main class of a puppy.
     An agent must call this class.
+    It inherits from the Env class to be an visible environment.
+
+    Init Args:
+        value (any, optional): The value of the environment. Defaults to `None`.
+        printing_mode (str, optional): The printing mode of the agent, either `terminal` or `buffer`. Defaults to `terminal`.
+        save_actionflow (bool, optional): Whether to save the actionflow. Defaults to `True`.
+        save_instance (bool, optional): Whether to save the instance. Defaults to `True`.
     """
 
     def __init__(
@@ -38,14 +45,22 @@ class Puppy(Env):
         self.env_node = self
 
     def explore(self, *args, **kwargs) -> None:
+        """
+        Explore the environment.
+        """
+
         return explore(self, *args, **kwargs)
 
     def load_env(self, *args, **kwargs) -> None:
+        """
+        Load the available environment.
+        """
+
         return load_env(self, *args, **kwargs)
 
     def test_run(self, **kwargs) -> None:
         """
-        Debug the agent
+        Debug the agent.
         """
 
         # Run the actionflow in test mode
@@ -53,7 +68,7 @@ class Puppy(Env):
 
     def run(self, **kwargs) -> None:
         """
-        Run the agent
+        Run the agent.
         """
 
         # Run the actionflow
@@ -64,7 +79,10 @@ def puppy_run(
     puppy_list: list
 ) -> None:
     """
-    Run all the agents in the list at the same time
+    Run all the agents in the list at the same time.
+
+    Args:
+        puppy_list (list): The list of agents.
     """
     threads = []
 

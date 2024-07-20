@@ -10,11 +10,18 @@ def replace_formatted_strings(
 ) -> str:
     """
     Replace formatted parts of the string with actual values from local_vars.
+
+    Args:
+        line (str): The line to replace formatted strings in.
+        local_vars (dict): The local variables to use for replacement.
+
+    Returns:
+        str: The line with formatted strings replaced.
     """
 
     pattern = re.compile(r"\{(.*?)\}")
     matches = pattern.findall(line)
-    
+
     for match in matches:
         if match in local_vars:
             line = line.replace(f"{{{match}}}", str(local_vars[match]))
@@ -27,6 +34,13 @@ def replace_function_arguments(
 ) -> str:
     """
     Replace function arguments in the line with actual values from local_vars.
+
+    Args:
+        line (str): The line to replace function arguments in.
+        local_vars (dict): The local variables to use for replacement.
+
+    Returns:
+        str: The line with function arguments replaced.
     """
 
     # Parse the line into an AST
@@ -51,14 +65,15 @@ def parse_code2str(
 
     Args:
         source_code (str): The source code to parse.
+        local_vars (dict): The local variables to use for replacement.
 
     Returns:
-        str: The function body code.
+        list: The list of function body codes, each element is a code block instead of one line of code.
     """
 
     # Replace formatted strings with actual values from local_vars
     replaced_code = replace_formatted_strings(source_code, local_vars)
-    
+
     # Split the source code into lines and keep the line endings
     lines = replaced_code.splitlines(keepends=True)
 
@@ -74,7 +89,7 @@ def parse_code2str(
 
     # Parse the adjusted source code into an AST
     tree = ast.parse(adjusted_source_code)
-    
+
     function_body_code = []
     # Walk through the AST and extract the function body code
     for node in tree.body:
@@ -88,7 +103,9 @@ def parse_code2str(
     return function_body_code
 
 
-def code_segment_json(code: str) -> list:
+def code_segment_json(
+    code: str
+) -> list:
     """
     Parse the input code to extract the first layer's code units.
 
@@ -129,20 +146,22 @@ def parse_code2list2(
     """
     Load the action from source code through LLM
 
-    input: source_code
-    output: list
+    Args:
+        source_code (str): The source code to parse.
+
+    Returns:
+        list: The list of actions extracted from the source code.
     """
 
     prompt = [
-        # 1.Define the type of this agent
+        # 1. Define the type of this agent
         {
             "role": "system",
             "content": """
             You are a helpful assistant designed to output python list composed of serval python dictionary objects such as [{"name":"You","code":"print"}, {"name":"Me","code":"print"}].
             """
         },
-
-        # 2.Provide examples
+        # 2. Provide examples
         {
             "role": "system",
             "content": """
@@ -177,13 +196,11 @@ def parse_code2list2(
             </example>
             """
         },
-
-        # 3.Tell llm to output
+        # 3. Tell llm to output
         {
             "role": "user",
             "content": source_code
         }
-
     ]
 
     medium = open_ai_chat(prompt=prompt,
@@ -214,7 +231,13 @@ def parse_code2list(
     source_code: str
 ) -> list:
     """
-    Load the action from source code so that we could trigger it in default_env
+    Load the action from source code so that we could trigger it in default_env.
+
+    Args:
+        source_code (str): The source code to parse.
+
+    Returns:
+        list: The list of actions extracted from the source code.
     """
 
     # Clean source code
@@ -254,12 +277,10 @@ def _check_status(
     action: any
 ) -> None:
     if ".do()" in action.do:
-
         if not action.do:
             action.status = "changeable"
         else:
             action.status = "semi-fixed"
-
     else:
         action.status = "fixed"
 

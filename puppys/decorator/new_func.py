@@ -6,26 +6,32 @@ from puppys.pp.actions.explore import explore
 
 # Rapidly create a new func instance with decorator
 def new_func(
-    fixed_params = None, 
-    free_params = None, 
-    name = None, 
-    description = None
-):
+    fixed_params: dict = None, 
+    free_params: list = None, 
+    name: str = None, 
+    description: str = None
+) -> any:
+    """
+    Create a new func instance with decorator.
+
+    Args:
+        fixed_params: dict, the fixed parameters of the function
+        free_params: list, the free parameters of the function
+        name: str, the name of the function
+        description: str, the description of the function
+
+    Returns:
+        decorator: function, the decorator function
+    """
+
     def decorator(func):
         # Check the parameters
-        if fixed_params is None:
-            local_fixed_params = {}
-        else:
-            local_fixed_params = fixed_params
-
-        if free_params is None:
-            local_free_params = []
-        else:
-            local_free_params = free_params
+        local_fixed_params = fixed_params if fixed_params else {}
+        local_free_params = free_params if free_params else []
 
         # Use the name, or use the function's initial name and description
-        func_name = name if name is not None else func.__name__
-        func_description = description if description is not None else func.__doc__
+        func_name = name if name else func.__name__
+        func_description = description if description else func.__doc__
 
         # Create func_env with the parameters
         func_env = FuncEnv(
