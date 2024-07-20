@@ -1,53 +1,70 @@
 from typing import Type
-
 from puppys.env.env import Env
 from puppys.pp.actions.explore import explore
 
 
-def load_env(puppy_instance, env_node: Env = None, target: Type[Env] = None):
+def load_env(
+    puppy_instance: any, 
+    env_node: Env = None, 
+    target: Type[Env] = None
+) -> None:
     """
-    load the sub_env into the puppy's runtime_vars_dict
+    Load the sub_env into the puppy's runtime_vars_dict.
+
+    Args:
+        puppy_instance (any): The instance of the puppy.
+        env_node (Env, optional): The environment node to load. Defaults to None.
+        target (Type[Env], optional): The target environment type to filter by. Defaults to None.
     """
 
-    # if the env_node is None, use the current environment
-    if env_node is None:
+    # If the env_node is None, use the current environment
+    if not env_node:
         env_node = puppy_instance.env_node
 
-    if target is None:
+    if not target:
         target = Env
 
-    # create the dict that contains the sub_env in one env
+    # Create the dict that contains the sub_env in one env
     sub_env_dict = explore(environment=env_node, target=target)
 
-    # create the dict that contains the name and value in one env
+    # Create the dict that contains the name and value in one env
     name_instance_dict = {}
-    for key, value in sub_env_dict.items():
+    for _, value in sub_env_dict.items():
         name_instance_dict.update({value.name: value})
 
-    # update the vars as a dict into puppys's runtime_vars_dict
+    # Update the vars as a dict into puppys's runtime_vars_dict
     puppy_instance.puppy_vars.runtime_dict.update(name_instance_dict.items())
 
 
-def unload_env(puppy_instance, env_node: Env = None, target: Type[Env] = None):
+def unload_env(
+    puppy_instance: any, 
+    env_node: Env = None, 
+    target: Type[Env] = None
+) -> None:
     """
-    unload the sub_env from the puppy's runtime_vars_dict
+    Unload the sub_env from the puppy's runtime_vars_dict.
+
+    Args:
+        puppy_instance (any): The instance of the puppy.
+        env_node (Env, optional): The environment node to unload. Defaults to None.
+        target (Type[Env], optional): The target environment type to filter by. Defaults
     """
 
-    # if the env_node is None, use the current environment
-    if env_node is None:
+    # If the env_node is None, use the current environment
+    if not env_node:
         env_node = puppy_instance
 
-    if target is None:
+    if not target:
         target = Env
 
-    # create the dict that contains the sub_env in one env
+    # Create the dict that contains the sub_env in one env
     sub_env_dict = explore(environment=env_node, target=target)
 
-    # create the dict that contains the name and value in one env
+    # Create the dict that contains the name and value in one env
     name_instance_dict = {}
     for key, value in sub_env_dict.items():
         name_instance_dict.update({value.name: value})
 
-    # delete the vars in the puppys's runtime_vars_dict
+    # Delete the vars in the puppys's runtime_vars_dict
     for key in name_instance_dict.keys():
         del puppy_instance.puppy_vars.runtime_dict[key]

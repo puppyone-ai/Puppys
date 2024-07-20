@@ -8,3 +8,4 @@
 *.egg-info/
 *.whl
 *.tar.gz
+build/*

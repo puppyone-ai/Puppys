@@ -1,12 +1,12 @@
+import os
+
 # If you are a VS Code users:
 # import sys
-# import os
 # sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 
 from puppys.pp.mei import Mei
 
-# change the API key to your own
+# Change the API key to your own
 # os.environ["OPENAI_API_KEY"] = ""
 
 
@@ -16,7 +16,7 @@ def hacker_jobs_decisiontree(self, url):
 
     self.do_check("transform the HTML to text, save the text", show_response=True)
 
-    self.do_check('Split the text to several chunks, and make sure every chunk is within 3000 words', show_response=True)
+    self.do_check("Split the text to several chunks, and make sure every chunk is within 3000 words", show_response=True)
 
     self.do_check("from the text of each chunk, show jobs located at UK @llm, gather all summary and send it to me", show_response=True, show_prompt=False)
 
