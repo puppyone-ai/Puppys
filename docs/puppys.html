@@ -17,19 +17,20 @@
         <label id="navtoggle" for="togglestate" class="pdoc-button"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'><path stroke-linecap='round' stroke="currentColor" stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg></label>
         <input id="togglestate" type="checkbox" aria-hidden="true" tabindex="-1">
         <div>
-            <img src="../assets/PuppyHorizon.png" class="logo" alt="project logo"/>
+            <img src="../assets/PuppyAgentHorizon.png" class="logo" alt="project logo"/>
 
             <input type="search" placeholder="Search..." role="searchbox" aria-label="search"
                    pattern=".+" required>
 
             <h2>Contents</h2>
             <ul>
-  <li><a href="#puppy">Puppy</a>
-  <ul>
-    <li><a href="#install">Install</a></li>
-    <li><a href="#quick-start-user-case">Quick Start &amp; User Case</a></li>
-    <li><a href="#advanced-features-and-examples">Advanced features and examples</a></li>
-  </ul></li>
+  <li><a href="#install">Install</a></li>
+  <li><a href="#what-is-an-llm-agent">What is an LLM agent?</a></li>
+  <li><a href="#elements-of-an-intelligent-agent">Elements of an intelligent agent</a></li>
+  <li><a href="#challenges-for-decision-making">Challenges for Decision Making</a></li>
+  <li><a href="#the-puppys-framework">The <code>Puppys</code> framework</a></li>
+  <li><a href="#philosophy">Philosophy</a></li>
+  <li><a href="#a-simple-example">A Simple Example</a></li>
 </ul>
 
 
@@ -56,13 +57,9 @@
                     <h1 class="modulename">
 puppys    </h1>
 
-                        <div class="docstring"><h1 id="puppy">Puppy</h1>
+                        <div class="docstring"><p>Framework for Plug-and-Play Agentic System</p>
 
-<p>Framework for Plug-and-Play Agentic System</p>
-
-<p>"""
-<em>Hi puppy, fetch that ball for me!</em>
-"""</p>
+<p><em>Hi puppy, fetch that ball for me!</em></p>
 
 <h2 id="install">Install</h2>
 
@@ -71,40 +68,135 @@ puppys    </h1>
 </code></pre>
 </div>
 
-<h2 id="quick-start-user-case">Quick Start &amp; User Case</h2>
+<h2 id="what-is-an-llm-agent">What is an LLM agent?</h2>
+
+<p>A Large Language Model (LLM) or artificial intelligence (AI) agent is a specialized software entity that utilizes an LLM to perform various tasks autonomously.
+For example, you may want your AI copilot to automatically write and execute a piece of code for you directly instead of telling you how to write it and letting you copy the code and run it yourself.
+That simple step from <em>talking</em> to <em>doing</em> makes a huge difference between a chatbot and an agent.
+Imagine you are the manager of a company. You may need consultants who advise you on what to do, but you will definitely need a hardworking team that can get the job done, and that is what LLM agents will be doing in the future.
+This small step will make LLMs, or more generally, AIs, indispensable parts of human production and eventually change the way people work.</p>
+
+<h2 id="elements-of-an-intelligent-agent">Elements of an intelligent agent</h2>
+
+<p>What is the most basic difference between an LLM and an agent? Our answer to this question is:</p>
+
+<ul>
+<li>An LLM predicts the next token.</li>
+<li>An agent predicts the next action.</li>
+</ul>
+
+<p>When you give your agent a task, the agent must be able to autonomously or interactively understand what needs to be done first, check what knowledge, data, or instruments are available or need to be used, and then decide how to solve the problem step by step; and finally, perform these actions one by one. If problems are encountered, the agent should also be able to adjust its strategy according to feedback or at least report these issues.
+One can summarise these elements as follows: </p>
+
+<ul>
+<li>Sensing</li>
+<li>Planning</li>
+<li>Executing</li>
+<li>Reacting</li>
+</ul>
+
+<p>This is a highly simplified version of what an autonomous agent is expected to do. While this process seems relatively straightforward, in reality, it can be highly non-linear and involves a lot of uncertainties and iterations.</p>
+
+<p>Predicting the next action is called <em>decision making</em> in cognitive science, which, as we know, is not only difficult for artificial intelligence but also challenging even for humans ourselves.</p>
+
+<h2 id="challenges-for-decision-making">Challenges for Decision Making</h2>
+
+<p>According to OpenAI, the ability of artificial intelligence can be ranked into five levels:</p>
 
 <ol>
-<li>📢 <em>Hacker News Reporter</em></li>
+<li>Chatbots</li>
+<li>Reasoners</li>
+<li>Agents</li>
+<li>Innovators</li>
+<li>Organizers</li>
 </ol>
+
+<p>In 2024, state-of-the-art LLMs like GPT-4o are somewhere between level 2 and level 3. While LLMs have been successful at chatting, searching, and consulting, they still lack the ability to help people do tasks or jobs directly.</p>
+
+<p>The reason is that predicting an action is much more complicated than predicting a token. More specifically, two major challenges exist in the decision-making process of LLMs. </p>
+
+<ol>
+<li><p>Enormous space for possible actions
+In general cases, users will only provide descriptions of what they want to achieve but will not give specific instructions on how to achieve the goal.
+The agents will then have to figure out how to achieve these goals. 
+For example, if we want the agent to design a poster for us and already provide enough information about what we want, there are still many possible ways for the agent to do the task. It could generate an HTML (webpage) file and convert it to a PDF. It may also write some XML (a general marking language) in the format of Microsoft Word and send us a poster in .docx format, or more directly, output some .svg (vector graph) source code so we have a vector graph poster right there. In this case, the simple task of "poster designing" can be accomplished in many different ways, and each of these options has its pros and cons. In more complicated tasks, the agent may take several steps to solve a problem and need to make a decision in each step. The space for possible combinations of actions will be huge, and it is hard for the agent to decide which approach to take.</p></li>
+<li><p>Incomplete information on environments
+Sensing and adapting to the environment is another essential feature of intelligence. Sufficient information is a preliminary request for making good decisions.
+However, in practice, agents may need more interfaces to retrieve the information from their environment. For example, when running a piece of script or compiling a binary for users, necessary dependencies and runtime for the code must be available. Yet, due to the ignorance of the local runtime, agents may unconsciously write some code that can't be executed and thus fail the task.
+In more complicated situations, the agents must interact with a constantly varying environment. 
+For example, the user may want the agent to perform trading in the stock market for profit. In this case, the agent can't predict the market and has to face risks directly.</p></li>
+</ol>
+
+<p>Due to the two challenges listed above, LLMs-based agents are still a state-of-the-art concept instead of a ready-for-production technology. 
+At the current moment, despite many exploratory works from various teams worldwide, there has yet to be a consensus in academics and industry about how a good agent should be designed or how it should behave. </p>
+
+<h2 id="the-puppys-framework">The <code>Puppys</code> framework</h2>
+
+<p>The <code>Puppys</code> is a framework for developing LLM-based agents. 
+We hope the framework could make it easier for engineers and scientists to develop agentic systems and applications.</p>
+
+<h2 id="philosophy">Philosophy</h2>
+
+<h3 id="code-native-agent">Code Native Agent</h3>
+
+<p>Let us consider a fundamental question: How should an LLM agent actually <em>do</em> things or perform actions?
+Our answer to this question is that <strong>LLM agents do things via code</strong>.
+The ideal design for LLM-based agents should be that humans give verbal instructions, and LLM agents generate scripts or source code to solve these requests. The agent should be a translator between the nonexecutable natural language and the executable programming language. 
+Unlike previous agent frameworks that make agents generate <strong>natural language</strong> and then convert to codes,  the<code>Puppys</code> framework is designed to <em>be code native</em>. When having the agent predict the next action, <code>Puppys</code> generates not only natural language to describe the action but also <strong>code</strong> that performs the actions.</p>
+
+<div align="center">
+<img src="../assets/PuppyVsOthers.png" alt="Image" width="800">
+</div>
+
+<p>The programming language also provided a natural way to extend the ability of LLMs. Via a set of application programming interfaces (APIs), LLM-based agents can seamlessly interact with the existing software systems and use the available external instruments to perform many tasks beyond their original capability. </p>
+
+<h3 id="hybrid-decision-making">Hybrid Decision Making</h3>
+
+<p>Another fundamental question for LLM-based agents is how to make decisions or predict the next actions. As we discussed before -- delegating the decision-making process completely to the LLM behind an agent is not a <em>good</em> solution.
+Our answer to this question is that considering the current capability of LLMs, we should leave the macro or strategic decision-making and planning to humans but delegate the micro or tactical decision-making and problem-solving to LLMs.</p>
+
+<div align="center">
+<img src="../assets/AgentRPA_1.png" alt="Image" width="800">
+</div>
+
+<p>Instead of allowing the LLM to make arbitrary decisions and act completely by itself, like in the case of autonomous system, the human user is required to set a series of <em>fixed milestones</em> in the path to the final goal, while the agent is allowed to make decisions and take actions between one milestone and the next. By reducing the size of possible action space and regulating the behaviors of agents, these milestones can effectively improve the robustness and efficiency of LLM-based agents. </p>
+
+<p>This hybrid decision-making for agents is implemented in the <code>Puppys</code> framework, allowing users to customize the logic level they would like to delegate to LLM when designing an agent.</p>
+
+<h2 id="a-simple-example">A Simple Example</h2>
+
+<p>Here is a simple example that shows how the users can set a series of milestones to regulate the behavior of an agent.</p>
+
+<p>First, we import a minimal agent template <code>Mei</code> from <code>Puppys</code>, which contains basic functionalities including LLMs request, web search, and Python script execution.</p>
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="kn">from</span> <span class="nn">puppy.pp.mei</span> <span class="kn">import</span> <span class="n">Mei</span>
+</code></pre>
+</div>
 
-<span class="c1"># change the API key to your own</span>
-<span class="c1"># os.environ[&quot;OPENAI_API_KEY&quot;] = &quot;&quot;</span>
+<p>Next, we define the <em>decision tree</em> for the <code>Mei</code>, which sets the goal or tasks for it to achieve. Here, a series of milestones are set in the decision tree using the <code>do_check</code> method. The <code>do_check</code> method will instruct the agent to take actions for a milestone and regularly check whether the milestone is accomplished upon the completion of each action taken.
+In this simple example, the agent is required to fetch some news from the "hacker news" webpage. </p>
 
-<span class="k">def</span> <span class="nf">hacker_news_decisiontree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="k">def</span> <span class="nf">hacker_news_decisiontree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">do_check</span><span class="p">(</span><span class="s2">&quot;go to the given url, show the HTML&quot;</span><span class="p">,</span> <span class="n">show_response</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">do_check</span><span class="p">(</span><span class="s2">&quot;show the top 10 news @llm, and send it to me&quot;</span><span class="p">,</span> <span class="n">show_response</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_prompt</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">do_check</span><span class="p">(</span><span class="s2">&quot;pick the news that related to Large Language Models, summarize all the news, and send it to me&quot;</span><span class="p">)</span>
+</code></pre>
+</div>
 
+<p>While we call the method a "decision tree," its structure is actually a linear array instead of a tree with many different branches. Hence, the logic and behavior of the agent will be straightforward. It will try to accomplish these milestones one by one by taking a flow of actions. More complicated decision trees are possible to define using a combination of <code>do</code> and <code>check</code> (together as <code>do_check</code>) methods and the integrated compound statements (e.g. <code>if</code>, <code>while</code>) in Python.</p>
 
-<span class="n">hacker_news</span> <span class="o">=</span> <span class="n">Mei</span><span class="p">(</span><span class="n">hacker_news_decisiontree</span><span class="p">)</span>
-
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">hacker_news</span> <span class="o">=</span> <span class="n">Mei</span><span class="p">(</span><span class="n">hacker_news_decisiontree</span><span class="p">)</span>
 <span class="n">hacker_news</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s2">&quot;https://news.ycombinator.com/&quot;</span><span class="p">)</span>
 </code></pre>
 </div>
 
-<h2 id="advanced-features-and-examples">Advanced features and examples</h2>
-
-<h3 id="sensing-environment">Sensing Environment</h3>
-
-<h3 id="conditional-decision-making">Conditional Decision Making</h3>
-
-<h3 id="-1"> </h3>
+<p>Finally, we can pass the decision tree as an argument to instantiate an agent called <code>hacker_news</code>. The agent will start working once the <code>run</code> method is invoked. </p>
 </div>
 
                         <input id="mod-puppys-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">

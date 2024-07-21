@@ -2,4 +2,4 @@
 import puppys
 import os
 
-os.system("pdoc puppys -o docs --logo '../assets/PuppyHorizon.png'")
+os.system("pdoc puppys -o docs --logo '../assets/PuppyAgentHorizon.png'")

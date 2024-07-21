@@ -44,7 +44,6 @@
 
 
 <div align="center">
-
 ## Plug-and-Play
 </div>
 
