@@ -4,6 +4,7 @@
 **/.llm_cache
 /useCases/user_case_history/
 .env
+.venv
 **/user_case_history/
 *.egg-info/
 *.whl
