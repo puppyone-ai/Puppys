@@ -9,3 +9,4 @@
 *.whl
 *.tar.gz
 build/*
+dist/*

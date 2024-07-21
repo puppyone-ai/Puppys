@@ -77,7 +77,6 @@ We provide a hybrid solution of Agents and RPA.
 <img src="./assets/AgentRPA.png" alt="Image" width="800">
 </div>
 
-
 <div align="center">
 
 ## Code-Driven
