@@ -93,23 +93,23 @@ Now generate your answer as code:
     # Prompt Finished *****************************************************************************************
 
     action = Action(
-        puppy_instance, 
-        action_name, 
-        model, 
-        show_prompt, 
-        show_response, 
+        puppy_instance,
+        action_name,
+        model,
+        show_prompt,
+        show_response,
         retries
     )
 
     action.highlighting(
-        action_type="doing_action", 
-        prompt=prompt, 
+        action_type="doing_action",
+        prompt=prompt,
         prompt_action="doing"
     )
 
     new_code = action.llm_api_call(prompt)
 
-    new_code = action.clean_llm_code(new_code, add_code=True)
+    new_code = chat(model, prompt, printing=True, stream=True)
 
     action.replace_action_code(new_code)
 

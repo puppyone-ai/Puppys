@@ -1,11 +1,13 @@
-from puppys.pp.actions.action import Action
+from puppys.llm.models import chat
+from loguru import logger
+import os
 
 
 def check(
-    puppy_instance: any, 
-    action_name: str = "", 
+    puppy_instance: any,
+    action_name: str = "",
     model: str = "gpt-4-turbo",
-    show_prompt: bool = False, 
+    show_prompt: bool = False,
     show_response: bool = False
 ) -> bool:
     """
@@ -98,21 +100,21 @@ Your response should be similar to the response example(ONLY CODE, and COMMENT) 
 """}]
 
     action = Action(
-        puppy_instance, 
-        action_name, 
-        model, 
-        show_prompt, 
-        show_response, 
+        puppy_instance,
+        action_name,
+        model,
+        show_prompt,
+        show_response,
         retries=0
     )
 
     action.highlighting(
-        action_type="checking_action", 
-        prompt=prompt, 
+        action_type="checking_action",
+        prompt=prompt,
         prompt_action="checking"
     )
 
-    new_code = action.llm_api_call(prompt)
+    new_code = chat(model, prompt, printing=True, stream=True)
 
     new_code = action.clean_llm_code(new_code, add_code = False)
 

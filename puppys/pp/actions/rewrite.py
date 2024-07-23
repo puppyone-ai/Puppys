@@ -1,15 +1,17 @@
+import os
 from puppys.env.func_env import FuncEnv
+from puppys.llm.models import chat
 from puppys.pp.actions.action import Action
 from puppys.pp.actions.explore import explore
 
 
 def rewrite(
-    puppy_instance: any, 
-    user_prompt: str, 
-    show_prompt: bool = False, 
-    show_response: bool = False, 
-    model: str = "gpt-4o", 
-    temperature: float = 0.7, 
+    puppy_instance: any,
+    user_prompt: str,
+    show_prompt: bool = False,
+    show_response: bool = False,
+    model: str = "gpt-4o",
+    temperature: float = 0.7,
     max_tokens: int = 512
 ) -> str:
     """
@@ -29,9 +31,9 @@ def rewrite(
     """
     
     descriptions = explore(
-        environment=puppy_instance.env_node, 
-        target=FuncEnv, 
-        output_content_mode="attribute", 
+        environment=puppy_instance.env_node,
+        target=FuncEnv,
+        output_content_mode="attribute",
         attributes=["name", "description"]
     )
     descriptions_str = "\n".join(
@@ -65,11 +67,11 @@ def rewrite(
     ]
     
     action = Action(
-        puppy_instance, 
-        user_prompt, 
-        model, 
-        show_prompt, 
-        show_response, 
+        puppy_instance,
+        user_prompt,
+        model,
+        show_prompt,
+        show_response,
         retries=0
     )
 
@@ -79,5 +81,6 @@ def rewrite(
 
     rewrite_replace = "rewrote_action = \"" + result.replace("\n", "\\n") + "\""
     action.replace_action_code(rewrite_replace)
+    result = chat(messages=prompt_messages, printing=True, stream=True)
 
     return result

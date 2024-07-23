@@ -1,11 +1,13 @@
 import os
 import re
+
+from puppys.llm.models import chat
 import ast
 from puppys.llm.open_ai import open_ai_chat
 
 
 def replace_formatted_strings(
-    line: str, 
+    line: str,
     local_vars: dict
 ) -> str:
     """
@@ -29,7 +31,7 @@ def replace_formatted_strings(
 
 
 def replace_function_arguments(
-    line: str, 
+    line: str,
     local_vars: dict
 ) -> str:
     """
@@ -57,7 +59,7 @@ def replace_function_arguments(
 
 
 def parse_code2str(
-    source_code: str, 
+    source_code: str,
     local_vars: dict
 ) -> list:
     """
@@ -203,12 +205,8 @@ def parse_code2list2(
         }
     ]
 
-    medium = open_ai_chat(prompt=prompt,
-                          model=os.environ["OPENAI_MODEL"],
-                          temperature=0.3,
-                          api_key=os.environ["OPENAI_API_KEY"],
-                          max_tokens=4096,
-                          printing=True, stream=True)
+
+    medium = chat(prompt=prompt, temperature=0.3, printing=True, stream=True)
 
     medium = eval(medium)  # [{"name":action1.name,"code":action1.code},{"name":action2.name,"code":action2.code},...]
 
