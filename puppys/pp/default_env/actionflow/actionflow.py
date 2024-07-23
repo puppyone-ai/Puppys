@@ -4,6 +4,7 @@ import sys
 import dill
 import inspect
 import threading
+import traceback
 from puppys.env.env import Env
 from contextlib import redirect_stdout, redirect_stderr
 from puppys.pp.default_env.actionflow.debug_actionflow import TestActionflow
@@ -316,7 +317,9 @@ class Actionflow(Env):
             print(f"{self.RED}Error: KeyboardInterrupt{self.RESET}", file=sys.stderr)
             sys.exit(1)
         except Exception as e:
-            print(f"{self.RED}Error: {e}{self.RESET}", file=sys.stderr)
+            # 使用 traceback.format_exc() 获取完整的堆栈跟踪信息
+            exc_info = traceback.format_exc()
+            print(f"{self.RED}Error: {e}\n{exc_info}{self.RESET}", file=sys.stderr)
             sys.exit(1)
         finally:
             if self.save_actionflow:
