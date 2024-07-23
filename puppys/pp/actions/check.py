@@ -1,6 +1,5 @@
-from puppys.llm.models import chat
-from loguru import logger
-import os
+from puppys.pp.actions.action import Action
+from puppys.llm.open_ai import open_ai_chat
 
 
 def check(
@@ -114,7 +113,12 @@ Your response should be similar to the response example(ONLY CODE, and COMMENT) 
         prompt_action="checking"
     )
 
-    new_code = chat(model, prompt, printing=True, stream=True)
+    new_code = open_ai_chat(
+        prompt = prompt,
+        model = model,
+        printing = show_response, 
+        stream = True
+    )
 
     new_code = action.clean_llm_code(new_code, add_code = False)
 

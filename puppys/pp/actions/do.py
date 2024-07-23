@@ -1,6 +1,7 @@
 from loguru import logger
 from puppys.env.func_env import FuncEnv
 from puppys.pp.actions.action import Action
+from puppys.llm.open_ai import open_ai_chat
 from puppys.pp.actions.explore import explore
 
 
@@ -107,9 +108,12 @@ Now generate your answer as code:
         prompt_action="doing"
     )
 
-    new_code = action.llm_api_call(prompt)
-
-    new_code = chat(model, prompt, printing=True, stream=True)
+    new_code = open_ai_chat(
+        prompt=prompt,
+        model=model,
+        printing=show_response, 
+        stream=True
+    )
 
     action.replace_action_code(new_code)
 

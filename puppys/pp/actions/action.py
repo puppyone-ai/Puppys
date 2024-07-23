@@ -126,37 +126,6 @@ class Action:
             print(self.GREY + f"\t*******{prompt_action} prompt********" + self.RESET)
             for chunk in prompt:
                 print(self.GREY + chunk["content"] + self.RESET)
-  
-    def llm_api_call(
-        self, 
-        prompt: list, 
-        temperature: float = 0.1, 
-        max_tokens: int = 4096
-    ) -> str:
-        """
-        Call the LLM API to get the response.
-
-        Args:
-            prompt (list): The prompts to send to the LLM.
-            temperature (float): The temperature of the LLM. The higher the temperature, the more random the output.
-            max_tokens (int): The maximum number of tokens to generate.
-
-        Returns:
-            str: The response from the LLM.
-        """
-        
-        # Call the OpenAI chat api
-        result = open_ai_chat(
-            prompt = prompt,
-            model = self.model,
-            temperature = temperature,
-            api_key = os.environ["OPENAI_API_KEY"],
-            max_tokens = max_tokens,
-            printing = self.show_response, 
-            stream = True
-        )
-        
-        return result
 
     def clean_llm_code(
         self, 
