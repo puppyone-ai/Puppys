@@ -2,6 +2,7 @@ from loguru import logger
 from puppys.env.func_env import FuncEnv
 from puppys.pp.actions.action import Action
 from puppys.pp.actions.explore import explore
+from puppys.llm.models import chat
 
 
 def do(
@@ -92,6 +93,7 @@ Now generate your answer as code:
 
     # Prompt Finished *****************************************************************************************
 
+    # TODO :this part should be deleted
     action = Action(
         puppy_instance,
         action_name,
@@ -109,6 +111,7 @@ Now generate your answer as code:
 
     new_code = action.llm_api_call(prompt)
 
+    # TODO: only use this
     new_code = chat(model, prompt, printing=True, stream=True)
 
     action.replace_action_code(new_code)
