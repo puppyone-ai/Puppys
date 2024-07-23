@@ -44,7 +44,6 @@
 
 
 <div align="center">
-
 ## Plug-and-Play
 </div>
 
@@ -77,7 +76,6 @@ We provide a hybrid solution of Agents and RPA.
 <img src="./assets/AgentRPA.png" alt="Image" width="800">
 </div>
 
-
 <div align="center">
 
 ## Code-Driven
@@ -106,7 +104,7 @@ pip install git+https://github.com/PuppyAgent/Puppys.git
 
 1. 📢 *Hacker News Reporter*
 
-```
+```python
 from puppy.pp.mei import Mei
 
 # change the API key to your own
