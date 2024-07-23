@@ -20,9 +20,6 @@ def hacker_news_decisiontree(self, url):
 
 hacker_news = Mei(hacker_news_decisiontree)
 
-hacker_news.run(url="https://news.ycombinator.com/")
+# TODO test_run requires parameters
+hacker_news.test_run(url="https://news.ycombinator.com/")
 
-        
-# results = hacker_news.test_run(node_num=-1, num_of_action=2, handle_exceptions=False, max_length=1000, use_command_line=True)
-# results = hacker_news.test_run(node_num=-1, num_of_action=3, handle_exceptions=False, max_length=40, use_command_line=False, updates = {"actionflow.history_codes":["a = 1"]})
-# print(results)
