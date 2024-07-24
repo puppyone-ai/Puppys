@@ -110,8 +110,8 @@ Now generate your answer as code:
         prompt_action="doing"
     )
 
-    new_code = open_ai_chat(
-        prompt=prompt,
+    new_code = chat(
+        messages=prompt,
         model=model,
         printing=show_response, 
         stream=True

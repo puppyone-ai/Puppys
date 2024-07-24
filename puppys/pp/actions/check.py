@@ -1,5 +1,6 @@
 from puppys.pp.actions.action import Action
 from puppys.llm.open_ai import open_ai_chat
+from puppys.llm.models import chat
 
 
 def check(
@@ -114,8 +115,8 @@ Your response should be similar to the response example(ONLY CODE, and COMMENT) 
         prompt_action="checking"
     )
 
-    new_code = open_ai_chat(
-        prompt = prompt,
+    new_code = chat(
+        messages = prompt,
         model = model,
         printing = show_response, 
         stream = True

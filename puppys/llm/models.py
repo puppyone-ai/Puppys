@@ -7,35 +7,38 @@ from typing import List, Optional, Union, Dict
 def chat(
     model: Optional[str] = 'gpt-4-turbo',
     messages: List = [],
-    timeout: Optional[Union[float, int]] = None,
     temperature: Optional[float] = 0.1,
     top_p: Optional[float] = None,
     n: Optional[int] = 1,
     stream: Optional[bool] = True,
     printing: Optional[bool] = False,
-    stream_options: Optional[Dict] = None,
     stop=None,
     max_tokens: Optional[int] = 4096,
     presence_penalty: Optional[float] = None,
     frequency_penalty: Optional[float] = None,
-    logit_bias: Optional[Dict] = None,
-    user: Optional[str] = None,
-    response_format: Optional[Dict] = None,
-    seed: Optional[int] = None,
-    tools: Optional[List] = None,
-    tool_choice: Optional[str] = None,
-    parallel_tool_calls: Optional[bool] = None,
-    logprobs: Optional[bool] = None,
-    top_logprobs: Optional[int] = None,
-    deployment_id=None,
-    functions: Optional[List] = None,
-    function_call: Optional[str] = None,
-    base_url: Optional[str] = None,
-    api_version: Optional[str] = None,
-    api_key: Optional[str] = None,
-    model_list: Optional[List] = None,
     **kwargs,
     ):
+
+    """
+    Wrapper function to interact with LiteLLM's completion API with optional parameters.
+
+    Parameters:
+    - model (str, optional, defaulted to gpt-4-turbo): ID of the model to use.
+    - messages (list): List of messages comprising the conversation so far.
+    - max_tokens (int, optional, defaulted to 4096): Maximum number of tokens to generate.
+    - temperature (float, optional, defaulted to 0.1): Sampling temperature.
+    - top_p (float, optional): Nucleus sampling probability.
+    - n (int, optional, defaulted to 1): Number of chat completion choices to generate.
+    - stream (bool, optional): Whether to stream responses.
+    - printing (bool, optional): Whether to print responses.
+    - stop (str or list, optional): Sequences where the API will stop generating further tokens.
+    - presence_penalty (float, optional): Penalty for new tokens based on their presence.
+    - frequency_penalty (float, optional): Penalty for new tokens based on their frequency.
+    - kwargs (dict, optional): Additional parameters for any LLMs API require.
+
+    Returns:
+    - response: Response from the LiteLLM API.
+    """
 
     response = completion(
         model=model,
@@ -44,28 +47,10 @@ def chat(
         max_tokens=max_tokens,
         n=n,
         stream=stream,
-        timeout=timeout,
         top_p=top_p,
-        stream_options=stream_options,
         stop=stop,
         presence_penalty=presence_penalty,
         frequency_penalty=frequency_penalty,
-        logit_bias=logit_bias,
-        user=user,
-        response_format=response_format,
-        seed=seed,
-        tools=tools,
-        tool_choice=tool_choice,
-        parallel_tool_calls=parallel_tool_calls,
-        logprobs=logprobs,
-        top_logprobs=top_logprobs,
-        deployment_id=deployment_id,
-        functions=functions,
-        function_call=function_call,
-        base_url=base_url,
-        api_version=api_version,
-        api_key=api_key,
-        model_list=model_list,
         **kwargs
         )
 
@@ -98,3 +83,18 @@ def chat(
                     finalResponse += chunk.choices[0].delta.content
 
             return finalResponse
+
+
+# The following main function is simply for testing  
+if __name__ == "__main__":
+    import os
+
+    ## set ENV variables
+    os.environ["OPENAI_API_KEY"] = ""
+
+    response = chat(
+        model="gpt-4-turbo",
+        messages=[{ "content": "Hello, how are you?", "role": "user"}],
+    )
+    
+    print(response)
