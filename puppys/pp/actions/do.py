@@ -115,6 +115,8 @@ Now generate your answer as code:
         stream=True
     )
 
+    new_code = action.clean_llm_code(new_code, add_code=True)
+
     action.replace_action_code(new_code)
 
     puppy_instance = action.get_puppy_instance()
