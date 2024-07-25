@@ -115,14 +115,13 @@ Your response should be similar to the response example(ONLY CODE, and COMMENT) 
     )
 
     new_code = open_ai_chat(
-        prompt = prompt,
-        model = model,
-        printing = show_response, 
-        stream = True
+        prompt=prompt,
+        model=model,
+        printing=show_response, 
+        stream=True
     )
 
-    # TODO :only use this
-    new_code = action.clean_llm_code(new_code, add_code = False)
+    new_code = action.clean_llm_code(new_code, add_code=False)
 
     puppy_instance = action.get_puppy_instance()
 

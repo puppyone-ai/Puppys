@@ -119,7 +119,24 @@ class Actionflow(Env):
             os.makedirs(actionflow_root_path)
 
         file_path = os.path.join(actionflow_root_path, actionflow_file_name)
-        code_with_indentation = "\n".join(["    " + line.rstrip("\n") for lines in code for line in lines.splitlines(keepends=True) if line.strip()])
+
+        # Adjust the indentation of the code
+        code_with_indentation = ["    " + line.rstrip("\n") for lines in code for line in lines.splitlines(keepends=True) if line.strip()]
+        indent_keywords = ["def", "if", "else", "elif", "for", "while", "try", "except", "finally", "with", "class"]
+        for i, line in enumerate(code_with_indentation):
+            if i > 0:
+                leading_spaces = len(line) - len(line.lstrip())
+                prev_lead_spaces = len(code_with_indentation[i-1]) - len(code_with_indentation[i-1].lstrip())
+                if leading_spaces > prev_lead_spaces:
+                    if not any(code_with_indentation[i-1].lstrip().startswith(kw) for kw in indent_keywords):
+                        # Calculate the number of spaces to remove
+                        excess_spaces = leading_spaces - prev_lead_spaces
+                        # Remove the extra spaces
+                        code_with_indentation[i] = line[excess_spaces:]
+                    elif leading_spaces - prev_lead_spaces > 4:
+                        code_with_indentation[i] = line[leading_spaces - prev_lead_spaces - 4:]
+
+        code_with_indentation = "\n".join(code_with_indentation)
         code = f"def actionflow{sig_str}:\n" + code_with_indentation
 
         try:
@@ -317,9 +334,10 @@ class Actionflow(Env):
             print(f"{self.RED}Error: KeyboardInterrupt{self.RESET}", file=sys.stderr)
             sys.exit(1)
         except Exception as e:
-            # 使用 traceback.format_exc() 获取完整的堆栈跟踪信息
-            exc_info = traceback.format_exc()
-            print(f"{self.RED}Error: {e}\n{exc_info}{self.RESET}", file=sys.stderr)
+            import traceback
+            tb = traceback.TracebackException.from_exception(e)
+            concise_traceback = "".join(tb.format_exception_only())
+            print(f"{self.RED}Error: {concise_traceback}{self.RESET}", file=sys.stderr)
             sys.exit(1)
         finally:
             if self.save_actionflow:

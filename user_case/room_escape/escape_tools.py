@@ -10,13 +10,16 @@ class EscapeTool:
         self.name = name
         self.description = description
         self.usefulness = usefulness if 0 <= usefulness <= 1 else 0
-
-    def display(self):
+    
+    def serialize(self):
         """
-        Display tool information.
+        Serialize the tool.
         """
-        info = f"{self.name} - {self.description}\nUsefulness Score: {self.usefulness}"
-        return info
+        return {
+            "name": self.name,
+            "description": self.description,
+            "usefulness": self.usefulness
+        }
 
 
 Key = EscapeTool("Key", "A key that can unlock the door.", 1)
