@@ -6,9 +6,9 @@
 
 **Framework for Developing an Agentic System**
 
-**📜 [Document](https://mulberry-magician-e0a.notion.site/Puppys-document-83e2e55cfd27449589a6a721402ff4bc?pvs=4)**
+**🏠 [PuppyAgentTech](https://www.puppyagent.com/)**
 &ensp;&ensp;
-**🔌 [Install](https://mulberry-magician-e0a.notion.site/Install-453ccfa356a04eda865c68e489d0e6bf?pvs=4)**
+**📜 [Document](https://mulberry-magician-e0a.notion.site/Puppys-document-83e2e55cfd27449589a6a721402ff4bc?pvs=4)**
 &ensp;&ensp;
 **⚽ [QuickStart](https://mulberry-magician-e0a.notion.site/Quick-Start-f4f383324012448180049f78035ccfa2?pvs=74)**
 
@@ -44,6 +44,7 @@
 
 
 <div align="center">
+
 ## Plug-and-Play
 </div>
 

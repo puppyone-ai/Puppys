@@ -3,6 +3,7 @@ from puppys.env.func_env import FuncEnv
 from puppys.pp.actions.action import Action
 from puppys.llm.open_ai import open_ai_chat
 from puppys.pp.actions.explore import explore
+from puppys.llm.models import chat
 
 
 def do(
@@ -93,6 +94,7 @@ Now generate your answer as code:
 
     # Prompt Finished *****************************************************************************************
 
+    # TODO :this part should be deleted
     action = Action(
         puppy_instance,
         action_name,
