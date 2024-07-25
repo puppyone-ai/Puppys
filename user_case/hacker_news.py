@@ -11,11 +11,12 @@ from puppys.pp.mei import Mei
 
 def hacker_news_decisiontree(self, url):
     import time
-    self.key = "abc12345678"
+    counter = 0
     while True:
-        nums = self.do("Get the second char of the key", show_response=True)
-        if nums == "b":
+        if counter >= 3:
             break
+        self.do("Return a list of 10 random numbers.", show_response=True)
+        counter += 1
         time.sleep(1)
     # if url:
     #     self.do("Write codes with var not defined error.", show_response=True)
@@ -41,9 +42,7 @@ def hacker_news_decisiontree(self, url):
 
 
 hacker_news = Mei(hacker_news_decisiontree)
-
-# TODO test_run requires parameters
-hacker_news.test_run(url="https://news.ycombinator.com/")
+hacker_news.run(url="https://news.ycombinator.com/")
 
 # results = hacker_news.test_run(node_num=-1, num_of_action=2, handle_exceptions=False, max_length=1000, use_command_line=True)
 # results = hacker_news.test_run(node_num=-1, num_of_action=3, handle_exceptions=False, max_length=40, use_command_line=False, updates = {"actionflow.history_codes":["a = 1"]})
