@@ -126,3 +126,11 @@ hacker_news = Mei(hacker_news_decisiontree)
 hacker_news.run()
 
 ```
+
+## Contact Us
+For collaboration, inquiries, career opportunities, and more, please contact:
+
+**Our Team:** puppyteam@puppyagent.com
+
+**CEO:** guantum@puppyagent.com
+
