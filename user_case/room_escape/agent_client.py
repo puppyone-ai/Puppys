@@ -24,7 +24,7 @@ class ServerConnection:
     def update_state(self, data):
         serialized_data = json.dumps(data).encode('utf-8')
         self.socket.sendall(serialized_data)
-        response = self.socket.recv(4096)
+        response = self.socket.recv(1024)
         print("Server response:", response.decode('utf-8'))
 
     def close(self):
@@ -74,16 +74,16 @@ move_agent(connection=connection, direction='up', step=1)
         new_x = min(len(grid[0]) - 1, agent_x + step)
         current_action_string = f"Moving right for {step} steps."
     
-    if grid[agent_y][agent_x] == 'D':
+    if grid[new_y][new_x] in ['D', 'W']:
         return
-    
-    grid[agent_y][agent_x], grid[new_y][new_x] = ' ', 'A'
 
     if isinstance(grid[new_y][new_x], dict):
         available_tools.append(grid[new_y][new_x])
-        current_action_string += f"\nPicking up the tool `{grid[new_y][new_x]}`."
-
+        tool_name = grid[new_y][new_x].get("name")
+        current_action_string += f"\nPicking up the tool `{tool_name}`."
+    
     # Update the game state
+    grid[agent_y][agent_x], grid[new_y][new_x] = ' ', 'A'
     game_state["grid"] = grid
     game_state["agent_x"] = new_x
     game_state["agent_y"] = new_y
@@ -109,7 +109,17 @@ Return Value: None.
 
 Note: You HAVE TO write the positional arguments when writing code to call the function.
 
-Example Usage:
+Example Usages:
+# The agent is now just one step left to the door and the target usefulness score has reached, so can use the tool to open the door.
+use_tool(connection=connection, tool_name='Key', target_usefulness=1)
+
+# The agent is now just one step right to the door and the target usefulness score has reached, so can use the tool to open the door.
+use_tool(connection=connection, tool_name='Key', target_usefulness=1)
+
+# The agent is now just one step up to the door and the target usefulness score has reached, so can use the tool to open the door.
+use_tool(connection=connection, tool_name='Key', target_usefulness=1)
+
+# The agent is now just one step down to the door and the target usefulness score has reached, so can use the tool to open the door.
 use_tool(connection=connection, tool_name='Key', target_usefulness=1)
     """
 
@@ -136,7 +146,7 @@ use_tool(connection=connection, tool_name='Key', target_usefulness=1)
         current_tool_name = tool.get("name")
         if current_tool_name == tool_name:
             game_state["current_action_string"] = f"Using the tool {current_tool_name}."
-            usefulness += tool.usefulness
+            usefulness += tool.get("usefulness", 0)
             if usefulness == target_usefulness:
                 game_state["door_dict"]["open"] = True
 
@@ -174,12 +184,16 @@ class Escaper(Puppy):
         self.name = "Escaper"
         self.description = "A puppys that could play the game `room escape`."
         self.version = "0.0.1"
+        
+        # self.connection = ServerConnection()
 
         self.move_agent = FuncEnv(
             value=move_agent,
             name=move_agent.__name__,
             description=move_agent.__doc__,
             free_params=["connection", "direction", "step"]
+            # fixed_params={"connection": self.connection},
+            # free_params=["direction", "step"]
         )
 
         self.use_tool = FuncEnv(
@@ -187,6 +201,8 @@ class Escaper(Puppy):
             name=use_tool.__name__,
             description=use_tool.__doc__,
             free_params=["connection", "tool_name", "target_usefulness"]
+            # fixed_params={"connection": self.connection},
+            # free_params=["tool_name", "target_usefulness"]
         )
 
         self.get_all_available_tools = FuncEnv(
@@ -194,6 +210,7 @@ class Escaper(Puppy):
             name=get_all_available_tools.__name__,
             description=get_all_available_tools.__doc__,
             free_params=["connection"]
+            # fixed_params={"connection": self.connection},
         )
 
     def escape(self, *args, **kwargs):

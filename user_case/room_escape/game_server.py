@@ -3,14 +3,14 @@ import socket
 import pygame
 import random
 import time
-from pygame.locals import *
+# from pygame.locals import *
 from escape_tools import Key, Hammer, Cup
 
 # Initialize Pygame
 pygame.init()
 
 class GameSettings:
-    """ Game settings that can be modified based on game requirements. """
+    """ Set the Game settings. """
     def __init__(self, grid_size, tile_size=64, info_height=100, fps=30):
         self.tile_size = tile_size
         self.grid_size = grid_size
@@ -19,7 +19,7 @@ class GameSettings:
         self.fps = fps
 
 class Grid:
-    """ Class to handle the game grid and game objects like tools and doors. """
+    """ Define the game grid and game objects like tools and doors. """
     def __init__(self, settings):
         self.settings = settings
         self.grid = [[' ' for _ in range(self.settings.grid_size)] for _ in range(self.settings.grid_size)]
@@ -92,35 +92,41 @@ class Game:
         self.server_socket.bind(('', port))
         self.server_socket.listen(1)
         print(f"Server started on port {port}")
-    
+
     def run_game(self):
-        # Render the initial state before entering the main loop
+        # Initialize the display with the initial state
         self.draw_grid()
         self.draw_messages()
         pygame.display.flip()
 
+        # Establish a connection
         connection, address = self.server_socket.accept()
-        print("connection, address: ", connection, address)
-        print(f"Connected by {address}")
+        print(f"Connected by {connection}, {address}")
+
+        # Main game loop
         running = True
         while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-
+            # Receive and process data from the client
             data = connection.recv(4096).decode('utf-8')
             running = self.handle_client_data(data, connection)
 
+            # Update display
             self.draw_grid()
             self.draw_messages()
             pygame.display.flip()
             
-            # time.sleep(2)
+            # # Process all pygame events
+            # for event in pygame.event.get():
+            #     if event.type == pygame.QUIT:
+            #         running = False
+            
+            time.sleep(2)
 
+        # Clean up and close the game
+        connection.close()
         pygame.quit()
     
     def print_grid(self):
-        """Print the game grid."""
         grid_string = f"The dimension of the grid: {self.grid_size}\n"
         for y in range(self.settings.grid_size):
             for x in range(self.settings.grid_size):
@@ -129,14 +135,14 @@ class Game:
                     grid_string += f"In row {y} and column {x}: "
                     if isinstance(cell, dict):
                         name, description, usefulness = cell.get("name", ""), cell.get("description", ""), cell.get("usefulness", 0)
-                        tool_info = f"`{name}` - {description}\nUsefulness Score: {usefulness}"
-                        grid_string += "The tool " + tool_info
+                        tool_info = f"`{name}` - {description}; Usefulness Score: {usefulness}"
+                        grid_string += "tool " + tool_info
                     elif cell == 'D':
-                        grid_string += "The door"
+                        grid_string += "door"
                     elif cell == "A":
-                        grid_string += "The agent"
+                        grid_string += "agent"
                     elif cell == "W":
-                        grid_string += "The wall"
+                        grid_string += "wall"
                     grid_string += "\n"
         return grid_string
     
@@ -150,24 +156,23 @@ class Game:
                 pygame.draw.rect(self.screen, color, rect, 1)
 
                 cell = self.grid.grid[y][x]
-                text_representation = ' '
+                text_representation = cell
 
                 if isinstance(cell, dict):
                     text_representation = 'T'
-                elif isinstance(cell, str):
-                    text_representation = cell
 
                 text = self.font.render(text_representation, True, (255, 255, 255))
                 text_rect = text.get_rect(center=rect.center)
                 self.screen.blit(text, text_rect)
     
     def draw_messages(self):
-        # Define starting position for text rendering
-        start_y = self.settings.screen_height
+        # Define starting position for text rendering with a downward offset
+        offset = 30
+        start_y = self.settings.screen_height + offset
         line_height = 20
 
         # Display the current action message
-        action_rect = pygame.Rect(0, start_y, self.settings.screen_width, self.settings.info_height)
+        action_rect = pygame.Rect(0, start_y - offset, self.settings.screen_width, self.settings.info_height + offset)
         pygame.draw.rect(self.screen, (0, 0, 0), action_rect)
 
         # Append additional info to current action string
@@ -181,13 +186,16 @@ class Game:
             action_text_rect = action_text.get_rect(center=(self.settings.screen_width // 2, start_y + i * line_height))
             self.screen.blit(action_text, action_text_rect)
 
-        # Reset the current action string
+        # Reset the current action string after displaying
         self.current_action_string = ""
     
     def print_available_tools(self):
         tools_string = ""
         for tool in self.available_tools:
-            tools_string += tool.display() + "\n"
+            if isinstance(tool, dict):
+                name, description, usefulness = tool.get("name", ""), tool.get("description", ""), tool.get("usefulness", 0)
+                tool_info = f"`{name}` - {description}; Usefulness Score: {usefulness}"
+                tools_string += tool_info + "\n"
         return tools_string
 
     def handle_client_data(self, data, connection):
@@ -221,6 +229,7 @@ class Game:
         try:
             # Update the game state based on client data
             shared_info = json.loads(data)
+            print("shared_info: ", shared_info)
             
             connection.sendall(b"State updated.")
             # The first time the client sends message
@@ -228,13 +237,13 @@ class Game:
                 self.target_usefulness = shared_info.get("target_usefulness")
             # Normal update when agent moves or uses a tool
             else:
+                # print("else")
                 self.grid.door_dict = shared_info.get("door_dict")
                 # Exit the game if the door is open
                 if self.grid.door_dict["open"]:
                     self.win()
                     return False
                 else:
-                    print("self.grid.door_dict open: ", self.grid.door_dict["open"])
                     self.grid.grid = shared_info.get("grid")
                     self.agent_x = shared_info.get("agent_x")
                     self.agent_y = shared_info.get("agent_y")
