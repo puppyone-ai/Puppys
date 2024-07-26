@@ -133,7 +133,6 @@ Now, write your code to control the agent to escape the room:
     # Run the code
     try:
         return action.run_without_errors(new_code)
-
     # Handle errors
     except Exception as e:
         error_details = action.run_with_errors(e)

@@ -49,14 +49,14 @@ class Grid:
 
         # Check if selected boundary cell is empty before placing the door
         if self.grid[y][x] == " ":
-            self.door_dict = {"x": x, "y": y, "open": False}
+            self.door_dict = {"locations": (y, x), "open": False}
             self.grid[y][x] = "Door"
         else:
             # Recurse if initial random placement is not empty
             self.place_door()
 
     def place_keys(self) -> None:
-        num_keys = random.randint(3, self.settings.grid_size)
+        num_keys = random.randint(3, 10)
         key_positions = random.sample([(x, y) for x in range(self.settings.grid_size) for y in range(self.settings.grid_size) if self.grid[y][x] == " "], num_keys)
         possible_key_name = ["green", "yellow", "purple", "red", "black", "white", "brown", "pink"]
         self.grid[key_positions[0][1]][key_positions[0][0]] = {"name": "orange"}

@@ -19,9 +19,13 @@ class ServerConnection:
         self.socket.connect((host, port))
 
     def fetch_state(self) -> dict:
-        self.socket.sendall(b"GET_STATE")
-        response = self.socket.recv(4096)
-        return json.loads(response.decode("utf-8"))
+        try:
+            self.socket.sendall(b"GET_STATE")
+            response = self.socket.recv(4096)
+            return json.loads(response.decode("utf-8"))
+        except ConnectionResetError:
+            print("The server has closed!!!")
+            return {}
 
     def update_state(self, data: dict) -> None:
         serialized_data = json.dumps(data).encode("utf-8")
