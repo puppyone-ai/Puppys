@@ -11,6 +11,14 @@ def escaping(
     show_prompt: bool = False,
     show_response: bool = False, 
     ) -> str:
+    history_codes = "\n".join(puppy_instance.actionflow.history_codes)
+    future_codes = "\n".join(puppy_instance.actionflow.future_codes)
+    current_code = puppy_instance.actionflow.current_code
+    print(f"history_codes: {history_codes}")
+    print(f"current_code: {current_code}")
+    print(f"future_codes: {future_codes}")
+    
+    
     # Get the game state
     envs = explore(environment=puppy_instance.env_node, target=Env, output_content_mode="attribute", attributes=["name", "description"])
     sub_game_map = explore(environment=puppy_instance.env_node.game_map, target=Env, output_content_mode="attribute", attributes=["name", "description"])
@@ -97,8 +105,8 @@ for key_name in available_keys:
 ## Agent is at (1, 2), the door is at (3, 5), so move down for 2 steps and right for 3 steps to reach the door.
 move_agent(direction="down", step=2)
 move_agent(direction="right", step=3)
-## Target keys: orange and blue. The agent now next to the door, so can use the keys to open the door.
-use_key(key_name='orange')
+## Target keys: yellow and blue. The agent now next to the door, so can use the keys to open the door.
+use_key(key_name='yellow')
 use_key(key_name='blue')
 
 Now, write your code to control the agent to escape the room:

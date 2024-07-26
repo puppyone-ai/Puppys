@@ -66,7 +66,7 @@ move_agent(direction="down", step=1)
 move_agent(direction="right", step=2)
 move_agent(direction="up", step=1) # Now, the agent has reach the door.
 # Although multiple lines of code has written, it can be considered as one step.
-"""    
+"""
 
     game_state = connection.fetch_state()
 
@@ -129,7 +129,7 @@ Note: You HAVE TO write the positional arguments when writing code to call the f
 
 Example Usages:
 # The agent is now at the door and the has all the target keys available.
-use_key(key_name="orange")
+use_key(key_name="yellow")
 use_key(key_name="blue")
     """
 
@@ -170,7 +170,7 @@ def get_all_available_keys(connection: ServerConnection) -> list:
 
     Example Usages:
     available_keys = get_all_available_keys()
-    print(available_keys)  # Output might be ["orange", "blue"]
+    print(available_keys)  # Output might be ["yellow", "blue"]
     """
 
     game_state = connection.fetch_state()
@@ -289,7 +289,7 @@ def decision_tree(self, target_keys):
     self.connection.update_state({"target_keys": target_keys})
     while True:
         self.game_state = self.connection.fetch_state()
-        if self.game_state.get("door_dict", {}).get("open"):
+        if self.game_state.get("door_dict", {}).get("open") or not self.game_state:
             self.connection.close()
             break
         self.escaping(show_response=True)
@@ -297,5 +297,5 @@ def decision_tree(self, target_keys):
         time.sleep(2)
 
 escaper = Escaper(decision_tree)
-# Note: The target keys must include orange or blue, cause other colors are not guaranteed to be in the game.
-escaper.run(target_keys=["orange", "blue"])
+# Note: The target keys must include yellow or blue, cause other colors are not guaranteed to be in the game.
+escaper.run(target_keys=["yellow", "blue"])

@@ -1,3 +1,7 @@
+import os
+# import sys
+# sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+# print(sys.path, os.path.dirname(os.path.abspath(__file__)))
 import time
 import json
 import socket
@@ -56,10 +60,10 @@ class Grid:
             self.place_door()
 
     def place_keys(self) -> None:
-        num_keys = random.randint(3, 10)
+        num_keys = random.randint(3, 7)
         key_positions = random.sample([(x, y) for x in range(self.settings.grid_size) for y in range(self.settings.grid_size) if self.grid[y][x] == " "], num_keys)
-        possible_key_name = ["green", "yellow", "purple", "red", "black", "white", "brown", "pink"]
-        self.grid[key_positions[0][1]][key_positions[0][0]] = {"name": "orange"}
+        possible_key_name = ["green", "black", "purple", "red", "white"]
+        self.grid[key_positions[0][1]][key_positions[0][0]] = {"name": "yellow"}
         self.grid[key_positions[1][1]][key_positions[1][0]] = {"name": "blue"}
         sample_names = random.sample(possible_key_name, num_keys-2)
         for i in range(2, num_keys):
@@ -144,16 +148,33 @@ class Game:
 
     def _load_emoji_images(self):
         size = (self.settings.tile_size - 10, self.settings.tile_size - 10)
+        root_path = os.path.dirname(os.path.abspath(__file__))
+        asset_names = [
+            "Agent", "Wall1", "Wall2", "Wall3", "Wall4", "Door",
+            "key_yellow", "key_blue", "key_green", "key_purple",
+            "key_red", "key_white", "key_black", "D&A"
+        ]
         self.emoji_images = {
-            "Agent": pygame.transform.scale(pygame.image.load("assets/agent.png"), size),
-            "Wall1": pygame.transform.scale(pygame.image.load("assets/wall1.png"), size),
-            "Wall2": pygame.transform.scale(pygame.image.load("assets/wall2.png"), size),
-            "Wall3": pygame.transform.scale(pygame.image.load("assets/wall3.png"), size),
-            "Wall4": pygame.transform.scale(pygame.image.load("assets/wall4.png"), size),
-            "Door": pygame.transform.scale(pygame.image.load("assets/door.png"), size),
-            "Key": pygame.transform.scale(pygame.image.load("assets/key_yellow.png"), size),
-            "D&A": pygame.transform.scale(pygame.image.load("assets/dooragent.png"), size)
+            name: pygame.transform.scale(
+                pygame.image.load(os.path.join(root_path, f"assets/{name}.png")), size)
+            for name in asset_names
         }
+        # self.emoji_images = {
+        #     "Agent": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/agent.png")), size),
+        #     "Wall1": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/wall1.png")), size),
+        #     "Wall2": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/wall2.png")), size),
+        #     "Wall3": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/wall3.png")), size),
+        #     "Wall4": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/wall4.png")), size),
+        #     "Door": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/door.png")), size),
+        #     "Key_yellow": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/key_yellow.png")), size),
+        #     "Key_blue": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/key_blue.png")), size),
+        #     "Key_green": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/key_green.png")), size),
+        #     "Key_purple": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/key_purple.png")), size),
+        #     "Key_red": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/key_red.png")), size),
+        #     "Key_white": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/key_white.png")), size),
+        #     "Key_black": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/key_black.png")), size),
+        #     "D&A": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/dooragent.png")), size)
+        # }
 
     def _draw_grid(self) -> None:
         self.screen.fill((0, 0, 0))
@@ -165,7 +186,7 @@ class Game:
                 cell = self.grid.grid[y][x]
                 # Determine which image to use based on the cell content
                 if isinstance(cell, dict):
-                    image = self.emoji_images["Key"]
+                    image = self.emoji_images.get(f"key_{cell['name']}")
                 else:
                     image = self.emoji_images.get(cell, None)
 
