@@ -347,6 +347,7 @@ class Actionflow(Env):
             print(f"{self.RED}Error: KeyboardInterrupt{self.RESET}", file=sys.stderr)
             sys.exit(1)
         except Exception as e:
+            print("self.current_code: ", self.current_code)
             import traceback
             tb = traceback.TracebackException.from_exception(e)
             concise_traceback = "".join(tb.format_exception_only())
