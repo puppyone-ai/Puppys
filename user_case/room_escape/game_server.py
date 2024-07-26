@@ -61,8 +61,9 @@ class Grid:
         possible_key_name = ["green", "yellow", "purple", "red", "black", "white", "brown", "pink"]
         self.grid[key_positions[0][1]][key_positions[0][0]] = {"name": "orange"}
         self.grid[key_positions[1][1]][key_positions[1][0]] = {"name": "blue"}
+        sample_names = random.sample(possible_key_name, num_keys-2)
         for i in range(2, num_keys):
-            self.grid[key_positions[i][1]][key_positions[i][0]] = {"name": random.sample(possible_key_name)}
+            self.grid[key_positions[i][1]][key_positions[i][0]] = {"name": sample_names[i-2]}
 
     def populate_grid(self) -> None:
         self.place_walls()
@@ -212,8 +213,7 @@ class Game:
         content_start_y = title_rect.bottom + 10  # Reset start y for key names under "Used Keys"
 
         # Display each used key
-        for index, key in enumerate(self.used_keys):
-            key_name = key.get("name", "unknown")
+        for index, key_name in enumerate(self.used_keys):
             key_text = self.info_font.render(key_name, True, (69, 153, 223))
             key_text_rect = key_text.get_rect(center=(start_x + width // 2, content_start_y + index * line_height))
             self.screen.blit(key_text, key_text_rect)
@@ -287,7 +287,6 @@ class Game:
                     self.used_keys = shared_info.get("used_keys")
                     self.current_action_string = shared_info.get("current_action_string")
                     self.current_action_string += f"\nTarget keys: {self.target_keys}"
-                    print(self.grid.grid, self.agent_x, self.agent_y, self.current_action_string)
         except json.JSONDecodeError as e:
             print(f"Failed to decode JSON data: {e}")
 

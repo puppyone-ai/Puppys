@@ -286,11 +286,11 @@ def decision_tree(self, target_keys):
     while True:
         self.game_state = self.connection.fetch_state()
         if self.game_state.get("door_dict", {}).get("open"):
+            self.connection.close()
             break
         self.escaping(show_response=True)
         self.game_map = self.get_game_env()
         time.sleep(2)
-    self.connection.close()
 
 escaper = Escaper(decision_tree)
 # Note: The target keys must include orange or blue, cause other colors are not guaranteed to be in the game.
