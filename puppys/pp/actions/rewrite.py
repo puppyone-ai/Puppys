@@ -60,19 +60,19 @@ def rewrite(
 
     Now, rewrite the following user instruction:
     """
-    
+
     prompt_messages = [
         {"role": "system", "content": sys_prompt},
         {"role": "user", "content": user_prompt}
     ]
-    
+
     action = Action(
         puppy_instance,
         user_prompt,
-        model,
         show_prompt,
         show_response,
-        retries=0
+        retries=0,
+        replace_code=True
     )
 
     action.highlighting("rewriting_prompt", prompt_messages)

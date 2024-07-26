@@ -98,14 +98,13 @@ and Now you need to write code to justify if the action of {action_name} is done
 Your response should be similar to the response example(ONLY CODE, and COMMENT) and NOTHING ELSE.
 """}]
 
-    # TODO :this part should be deleted
     action = Action(
         puppy_instance,
         action_name,
-        model,
         show_prompt,
         show_response,
-        retries=0
+        retries=0,
+        replace_code=False
     )
 
     action.highlighting(

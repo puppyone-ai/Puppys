@@ -11,26 +11,26 @@ class Action:
     Init Args:
         puppy_instance (any): The puppy instance.
         action_name (str): The name of the action.
-        model (str): The model to use for the Large Language Model.
         show_prompt (bool): Whether to show the prompt.
         show_response (bool): Whether to show the response.
         retries (int): The number of retries for the action.
+        replace_code (bool): Whether to replace the action code. The default is True.
     """
     def __init__(
         self, 
         puppy_instance: any, 
         action_name: str, 
-        model: str, 
         show_prompt: bool, 
         show_response: bool, 
-        retries: int
+        retries: int = 0,
+        replace_code: bool = True
     ):
         self._puppy_instance = puppy_instance
         self.action_name = action_name
-        self.model = model
         self.show_prompt = show_prompt
         self.show_response = show_response
         self.retries = retries
+        self.replace_code = replace_code
 
         # Set the printing color
         self.GREEN= "\033[32m"
@@ -48,7 +48,6 @@ class Action:
         Args:
             new_code (str): The new code to replace. It can be a single line or multiple lines.
         """
-        print("replace_action_code!!!")
 
         new_lines = new_code.split("\n")
 
@@ -58,8 +57,6 @@ class Action:
             leading_whitespaces = self._puppy_instance.actionflow.temp_current_code[self.action_name][0]
             code_to_replace = self._puppy_instance.actionflow.temp_current_code[self.action_name][1]
             new_code_to_add = "\n".join([leading_whitespaces + line for line in new_lines]) + "\n"
-            print("if Current: ", code_to_replace)
-            print("if Replaced: ", new_code_to_add)
             self._puppy_instance.actionflow.current_code = self._puppy_instance.actionflow.current_code.replace(code_to_replace, new_code_to_add, 1)
             self._puppy_instance.actionflow.temp_current_code[self.action_name] = (leading_whitespaces, new_code_to_add)
             if self.retries == 0:
@@ -69,14 +66,11 @@ class Action:
         else:
             # Replace the line containing action_name
             current_code_lines = self._puppy_instance.actionflow.current_code.splitlines(keepends=True)
-            print("current_code_lines: ", current_code_lines)
             self.action_name = self.action_name.strip().replace("\n", "\\n")
             for current_line in current_code_lines:
                 if self.action_name in current_line:
                     leading_whitespaces = re.match(r"\s*", current_line).group()
                     new_code_to_add = "\n".join([leading_whitespaces + line for line in new_lines]) + "\n"
-                    print("Current: ", current_line)
-                    print("Replaced: ", new_code_to_add)
                     self._puppy_instance.actionflow.current_code = self._puppy_instance.actionflow.current_code.replace(current_line, new_code_to_add, 1)
                     self._puppy_instance.actionflow.temp_current_code[self.action_name] = (leading_whitespaces, new_code_to_add)
                     # Only replace one action at a time
@@ -139,7 +133,7 @@ class Action:
         add_code: bool
     ) -> str:
         """
-        Clean the LLM code and add it to the current code if needed.
+        Clean the LLM code and add it to the current code if needed. Will also replace the action code if needed.
 
         Args:
             new_code (str): The new code to clean.
@@ -155,6 +149,10 @@ class Action:
         # Add the ran code into the current code
         if add_code:
             self._puppy_instance.actionflow.current_action_code += new_code + "\n"
+
+        # Replace action code if needed
+        if self.replace_code:
+            self.replace_action_code(new_code)
 
         return new_code
 
