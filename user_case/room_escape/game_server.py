@@ -58,11 +58,11 @@ class Grid:
     def place_keys(self) -> None:
         num_keys = random.randint(3, self.settings.grid_size)
         key_positions = random.sample([(x, y) for x in range(self.settings.grid_size) for y in range(self.settings.grid_size) if self.grid[y][x] == " "], num_keys)
-        possible_key_name = ["orange", "blue", "green", "yellow", "purple", "red", "black", "white", "brown", "pink"]
+        possible_key_name = ["green", "yellow", "purple", "red", "black", "white", "brown", "pink"]
         self.grid[key_positions[0][1]][key_positions[0][0]] = {"name": "orange"}
         self.grid[key_positions[1][1]][key_positions[1][0]] = {"name": "blue"}
         for i in range(2, num_keys):
-            self.grid[key_positions[i][1]][key_positions[i][0]] = {"name": random.choice(possible_key_name)}
+            self.grid[key_positions[i][1]][key_positions[i][0]] = {"name": random.sample(possible_key_name)}
 
     def populate_grid(self) -> None:
         self.place_walls()

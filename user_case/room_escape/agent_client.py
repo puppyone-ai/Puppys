@@ -174,6 +174,26 @@ def get_all_available_keys(connection: ServerConnection) -> list:
 
     return [key.get("name") for key in available_keys if key.get("name")]
 
+def give_up_key(connection: ServerConnection, key_name: str) -> None:
+    """
+    Give up using a key by removing the key from the used_keys list. If the key is not in the list of used keys, nothing happens.
+
+    Parameters: `key_name` (str): The name of the tool to give up.
+
+    Return Value: None.
+
+    Example Usages:
+    give_up_key(key_name='blue')
+    """
+
+    game_state = connection.fetch_state()
+    used_keys = game_state.get("used_keys")
+
+    game_state["used_keys"] = [key for key in used_keys if key.get("name") != key_name]
+    game_state["current_action_string"] = f"Giving up key `{key_name}`."
+
+    connection.update_state(game_state)
+
 
 class Escaper(Puppy):
     def __init__(self, *args, **kwargs):
@@ -207,6 +227,14 @@ class Escaper(Puppy):
             name=get_all_available_keys.__name__,
             description=get_all_available_keys.__doc__,
             fixed_params={"connection": self.connection},
+        )
+
+        self.give_up_key = FuncEnv(
+            value=give_up_key,
+            name=give_up_key.__name__,
+            description=give_up_key.__doc__,
+            fixed_params={"connection": self.connection},
+            free_params=["key_name"]
         )
 
     def get_game_env(self) -> Env:
