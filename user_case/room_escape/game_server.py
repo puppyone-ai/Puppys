@@ -1,17 +1,19 @@
+import os
+# import sys
+# sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+# print(sys.path, os.path.dirname(os.path.abspath(__file__)))
+import time
 import json
 import socket
 import pygame
 import random
-import time
-from pygame.locals import *
-from escape_tools import Key, Hammer, Cup
 
 # Initialize Pygame
 pygame.init()
 
 class GameSettings:
-    """ Game settings that can be modified based on game requirements. """
-    def __init__(self, grid_size, tile_size=64, info_height=100, fps=30):
+    """ Set the Game settings. """
+    def __init__(self, grid_size: int, tile_size: int = 64, info_height: int = 100, fps: int = 30):
         self.tile_size = tile_size
         self.grid_size = grid_size
         self.screen_width = self.screen_height = self.tile_size * self.grid_size
@@ -19,242 +21,300 @@ class GameSettings:
         self.fps = fps
 
 class Grid:
-    """ Class to handle the game grid and game objects like tools and doors. """
-    def __init__(self, settings):
+    """ Define the game grid and game objects like keys and doors. """
+    def __init__(self, settings: GameSettings):
         self.settings = settings
-        self.grid = [[' ' for _ in range(self.settings.grid_size)] for _ in range(self.settings.grid_size)]
+        self.grid = [[" " for _ in range(self.settings.grid_size)] for _ in range(self.settings.grid_size)]
         self.door_dict = {}
         self.populate_grid()
     
-    def place_walls(self):
+    def place_walls(self) -> None:
+        walls = ["Wall1", "Wall2", "Wall3", "Wall4"]
         num_walls = random.randint(1, min(5, self.settings.grid_size//2))
         for _ in range(num_walls):
             x, y = random.randint(0, self.settings.grid_size-1), random.randint(0, self.settings.grid_size-1)
-            self.grid[y][x] = 'W'
+            self.grid[y][x] = random.choice(walls)
     
-    def place_door(self):
+    def place_door(self) -> None:
         """ Places a door randomly on the boundary of the grid with a status (True for open, False for closed). """
-        edge = random.choice(['top', 'bottom', 'left', 'right'])
-        if edge == 'top':
+        edge = random.choice(["top", "bottom", "left", "right"])
+        if edge == "top":
             x = random.randint(0, self.settings.grid_size - 1)
             y = 0
-        elif edge == 'bottom':
+        elif edge == "bottom":
             x = random.randint(0, self.settings.grid_size - 1)
             y = self.settings.grid_size - 1
-        elif edge == 'left':
+        elif edge == "left":
             x = 0
             y = random.randint(0, self.settings.grid_size - 1)
-        elif edge == 'right':
+        elif edge == "right":
             x = self.settings.grid_size - 1
             y = random.randint(0, self.settings.grid_size - 1)
 
         # Check if selected boundary cell is empty before placing the door
-        if self.grid[y][x] == ' ':
-            self.door_dict = {"x": x, "y": y, "open": False}
-            self.grid[y][x] = 'D'
+        if self.grid[y][x] == " ":
+            self.door_dict = {"locations": (y, x), "open": False}
+            self.grid[y][x] = "Door"
         else:
             # Recurse if initial random placement is not empty
             self.place_door()
-    
-    def place_tools(self, number = 3):
-        # Fixed number of tools with specific properties
-        tool_positions = random.sample([(x, y) for x in range(self.settings.grid_size) for y in range(self.settings.grid_size) if self.grid[y][x] == ' '], number)
-        self.grid[tool_positions[0][1]][tool_positions[0][0]] = Key.serialize()
-        self.grid[tool_positions[1][1]][tool_positions[1][0]] = Hammer.serialize()
-        self.grid[tool_positions[2][1]][tool_positions[2][0]] = Cup.serialize()
 
-    def populate_grid(self):
+    def place_keys(self) -> None:
+        num_keys = random.randint(3, 7)
+        key_positions = random.sample([(x, y) for x in range(self.settings.grid_size) for y in range(self.settings.grid_size) if self.grid[y][x] == " "], num_keys)
+        possible_key_name = ["green", "black", "purple", "red", "white"]
+        self.grid[key_positions[0][1]][key_positions[0][0]] = {"name": "yellow"}
+        self.grid[key_positions[1][1]][key_positions[1][0]] = {"name": "blue"}
+        sample_names = random.sample(possible_key_name, num_keys-2)
+        for i in range(2, num_keys):
+            self.grid[key_positions[i][1]][key_positions[i][0]] = {"name": sample_names[i-2]}
+
+    def populate_grid(self) -> None:
         self.place_walls()
         self.place_door()
-        self.place_tools()
+        self.place_keys()
 
-    def get_start_position(self):
+    def get_start_position(self) -> tuple:
         while True:
             x, y = random.randint(0, self.settings.grid_size-1), random.randint(0, self.settings.grid_size-1)
-            if self.grid[y][x] == ' ':
-                self.grid[y][x] = 'A'
+            if self.grid[y][x] == " ":
+                self.grid[y][x] = "Agent"
                 return x, y
 
 class Game:
-    def __init__(self, grid_size, font_size=36, info_font_size=20, port=5555):
+    def __init__(self, grid_size: int, font_size: int = 30, info_font_size: int = 22, key_info_width: int = 150, port: int = 5555):
         self.grid_size = grid_size
         self.settings = GameSettings(grid_size)
         self.grid = Grid(self.settings)
         self.agent_x, self.agent_y = self.grid.get_start_position()
-        self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height + self.settings.info_height))
+        self.key_info_width = key_info_width
+        self.screen = pygame.display.set_mode((self.settings.screen_width + self.key_info_width, self.settings.screen_height + self.settings.info_height))
+        self._load_emoji_images()
         self.font = pygame.font.Font(None, font_size)
         self.info_font = pygame.font.Font(None, info_font_size)
-        self.available_tools = []
-        self.usefulness = 0
-        self.target_usefulness = 0
+        self.available_keys = []
+        self.used_keys = []
+        self.target_keys = []
         self.current_action_string = ""
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server_socket.bind(('', port))
+        self.server_socket.bind(("", port))
         self.server_socket.listen(1)
         print(f"Server started on port {port}")
-    
-    def run_game(self):
-        # Render the initial state before entering the main loop
-        self.draw_grid()
-        self.draw_messages()
-        pygame.display.flip()
 
+    def run_game(self) -> None:
+        # Initialize the display with the initial state
+        self._draw_grid()
+        pygame.display.flip()
+        
+        # Establish a connection
         connection, address = self.server_socket.accept()
-        print("connection, address: ", connection, address)
-        print(f"Connected by {address}")
+        print(f"Connected by {connection}, {address}")
+
+        # Main game loop
         running = True
+        
         while running:
+            # Check for Pygame events before blocking operations
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                    break
 
-            data = connection.recv(4096).decode('utf-8')
-            running = self.handle_client_data(data, connection)
+            # Non-blocking check if a client is connected
+            try:
+                connection.settimeout(0.1)
+                data = connection.recv(4096).decode("utf-8")
+                if data:
+                    running = self._handle_client_data(data, connection)
+            except socket.timeout:
+                time.sleep(1)
+            except ConnectionResetError:
+                connection.close()
+                try:
+                    connection, address = self.server_socket.accept()
+                    print(f"Reconnected by {address}")
+                except socket.timeout:
+                    print("Waiting for new client connections...")
+                    time.sleep(1)
 
-            self.draw_grid()
-            self.draw_messages()
+            # Update display
+            self._draw_grid()
             pygame.display.flip()
-            
-            # time.sleep(2)
 
+        # Clean up and close the game
+        time.sleep(2)
+        connection.close()
         pygame.quit()
-    
-    def print_grid(self):
-        """Print the game grid."""
-        grid_string = f"The dimension of the grid: {self.grid_size}\n"
-        for y in range(self.settings.grid_size):
-            for x in range(self.settings.grid_size):
-                cell = self.grid.grid[y][x]
-                if cell != ' ':
-                    grid_string += f"In row {y} and column {x}: "
-                    if isinstance(cell, dict):
-                        name, description, usefulness = cell.get("name", ""), cell.get("description", ""), cell.get("usefulness", 0)
-                        tool_info = f"`{name}` - {description}\nUsefulness Score: {usefulness}"
-                        grid_string += "The tool " + tool_info
-                    elif cell == 'D':
-                        grid_string += "The door"
-                    elif cell == "A":
-                        grid_string += "The agent"
-                    elif cell == "W":
-                        grid_string += "The wall"
-                    grid_string += "\n"
-        return grid_string
-    
-    def draw_grid(self):
-        """Draw the game grid."""
+
+    def _load_emoji_images(self):
+        size = (self.settings.tile_size - 10, self.settings.tile_size - 10)
+        root_path = os.path.dirname(os.path.abspath(__file__))
+        asset_names = [
+            "Agent", "Wall1", "Wall2", "Wall3", "Wall4", "Door",
+            "key_yellow", "key_blue", "key_green", "key_purple",
+            "key_red", "key_white", "key_black", "D&A"
+        ]
+        self.emoji_images = {
+            name: pygame.transform.scale(
+                pygame.image.load(os.path.join(root_path, f"assets/{name if name != 'D&A' else 'dooragent'}.png")), size)
+            for name in asset_names
+        }
+
+    def _draw_grid(self) -> None:
         self.screen.fill((0, 0, 0))
         for y in range(self.settings.grid_size):
             for x in range(self.settings.grid_size):
                 rect = pygame.Rect(x * self.settings.tile_size, y * self.settings.tile_size, self.settings.tile_size, self.settings.tile_size)
-                color = (255, 255, 255) if (x, y) == (self.agent_x, self.agent_y) else (200, 200, 200)
-                pygame.draw.rect(self.screen, color, rect, 1)
+                pygame.draw.rect(self.screen, (200, 200, 200), rect, 1)
 
                 cell = self.grid.grid[y][x]
-                text_representation = ' '
-
+                # Determine which image to use based on the cell content
                 if isinstance(cell, dict):
-                    text_representation = 'T'
-                elif isinstance(cell, str):
-                    text_representation = cell
+                    image = self.emoji_images.get(f"key_{cell['name']}")
+                else:
+                    image = self.emoji_images.get(cell, None)
 
-                text = self.font.render(text_representation, True, (255, 255, 255))
-                text_rect = text.get_rect(center=rect.center)
-                self.screen.blit(text, text_rect)
-    
-    def draw_messages(self):
-        # Define starting position for text rendering
-        start_y = self.settings.screen_height
+                if image:
+                    # Center the image in the rectangle
+                    image_rect = image.get_rect(center=rect.center)
+                    self.screen.blit(image, image_rect)
+        
+        self._draw_key_info()
+        self._draw_messages()
+        
+    def _draw_key_info(self) -> None:
+        start_x = self.settings.screen_width + 0
+        start_y = 10
+        width = self.key_info_width
+        height = self.settings.screen_height
+
+        # Define the key info rectangle and draw it
+        key_info_rect = pygame.Rect(start_x, start_y, width, height)
+        pygame.draw.rect(self.screen, (0, 0, 0), key_info_rect)
+
+        # Display the title for available keys
+        title_text = self.info_font.render("Available Keys:", True, (255, 167, 61))
+        title_rect = title_text.get_rect(center=(start_x + width // 2, start_y + 20))
+        self.screen.blit(title_text, title_rect)
+
+        line_height = 30
+        content_start_y = title_rect.bottom + 10
+
+        # Display each available key
+        for index, key in enumerate(self.available_keys):
+            key_name = key.get("name", "unknown")
+            key_text = self.info_font.render(key_name, True, (69, 153, 223))
+            key_text_rect = key_text.get_rect(center=(start_x + width // 2, content_start_y + index * line_height))
+            self.screen.blit(key_text, key_text_rect)
+
+        # Calculate the starting y for "Used Keys" title based on the content of "Available Keys"
+        next_section_start_y = content_start_y + len(self.available_keys) * line_height + 30
+
+        # Display the title for used keys
+        title_text = self.info_font.render("Used Keys:", True, (255, 167, 61))
+        title_rect = title_text.get_rect(center=(start_x + width // 2, next_section_start_y))
+        self.screen.blit(title_text, title_rect)
+
+        content_start_y = title_rect.bottom + 10  # Reset start y for key names under "Used Keys"
+
+        # Display each used key
+        for index, key_name in enumerate(self.used_keys):
+            key_text = self.info_font.render(key_name, True, (69, 153, 223))
+            key_text_rect = key_text.get_rect(center=(start_x + width // 2, content_start_y + index * line_height))
+            self.screen.blit(key_text, key_text_rect)
+
+    def _draw_messages(self) -> None:
+        # Define starting position for text rendering with a downward offset
+        offset = 30
+        start_y = self.settings.screen_height + offset
         line_height = 20
 
         # Display the current action message
-        action_rect = pygame.Rect(0, start_y, self.settings.screen_width, self.settings.info_height)
+        action_rect = pygame.Rect(0, start_y - offset, self.settings.screen_width, self.settings.info_height + offset)
         pygame.draw.rect(self.screen, (0, 0, 0), action_rect)
 
-        # Append additional info to current action string
-        self.current_action_string += f"\nCurrent Usefulness: {self.usefulness}\nTarget Usefulness: {self.target_usefulness}"
-
         # Split the message into lines
-        lines = self.current_action_string.split('\n')
+        lines = self.current_action_string.split("\n")
 
         for i, line in enumerate(lines):
-            action_text = self.info_font.render(line, True, (255, 253, 208))
+            action_text = self.info_font.render(line, True, (69, 153, 223))
             action_text_rect = action_text.get_rect(center=(self.settings.screen_width // 2, start_y + i * line_height))
             self.screen.blit(action_text, action_text_rect)
 
-        # Reset the current action string
-        self.current_action_string = ""
-    
-    def print_available_tools(self):
-        tools_string = ""
-        for tool in self.available_tools:
-            tools_string += tool.display() + "\n"
-        return tools_string
-
-    def handle_client_data(self, data, connection):
+    def _handle_client_data(self, data: any, connection: socket) -> bool:
         # Check if data is empty
         if not data:
             print("No data received.")
             return True
 
-        if data == "GET_STATE":
-            self.handle_get_state(connection)
+        if isinstance(data, str) and data == "GET_STATE":
+            self._handle_get_state(connection)
             return True
 
-        return self.handle_push_state(connection, data)
+        return self._handle_push_state(connection, data)
 
-    def handle_get_state(self, connection):
+    def _handle_get_state(self, connection: socket) -> None:
         # Send the current game state as a serialized JSON
         shared_info = {
             "grid": self.grid.grid, 
             "agent_x": self.agent_x,
             "agent_y": self.agent_y,
-            "available_tools": self.available_tools,
+            "available_keys": self.available_keys,
+            "used_keys": self.used_keys,
+            "target_keys": self.target_keys,
             "door_dict": self.grid.door_dict,
-            "grid_string": self.print_grid(),
-            "tools": self.print_available_tools(),
-            "usefulness": self.usefulness
+            "grid_string": self._print_grid(),
         }
         state_info = json.dumps(shared_info)
         connection.sendall(state_info.encode())
-    
-    def handle_push_state(self, connection, data):
+
+    def _handle_push_state(self, connection: socket, data: dict) -> bool:
         try:
             # Update the game state based on client data
             shared_info = json.loads(data)
-            
+            print("Updated data: ", shared_info)
             connection.sendall(b"State updated.")
             # The first time the client sends message
-            if "target_usefulness" in shared_info:
-                self.target_usefulness = shared_info.get("target_usefulness")
-            # Normal update when agent moves or uses a tool
+            if "grid" not in shared_info:
+                self.target_keys = shared_info.get("target_keys")
+            # Normal update when agent moves or uses a key
             else:
                 self.grid.door_dict = shared_info.get("door_dict")
                 # Exit the game if the door is open
                 if self.grid.door_dict["open"]:
-                    self.win()
+                    self.current_action_string = "Congratulations! You've escaped the room!"
                     return False
                 else:
-                    print("self.grid.door_dict open: ", self.grid.door_dict["open"])
                     self.grid.grid = shared_info.get("grid")
                     self.agent_x = shared_info.get("agent_x")
                     self.agent_y = shared_info.get("agent_y")
-                    self.available_tools = shared_info.get("available_tools")
+                    self.available_keys = shared_info.get("available_keys")
+                    self.used_keys = shared_info.get("used_keys")
                     self.current_action_string = shared_info.get("current_action_string")
+                    self.current_action_string += f"\nTarget keys: {self.target_keys}"
         except json.JSONDecodeError as e:
             print(f"Failed to decode JSON data: {e}")
-        
-        return True
-            
 
-    def win(self):
-        win_rect = pygame.Rect(0, self.settings.screen_height, self.settings.screen_width, self.settings.info_height)
-        win_font = pygame.font.Font(None, 40)
-        win_message = "Congratulations! You've escaped the room!"
-        win_text = win_font.render(win_message, True, (0, 0, 0))
-        win_text_rect = win_text.get_rect(center=win_rect.center)
-        self.screen.blit(win_text, win_text_rect)
+        return True
+
+    def _print_grid(self) -> str:
+        grid_string = f"Grid Dimension: {self.grid_size}\n"
+        for y in range(self.settings.grid_size):
+            for x in range(self.settings.grid_size):
+                cell = self.grid.grid[y][x]
+                if cell != " ":
+                    grid_string += f"In ({y}, {x}): "
+                    if isinstance(cell, dict):
+                        name = cell.get("name", "unknown")
+                        grid_string += f"key `{name}`"
+                    elif cell == "D&A":
+                        grid_string += "Both Agent and Door"
+                    else:
+                        grid_string += cell
+                    grid_string += "\n"
+        return grid_string
 
 
 # Running the server
 if __name__ == "__main__":
-    Game(5).run_game()
+    Game(7).run_game()

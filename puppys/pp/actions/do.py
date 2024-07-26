@@ -94,14 +94,13 @@ Now generate your answer as code:
 
     # Prompt Finished *****************************************************************************************
 
-    # TODO :this part should be deleted
     action = Action(
         puppy_instance,
         action_name,
-        model,
         show_prompt,
         show_response,
-        retries
+        retries,
+        replace_code=True
     )
 
     action.highlighting(
@@ -118,8 +117,6 @@ Now generate your answer as code:
     )
 
     new_code = action.clean_llm_code(new_code, add_code=True)
-
-    action.replace_action_code(new_code)
 
     puppy_instance = action.get_puppy_instance()
 
