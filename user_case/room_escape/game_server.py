@@ -156,25 +156,9 @@ class Game:
         ]
         self.emoji_images = {
             name: pygame.transform.scale(
-                pygame.image.load(os.path.join(root_path, f"assets/{name}.png")), size)
+                pygame.image.load(os.path.join(root_path, f"assets/{name if name != 'D&A' else 'dooragent'}.png")), size)
             for name in asset_names
         }
-        # self.emoji_images = {
-        #     "Agent": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/agent.png")), size),
-        #     "Wall1": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/wall1.png")), size),
-        #     "Wall2": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/wall2.png")), size),
-        #     "Wall3": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/wall3.png")), size),
-        #     "Wall4": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/wall4.png")), size),
-        #     "Door": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/door.png")), size),
-        #     "Key_yellow": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/key_yellow.png")), size),
-        #     "Key_blue": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/key_blue.png")), size),
-        #     "Key_green": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/key_green.png")), size),
-        #     "Key_purple": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/key_purple.png")), size),
-        #     "Key_red": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/key_red.png")), size),
-        #     "Key_white": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/key_white.png")), size),
-        #     "Key_black": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/key_black.png")), size),
-        #     "D&A": pygame.transform.scale(pygame.image.load(os.path.join(root_path, "assets/dooragent.png")), size)
-        # }
 
     def _draw_grid(self) -> None:
         self.screen.fill((0, 0, 0))
