@@ -145,14 +145,14 @@ class Game:
     def _load_emoji_images(self):
         size = (self.settings.tile_size - 10, self.settings.tile_size - 10)
         self.emoji_images = {
-            "Agent": pygame.transform.scale(pygame.image.load("user_case/room_escape/assets/agent.png"), size),
-            "Wall1": pygame.transform.scale(pygame.image.load("user_case/room_escape/assets/wall1.png"), size),
-            "Wall2": pygame.transform.scale(pygame.image.load("user_case/room_escape/assets/wall2.png"), size),
-            "Wall3": pygame.transform.scale(pygame.image.load("user_case/room_escape/assets/wall3.png"), size),
-            "Wall4": pygame.transform.scale(pygame.image.load("user_case/room_escape/assets/wall4.png"), size),
-            "Door": pygame.transform.scale(pygame.image.load("user_case/room_escape/assets/door.png"), size),
-            "Key": pygame.transform.scale(pygame.image.load("user_case/room_escape/assets/key.png"), size),
-            "D&A": pygame.transform.scale(pygame.image.load("user_case/room_escape/assets/dooragent.png"), size)
+            "Agent": pygame.transform.scale(pygame.image.load("assets/agent.png"), size),
+            "Wall1": pygame.transform.scale(pygame.image.load("assets/wall1.png"), size),
+            "Wall2": pygame.transform.scale(pygame.image.load("assets/wall2.png"), size),
+            "Wall3": pygame.transform.scale(pygame.image.load("assets/wall3.png"), size),
+            "Wall4": pygame.transform.scale(pygame.image.load("assets/wall4.png"), size),
+            "Door": pygame.transform.scale(pygame.image.load("assets/door.png"), size),
+            "Key": pygame.transform.scale(pygame.image.load("assets/key_yellow.png"), size),
+            "D&A": pygame.transform.scale(pygame.image.load("assets/dooragent.png"), size)
         }
 
     def _draw_grid(self) -> None:
