@@ -11,14 +11,6 @@ def escaping(
     show_prompt: bool = False,
     show_response: bool = False, 
     ) -> str:
-    history_codes = "\n".join(puppy_instance.actionflow.history_codes)
-    future_codes = "\n".join(puppy_instance.actionflow.future_codes)
-    current_code = puppy_instance.actionflow.current_code
-    print(f"history_codes: {history_codes}")
-    print(f"current_code: {current_code}")
-    print(f"future_codes: {future_codes}")
-    
-    
     # Get the game state
     envs = explore(environment=puppy_instance.env_node, target=Env, output_content_mode="attribute", attributes=["name", "description"])
     sub_game_map = explore(environment=puppy_instance.env_node.game_map, target=Env, output_content_mode="attribute", attributes=["name", "description"])
