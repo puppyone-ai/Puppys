@@ -20,14 +20,14 @@ def handle_control_flow(
 
     for stmt in body:
         if isinstance(stmt, ast.Break):
-            return 'break'
+            return "break"
         elif isinstance(stmt, ast.Continue):
-            return 'continue'
+            return "continue"
         elif isinstance(stmt, ast.Pass):
             continue
         else:
             control_flow_type = puppy_ast_exec(stmt, global_dict, local_dict)
-            if control_flow_type in ['break', 'continue']:
+            if control_flow_type in ["break", "continue"]:
                 return control_flow_type
     return ""
 
@@ -69,9 +69,9 @@ def puppy_ast_exec(
             else:
                 local_dict[node.target.id] = item
             control_signal = handle_control_flow(node.body, global_dict, local_dict)
-            if control_signal == 'break':
+            if control_signal == "break":
                 break
-            elif control_signal == 'continue':
+            elif control_signal == "continue":
                 continue
 
     elif isinstance(node, ast.If):
@@ -84,9 +84,9 @@ def puppy_ast_exec(
         # Handle "while" loop
         while eval(compile(ast.Expression(node.test), filename="<ast>", mode="eval"), global_dict, local_dict):
             control_signal = handle_control_flow(node.body, global_dict, local_dict)
-            if control_signal == 'break':
+            if control_signal == "break":
                 break
-            elif control_signal == 'continue':
+            elif control_signal == "continue":
                 continue
 
     else:

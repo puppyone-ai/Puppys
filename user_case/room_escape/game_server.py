@@ -1,7 +1,4 @@
 import os
-# import sys
-# sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-# print(sys.path, os.path.dirname(os.path.abspath(__file__)))
 import time
 import json
 import socket
@@ -13,7 +10,13 @@ pygame.init()
 
 class GameSettings:
     """ Set the Game settings. """
-    def __init__(self, grid_size: int, tile_size: int = 64, info_height: int = 100, fps: int = 30):
+    def __init__(
+        self, 
+        grid_size: int, 
+        tile_size: int = 64, 
+        info_height: int = 100, 
+        fps: int = 30
+    ):
         self.tile_size = tile_size
         self.grid_size = grid_size
         self.screen_width = self.screen_height = self.tile_size * self.grid_size
@@ -22,20 +25,27 @@ class GameSettings:
 
 class Grid:
     """ Define the game grid and game objects like keys and doors. """
-    def __init__(self, settings: GameSettings):
+    def __init__(
+        self, 
+        settings: GameSettings
+    ):
         self.settings = settings
         self.grid = [[" " for _ in range(self.settings.grid_size)] for _ in range(self.settings.grid_size)]
         self.door_dict = {}
         self.populate_grid()
     
-    def place_walls(self) -> None:
+    def place_walls(
+        self
+    ) -> None:
         walls = ["Wall1", "Wall2", "Wall3", "Wall4"]
         num_walls = random.randint(1, min(5, self.settings.grid_size//2))
         for _ in range(num_walls):
             x, y = random.randint(0, self.settings.grid_size-1), random.randint(0, self.settings.grid_size-1)
             self.grid[y][x] = random.choice(walls)
     
-    def place_door(self) -> None:
+    def place_door(
+        self
+    ) -> None:
         """ Places a door randomly on the boundary of the grid with a status (True for open, False for closed). """
         edge = random.choice(["top", "bottom", "left", "right"])
         if edge == "top":
@@ -59,22 +69,35 @@ class Grid:
             # Recurse if initial random placement is not empty
             self.place_door()
 
-    def place_keys(self) -> None:
+    def place_keys(
+        self
+    ) -> None:
         num_keys = random.randint(3, 7)
-        key_positions = random.sample([(x, y) for x in range(self.settings.grid_size) for y in range(self.settings.grid_size) if self.grid[y][x] == " "], num_keys)
+        num_boxes = random.randint(1, 3)
+        positions = random.sample([(x, y) for x in range(self.settings.grid_size) for y in range(self.settings.grid_size) if self.grid[y][x] == " "], num_keys + num_boxes)
+        key_positions = positions[:num_keys]
+        box_positions = positions[num_keys:]
+
         possible_key_name = ["green", "black", "purple", "red", "white"]
-        self.grid[key_positions[0][1]][key_positions[0][0]] = {"name": "yellow"}
-        self.grid[key_positions[1][1]][key_positions[1][0]] = {"name": "blue"}
+        self.grid[key_positions[0][1]][key_positions[0][0]] = {"name": "yellow", "in_box": True, "opened": False, "with_agent": False}
+        self.grid[key_positions[1][1]][key_positions[1][0]] = {"name": "blue", "in_box": False, "opened": False, "with_agent": False}
         sample_names = random.sample(possible_key_name, num_keys-2)
         for i in range(2, num_keys):
-            self.grid[key_positions[i][1]][key_positions[i][0]] = {"name": sample_names[i-2]}
+            self.grid[key_positions[i][1]][key_positions[i][0]] = {"name": sample_names[i-2], "in_box": random.choice([True, False]), "opened": False, "with_agent": False}
+        
+        for j in range(num_boxes):
+            self.grid[box_positions[j][1]][box_positions[j][0]] = {"name": "", "in_box": True, "opened": False, "with_agent": False}
 
-    def populate_grid(self) -> None:
+    def populate_grid(
+        self
+    ) -> None:
         self.place_walls()
         self.place_door()
         self.place_keys()
 
-    def get_start_position(self) -> tuple:
+    def get_start_position(
+        self
+    ) -> tuple:
         while True:
             x, y = random.randint(0, self.settings.grid_size-1), random.randint(0, self.settings.grid_size-1)
             if self.grid[y][x] == " ":
@@ -82,7 +105,14 @@ class Grid:
                 return x, y
 
 class Game:
-    def __init__(self, grid_size: int, font_size: int = 30, info_font_size: int = 22, key_info_width: int = 150, port: int = 5555):
+    def __init__(
+        self, 
+        grid_size: int, 
+        font_size: int = 30, 
+        info_font_size: int = 22, 
+        key_info_width: int = 150, 
+        port: int = 5555
+    ):
         self.grid_size = grid_size
         self.settings = GameSettings(grid_size)
         self.grid = Grid(self.settings)
@@ -101,18 +131,20 @@ class Game:
         self.server_socket.listen(1)
         print(f"Server started on port {port}")
 
-    def run_game(self) -> None:
+    def run_game(
+        self
+    ) -> None:
         # Initialize the display with the initial state
         self._draw_grid()
         pygame.display.flip()
-        
+
         # Establish a connection
         connection, address = self.server_socket.accept()
         print(f"Connected by {connection}, {address}")
 
         # Main game loop
         running = True
-        
+
         while running:
             # Check for Pygame events before blocking operations
             for event in pygame.event.get():
@@ -146,13 +178,15 @@ class Game:
         connection.close()
         pygame.quit()
 
-    def _load_emoji_images(self):
+    def _load_emoji_images(
+        self
+    ) -> None:
         size = (self.settings.tile_size - 10, self.settings.tile_size - 10)
         root_path = os.path.dirname(os.path.abspath(__file__))
         asset_names = [
-            "Agent", "Wall1", "Wall2", "Wall3", "Wall4", "Door",
-            "key_yellow", "key_blue", "key_green", "key_purple",
-            "key_red", "key_white", "key_black", "D&A"
+            "Agent", "Wall1", "Wall2", "Wall3", "Wall4", "Door", "key_yellow", 
+            "key_blue", "key_green", "key_purple", "key_red", "key_white", "key_black", 
+            "D&A", "box", "box_open", "box_agent", "box_open_agent"
         ]
         self.emoji_images = {
             name: pygame.transform.scale(
@@ -160,7 +194,9 @@ class Game:
             for name in asset_names
         }
 
-    def _draw_grid(self) -> None:
+    def _draw_grid(
+        self
+    ) -> None:
         self.screen.fill((0, 0, 0))
         for y in range(self.settings.grid_size):
             for x in range(self.settings.grid_size):
@@ -170,7 +206,15 @@ class Game:
                 cell = self.grid.grid[y][x]
                 # Determine which image to use based on the cell content
                 if isinstance(cell, dict):
-                    image = self.emoji_images.get(f"key_{cell['name']}")
+                    in_box = cell.get("in_box", False)
+                    if in_box:
+                        opened = cell.get("opened", False)
+                        prefix = "box_open" if opened else "box"
+                        with_agent = cell.get("with_agent", False)
+                        image_name = f"{prefix}_agent" if with_agent else prefix
+                        image = self.emoji_images.get(image_name)
+                    else:
+                        image = self.emoji_images.get(f"key_{cell['name']}")
                 else:
                     image = self.emoji_images.get(cell, None)
 
@@ -178,12 +222,14 @@ class Game:
                     # Center the image in the rectangle
                     image_rect = image.get_rect(center=rect.center)
                     self.screen.blit(image, image_rect)
-        
+
         self._draw_key_info()
         self._draw_messages()
-        
-    def _draw_key_info(self) -> None:
-        start_x = self.settings.screen_width + 0
+
+    def _draw_key_info(
+        self
+    ) -> None:
+        start_x = self.settings.screen_width + 10
         start_y = 10
         width = self.key_info_width
         height = self.settings.screen_height
@@ -193,37 +239,58 @@ class Game:
         pygame.draw.rect(self.screen, (0, 0, 0), key_info_rect)
 
         # Display the title for available keys
-        title_text = self.info_font.render("Available Keys:", True, (255, 167, 61))
+        title_text = self.info_font.render("Package:", True, (255, 167, 61))
         title_rect = title_text.get_rect(center=(start_x + width // 2, start_y + 20))
         self.screen.blit(title_text, title_rect)
 
-        line_height = 30
-        content_start_y = title_rect.bottom + 10
+        # Layout settings
+        content_start_y = title_rect.bottom + 20
+        line_height = 60
+        keys_per_row = 2
+        key_size = (int(self.settings.tile_size / 2), int(self.settings.tile_size / 2))
+        image_y = 0
 
-        # Display each available key
         for index, key in enumerate(self.available_keys):
             key_name = key.get("name", "unknown")
-            key_text = self.info_font.render(key_name, True, (69, 153, 223))
-            key_text_rect = key_text.get_rect(center=(start_x + width // 2, content_start_y + index * line_height))
-            self.screen.blit(key_text, key_text_rect)
+            image = self.emoji_images.get(f"key_{key_name}")
+            if image:
+                scaled_image = pygame.transform.scale(image, key_size)
+                row_number = index // keys_per_row
+                column_number = index % keys_per_row
+                image_x = start_x + column_number * (width // keys_per_row) + (width // keys_per_row // 2)
+                image_y = content_start_y + row_number * line_height
 
-        # Calculate the starting y for "Used Keys" title based on the content of "Available Keys"
-        next_section_start_y = content_start_y + len(self.available_keys) * line_height + 30
+                image_rect = scaled_image.get_rect(center=(image_x, image_y))
+                self.screen.blit(scaled_image, image_rect)
+
+        # Calculate the starting y for "Used Keys" title based on the last image's position
+        next_section_start_y = image_y + line_height + 20
 
         # Display the title for used keys
         title_text = self.info_font.render("Used Keys:", True, (255, 167, 61))
         title_rect = title_text.get_rect(center=(start_x + width // 2, next_section_start_y))
         self.screen.blit(title_text, title_rect)
 
-        content_start_y = title_rect.bottom + 10  # Reset start y for key names under "Used Keys"
+        # Reset start y for key names under "Used Keys"
+        content_start_y = title_rect.bottom + 20
 
         # Display each used key
         for index, key_name in enumerate(self.used_keys):
-            key_text = self.info_font.render(key_name, True, (69, 153, 223))
-            key_text_rect = key_text.get_rect(center=(start_x + width // 2, content_start_y + index * line_height))
-            self.screen.blit(key_text, key_text_rect)
+            image = self.emoji_images.get(f"key_{key_name}")
+            if image:
+                scaled_image = pygame.transform.scale(image, key_size)
+                row_number = index // keys_per_row
+                column_number = index % keys_per_row
+                image_x = start_x + column_number * (width // keys_per_row) + (width // keys_per_row // 2)
+                image_y = content_start_y + row_number * line_height
 
-    def _draw_messages(self) -> None:
+                image_rect = scaled_image.get_rect(center=(image_x, image_y))
+                self.screen.blit(scaled_image, image_rect)
+
+
+    def _draw_messages(
+        self
+    ) -> None:
         # Define starting position for text rendering with a downward offset
         offset = 30
         start_y = self.settings.screen_height + offset
@@ -241,7 +308,11 @@ class Game:
             action_text_rect = action_text.get_rect(center=(self.settings.screen_width // 2, start_y + i * line_height))
             self.screen.blit(action_text, action_text_rect)
 
-    def _handle_client_data(self, data: any, connection: socket) -> bool:
+    def _handle_client_data(
+        self, 
+        data: any, 
+        connection: socket
+    ) -> bool:
         # Check if data is empty
         if not data:
             print("No data received.")
@@ -253,7 +324,10 @@ class Game:
 
         return self._handle_push_state(connection, data)
 
-    def _handle_get_state(self, connection: socket) -> None:
+    def _handle_get_state(
+        self, 
+        connection: socket
+    ) -> None:
         # Send the current game state as a serialized JSON
         shared_info = {
             "grid": self.grid.grid, 
@@ -268,7 +342,11 @@ class Game:
         state_info = json.dumps(shared_info)
         connection.sendall(state_info.encode())
 
-    def _handle_push_state(self, connection: socket, data: dict) -> bool:
+    def _handle_push_state(
+        self, 
+        connection: socket, 
+        data: dict
+    ) -> bool:
         try:
             # Update the game state based on client data
             shared_info = json.loads(data)
@@ -291,13 +369,15 @@ class Game:
                     self.available_keys = shared_info.get("available_keys")
                     self.used_keys = shared_info.get("used_keys")
                     self.current_action_string = shared_info.get("current_action_string")
-                    self.current_action_string += f"\nTarget keys: {self.target_keys}"
+            self.current_action_string += f"\nTarget keys: {self.target_keys}"
         except json.JSONDecodeError as e:
             print(f"Failed to decode JSON data: {e}")
 
         return True
 
-    def _print_grid(self) -> str:
+    def _print_grid(
+        self
+    ) -> str:
         grid_string = f"Grid Dimension: {self.grid_size}\n"
         for y in range(self.settings.grid_size):
             for x in range(self.settings.grid_size):
@@ -305,8 +385,11 @@ class Game:
                 if cell != " ":
                     grid_string += f"In ({y}, {x}): "
                     if isinstance(cell, dict):
-                        name = cell.get("name", "unknown")
-                        grid_string += f"key `{name}`"
+                        name = cell.get("name")
+                        if name:
+                            grid_string += f"key `{name}`; in_box: {cell.get('in_box')}; opened: {cell.get('opened')}"
+                        else:
+                            grid_string += f"Box; in_box: True; opened: {cell.get('opened')}"
                     elif cell == "D&A":
                         grid_string += "Both Agent and Door"
                     else:

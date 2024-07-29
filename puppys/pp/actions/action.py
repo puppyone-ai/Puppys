@@ -64,17 +64,26 @@ class Action:
 
         # For the cases that replace the code the first time
         else:
-            # Replace the line containing action_name
             current_code_lines = self._puppy_instance.actionflow.current_code.splitlines(keepends=True)
             self.action_name = self.action_name.strip().replace("\n", "\\n")
-            for current_line in current_code_lines:
-                if self.action_name in current_line:
-                    leading_whitespaces = re.match(r"\s*", current_line).group()
-                    new_code_to_add = "\n".join([leading_whitespaces + line for line in new_lines]) + "\n"
-                    self._puppy_instance.actionflow.current_code = self._puppy_instance.actionflow.current_code.replace(current_line, new_code_to_add, 1)
-                    self._puppy_instance.actionflow.temp_current_code[self.action_name] = (leading_whitespaces, new_code_to_add)
-                    # Only replace one action at a time
-                    break
+
+            # Check if the action name is empty and handle appending
+            if not self.action_name:
+                # Calculate the indentation from the last non-empty line
+                last_non_empty_line = next((line for line in reversed(current_code_lines) if line.strip()), '')
+                leading_whitespaces = re.match(r"\s*", last_non_empty_line).group()
+                new_code_to_add = "\n".join([leading_whitespaces + line for line in new_lines]) + "\n"
+                self._puppy_instance.actionflow.current_code += new_code_to_add
+            else:
+                # Replace the line containing action_name
+                for current_line in current_code_lines:
+                    if self.action_name in current_line:
+                        leading_whitespaces = re.match(r"\s*", current_line).group()
+                        new_code_to_add = "\n".join([leading_whitespaces + line for line in new_lines]) + "\n"
+                        self._puppy_instance.actionflow.current_code = self._puppy_instance.actionflow.current_code.replace(current_line, new_code_to_add, 1)
+                        self._puppy_instance.actionflow.temp_current_code[self.action_name] = (leading_whitespaces, new_code_to_add)
+                        # Only replace one action at a time
+                        break
 
     def get_concise_traceback(
         self, 
