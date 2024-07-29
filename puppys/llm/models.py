@@ -1,150 +1,100 @@
-import os
 from litellm import completion
-from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Union
+from typing import List, Optional, Union, Dict
+
+# using OpenAI API model
 
 
-@dataclass
-class ChatConfig:
-    """
-    Configuration for the chat service using the litellm interface.
-    """
-
-    model: str = 'gpt-4-turbo'
-    messages: List[Dict[str, Any]] = field(default_factory=list)
-    temperature: float = 0.1
-    top_p: Optional[float] = None
-    max_tokens: int = 4096
-    n: int = 1
-    stream: bool = True
-    stop: Optional[str] = None
-    presence_penalty: Optional[float] = None
-    frequency_penalty: Optional[float] = None
-    logit_bias: Optional[Dict[int, float]] = None
-    seed: Optional[int] = None
-    logprobs: Optional[bool] = None
-    top_logprobs: Optional[int] = None
-    deployment_id: Optional[str] = None
-    api_key: Optional[str] = None
-    base_url: Optional[str] = None
-    api_version: Optional[str] = None
-    functions: Optional[List[Dict[str, Any]]] = None
-    function_call: Optional[str] = None
-    timeout: Optional[Union[float, int]] = None
-    user: Optional[str] = None
-    response_format: Optional[Dict[str, Any]] = None
-    tools: Optional[List[str]] = None
-    tool_choice: Optional[str] = None
-    parallel_tool_calls: Optional[bool] = None
-
-
-class ChatService:
-    def __init__(
-        self, 
-        config: ChatConfig
+def chat(
+    model: Optional[str] = 'gpt-4-turbo',
+    messages: List = [],
+    timeout: Optional[Union[float, int]] = None,
+    temperature: Optional[float] = 0.1,
+    top_p: Optional[float] = None,
+    n: Optional[int] = 1,
+    stream: Optional[bool] = True,
+    printing: Optional[bool] = False,
+    stream_options: Optional[Dict] = None,
+    stop=None,
+    max_tokens: Optional[int] = 4096,
+    presence_penalty: Optional[float] = None,
+    frequency_penalty: Optional[float] = None,
+    logit_bias: Optional[Dict] = None,
+    user: Optional[str] = None,
+    response_format: Optional[Dict] = None,
+    seed: Optional[int] = None,
+    tools: Optional[List] = None,
+    tool_choice: Optional[str] = None,
+    parallel_tool_calls: Optional[bool] = None,
+    logprobs: Optional[bool] = None,
+    top_logprobs: Optional[int] = None,
+    deployment_id=None,
+    functions: Optional[List] = None,
+    function_call: Optional[str] = None,
+    base_url: Optional[str] = None,
+    api_version: Optional[str] = None,
+    api_key: Optional[str] = None,
+    model_list: Optional[List] = None,
+    **kwargs,
     ):
-        self.config = config
-        api_key = self.config.api_key
-        self.config.api_key = api_key if api_key else os.environ.get("OPENAI_API_KEY", api_key)
 
-    def chat(
-        self, 
-        printing: bool = False
-    ) -> Any:
-        """
-        Sending prompts to the specified model and returning the response based on the configuration.
+    response = completion(
+        model=model,
+        messages=messages,
+        temperature=temperature,
+        max_tokens=max_tokens,
+        n=n,
+        stream=stream,
+        timeout=timeout,
+        top_p=top_p,
+        stream_options=stream_options,
+        stop=stop,
+        presence_penalty=presence_penalty,
+        frequency_penalty=frequency_penalty,
+        logit_bias=logit_bias,
+        user=user,
+        response_format=response_format,
+        seed=seed,
+        tools=tools,
+        tool_choice=tool_choice,
+        parallel_tool_calls=parallel_tool_calls,
+        logprobs=logprobs,
+        top_logprobs=top_logprobs,
+        deployment_id=deployment_id,
+        functions=functions,
+        function_call=function_call,
+        base_url=base_url,
+        api_version=api_version,
+        api_key=api_key,
+        model_list=model_list,
+        **kwargs
+        )
 
-        Args:
-            printing (bool): Whether to print the response. The default is False.
+    if printing is True:
 
-        Returns:
-            Any: The response from the model.
-        """
-
-        data = {k: v for k, v in self.config.__dict__.items() if v is not None}
-        response = completion(**data)
-        return self._handle_response(response, printing)
-
-    def _handle_response(
-        self, 
-        response: any, 
-        printing: bool
-    ) -> str:
-        """
-        Handle the response from the model based on the configuration.
-
-        Args:
-            response (any): The response from the model.
-            printing (bool): Whether to print the response.
-
-        Returns:
-            str: The response content.
-        """
-
-        if self.config.stream:
-            return self._handle_stream_response(response, printing)
-        else:
-            return self._handle_non_stream_response(response, printing)
-
-    def _handle_non_stream_response(
-        self, 
-        response: Any, 
-        printing: bool
-    ) -> str:
-        """
-        Handle the non-stream response from the model.
-
-        Args:
-            response (Any): The response from the model.
-            printing (bool): Whether to print the response.
-
-        Returns:
-            str: The response content.
-        """
-
-        response_content = response.choices[0].message.content
-        if printing:
-            print(response_content + "\n")
-        return response_content
-
-    def _handle_stream_response(
-        self, 
-        response: Any, 
-        printing: bool
-    ) -> str:
-        """
-        Handle the stream response from the model.
-
-        Args:
-            response (Any): The response from the model.
-            printing (bool): Whether to print the response.
-
-        Returns:
-            str: The response content.
-        """
-
-        final_response = ""
-        for chunk in response:
-            chunk_content = chunk.choices[0].delta.content
-            if chunk_content:
-                if printing:
-                    print(chunk_content, end="")
-                final_response += chunk_content
-        if printing:
+        if stream is False:
+            print(response.choices[0].message.content)
             print("\n")
-        return final_response
-            
+            return response.choices[0].message.content
 
-if __name__ == "__main__":
-    import sys
-    from dotenv import load_dotenv
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-    load_dotenv()
+        elif stream is True:
+            finalResponse=""
+            for chunk in response:
+                if chunk.choices[0].delta.content is not None:
+                    print(chunk.choices[0].delta.content, end="")
+                    finalResponse += chunk.choices[0].delta.content
 
-    config = ChatConfig(
-        messages=[{"role": "user", "content": "Hello, world!"}],
-        stream=True,
-        temperature=0.7,
-    )
-    chat_service = ChatService(config)
-    result = chat_service.chat(printing=True)
+            print("\n")
+            return finalResponse
+
+    else:
+        if stream is False:
+            return response.choices[0].message.content
+
+        elif stream is True:
+            finalResponse = ""
+            for chunk in response:
+                if chunk.choices[0].delta.content is not None:
+
+                    finalResponse += chunk.choices[0].delta.content
+
+            return finalResponse

@@ -41,8 +41,6 @@ you can show your thinking and reason in the comment.
 - The grid (game map) is count from 0 to n-1, n is the dimension of the grid. The position data will be provided in (row number, column number), row number count from up to down, column number count from left to right.
 - Agent: You control the agent who can move around to collect keys and navigate towards the exit door.
 - keys: Each key has a name, keys can be collected by moving the agent onto their respective squares.
-- Boxes: Each box can either be empty or contain a key, if contains a key, the key can be collected by moving the agent onto the box, then open the box and take the key. If the box is empty, the agent can move onto the box without any action.
-- The boxes and keys are all represented in dictionary, with field of `name`, `in_box`, `opened`. If the box is empty, the name will also be empty.
 
 6. About the movement:
 - The keys are only available to use if the agent (you) has moved to the square where the key is located, meaning that the agent picked up the key. Otherwise, the agent won't be able to use it.
@@ -50,16 +48,14 @@ you can show your thinking and reason in the comment.
 
 7. Rules for Escaping (win/end the game):
 - The door will be opened once all the target keys ahs collected, the target keys can be one or more. If there are multiple target keys, the agent (you) needs to collect all of them.
-- Sometime, the target keys might be in the boxes, the agent needs to find the correct box and then open it to take the key.
 - The escape is successful only if the agent is standing in the same location as the door and has all the target keys.
 
 8. Game Mechanics:
-    1. Analyze the Current State: Compare the available keys with the target keys to determine how much and which keys are still missing. If not all the target keys are in the map, part of the keys may contained in some boxes, you have to find the correct boxes which contains the target key.
+    1. Analyze the Current State: Compare the available keys with the target keys to determine how much and which keys are still missing.
     2. Planning and Movement:
     - Plan a route to move towards the missing keys based on their locations on the grid.
     - Always plan to collect the required keys, not the nearest keys.
     - Navigate the grid by calculating the optimal steps and direction to reach each key without skipping them.
-    - If the key is in a box, plan to move onto the location where the box is and open it and take the key.
     3. Key Collection and Escape Successfully:
     - Once the target keys are all available, plan a route to the door.
     - Use correct keys one by one to escape.
@@ -68,7 +64,6 @@ you can show your thinking and reason in the comment.
 - If multiple useful keys are aligned in one direction, plan consecutive moves in that direction to collect them sequentially without additional commands.
 - The game HAS TO be played in multiple rounds, so make sure you write the code for the next step ONLY, the rest steps can be performed in the following rounds.
 - The agent CANNOT stand on or move over the wall, instead, plan the route to avoid the wall. Movements resulting in stand on or move over the wall will be rejected and the agent will be stay in the same position.
-- The agent don't have to open all the boxes, as long as the agent has all the target keys and stand onto the door, the agent can escape the room.
 
 Ensure each part of your response contains Python code actions for the next step, following the example provided, with concise and clear logic comments embedded in the code.
 Your response should be similar with the following example(ONLY CODE) and NOTHING ELSE.
@@ -117,7 +112,7 @@ Now, write your code to control the agent to escape the room:
         show_prompt=show_prompt,
         show_response=show_response,
         retries=0,
-        replace_code=True
+        replace_code=False
     )
 
     action.highlighting(
