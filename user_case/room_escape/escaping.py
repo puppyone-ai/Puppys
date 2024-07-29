@@ -68,6 +68,7 @@ you can show your thinking and reason in the comment.
 - If multiple useful keys are aligned in one direction, plan consecutive moves in that direction to collect them sequentially without additional commands.
 - The game HAS TO be played in multiple rounds, so make sure you write the code for the next step ONLY, the rest steps can be performed in the following rounds.
 - The agent CANNOT stand on or move over the wall, instead, plan the route to avoid the wall. Movements resulting in stand on or move over the wall will be rejected and the agent will be stay in the same position.
+- The agent don't have to open all the boxes, as long as the agent has all the target keys and stand onto the door, the agent can escape the room.
 
 Ensure each part of your response contains Python code actions for the next step, following the example provided, with concise and clear logic comments embedded in the code.
 Your response should be similar with the following example(ONLY CODE) and NOTHING ELSE.

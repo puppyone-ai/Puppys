@@ -119,7 +119,11 @@ move_agent(direction="up", step=1) # Now, the agent has reach the door.
     if grid[new_y][new_x] == "Door":
         grid[new_y][new_x] = "D&A"
     elif isinstance(grid[new_y][new_x], dict):
-        grid[new_y][new_x]["with_agent"] = True
+        in_box = grid[new_y][new_x].get("in_box")
+        if in_box:
+            grid[new_y][new_x]["with_agent"] = True
+        else:
+            grid[new_y][new_x] = "Agent"
     else:
         grid[new_y][new_x] = "Agent"
     
@@ -251,7 +255,7 @@ def open_box(
     cell = grid[agent_y][agent_x]
     if cell.get("in_box") and not cell.get("opened"):
         cell["opened"] = True
-        game_state["current_action_string"] = f"Opened box at ({agent_x}, {agent_y})."
+        game_state["current_action_string"] = f"Opened box at ({agent_y}, {agent_x})."
         connection.update_state(game_state)
 
 def take_key_from_box(
@@ -384,15 +388,21 @@ class Escaper(Puppy):
 
 def decision_tree(self, target_keys):
     import time
+    # Convert the target keys to lowercase to avoid case-sensitive issues
     self.target_keys = [keys.lower() for keys in target_keys]
+    # Pre-update the target keys to the server
     self.connection.update_state({"target_keys": target_keys})
     while True:
+        # Check if the door is open or the game is over, if so, close the connection
         self.game_state = self.connection.fetch_state()
         if self.game_state.get("door_dict", {}).get("open") or not self.game_state:
             self.connection.close()
             break
+        # Using the LLM to generate the next action's code and execute it
         self.escaping(show_response=True)
+        # Update the game map environment after each action
         self.game_map = self.get_game_env()
+        # Sleep for 2 seconds to wait for the agent's action to be completely executed
         time.sleep(2)
 
 escaper = Escaper(decision_tree)

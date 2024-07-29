@@ -14,13 +14,13 @@ class GameSettings:
         self, 
         grid_size: int, 
         tile_size: int = 64, 
-        info_height: int = 100, 
+        key_info_width: int = 200, 
         fps: int = 30
     ):
         self.tile_size = tile_size
         self.grid_size = grid_size
         self.screen_width = self.screen_height = self.tile_size * self.grid_size
-        self.info_height = info_height
+        self.key_info_width = key_info_width
         self.fps = fps
 
 class Grid:
@@ -110,15 +110,13 @@ class Game:
         grid_size: int, 
         font_size: int = 30, 
         info_font_size: int = 22, 
-        key_info_width: int = 150, 
         port: int = 5555
     ):
         self.grid_size = grid_size
         self.settings = GameSettings(grid_size)
         self.grid = Grid(self.settings)
         self.agent_x, self.agent_y = self.grid.get_start_position()
-        self.key_info_width = key_info_width
-        self.screen = pygame.display.set_mode((self.settings.screen_width + self.key_info_width, self.settings.screen_height + self.settings.info_height))
+        self.screen = pygame.display.set_mode((self.settings.screen_width + self.settings.key_info_width, self.settings.screen_height))
         self._load_emoji_images()
         self.font = pygame.font.Font(None, font_size)
         self.info_font = pygame.font.Font(None, info_font_size)
@@ -174,7 +172,7 @@ class Game:
             pygame.display.flip()
 
         # Clean up and close the game
-        time.sleep(2)
+        time.sleep(10)
         connection.close()
         pygame.quit()
 
@@ -224,14 +222,11 @@ class Game:
                     self.screen.blit(image, image_rect)
 
         self._draw_key_info()
-        self._draw_messages()
 
-    def _draw_key_info(
-        self
-    ) -> None:
+    def _draw_key_info(self) -> None:
         start_x = self.settings.screen_width + 10
         start_y = 10
-        width = self.key_info_width
+        width = self.settings.key_info_width
         height = self.settings.screen_height
 
         # Define the key info rectangle and draw it
@@ -245,67 +240,61 @@ class Game:
 
         # Layout settings
         content_start_y = title_rect.bottom + 20
-        line_height = 60
+        line_height = 40
         keys_per_row = 2
         key_size = (int(self.settings.tile_size / 2), int(self.settings.tile_size / 2))
-        image_y = 0
+
+        # Variable to track the last y position where a key was drawn
+        last_key_y_position = content_start_y
 
         for index, key in enumerate(self.available_keys):
-            key_name = key.get("name", "unknown")
+            key_name = key.get("name")
             image = self.emoji_images.get(f"key_{key_name}")
             if image:
                 scaled_image = pygame.transform.scale(image, key_size)
                 row_number = index // keys_per_row
                 column_number = index % keys_per_row
                 image_x = start_x + column_number * (width // keys_per_row) + (width // keys_per_row // 2)
-                image_y = content_start_y + row_number * line_height
-
+                image_y = last_key_y_position + row_number * line_height
                 image_rect = scaled_image.get_rect(center=(image_x, image_y))
                 self.screen.blit(scaled_image, image_rect)
+                last_key_y_position = max(last_key_y_position, image_y)
 
-        # Calculate the starting y for "Used Keys" title based on the last image's position
-        next_section_start_y = image_y + line_height + 20
+        # Display the Action and Rule information
+        splitter = "Rule:"
+        action_string, rule_string = self.current_action_string.split(splitter) if splitter in self.current_action_string else (self.current_action_string, "")
+        # Update starting position for the current action based on the last drawn key
+        current_action_start_y = last_key_y_position + line_height
+        self._draw_info_text(action_string, "Action:", start_x, current_action_start_y, width, height, line_height)
+        current_action_start_y += 40 + len(action_string.split("\n")) * line_height * 0.3
+        self._draw_info_text(rule_string, "Rule:", start_x, current_action_start_y, width, height, line_height)
 
-        # Display the title for used keys
-        title_text = self.info_font.render("Used Keys:", True, (255, 167, 61))
-        title_rect = title_text.get_rect(center=(start_x + width // 2, next_section_start_y))
-        self.screen.blit(title_text, title_rect)
+    def _draw_info_text(
+        self,
+        text: str,
+        text_title: str,
+        start_x,
+        start_y,
+        width,
+        height,
+        line_height
+    ):
+        # Display the title for available keys
+        action_title_text = self.info_font.render(text_title, True, (255, 167, 61))
+        action_title_rect = action_title_text.get_rect(center=(start_x + width // 2, start_y))
+        self.screen.blit(action_title_text, action_title_rect)
 
-        # Reset start y for key names under "Used Keys"
-        content_start_y = title_rect.bottom + 20
+        start_y += 20
 
-        # Display each used key
-        for index, key_name in enumerate(self.used_keys):
-            image = self.emoji_images.get(f"key_{key_name}")
-            if image:
-                scaled_image = pygame.transform.scale(image, key_size)
-                row_number = index // keys_per_row
-                column_number = index % keys_per_row
-                image_x = start_x + column_number * (width // keys_per_row) + (width // keys_per_row // 2)
-                image_y = content_start_y + row_number * line_height
-
-                image_rect = scaled_image.get_rect(center=(image_x, image_y))
-                self.screen.blit(scaled_image, image_rect)
-
-
-    def _draw_messages(
-        self
-    ) -> None:
-        # Define starting position for text rendering with a downward offset
-        offset = 30
-        start_y = self.settings.screen_height + offset
-        line_height = 20
-
-        # Display the current action message
-        action_rect = pygame.Rect(0, start_y - offset, self.settings.screen_width, self.settings.info_height + offset)
+        # Display the agent's current action
+        action_rect = pygame.Rect(start_x, start_y, width, height)
         pygame.draw.rect(self.screen, (0, 0, 0), action_rect)
 
-        # Split the message into lines
-        lines = self.current_action_string.split("\n")
-
+        # Split the message into lines and display them
+        lines = text.split("\n")
         for i, line in enumerate(lines):
             action_text = self.info_font.render(line, True, (69, 153, 223))
-            action_text_rect = action_text.get_rect(center=(self.settings.screen_width // 2, start_y + i * line_height))
+            action_text_rect = action_text.get_rect(center=(start_x + width // 2, start_y + i * line_height * 0.4))
             self.screen.blit(action_text, action_text_rect)
 
     def _handle_client_data(
@@ -360,7 +349,7 @@ class Game:
                 self.grid.door_dict = shared_info.get("door_dict")
                 # Exit the game if the door is open
                 if self.grid.door_dict["open"]:
-                    self.current_action_string = "Congratulations! You've escaped the room!"
+                    self.current_action_string = "Congratulations!\nYou've escaped the room!"
                     return False
                 else:
                     self.grid.grid = shared_info.get("grid")
@@ -369,7 +358,7 @@ class Game:
                     self.available_keys = shared_info.get("available_keys")
                     self.used_keys = shared_info.get("used_keys")
                     self.current_action_string = shared_info.get("current_action_string")
-            self.current_action_string += f"\nTarget keys: {self.target_keys}"
+            self.current_action_string += f"Rule: Use all the keys:\n{', '.join(self.target_keys)}\nto open the door."
         except json.JSONDecodeError as e:
             print(f"Failed to decode JSON data: {e}")
 
