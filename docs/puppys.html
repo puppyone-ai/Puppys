@@ -31,6 +31,19 @@
   <li><a href="#the-puppys-framework">The <code>Puppys</code> framework</a></li>
   <li><a href="#philosophy">Philosophy</a></li>
   <li><a href="#a-simple-example">A Simple Example</a></li>
+</ul></li>
+<li><a href="#overview-of-the-debug-mode">Overview of the debug mode</a>
+<ul>
+  <li><a href="#testactionflow-class-documentation">TestActionflow Class Documentation</a>
+  <ul>
+    <li><a href="#concept">Concept</a></li>
+    <li><a href="#code-design">Code Design</a></li>
+    <li><a href="#parameters-and-attributes">Parameters and Attributes</a></li>
+    <li><a href="#detailed-code-logic-of-test_run-method">Detailed Code Logic of <code>test_run</code> Method</a></li>
+    <li><a href="#detailed-code-logic-of-other-public-methods">Detailed Code Logic of Other Public Methods</a></li>
+    <li><a href="#customizing-test_run-method">Customizing <code>test_run</code> Method</a></li>
+    <li><a href="#summary">Summary</a></li>
+  </ul></li>
 </ul>
 
 
@@ -197,21 +210,314 @@ In this simple example, the agent is required to fetch some news from the "hacke
 </div>
 
 <p>Finally, we can pass the decision tree as an argument to instantiate an agent called <code>hacker_news</code>. The agent will start working once the <code>run</code> method is invoked. </p>
+
+<h1 id="overview-of-the-debug-mode">Overview of the debug mode</h1>
+
+<h1 id="testactionflow-class-documentation">TestActionflow Class Documentation</h1>
+
+<h2 id="concept">Concept</h2>
+
+<p>The <code>TestActionflow</code> class is designed to test a specific action flow in debug mode. It allows developers to modify attributes of a stored <code>puppy_instance</code> and execute the modified instance multiple times to test the stability and success rate. The class provides both an inline mode and an interactive command-line mode for modifying attributes, making it versatile for different testing scenarios.</p>
+
+<h2 id="code-design">Code Design</h2>
+
+<p>The <code>TestActionflow</code> class is structured to:</p>
+
+<ul>
+<li>Initialize with an instance of the class to be tested.</li>
+<li>Provide methods to modify attributes either inline or through a command-line interface.</li>
+<li>Execute the action flow from specified nodes.</li>
+<li>Save the modified instance in a pickle file and its modifiable attributes in a JSON file.</li>
+</ul>
+
+<h2 id="parameters-and-attributes">Parameters and Attributes</h2>
+
+<h3 id="attributes">Attributes</h3>
+
+<ul>
+<li><code>puppy_instance</code>: The instance of the class being tested.</li>
+<li><code>GREEN</code>, <code>GREY</code>, <code>RED</code>, <code>RESET</code>: Color codes for terminal output.</li>
+</ul>
+
+<h3 id="public-methods">Public Methods</h3>
+
+<ul>
+<li><code>__init__</code>: Initializes the <code>TestActionflow</code> instance.</li>
+<li><code>test_run</code>: Executes the code in debug mode.</li>
+<li><code>inline_mode</code>: Modifies the attribute values via  monkey patching.</li>
+<li><code>command_line_mode</code>: Provides an interactive command-line interface for modifying attributes.</li>
+<li><code>execute_code</code>: Executes the code from the specified node number.</li>
+<li><code>save_updated_puppy_instance</code>: Saves the updated instance to a pickle file.</li>
+<li><code>save_instance_to_json</code>: Saves the instance attributes to a JSON file.</li>
+</ul>
+
+<h3 id="private-methods">Private Methods</h3>
+
+<ul>
+<li><code>_parse_inner_json</code>: Parses an object into inner JSON objects.</li>
+<li><code>_advanced_print</code>: Advanced print function for both standard and self-defined types.</li>
+<li><code>_set_code_node</code>: Sets the code nodes tobe executed based on the given node number.</li>
+<li><code>_separate_runtime_dict</code>: Separates a dictionary into picklable and non-picklable values.</li>
+<li><code>_find_differences</code>: Finds differences between dictionaries in a list.</li>
+<li><code>_convert_value</code>: Converts the input value from <code>str</code> to the target type.</li>
+<li><code>_input_value</code>: Ensures the input value is of the target type.</li>
+<li><code>_modify_list</code>: Modifies list attributes element-wise.</li>
+<li><code>_has_nested_attr</code>: Checks if the object has a nested attribute.</li>
+<li><code>_get_nested_attr</code>: Gets the value of a nested attribute.</li>
+<li><code>_set_nested_attr</code>: Sets the value of a nested attribute.</li>
+</ul>
+
+<h2 id="detailed-code-logic-of-test_run-method">Detailed Code Logic of <code>test_run</code> Method</h2>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="k">def</span> <span class="nf">test_run</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">node_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">num_of_action</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">handle_exceptions</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">use_command_line</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">updates</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+</code></pre>
+</div>
+
+<h3 id="parameters">Parameters</h3>
+
+<ul>
+<li><code>node_num</code>: Specifies the node to start execution from.
+<ul>
+<li><code>0</code>: The current code.</li>
+<li><code>1</code>: From the current code to all future codes.</li>
+<li><code>1</code>: From history codes to the current code.</li>
+<li><code>2</code>: All code nodes.</li>
+<li><code>2</code>: The last node of history codes, the current code, and the first node of future codes.</li>
+</ul></li>
+<li><code>num_of_action</code>: The number of times to execute the action flow.</li>
+<li><code>handle_exceptions</code>: If <code>True</code>, stops and returns the exception on error. If <code>False</code>, captures exceptions and includes them in the results list.</li>
+<li><code>use_command_line</code>: If <code>False</code>, applies inline updates. If <code>True</code>, provides a command-line interface for updates.</li>
+<li><code>updates</code>: Dictionary of attribute updates for inline mode.</li>
+</ul>
+
+<h3 id="logic">Logic</h3>
+
+<ol>
+<li>Updates attributes either inline or via command line.</li>
+<li>Executes the specified code nodes <code>num_of_action</code> times.</li>
+<li>Handles exceptions based on <code>handle_exceptions</code>.</li>
+<li><p>Return a list of dictionaries that stores the result of each execution. </p>
+
+<p>Note: Only the first element contains the full values, the rest elements only contains the values that are different to the first element so as to save the printing length and storage.</p></li>
+<li><p>Saves the updated instance and execution results.</p></li>
+</ol>
+
+<h3 id="inline-mode">Inline Mode</h3>
+
+<p>The <code>inline_mode</code> function allows developers to update the attribute values of a <code>puppy_instance</code> using a provided dictionary. This method is straightforward, where each key-value pair in the dictionary is used to set the corresponding attribute in the <code>puppy_instance</code>. If an attribute does not exist, an error is raised.</p>
+
+<h3 id="command-line-mode">Command-line Mode</h3>
+
+<p>The <code>command_line_mode</code> function provides an interactive interface for developers to modify the attribute values of a <code>puppy_instance</code> and execute code nodes multiple times for testing purposes. This mode is highly useful for fine-tuning and debugging the <code>puppy_instance</code> attributes on the fly.</p>
+
+<p><strong>Interaction Logic</strong></p>
+
+<ol>
+<li><strong>Display Attributes</strong>:
+<ul>
+<li>The current attributes and their values of the <code>puppy_instance</code> are displayed.</li>
+</ul></li>
+<li><strong>Prompt for Action</strong>:
+<ul>
+<li>Developers are asked whether they want to execute codes (<code>y</code>) or change attributes (<code>n</code>).</li>
+</ul></li>
+<li><strong>Executing Codes</strong>:
+<ul>
+<li>If <code>y</code>, the specified code nodes are executed multiple times, and the results are displayed.</li>
+<li>Developers can choose to exit the test run or continue.</li>
+</ul></li>
+<li><strong>Changing Attributes</strong>:
+<ul>
+<li>If <code>n</code>, developers can input the attribute name to change.</li>
+<li>The current value of the attribute is displayed.</li>
+<li>If the attribute is a list, specific elements can be modified.</li>
+<li>For other types, the new value is input and set.</li>
+<li>Developers can choose to modify another attribute or return to the initial prompt.</li>
+</ul></li>
+</ol>
+
+<h3 id="benefits">Benefits</h3>
+
+<p>The <code>command_line_mode</code> is recommended as it provides a robust and interactive way to fine-tune and debug <code>puppy_instance</code> attributes, making it easier for developers to iteratively test and refine their code. This method ensures a streamlined workflow for testing and debugging, improving development efficiency.</p>
+
+<h3 id="example-usage">Example Usage</h3>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="c1"># Initialize with an instance of the class</span>
+<span class="n">tester</span> <span class="o">=</span> <span class="n">TestActionflow</span><span class="p">(</span><span class="n">puppy_instance</span><span class="p">)</span>
+
+<span class="c1"># Run test with inline updates</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">tester</span><span class="o">.</span><span class="n">test_run</span><span class="p">(</span>
+    <span class="n">node_num</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">num_of_action</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">handle_exceptions</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">use_command_line</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">updates</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;attribute_name&quot;</span><span class="p">:</span> <span class="s2">&quot;new_value&quot;</span><span class="p">}</span>
+<span class="p">)</span>
+
+<span class="c1"># Run test with command-line updates</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">tester</span><span class="o">.</span><span class="n">test_run</span><span class="p">(</span>
+    <span class="n">node_num</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">num_of_action</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">handle_exceptions</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">use_command_line</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</code></pre>
+</div>
+
+<h2 id="detailed-code-logic-of-other-public-methods">Detailed Code Logic of Other Public Methods</h2>
+
+<h3 id="inline_mode"><code>inline_mode</code></h3>
+
+<p>Modifies attributes inline based on the provided <code>updates</code> dictionary.</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="k">def</span> <span class="nf">inline_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">updates</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</code></pre>
+</div>
+
+<h3 id="command_line_mode"><code>command_line_mode</code></h3>
+
+<p>Provides an interactive command-line interface for modifying attributes.</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="k">def</span> <span class="nf">command_line_mode</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">num_of_action</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">node_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">results</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+    <span class="n">handle_exceptions</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+</code></pre>
+</div>
+
+<p><code>execute_code_multiple_times</code> </p>
+
+<p>Execute the code multiple times and append the results to the results list.</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="k">def</span> <span class="nf">execute_code_multiple_times</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">num_of_action</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">node_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">results</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+        <span class="n">handle_exceptions</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+</code></pre>
+</div>
+
+<h3 id="execute_code"><code>execute_code</code></h3>
+
+<p>Executes code from the specified node number.</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="k">def</span> <span class="nf">execute_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</code></pre>
+</div>
+
+<h3 id="save_updated_puppy_instance"><code>save_updated_puppy_instance</code></h3>
+
+<p>Saves the updated instance to a pickle file.</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="k">def</span> <span class="nf">save_updated_puppy_instance</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> 
+    <span class="n">root_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;user_case_history&quot;</span><span class="p">,</span> 
+    <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;puppy_instance_updated.pkl&quot;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre>
+</div>
+
+<h3 id="save_instance_to_json"><code>save_instance_to_json</code></h3>
+
+<p>Saves all key-value pairs of an instance to a JSON file.</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="k">def</span> <span class="nf">save_instance_to_json</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> 
+    <span class="n">instance</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> 
+    <span class="n">root_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;user_case_history&quot;</span><span class="p">,</span> 
+    <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;puppy_instance_values.json&quot;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</code></pre>
+</div>
+
+<h2 id="customizing-test_run-method">Customizing <code>test_run</code> Method</h2>
+
+<p>To customize the <code>test_run</code> method, you can call other public methods for specific purposes.</p>
+
+<h3 id="example-inline-mode-customization">Example: Inline Mode Customization</h3>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="c1"># Initialize with an instance of the class</span>
+<span class="n">tester</span> <span class="o">=</span> <span class="n">TestActionflow</span><span class="p">(</span><span class="n">puppy_instance</span><span class="p">)</span>
+
+<span class="c1"># Modify attributes inline</span>
+<span class="n">tester</span><span class="o">.</span><span class="n">inline_mode</span><span class="p">({</span><span class="s2">&quot;attribute_name&quot;</span><span class="p">:</span> <span class="s2">&quot;new_value&quot;</span><span class="p">})</span>
+
+<span class="c1"># Execute code from a specific node</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">tester</span><span class="o">.</span><span class="n">execute_code</span><span class="p">(</span><span class="n">node_num</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Save the updated instance</span>
+<span class="n">tester</span><span class="o">.</span><span class="n">save_updated_puppy_instance</span><span class="p">()</span>
+</code></pre>
+</div>
+
+<h3 id="example-command-line-mode-customization">Example: Command-Line Mode Customization</h3>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="c1"># Initialize with an instance of the class</span>
+<span class="n">tester</span> <span class="o">=</span> <span class="n">TestActionflow</span><span class="p">(</span><span class="n">puppy_instance</span><span class="p">)</span>
+
+<span class="c1"># Modify attributes via command-line interface</span>
+<span class="n">tester</span><span class="o">.</span><span class="n">command_line_mode</span><span class="p">()</span>
+
+<span class="c1"># Execute code from a specific node</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">tester</span><span class="o">.</span><span class="n">execute_code</span><span class="p">(</span><span class="n">node_num</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Save the updated instance into a specific path</span>
+<span class="n">tester</span><span class="o">.</span><span class="n">save_updated_puppy_instance</span><span class="p">(</span>
+    <span class="n">root_path</span> <span class="o">=</span> <span class="s2">&quot;debuging_log&quot;</span><span class="p">,</span> 
+    <span class="n">file_name</span> <span class="o">=</span> <span class="s2">&quot;updated_instance.pkl&quot;</span>
+<span class="p">)</span>
+</code></pre>
+</div>
+
+<h2 id="summary">Summary</h2>
+
+<p>The <code>TestActionflow</code> class provides a robust framework for testing and debugging action flows. It allows for detailed modification of instance attributes and repeated execution to test stability. The class supports both inline and command-line modes for attribute updates, making it flexible for various testing needs.</p>
+
+<h3 id="possible-future-works">Possible Future Works</h3>
+
+<ul>
+<li><strong>Enhance attribute modification</strong>: Provide more intuitive ways to modify deeply nested attributes.</li>
+<li><strong>Improve error handling</strong>: Enhance exception handling to provide more detailed error messages.</li>
+<li><strong>Expand functionality</strong>: Add more methods to support different types of testing scenarios and enhance the overall testing framework.</li>
+</ul>
 </div>
 
                         <input id="mod-puppys-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 
                         <label class="view-source-button" for="mod-puppys-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">1</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos">2</span></a><span class="sd">.. include:: ../docs/index.md</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos">3</span></a><span class="sd">.. include:: ../docs/tutorial.md</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos">4</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos">5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos">6</span></a><span class="kn">from</span> <span class="nn">dotenv</span> <span class="kn">import</span> <span class="n">load_dotenv</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos">7</span></a>
-</span><span id="L-8"><a href="#L-8"><span class="linenos">8</span></a>
-</span><span id="L-9"><a href="#L-9"><span class="linenos">9</span></a><span class="n">load_dotenv</span><span class="p">()</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">.. include:: ../docs/index.md</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">.. include:: ../docs/tutorial.md</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">.. include:: ../docs/developer.md</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span> <span class="nn">dotenv</span> <span class="kn">import</span> <span class="n">load_dotenv</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="n">load_dotenv</span><span class="p">()</span>
 </span></pre></div>
 
 
