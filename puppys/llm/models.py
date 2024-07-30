@@ -1,6 +1,6 @@
 import os
 from litellm import completion
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
 from typing import Any, Dict, List, Optional, Union
 
 
@@ -133,6 +133,44 @@ class ChatService:
         if printing:
             print("\n")
         return final_response
+
+
+def chat(
+    printing: bool = False, 
+    **kwargs
+) -> str:
+    """
+    The main function to interact with the litellm interface and generate responses based on the configuration.
+
+    Args:
+        printing (bool): Whether to print the response.
+        **kwargs: The keyword arguments for the ChatConfig.
+
+    Returns:
+        str: The response content.
+    """
+
+    # Retrieve the names of valid fields from ChatConfig
+    valid_fields = {field.name for field in fields(ChatConfig)}
+
+    # Filter kwargs to include only valid fields for ChatConfig
+    valid_kwargs = {k: v for k, v in kwargs.items() if k in valid_fields}
+
+    # Raise an exception if the filtered kwargs dictionary is empty
+    if not valid_kwargs:
+        raise ValueError("No valid fields provided for ChatConfig")
+
+    # Create a ChatConfig instance with the valid keyword arguments
+    config = ChatConfig(**valid_kwargs)
+
+    # Initialize the ChatService with the configured settings
+    chat_service = ChatService(config)
+
+    # Call the chat method and print the results if printing is set to True
+    result = chat_service.chat(printing=printing)
+
+    # Return the result from the chat service
+    return result
             
 
 if __name__ == "__main__":
@@ -141,10 +179,10 @@ if __name__ == "__main__":
     sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
     load_dotenv()
 
-    config = ChatConfig(
+    result = chat(
         messages=[{"role": "user", "content": "Hello, world!"}],
         stream=True,
         temperature=0.7,
+        printing=True
     )
-    chat_service = ChatService(config)
-    result = chat_service.chat(printing=True)
+    print(result)
