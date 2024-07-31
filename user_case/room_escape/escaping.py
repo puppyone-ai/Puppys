@@ -90,6 +90,8 @@ You are only allowed to generate code that replace self.escaping(...) part, writ
 The current game map and all the relevant information about the current game status are included below, read them carefully to understand the current game environment and plan your next actions accordingly.
 {game_map_string}
 
+You always need to plan to get the uncollected keys and move towards the door to escape the room, DO NOT worry about the keys you've already collected, they are in the package and ready to be used.
+
 Note that you cannot move out of the game map boundary or move over the wall, such actions will be rejected and the agent will stay in the same position.
 Example: The agent is at (6, 6), the game map dimension is 7 (from 0 to 6), so the agent cannot move right or down anymore.
 
