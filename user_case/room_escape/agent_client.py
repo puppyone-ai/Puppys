@@ -346,6 +346,7 @@ class Escaper(Puppy):
         agent_x = game_state.get("agent_x")
         agent_y = game_state.get("agent_y")
         available_keys = game_state.get("available_keys")
+        available_keys = [key.get("name") for key in available_keys] if available_keys else []
         door_dict = game_state.get("door_dict")
         grid_string = game_state.get("grid_string")
         used_keys = game_state.get("used_keys")
@@ -364,11 +365,11 @@ class Escaper(Puppy):
             description=door_dict
         )
         game_map.available_keys = Env(
-            name="The keys you've taken", 
+            name="The keys you've already taken", 
             description=available_keys
         )
         game_map.used_keys = Env(
-            name="The current keys", 
+            name="The used keys", 
             description=used_keys
         )
         game_map.target_keys = Env(
