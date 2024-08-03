@@ -74,11 +74,30 @@ def search(
 
 
 if __name__ == "__main__":
+    messages = [
+        {
+            "role": "system",
+            "content": (
+                "You are an artificial intelligence assistant and you need to "
+                "engage in a helpful, detailed, polite conversation with a user."
+            ),
+        },
+        {
+            "role": "user",
+            "content": "what's the weather today in Beijing?",
+        },
+    ]
 
-    # Define an agent
-    puppy = Puppy(name="Puppy")
+    client = OpenAI(
+        api_key=os.environ["PERPLEXITY_API_KEY"],
+        base_url="https://api.perplexity.ai"
+    )
 
-    # Define the tool in the agent
-    puppy.tools_search = search
-    # Run the tool
-    print(explore(puppy, target=FuncEnv))
+    # Chat completion without streaming
+    response = client.chat.completions.create(
+        model="llama-3.1-sonar-small-128k-online",
+        messages=messages,
+    )
+
+    print(response)
+

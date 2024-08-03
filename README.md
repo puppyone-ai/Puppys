@@ -127,11 +127,14 @@ hacker_news.run()
 
 ```
 
+## Dependency
+**[LiteLLM](https://github.com/BerriAI/litellm)**
+
 ## Contact Us
 For collaboration, inquiries, career opportunities, and more, please contact:
 
 **Our Team:** puppyteam@puppyagent.com
 
-**CEO:** guantum@puppyagent.com
+**Founder:** guantum@puppyagent.com
 
-**[Book a meeting with us via Calendly](https://calendly.com/guantum/30min)**
+**[Book a meeting with founders via Calendly](https://calendly.com/guantum/30min)**~~~~
