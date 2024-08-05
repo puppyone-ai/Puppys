@@ -25,24 +25,26 @@
             <h2>Contents</h2>
             <ul>
   <li><a href="#install">Install</a></li>
-  <li><a href="#what-is-an-llm-agent">What is an LLM agent?</a></li>
-  <li><a href="#elements-of-an-intelligent-agent">Elements of an intelligent agent</a></li>
-  <li><a href="#challenges-for-decision-making">Challenges for Decision Making</a></li>
-  <li><a href="#the-puppys-framework">The <code>Puppys</code> framework</a></li>
-  <li><a href="#philosophy">Philosophy</a></li>
-  <li><a href="#a-simple-example">A Simple Example</a></li>
-</ul></li>
-<li><a href="#overview-of-the-debug-mode">Overview of the debug mode</a>
-<ul>
-  <li><a href="#testactionflow-class-documentation">TestActionflow Class Documentation</a>
+  <li><a href="#what-is-an-llm-agent">What is an LLM agent?</a>
   <ul>
-    <li><a href="#concept">Concept</a></li>
-    <li><a href="#code-design">Code Design</a></li>
-    <li><a href="#parameters-and-attributes">Parameters and Attributes</a></li>
-    <li><a href="#detailed-code-logic-of-test_run-method">Detailed Code Logic of <code>test_run</code> Method</a></li>
-    <li><a href="#detailed-code-logic-of-other-public-methods">Detailed Code Logic of Other Public Methods</a></li>
-    <li><a href="#customizing-test_run-method">Customizing <code>test_run</code> Method</a></li>
-    <li><a href="#summary">Summary</a></li>
+    <li><a href="#elements-of-an-intelligent-agent">Elements of an intelligent agent</a></li>
+    <li><a href="#challenges-for-decision-making">Challenges for Decision Making</a></li>
+  </ul></li>
+  <li><a href="#philosophy-of-puppys">Philosophy  of <code>Puppys</code></a>
+  <ul>
+    <li><a href="#code-native-agent">Code Native Agent</a></li>
+    <li><a href="#hybrid-decision-making">Hybrid Decision Making</a></li>
+  </ul></li>
+  <li><a href="#a-simple-example">A Simple Example</a></li>
+  <li><a href="#a-complex-case-build-a-game-agent">A complex case - build a game agent</a>
+  <ul>
+    <li><a href="#game-overview-and-rules">Game Overview and Rules</a></li>
+    <li><a href="#building-a-gaming-agent-using-puppys">Building a gaming agent using <code>Puppys</code></a></li>
+  </ul></li>
+  <li><a href="#whats-next">What’s Next</a>
+  <ul>
+    <li><a href="#saving-and-reusing-the-action-flow">Saving and Reusing the Action Flow</a></li>
+    <li><a href="#debugging-with-the-saved-puppy_instance">Debugging with the Saved <code>puppy_instance</code></a></li>
   </ul></li>
 </ul>
 
@@ -74,14 +76,14 @@ puppys    </h1>
 
 <p><em>Hi puppy, fetch that ball for me!</em></p>
 
-<h2 id="install">Install</h2>
+<h1 id="install">Install</h1>
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/PuppyAgent/Puppys.git
 </code></pre>
 </div>
 
-<h2 id="what-is-an-llm-agent">What is an LLM agent?</h2>
+<h1 id="what-is-an-llm-agent">What is an LLM agent?</h1>
 
 <p>A Large Language Model (LLM) or artificial intelligence (AI) agent is a specialized software entity that utilizes an LLM to perform various tasks autonomously.
 For example, you may want your AI copilot to automatically write and execute a piece of code for you directly instead of telling you how to write it and letting you copy the code and run it yourself.
@@ -143,14 +145,12 @@ For example, the user may want the agent to perform trading in the stock market 
 <p>Due to the two challenges listed above, LLMs-based agents are still a state-of-the-art concept instead of a ready-for-production technology. 
 At the current moment, despite many exploratory works from various teams worldwide, there has yet to be a consensus in academics and industry about how a good agent should be designed or how it should behave. </p>
 
-<h2 id="the-puppys-framework">The <code>Puppys</code> framework</h2>
+<h1 id="philosophy-of-puppys">Philosophy  of <code>Puppys</code></h1>
 
 <p>The <code>Puppys</code> is a framework for developing LLM-based agents. 
 We hope the framework could make it easier for engineers and scientists to develop agentic systems and applications.</p>
 
-<h2 id="philosophy">Philosophy</h2>
-
-<h3 id="code-native-agent">Code Native Agent</h3>
+<h2 id="code-native-agent">Code Native Agent</h2>
 
 <p>Let us consider a fundamental question: How should an LLM agent actually <em>do</em> things or perform actions?
 Our answer to this question is that <strong>LLM agents do things via code</strong>.
@@ -163,7 +163,7 @@ Unlike previous agent frameworks that make agents generate <strong>natural langu
 
 <p>The programming language also provided a natural way to extend the ability of LLMs. Via a set of application programming interfaces (APIs), LLM-based agents can seamlessly interact with the existing software systems and use the available external instruments to perform many tasks beyond their original capability. </p>
 
-<h3 id="hybrid-decision-making">Hybrid Decision Making</h3>
+<h2 id="hybrid-decision-making">Hybrid Decision Making</h2>
 
 <p>Another fundamental question for LLM-based agents is how to make decisions or predict the next actions. As we discussed before -- delegating the decision-making process completely to the LLM behind an agent is not a <em>good</em> solution.
 Our answer to this question is that considering the current capability of LLMs, we should leave the macro or strategic decision-making and planning to humans but delegate the micro or tactical decision-making and problem-solving to LLMs.</p>
@@ -176,7 +176,7 @@ Our answer to this question is that considering the current capability of LLMs, 
 
 <p>This hybrid decision-making for agents is implemented in the <code>Puppys</code> framework, allowing users to customize the logic level they would like to delegate to LLM when designing an agent.</p>
 
-<h2 id="a-simple-example">A Simple Example</h2>
+<h1 id="a-simple-example">A Simple Example</h1>
 
 <p>Here is a simple example that shows how the users can set a series of milestones to regulate the behavior of an agent.</p>
 
@@ -211,297 +211,458 @@ In this simple example, the agent is required to fetch some news from the "hacke
 
 <p>Finally, we can pass the decision tree as an argument to instantiate an agent called <code>hacker_news</code>. The agent will start working once the <code>run</code> method is invoked. </p>
 
-<h1 id="overview-of-the-debug-mode">Overview of the debug mode</h1>
+<h1 id="a-complex-case-build-a-game-agent">A complex case - build a game agent</h1>
 
-<h1 id="testactionflow-class-documentation">TestActionflow Class Documentation</h1>
+<p>The escape room game showcases the capabilities of the Puppys framework in building applications that require agents to solve puzzles, navigate environments, and interact with various game elements dynamically. It highlights the framework's utility in handling real-time decision-making and interaction with customized environments via tools in a code-driven concept. This documentation is designed to guide developers through the process of creating an agent application using the Puppys framework.</p>
 
-<h2 id="concept">Concept</h2>
+<h2 id="game-overview-and-rules">Game Overview and Rules</h2>
 
-<p>The <code>TestActionflow</code> class is designed to test a specific action flow in debug mode. It allows developers to modify attributes of a stored <code>puppy_instance</code> and execute the modified instance multiple times to test the stability and success rate. The class provides both an inline mode and an interactive command-line mode for modifying attributes, making it versatile for different testing scenarios.</p>
+<h3 id="game-description">Game Description</h3>
 
-<h2 id="code-design">Code Design</h2>
+<p>The game is set in a grid-based map where each cell contains one object such as a key, box, wall, or an exit door. The agent is self-controlled with the goal to find the correct keys specified in the client (some hidden in boxes) and use them to unlock the door and escape the room.</p>
 
-<p>The <code>TestActionflow</code> class is structured to:</p>
-
-<ul>
-<li>Initialize with an instance of the class to be tested.</li>
-<li>Provide methods to modify attributes either inline or through a command-line interface.</li>
-<li>Execute the action flow from specified nodes.</li>
-<li>Save the modified instance in a pickle file and its modifiable attributes in a JSON file.</li>
-</ul>
-
-<h2 id="parameters-and-attributes">Parameters and Attributes</h2>
-
-<h3 id="attributes">Attributes</h3>
+<h4 id="core-mechanics">Core Mechanics</h4>
 
 <ul>
-<li><code>puppy_instance</code>: The instance of the class being tested.</li>
-<li><code>GREEN</code>, <code>GREY</code>, <code>RED</code>, <code>RESET</code>: Color codes for terminal output.</li>
+<li><strong>Grid</strong>: The room is represented as a grid where each square might contain a key (box), a door, a wall, or be empty.</li>
+<li><strong>Agent</strong>: Move around the grid to interact with objects.</li>
+<li><strong>Keys and Boxes</strong>: Keys can be freely lying around or contained within boxes. Boxes need to be opened to reveal contents.</li>
+<li><strong>Door</strong>: The escape objective. It requires certain keys to be opened.</li>
 </ul>
 
-<h3 id="public-methods">Public Methods</h3>
+<h4 id="rules">Rules</h4>
 
 <ul>
-<li><code>__init__</code>: Initializes the <code>TestActionflow</code> instance.</li>
-<li><code>test_run</code>: Executes the code in debug mode.</li>
-<li><code>inline_mode</code>: Modifies the attribute values via  monkey patching.</li>
-<li><code>command_line_mode</code>: Provides an interactive command-line interface for modifying attributes.</li>
-<li><code>execute_code</code>: Executes the code from the specified node number.</li>
-<li><code>save_updated_puppy_instance</code>: Saves the updated instance to a pickle file.</li>
-<li><code>save_instance_to_json</code>: Saves the instance attributes to a JSON file.</li>
+<li>The agent must navigate to collect keys.</li>
+<li>All required keys must be collected to unlock and open the door.</li>
+<li>Movement is constrained by walls and the edges of the grid.</li>
+<li>The game wins when the agent opens the door.</li>
 </ul>
 
-<h3 id="private-methods">Private Methods</h3>
+<h2 id="building-a-gaming-agent-using-puppys">Building a gaming agent using <code>Puppys</code></h2>
+
+<h3 id="setting-up-the-game-server-side">Setting Up the Game (Server-side)</h3>
 
 <ul>
-<li><code>_parse_inner_json</code>: Parses an object into inner JSON objects.</li>
-<li><code>_advanced_print</code>: Advanced print function for both standard and self-defined types.</li>
-<li><code>_set_code_node</code>: Sets the code nodes tobe executed based on the given node number.</li>
-<li><code>_separate_runtime_dict</code>: Separates a dictionary into picklable and non-picklable values.</li>
-<li><code>_find_differences</code>: Finds differences between dictionaries in a list.</li>
-<li><code>_convert_value</code>: Converts the input value from <code>str</code> to the target type.</li>
-<li><code>_input_value</code>: Ensures the input value is of the target type.</li>
-<li><code>_modify_list</code>: Modifies list attributes element-wise.</li>
-<li><code>_has_nested_attr</code>: Checks if the object has a nested attribute.</li>
-<li><code>_get_nested_attr</code>: Gets the value of a nested attribute.</li>
-<li><code>_set_nested_attr</code>: Sets the value of a nested attribute.</li>
+<li><strong><code>GameSettings</code></strong>: Configures basic game settings like grid size and display properties.</li>
+<li><strong><code>Grid</code></strong>: Manages the game space where walls, keys, and the door are placed. Responsible for the logical state of the game environment.</li>
+<li><code>Game</code>: The server manages the game state and handles requests from the client, ensuring that the game logic is processed correctly based on the agent's actions.</li>
 </ul>
 
-<h2 id="detailed-code-logic-of-test_run-method">Detailed Code Logic of <code>test_run</code> Method</h2>
+<h3 id="setting-up-the-game-client-side">Setting Up the Game (Client-side)</h3>
+
+<h4 id="serverconnection-class">ServerConnection Class</h4>
+
+<ul>
+<li>Handles data transfer between the game server and the client.</li>
+<li>Sends commands to the server and processes the game state updates received.</li>
+<li>Manages connection integrity and re-establishes connection if needed.</li>
+</ul>
+
+<h4 id="agent-tools-setup">Agent Tools Setup</h4>
+
+<p>Tools are crucial for the agentic system to perform real-world tasks, going beyond mere text generation to executing meaningful actions. Large Language Models (LLMs) cannot act by default; therefore, they rely on tools to perform specific actions when given appropriate instructions. Each tool encapsulates a particular action the agent can execute within the game, aligning closely with the game mechanics and rules, such as moving the agent or using a key.</p>
+
+<p>In the Puppys framework, tools are defined as regular Python functions. It is essential to provide comprehensive documentation for each function to guide the LLM on how to utilize these tools correctly. This documentation should contextualize the tool within the application's rules and objectives, ensuring that the agent can perform actions effectively and appropriately.</p>
+
+<p>It is worth mentioning that, the LLM does not interpret the underlying logic of these tools; it simply utilizes them. Thus, it's critical for developers to ensure these tools are error-free and perfectly aligned with intended functionalities since the LLM treats them as reliable actions to be executed.</p>
+
+<p><strong>Recommended Documentation Template:</strong></p>
+
+<ul>
+<li><strong>Function Description:</strong> Briefly describe what the function does, ideally linking it to the application's context, like the escape room rules and game elements in this use case.</li>
+<li><strong>Parameters:</strong> List all free parameters the function accepts (DO NOT include any fixed parameters), clearly stating their types and the role they play.</li>
+<li><strong>Returns:</strong> Describe what the function returns after execution.</li>
+<li><strong>Notes:</strong> Emphasis some points that the agent might got confused and point out that the positional arguments have to be written while writing code to call the function.</li>
+<li><strong>Examples:</strong> Provide examples demonstrating various ways the function can be used, covering as many scenarios as possible to guide the LLM's interaction with the tool.</li>
+</ul>
+
+<p><strong>Sample Function Definitions:</strong></p>
 
 <div class="pdoc-code codehilite">
-<pre><span></span><code><span class="k">def</span> <span class="nf">test_run</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span>
-    <span class="n">node_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="n">num_of_action</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="n">handle_exceptions</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">use_command_line</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">updates</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<pre><span></span><code><span class="k">def</span> <span class="nf">move_agent</span><span class="p">(</span><span class="n">connection</span><span class="p">:</span> <span class="n">ServerConnection</span><span class="p">,</span> <span class="n">direction</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Moves the agent on the game grid based on the specified direction and number of steps.</span>
+<span class="sd">    Parameters:</span>
+<span class="sd">    - direction (str): The direction to move (up, down, left, right).</span>
+<span class="sd">    - step (int): The number of grid spaces to move.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">    - None</span>
+<span class="sd">    Note: </span>
+<span class="sd">    You HAVE TO write the positional arguments when writing code to call the function.</span>
+<span class="sd">    Example Usage:</span>
+<span class="sd">    move_agent(direction=&quot;down&quot;, step=3)  # Moves the agent three steps down.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># [Implementation details]</span>
 </code></pre>
 </div>
 
-<h3 id="parameters">Parameters</h3>
+<h3 id="customizing-the-agent">Customizing the Agent</h3>
 
-<ul>
-<li><code>node_num</code>: Specifies the node to start execution from.
-<ul>
-<li><code>0</code>: The current code.</li>
-<li><code>1</code>: From the current code to all future codes.</li>
-<li><code>1</code>: From history codes to the current code.</li>
-<li><code>2</code>: All code nodes.</li>
-<li><code>2</code>: The last node of history codes, the current code, and the first node of future codes.</li>
-</ul></li>
-<li><code>num_of_action</code>: The number of times to execute the action flow.</li>
-<li><code>handle_exceptions</code>: If <code>True</code>, stops and returns the exception on error. If <code>False</code>, captures exceptions and includes them in the results list.</li>
-<li><code>use_command_line</code>: If <code>False</code>, applies inline updates. If <code>True</code>, provides a command-line interface for updates.</li>
-<li><code>updates</code>: Dictionary of attribute updates for inline mode.</li>
-</ul>
+<p>The agent class in the Puppys framework is a crucial component that encapsulates all the features and attributes needed for your custom agent. Here's a detailed walkthrough of building the agent class, specifically the <code>Escaper</code> class for our room escape game.</p>
 
-<h3 id="logic">Logic</h3>
+<h4 id="inheritance-from-puppy-class">Inheritance from Puppy Class</h4>
 
-<ol>
-<li>Updates attributes either inline or via command line.</li>
-<li>Executes the specified code nodes <code>num_of_action</code> times.</li>
-<li>Handles exceptions based on <code>handle_exceptions</code>.</li>
-<li><p>Return a list of dictionaries that stores the result of each execution. </p>
+<p>The <code>Escaper</code> class inherits from the <code>Puppy</code> parent class.  <code>Puppy</code>  includes all necessary features and attributes needed for building a customized agent.</p>
 
-<p>Note: Only the first element contains the full values, the rest elements only contains the values that are different to the first element so as to save the printing length and storage.</p></li>
-<li><p>Saves the updated instance and execution results.</p></li>
-</ol>
-
-<h3 id="inline-mode">Inline Mode</h3>
-
-<p>The <code>inline_mode</code> function allows developers to update the attribute values of a <code>puppy_instance</code> using a provided dictionary. This method is straightforward, where each key-value pair in the dictionary is used to set the corresponding attribute in the <code>puppy_instance</code>. If an attribute does not exist, an error is raised.</p>
-
-<h3 id="command-line-mode">Command-line Mode</h3>
-
-<p>The <code>command_line_mode</code> function provides an interactive interface for developers to modify the attribute values of a <code>puppy_instance</code> and execute code nodes multiple times for testing purposes. This mode is highly useful for fine-tuning and debugging the <code>puppy_instance</code> attributes on the fly.</p>
-
-<p><strong>Interaction Logic</strong></p>
-
-<ol>
-<li><strong>Display Attributes</strong>:
-<ul>
-<li>The current attributes and their values of the <code>puppy_instance</code> are displayed.</li>
-</ul></li>
-<li><strong>Prompt for Action</strong>:
-<ul>
-<li>Developers are asked whether they want to execute codes (<code>y</code>) or change attributes (<code>n</code>).</li>
-</ul></li>
-<li><strong>Executing Codes</strong>:
-<ul>
-<li>If <code>y</code>, the specified code nodes are executed multiple times, and the results are displayed.</li>
-<li>Developers can choose to exit the test run or continue.</li>
-</ul></li>
-<li><strong>Changing Attributes</strong>:
-<ul>
-<li>If <code>n</code>, developers can input the attribute name to change.</li>
-<li>The current value of the attribute is displayed.</li>
-<li>If the attribute is a list, specific elements can be modified.</li>
-<li>For other types, the new value is input and set.</li>
-<li>Developers can choose to modify another attribute or return to the initial prompt.</li>
-</ul></li>
-</ol>
-
-<h3 id="benefits">Benefits</h3>
-
-<p>The <code>command_line_mode</code> is recommended as it provides a robust and interactive way to fine-tune and debug <code>puppy_instance</code> attributes, making it easier for developers to iteratively test and refine their code. This method ensures a streamlined workflow for testing and debugging, improving development efficiency.</p>
-
-<h3 id="example-usage">Example Usage</h3>
+<p>In the <code>__init__</code> method, you initialize the <code>Puppy</code> class, set the agent's name, description, and version, and establish a connection to the server.</p>
 
 <div class="pdoc-code codehilite">
-<pre><span></span><code><span class="c1"># Initialize with an instance of the class</span>
-<span class="n">tester</span> <span class="o">=</span> <span class="n">TestActionflow</span><span class="p">(</span><span class="n">puppy_instance</span><span class="p">)</span>
+<pre><span></span><code><span class="k">class</span> <span class="nc">Escaper</span><span class="p">(</span><span class="n">Puppy</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Escaper&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;A puppy that can play the game room escape.&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="s2">&quot;0.0.1&quot;</span>
+</code></pre>
+</div>
 
-<span class="c1"># Run test with inline updates</span>
-<span class="n">results</span> <span class="o">=</span> <span class="n">tester</span><span class="o">.</span><span class="n">test_run</span><span class="p">(</span>
-    <span class="n">node_num</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-    <span class="n">num_of_action</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-    <span class="n">handle_exceptions</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">use_command_line</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">updates</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;attribute_name&quot;</span><span class="p">:</span> <span class="s2">&quot;new_value&quot;</span><span class="p">}</span>
-<span class="p">)</span>
+<h4 id="funcenv-the-functional-environment">FuncEnv: The Functional Environment</h4>
 
-<span class="c1"># Run test with command-line updates</span>
-<span class="n">results</span> <span class="o">=</span> <span class="n">tester</span><span class="o">.</span><span class="n">test_run</span><span class="p">(</span>
-    <span class="n">node_num</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-    <span class="n">num_of_action</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-    <span class="n">handle_exceptions</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">use_command_line</span><span class="o">=</span><span class="kc">True</span>
+<p>The <code>FuncEnv</code> is a subclass of the <code>Env</code> class, designed specifically for functions. It includes the concept of fixed parameters and free parameters to provide more flexibility while interpreting functions as an environment:</p>
+
+<ul>
+<li><strong>Fixed Parameters</strong>: Predefined by the developers and won’t be known and altered by the agent.</li>
+<li><strong>Free Parameters</strong>: Decided and adjusted by the agent during execution.</li>
+</ul>
+
+<p>This design ensures that the agent only performs authorized actions, enhancing security and preventing incorrect actions.</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="bp">self</span><span class="o">.</span><span class="n">move_agent</span> <span class="o">=</span> <span class="n">FuncEnv</span><span class="p">(</span>
+    <span class="n">value</span><span class="o">=</span><span class="n">move_agent</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="n">move_agent</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="n">move_agent</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">,</span>
+    <span class="n">fixed_params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;connection&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="p">},</span>
+    <span class="n">free_params</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;direction&quot;</span><span class="p">,</span> <span class="s2">&quot;step&quot;</span><span class="p">]</span>
 <span class="p">)</span>
 </code></pre>
 </div>
 
-<h2 id="detailed-code-logic-of-other-public-methods">Detailed Code Logic of Other Public Methods</h2>
+<h4 id="creating-the-game-environment">Creating the Game Environment</h4>
 
-<h3 id="inline_mode"><code>inline_mode</code></h3>
+<p><strong>Using the <code>Env</code> Class to Represent the Game Environment:</strong></p>
 
-<p>Modifies attributes inline based on the provided <code>updates</code> dictionary.</p>
+<p>The <code>get_game_env</code> method in the Escaper class is designed to create a nested <code>Env</code> instance representing the game map. While this method is not strictly necessary for building a custom agent, it is crucial in the room escape scenario. It allows the agent to understand the current game environment, make informed decisions, and act accordingly.</p>
 
-<div class="pdoc-code codehilite">
-<pre><span></span><code><span class="k">def</span> <span class="nf">inline_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">updates</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</code></pre>
-</div>
+<p>Unlike the <code>FuncEnv</code> class, which is tailored for functions, the <code>Env</code> class can encapsulate any type of object, providing a flexible way to represent the entire game environment. You can specify the value, name, and description for each environment, making it highly adaptable.</p>
 
-<h3 id="command_line_mode"><code>command_line_mode</code></h3>
+<p><strong>Nested Environments:</strong></p>
 
-<p>Provides an interactive command-line interface for modifying attributes.</p>
+<p>A key feature of the <code>Env</code> class is its ability to define nested environments. This means you can have multiple sub-environments within a main environment. In the room escape game, the main environment <code>game_map</code> represents the entire game map. Within this, there are several sub-environments, such as:</p>
 
-<div class="pdoc-code codehilite">
-<pre><span></span><code><span class="k">def</span> <span class="nf">command_line_mode</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span>
-    <span class="n">num_of_action</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="n">node_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="n">results</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
-    <span class="n">handle_exceptions</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-</code></pre>
-</div>
+<ul>
+<li><strong>agent_location</strong>: Represents the agent's current position.</li>
+<li><strong>door_status</strong>: Indicates whether the door is open or closed.</li>
+<li><strong>available_keys</strong>: Lists the keys the agent has collected.</li>
+<li><strong>used_keys</strong>: Tracks the keys the agent has used.</li>
+<li><strong>target_keys</strong>: Shows the keys needed to win the game.</li>
+</ul>
 
-<p><code>execute_code_multiple_times</code> </p>
+<p><strong>Visibility and Exploration:</strong></p>
 
-<p>Execute the code multiple times and append the results to the results list.</p>
+<p>Environments can be either visible or invisible. All self-defined environments are visible by default and can be explored to fetch their values, names, and descriptions. However, certain environments within the <code>Puppys</code> framework, such as <code>Actionflow</code> and <code>PuppyVars</code>, are invisible and cannot be explored.</p>
 
-<div class="pdoc-code codehilite">
-<pre><span></span><code><span class="k">def</span> <span class="nf">execute_code_multiple_times</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">num_of_action</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">node_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">results</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
-        <span class="n">handle_exceptions</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-</code></pre>
-</div>
+<p>This feature allows some parts of the environment to remain hidden initially and be revealed when necessary. Information can only be explored one layer deep. For example, under the main environment, only the <code>game_map</code> and other <code>Env</code> instances will be explored initially. All other sub-environments (like <code>agent_location</code>, <code>door_status</code>, etc.) can only be explored under the <code>game_map</code> environment. This hierarchical structure allows for a more organized exploration of the environment.</p>
 
-<h3 id="execute_code"><code>execute_code</code></h3>
+<p><strong>Utilizing Explored Results:</strong></p>
 
-<p>Executes code from the specified node number.</p>
+<p>The explored results can be used in prompts to help the LLM understand the current state. They can also be utilized in function tools to control what is needed and what is not, and to easily switch between different environments for various actions. This structured approach ensures that the agent has a clear and comprehensive understanding of the game environment, enabling it to make effective decisions and actions.</p>
+
+<p><strong>Example of Nested Environments:</strong></p>
 
 <div class="pdoc-code codehilite">
-<pre><span></span><code><span class="k">def</span> <span class="nf">execute_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-</code></pre>
-</div>
-
-<h3 id="save_updated_puppy_instance"><code>save_updated_puppy_instance</code></h3>
-
-<p>Saves the updated instance to a pickle file.</p>
-
-<div class="pdoc-code codehilite">
-<pre><span></span><code><span class="k">def</span> <span class="nf">save_updated_puppy_instance</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> 
-    <span class="n">root_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;user_case_history&quot;</span><span class="p">,</span> 
-    <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;puppy_instance_updated.pkl&quot;</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
-</code></pre>
-</div>
-
-<h3 id="save_instance_to_json"><code>save_instance_to_json</code></h3>
-
-<p>Saves all key-value pairs of an instance to a JSON file.</p>
-
-<div class="pdoc-code codehilite">
-<pre><span></span><code><span class="k">def</span> <span class="nf">save_instance_to_json</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> 
-    <span class="n">instance</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> 
-    <span class="n">root_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;user_case_history&quot;</span><span class="p">,</span> 
-    <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;puppy_instance_values.json&quot;</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</code></pre>
-</div>
-
-<h2 id="customizing-test_run-method">Customizing <code>test_run</code> Method</h2>
-
-<p>To customize the <code>test_run</code> method, you can call other public methods for specific purposes.</p>
-
-<h3 id="example-inline-mode-customization">Example: Inline Mode Customization</h3>
-
-<div class="pdoc-code codehilite">
-<pre><span></span><code><span class="c1"># Initialize with an instance of the class</span>
-<span class="n">tester</span> <span class="o">=</span> <span class="n">TestActionflow</span><span class="p">(</span><span class="n">puppy_instance</span><span class="p">)</span>
-
-<span class="c1"># Modify attributes inline</span>
-<span class="n">tester</span><span class="o">.</span><span class="n">inline_mode</span><span class="p">({</span><span class="s2">&quot;attribute_name&quot;</span><span class="p">:</span> <span class="s2">&quot;new_value&quot;</span><span class="p">})</span>
-
-<span class="c1"># Execute code from a specific node</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">tester</span><span class="o">.</span><span class="n">execute_code</span><span class="p">(</span><span class="n">node_num</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-
-<span class="c1"># Save the updated instance</span>
-<span class="n">tester</span><span class="o">.</span><span class="n">save_updated_puppy_instance</span><span class="p">()</span>
-</code></pre>
-</div>
-
-<h3 id="example-command-line-mode-customization">Example: Command-Line Mode Customization</h3>
-
-<div class="pdoc-code codehilite">
-<pre><span></span><code><span class="c1"># Initialize with an instance of the class</span>
-<span class="n">tester</span> <span class="o">=</span> <span class="n">TestActionflow</span><span class="p">(</span><span class="n">puppy_instance</span><span class="p">)</span>
-
-<span class="c1"># Modify attributes via command-line interface</span>
-<span class="n">tester</span><span class="o">.</span><span class="n">command_line_mode</span><span class="p">()</span>
-
-<span class="c1"># Execute code from a specific node</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">tester</span><span class="o">.</span><span class="n">execute_code</span><span class="p">(</span><span class="n">node_num</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-
-<span class="c1"># Save the updated instance into a specific path</span>
-<span class="n">tester</span><span class="o">.</span><span class="n">save_updated_puppy_instance</span><span class="p">(</span>
-    <span class="n">root_path</span> <span class="o">=</span> <span class="s2">&quot;debuging_log&quot;</span><span class="p">,</span> 
-    <span class="n">file_name</span> <span class="o">=</span> <span class="s2">&quot;updated_instance.pkl&quot;</span>
+<pre><span></span><code><span class="n">game_map</span> <span class="o">=</span> <span class="n">Env</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;The current game map&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="n">grid_string</span>
+<span class="p">)</span>
+<span class="n">game_map</span><span class="o">.</span><span class="n">agent_location</span> <span class="o">=</span> <span class="n">Env</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;The agent&#39;s current location&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">agent_y</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">agent_x</span><span class="si">}</span><span class="s2">).&quot;</span>
+<span class="p">)</span>
+<span class="n">game_map</span><span class="o">.</span><span class="n">door_status</span> <span class="o">=</span> <span class="n">Env</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;The door status&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="n">door_dict</span>
+<span class="p">)</span>
+<span class="n">game_map</span><span class="o">.</span><span class="n">available_keys</span> <span class="o">=</span> <span class="n">Env</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;The keys you&#39;ve already taken&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="n">available_keys</span>
+<span class="p">)</span>
+<span class="n">game_map</span><span class="o">.</span><span class="n">used_keys</span> <span class="o">=</span> <span class="n">Env</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;The used keys&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="n">used_keys</span>
+<span class="p">)</span>
+<span class="n">game_map</span><span class="o">.</span><span class="n">target_keys</span> <span class="o">=</span> <span class="n">Env</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;The target keys&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="n">target_keys</span>
 <span class="p">)</span>
 </code></pre>
 </div>
 
-<h2 id="summary">Summary</h2>
+<h3 id="the-escaping-action">The Escaping Action</h3>
 
-<p>The <code>TestActionflow</code> class provides a robust framework for testing and debugging action flows. It allows for detailed modification of instance attributes and repeated execution to test stability. The class supports both inline and command-line modes for attribute updates, making it flexible for various testing needs.</p>
+<p>The final necessary step in customizing an agent is to equip it with actions. Unlike the function tools of the <code>FuncEnv</code> type, actions are common Python functions built for calling the Large Language Model (LLM) and processing its responses. While the previous steps involve setting up the environment and defining tools, actions are the real tasks the agent performs using the LLM as a base to complete specific goals.</p>
 
-<h3 id="possible-future-works">Possible Future Works</h3>
+<p>Actions serve as the entry points for understanding human instructions and performing the corresponding tasks. The <code>Puppys</code> framework includes several predefined actions, such as:</p>
 
 <ul>
-<li><strong>Enhance attribute modification</strong>: Provide more intuitive ways to modify deeply nested attributes.</li>
-<li><strong>Improve error handling</strong>: Enhance exception handling to provide more detailed error messages.</li>
-<li><strong>Expand functionality</strong>: Add more methods to support different types of testing scenarios and enhance the overall testing framework.</li>
+<li><strong>do</strong>: Performs a specified task.</li>
+<li><strong>check</strong>: Checks whether a task has been finished.</li>
+<li><strong>do_check</strong>: Combines the <code>do</code> and <code>check</code> steps.</li>
 </ul>
+
+<p>Additional actions include:</p>
+
+<ul>
+<li><strong>rewrite</strong>: Rewrites the human query, prompt, or instructions to better align with the equipped function tools, enhancing the LLM's ability to identify the most appropriate tool for the current step.</li>
+<li><strong>go_to</strong>: Switches to another <code>Env</code> instance.</li>
+</ul>
+
+<h4 id="designing-custom-actions"><strong>Designing Custom Actions</strong></h4>
+
+<p>Although the action concept is designed for using the LLM as the base, actions can also be LLM-excluded. They can be performed independently, included in other LLM-included actions, or used directly in the custom action flow function. All LLM-based actions are defined using the <code>Action</code> class, which includes general functionalities, making it easier to customize new actions.</p>
+
+<h4 id="example-of-exploring-the-game-map-env">Example of exploring the game map <code>Env</code></h4>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="c1"># Get the game state</span>
+<span class="n">envs</span> <span class="o">=</span> <span class="n">explore</span><span class="p">(</span>
+    <span class="n">environment</span><span class="o">=</span><span class="n">puppy_instance</span><span class="o">.</span><span class="n">env_node</span><span class="p">,</span> 
+    <span class="n">target</span><span class="o">=</span><span class="n">Env</span><span class="p">,</span> 
+    <span class="n">output_content_mode</span><span class="o">=</span><span class="s2">&quot;attribute&quot;</span><span class="p">,</span> 
+    <span class="n">attributes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">sub_game_map</span> <span class="o">=</span> <span class="n">explore</span><span class="p">(</span>
+    <span class="n">environment</span><span class="o">=</span><span class="n">puppy_instance</span><span class="o">.</span><span class="n">env_node</span><span class="o">.</span><span class="n">game_map</span><span class="p">,</span> 
+    <span class="n">target</span><span class="o">=</span><span class="n">Env</span><span class="p">,</span> 
+    <span class="n">output_content_mode</span><span class="o">=</span><span class="s2">&quot;attribute&quot;</span><span class="p">,</span> 
+    <span class="n">attributes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">game_map_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;game_map&quot;</span><span class="p">:</span> <span class="n">envs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;game_map&quot;</span><span class="p">)}</span>
+<span class="n">game_map_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sub_game_map</span><span class="p">)</span>
+
+<span class="c1"># Convert into formatted string to be inserted in the prompt</span>
+<span class="n">game_map_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">game_map_dict</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+    <span class="n">game_map_string</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+</code></pre>
+</div>
+
+<h4 id="llm-prompt-template-for-the-customized-action">LLM prompt template for the customized action</h4>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">prompt</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">Objective: As an AI code agent, your goal is to help the agent escape the room by collecting keys with specific key_name s and using them to open the exit door. You need to write Python codes to achieve these.</span>
+
+<span class="s2">1. You always write Python code! You are really good at it. Your natural language output should be written as comment in python code.</span>
+<span class="s2">you can show your thinking and reason in the comment.</span>
+<span class="s2"> For example: # Hello, I am an agent. </span>
+
+<span class="s2">2. Your code will be run immediately after you write it. If you assume any hypothetical function, the the system will crash. </span>
+
+<span class="s2">3. Your response cannot only be comment. You HAVE to write codes</span>
+
+<span class="s2">4. Make sure that the parameter in your respond code follow the type of the parameter in the function instruction. </span>
+
+<span class="s2">5. About the Game: [Game Descriptions]</span>
+
+<span class="s2">6. About the movement: [Movement Rules]</span>
+
+<span class="s2">7. Rules for Escaping (win/end the game): [Winning Strategies]</span>
+
+<span class="s2">8. Game Mechanics: [Game Rules]</span>
+
+<span class="s2">9. Additional Notes: [Some notes on the points that the LLM might get confused]</span>
+
+<span class="s2">Ensure each part of your response contains Python code actions for the next step, following the example provided, with concise and clear logic comments embedded in the code.</span>
+<span class="s2">Your response should be similar with the following example(ONLY CODE) and NOTHING ELSE.</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+        <span class="c1"># 2. Provide the current var and usable keys</span>
+        <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">Your formally-defined parameters and their previewing are as follows: </span>
+<span class="si">{</span><span class="n">puppy_instance</span><span class="o">.</span><span class="n">puppy_vars</span><span class="o">.</span><span class="n">preview</span><span class="p">()</span><span class="si">}</span>
+
+<span class="s2">Check if the undefined or unspecific variables are in the above preview, if so, use them when needed in your code.</span>
+
+<span class="s2">Your default function is writing python dictionaries.</span>
+<span class="s2">You are also allowed to use the customized functions below, use them by just writing code as the example. the description shows how to use them. You are not allowed to call functions that out of the given range and python popular package:</span>
+<span class="si">{</span><span class="n">explore</span><span class="p">(</span><span class="n">environment</span><span class="o">=</span><span class="n">puppy_instance</span><span class="o">.</span><span class="n">env_node</span><span class="p">,</span><span class="w"> </span><span class="n">target</span><span class="o">=</span><span class="n">FuncEnv</span><span class="p">,</span><span class="w"> </span><span class="n">output_content_mode</span><span class="o">=</span><span class="s2">&quot;attribute&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">attributes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;description&quot;</span><span class="p">])</span><span class="si">}</span>
+
+<span class="s2">You are only allowed to generate code that replace self.escaping(...) part, write code to control the agent to escape the room for the next step ONLY.</span>
+
+<span class="s2">The current game map and all the relevant information about the current game status are included below, read them carefully to understand the current game environment and plan your next actions accordingly.</span>
+<span class="si">{</span><span class="n">game_map_string</span><span class="si">}</span>
+
+<span class="s2">[Additional Notes]</span>
+
+<span class="s2"># Example codes for using all the keys available:</span>
+<span class="s2">[Few-Shot Examples]</span>
+
+<span class="s2">Now, write your code to control the agent to escape the room:</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">}]</span>
+</code></pre>
+</div>
+
+<h4 id="example-using-the-action-class">Example: Using the <code>Action</code> Class</h4>
+
+<p>The code in <code>escaping.py</code> demonstrates how to use the <code>Action</code> class to build a new action. You can use this as a template for creating your own actions. Each LLM-based action allows the LLM to write code to perform tasks, adhering to the framework's code-driven approach. The <code>Action</code> class's methods handle various aspects of code processing during execution, such as:</p>
+
+<ul>
+<li><strong>Highlighting the action</strong>: Highlighting the current action being performed.</li>
+<li><strong>Cleaning the code</strong>: Filter out the markdown symbols for the code section to only keep the codes.</li>
+<li><strong>Running with or without error handling</strong>: Executing the code with appropriate error management.</li>
+<li><strong>Replacing code</strong>: Optionally replacing the action codes from the original action flow with the current code written by the LLM.</li>
+</ul>
+
+<p>If the code is replaced, it is stored as the current code in the <code>puppy_instance</code> (the instance of the <code>Puppys</code> class defined for your custom agent). In the room escape case, this is the <code>Escaper</code> class. This allows the prompts for the LLM to include the current replaced code, informing the LLM of the actions already performed and what needs to be done next, thus avoiding redundant actions. The detailed guide on how to do this can be found in the <code>prompts</code> in the <code>do.py</code>.</p>
+
+<h4 id="action-parameters">Action Parameters</h4>
+
+<p>All LLM-included actions have to have <code>show_prompt</code> and <code>show_response</code> as part of the parameters:</p>
+
+<ul>
+<li><strong>show_prompt</strong>: Displays the complete prompt for the current action without any formatted string parts.</li>
+<li><strong>show_response</strong>: Prints the response produced by the LLM in the terminal to keep users informed about the ongoing process.</li>
+</ul>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">action</span> <span class="o">=</span> <span class="n">Action</span><span class="p">(</span>
+        <span class="n">puppy_instance</span><span class="p">,</span>
+        <span class="n">action_name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">show_prompt</span><span class="o">=</span><span class="n">show_prompt</span><span class="p">,</span>
+        <span class="n">show_response</span><span class="o">=</span><span class="n">show_response</span><span class="p">,</span>
+        <span class="n">retries</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">replace_code</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="n">action</span><span class="o">.</span><span class="n">highlighting</span><span class="p">(</span>
+        <span class="n">action_type</span><span class="o">=</span><span class="s2">&quot;escaping&quot;</span><span class="p">,</span>
+        <span class="n">prompt</span><span class="o">=</span><span class="n">prompt</span><span class="p">,</span>
+        <span class="n">prompt_action</span><span class="o">=</span><span class="s2">&quot;escaping&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">new_code</span> <span class="o">=</span> <span class="n">open_ai_chat</span><span class="p">(</span>
+        <span class="n">prompt</span><span class="o">=</span><span class="n">prompt</span><span class="p">,</span> 
+        <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> 
+        <span class="n">printing</span><span class="o">=</span><span class="n">show_response</span><span class="p">,</span> 
+        <span class="n">stream</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="n">new_code</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">clean_llm_code</span><span class="p">(</span><span class="n">new_code</span><span class="p">,</span> <span class="n">add_code</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Run the code</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">action</span><span class="o">.</span><span class="n">run_without_errors</span><span class="p">(</span><span class="n">new_code</span><span class="p">)</span>
+    <span class="c1"># Handle errors</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">error_details</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">run_with_errors</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">error_details</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<h3 id="building-the-action-flow">Building the Action Flow</h3>
+
+<p>The action flow is a function that serves as the entry point for directing the agent's actions. Although it is a method in the <code>Escaper</code> class, its code body is defined outside the class. The default parameter for this function is <code>self</code>, which refers to the instance of the class, but additional parameters can be added as needed, just like any standard Python class method.</p>
+
+<p>In the action flow, you can call the <code>escaping</code> action using <code>self.escaping</code> to instruct the agent to perform tasks necessary for escaping the room. The action flow defines the action flow by combining typical Python code with calls to the actions. This integration ensures that the agent's code merges seamlessly with the developer's code, ultimately creating a temporary action flow that can be reused.</p>
+
+<p>This aspect of the framework highlights the benefits of a code-driven agent framework, which positions the agent as an assistant that helps developers code, build applications, and execute tasks without any gap. The action flow function in <code>agent_client.py</code> exemplifies this by defining the action flow in native Python code, supporting features like package imports, variable assignments, if statements, loops, inner functions, and inner classes. Developers can insert actions wherever needed to fit the overall action flow.</p>
+
+<p>In the room escape scenario, a loop keeps calling the <code>escaping</code> action, prompting the LLM to write code using the function tools to perform the next step until the agent successfully escapes the room or the server-side connection is closed. A sleep function is used to avoid incomplete updates to the server side.</p>
+
+<p>The overall code in the action flow is divided into various blocks based on Python's Abstract Syntax Tree (AST), ensuring that necessary code segments (like loops or if statements) remain intact and not separated line by line. During execution, the code runs block by block in sequence, with previous runtime values updated to the next ones to prevent data loss.</p>
+
+<p>The LLM is only called within the action (e.g., <code>escaping</code>), not within the action_flow itself. Therefore, the LLM is unaware of the variables defined or values changed in the action flow. The framework stores all action flow codes during execution and splits them into <code>history_codes</code>, <code>current_code</code>, and <code>future_codes</code>. These can be inserted into the prompt using formatted strings, allowing access to variable values under the <code>actionflow</code> attribute of the <code>puppy_instance</code> (i.e., <code>self</code> in the action flow):</p>
+
+<ul>
+<li><code>puppy_instance.actionflow.history_codes</code></li>
+<li><code>puppy_instance.actionflow.current_code</code></li>
+<li><code>puppy_instance.actionflow.future_codes</code></li>
+</ul>
+
+<p>You can then specify these and explain how the LLM can use the previous variables when generating the next part of the code. Alternatively, defining and storing values as class attributes rather than common variables is more intuitive. For example, in the action flow function, <code>self.target_keys</code> is defined rather than <code>target_keys</code>. As such, <code>self.target_keys</code> is treated as an <code>Env</code> and explored during execution, allowing the agent to automatically know the variable and its value, with values updated after modifications.</p>
+
+<p>The action flow function does not need to be named <code>action_flow</code>. You can name it whatever you prefer, as long as it includes <code>self</code> as the default parameter.</p>
+
+<h4 id="example-code">Example Code</h4>
+
+<p>Here's how you can structure the action flow:</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="k">def</span> <span class="nf">action_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_keys</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">time</span>
+    <span class="c1"># Convert the target keys to lowercase to avoid case-sensitive issues</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">target_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">keys</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">keys</span> <span class="ow">in</span> <span class="n">target_keys</span><span class="p">]</span>
+    <span class="c1"># Pre-update the target keys to the server</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">update_state</span><span class="p">({</span><span class="s2">&quot;target_keys&quot;</span><span class="p">:</span> <span class="n">target_keys</span><span class="p">})</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="c1"># Check if the door is open or the game is over, if so, close the connection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">game_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">fetch_state</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">game_state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;door_dict&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;open&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">game_state</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">break</span>
+        <span class="c1"># Using the LLM to generate the next action&#39;s code and execute it</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">escaping</span><span class="p">(</span><span class="n">show_response</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Update the game map environment after each action</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">game_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_game_env</span><span class="p">()</span>
+        <span class="c1"># Sleep for 2 seconds to wait for the agent&#39;s action to be completely executed</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<h4 id="running-the-action-flow">Running the action flow</h4>
+
+<ul>
+<li><strong>Initialization</strong>: An instance of the Escaper class is created, initialized with the action flow function that defines the agent's behavior.</li>
+</ul>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">escaper</span> <span class="o">=</span> <span class="n">Escaper</span><span class="p">(</span><span class="n">action_flow</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<ul>
+<li><strong>Execution</strong>: The action flow method is invoked to start the game loop, which continues until the game is won or terminated.</li>
+</ul>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">escaper</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">target_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;yellow&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">])</span>
+</code></pre>
+</div>
+
+<h1 id="whats-next">What’s Next</h1>
+
+<h2 id="saving-and-reusing-the-action-flow">Saving and Reusing the Action Flow</h2>
+
+<p>After running the action flow, the real action flow will be saved in <code>user_case_history/temp_actionflow_code.py</code>. You can easily copy this entire action flow function to other codebases, allowing you to reuse the agent-generated code. This integration avoids the need for repeated calls to the LLM, saving both time and costs while providing a more stable and robust codebase.</p>
+
+<h2 id="debugging-with-the-saved-puppy_instance">Debugging with the Saved <code>puppy_instance</code></h2>
+
+<p>The <code>puppy_instance</code> is saved in <code>user_case_history/puppy_instance.pkl</code>. For debugging purposes, you can call the <code>test_run</code> method, which enables you to tweak and test the agent's behavior.</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">escaper</span><span class="o">.</span><span class="n">test_run</span><span class="p">(</span>
+    <span class="n">node_num</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="c1"># Run all the code after value changes</span>
+    <span class="n">num_of_action</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="c1"># Execute the same code twice</span>
+    <span class="n">handle_exceptions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="c1"># Does not handle exceptions</span>
+    <span class="n">max_length</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="c1"># Maximum output length in the terminal is 1000</span>
+    <span class="n">use_command_line</span><span class="o">=</span><span class="kc">True</span> <span class="c1"># Use commond line to debug interactively</span>
+<span class="p">)</span>
+</code></pre>
+</div>
+
+<p>In the <code>test_run</code> method, you can modify any attribute values within <code>puppy_instance</code> to observe changes in the execution results. This iterative process helps you determine the optimal set of attribute values for executing the current action flow.</p>
+
+<p>By using these saved resources, you can streamline development and debugging processes, ensuring your agent performs efficiently and effectively.</p>
+
+<!-- ## Conclusion
+
+This guide provides a structured approach to developing an interactive room escape game using the `Puppys` framework, by following the described steps, developers can leverage the framework's capabilities to build complex code-based agent-driven games and applications. -->
 </div>
 
                         <input id="mod-puppys-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
@@ -511,7 +672,7 @@ In this simple example, the agent is required to fetch some news from the "hacke
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">.. include:: ../docs/index.md</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">.. include:: ../docs/tutorial.md</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">.. include:: ../docs/developer.md</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">.. include:: ../docs/mannual.md</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span> <span class="nn">dotenv</span> <span class="kn">import</span> <span class="n">load_dotenv</span>

@@ -1,5 +1,5 @@
 
-## What is an LLM agent? 
+# What is an LLM agent? 
 A Large Language Model (LLM) or artificial intelligence (AI) agent is a specialized software entity that utilizes an LLM to perform various tasks autonomously.
 For example, you may want your AI copilot to automatically write and execute a piece of code for you directly instead of telling you how to write it and letting you copy the code and run it yourself.
 That simple step from *talking* to *doing* makes a huge difference between a chatbot and an agent.
@@ -23,7 +23,7 @@ This is a highly simplified version of what an autonomous agent is expected to d
 
 Predicting the next action is called *decision making* in cognitive science, which, as we know, is not only difficult for artificial intelligence but also challenging even for humans ourselves.
 
-## Challenges for Decision Making 
+## Challenges for Decision Making
 
 According to OpenAI, the ability of artificial intelligence can be ranked into five levels:
 1. Chatbots
@@ -51,12 +51,11 @@ Due to the two challenges listed above, LLMs-based agents are still a state-of-t
 At the current moment, despite many exploratory works from various teams worldwide, there has yet to be a consensus in academics and industry about how a good agent should be designed or how it should behave. 
 
 
-## The `Puppys` framework
+# Philosophy  of `Puppys` 
 The `Puppys` is a framework for developing LLM-based agents. 
 We hope the framework could make it easier for engineers and scientists to develop agentic systems and applications.
 
-## Philosophy 
-### Code Native Agent
+## Code Native Agent
 Let us consider a fundamental question: How should an LLM agent actually *do* things or perform actions?
 Our answer to this question is that **LLM agents do things via code**.
 The ideal design for LLM-based agents should be that humans give verbal instructions, and LLM agents generate scripts or source code to solve these requests. The agent should be a translator between the nonexecutable natural language and the executable programming language. 
@@ -67,7 +66,7 @@ Unlike previous agent frameworks that make agents generate **natural language** 
 </div>
 The programming language also provided a natural way to extend the ability of LLMs. Via a set of application programming interfaces (APIs), LLM-based agents can seamlessly interact with the existing software systems and use the available external instruments to perform many tasks beyond their original capability. 
 
-### Hybrid Decision Making
+## Hybrid Decision Making
 
 Another fundamental question for LLM-based agents is how to make decisions or predict the next actions. As we discussed before -- delegating the decision-making process completely to the LLM behind an agent is not a *good* solution.
 Our answer to this question is that considering the current capability of LLMs, we should leave the macro or strategic decision-making and planning to humans but delegate the micro or tactical decision-making and problem-solving to LLMs.
@@ -79,7 +78,7 @@ Instead of allowing the LLM to make arbitrary decisions and act completely by it
 
 This hybrid decision-making for agents is implemented in the `Puppys` framework, allowing users to customize the logic level they would like to delegate to LLM when designing an agent.
 
-## A Simple Example
+# A Simple Example
 Here is a simple example that shows how the users can set a series of milestones to regulate the behavior of an agent.
 
 First, we import a minimal agent template `Mei` from `Puppys`, which contains basic functionalities including LLMs request, web search, and Python script execution.
