@@ -1,100 +1,208 @@
+import os
 from litellm import completion
-from typing import List, Optional, Union, Dict
+from dataclasses import dataclass, field, fields
+from typing import Any, Dict, List, Optional, Union
 
-# using OpenAI API model
+
+@dataclass
+class ChatConfig:
+    """
+    Configuration for the chat service using the litellm interface.
+    """
+
+    model: str = 'gpt-4-turbo'
+    messages: List[Dict[str, Any]] = field(default_factory=list)
+    temperature: float = 0.1
+    top_p: Optional[float] = None
+    max_tokens: int = 4096
+    n: int = 1
+    stream: bool = True
+    stop: Optional[str] = None
+    presence_penalty: Optional[float] = None
+    frequency_penalty: Optional[float] = None
+    logit_bias: Optional[Dict[int, float]] = None
+    seed: Optional[int] = None
+    logprobs: Optional[bool] = None
+    top_logprobs: Optional[int] = None
+    deployment_id: Optional[str] = None
+    api_key: Optional[str] = None
+    base_url: Optional[str] = None
+    api_version: Optional[str] = None
+    functions: Optional[List[Dict[str, Any]]] = None
+    function_call: Optional[str] = None
+    timeout: Optional[Union[float, int]] = None
+    user: Optional[str] = None
+    response_format: Optional[Dict[str, Any]] = None
+    tools: Optional[List[str]] = None
+    tool_choice: Optional[str] = None
+    parallel_tool_calls: Optional[bool] = None
+
+
+class ChatService:
+    def __init__(
+        self, 
+        config: ChatConfig
+    ):
+        self.config = config
+        api_key = self.config.api_key
+        self.config.api_key = api_key if api_key else os.environ.get("OPENAI_API_KEY", api_key)
+
+    """
+    Wrapper function to interact with LiteLLM's completion API with optional parameters.
+
+    Parameters:
+    - model (str, optional, defaulted to gpt-4-turbo): ID of the model to use.
+    - messages (list): List of messages comprising the conversation so far.
+    - max_tokens (int, optional, defaulted to 4096): Maximum number of tokens to generate.
+    - temperature (float, optional, defaulted to 0.1): Sampling temperature.
+    - top_p (float, optional): Nucleus sampling probability.
+    - n (int, optional, defaulted to 1): Number of chat completion choices to generate.
+    - stream (bool, optional): Whether to stream responses.
+    - printing (bool, optional): Whether to print responses.
+    - stop (str or list, optional): Sequences where the API will stop generating further tokens.
+    - presence_penalty (float, optional): Penalty for new tokens based on their presence.
+    - frequency_penalty (float, optional): Penalty for new tokens based on their frequency.
+    - kwargs (dict, optional): Additional parameters for any LLMs API require.
+
+    Returns:
+    - response: Response from the LiteLLM API.
+    """
+
+    def chat(
+        self, 
+        printing: bool = False
+    ) -> Any:
+        """
+        Sending prompts to the specified model and returning the response based on the configuration.
+
+        Args:
+            printing (bool): Whether to print the response. The default is False.
+
+        Returns:
+            Any: The response from the model.
+        """
+
+        data = {k: v for k, v in self.config.__dict__.items() if v is not None}
+        response = completion(**data)
+        return self._handle_response(response, printing)
+
+    def _handle_response(
+        self, 
+        response: any, 
+        printing: bool
+    ) -> str:
+        """
+        Handle the response from the model based on the configuration.
+
+        Args:
+            response (any): The response from the model.
+            printing (bool): Whether to print the response.
+
+        Returns:
+            str: The response content.
+        """
+
+        if self.config.stream:
+            return self._handle_stream_response(response, printing)
+        else:
+            return self._handle_non_stream_response(response, printing)
+
+    def _handle_non_stream_response(
+        self, 
+        response: Any, 
+        printing: bool
+    ) -> str:
+        """
+        Handle the non-stream response from the model.
+
+        Args:
+            response (Any): The response from the model.
+            printing (bool): Whether to print the response.
+
+        Returns:
+            str: The response content.
+        """
+
+        response_content = response.choices[0].message.content
+        if printing:
+            print(response_content + "\n")
+        return response_content
+
+    def _handle_stream_response(
+        self, 
+        response: Any, 
+        printing: bool
+    ) -> str:
+        """
+        Handle the stream response from the model.
+
+        Args:
+            response (Any): The response from the model.
+            printing (bool): Whether to print the response.
+
+        Returns:
+            str: The response content.
+        """
+
+        final_response = ""
+        for chunk in response:
+            chunk_content = chunk.choices[0].delta.content
+            if chunk_content:
+                if printing:
+                    print(chunk_content, end="")
+                final_response += chunk_content
+        if printing:
+            print("\n")
+        return final_response
 
 
 def chat(
-    model: Optional[str] = 'gpt-4-turbo',
-    messages: List = [],
-    timeout: Optional[Union[float, int]] = None,
-    temperature: Optional[float] = 0.1,
-    top_p: Optional[float] = None,
-    n: Optional[int] = 1,
-    stream: Optional[bool] = True,
-    printing: Optional[bool] = False,
-    stream_options: Optional[Dict] = None,
-    stop=None,
-    max_tokens: Optional[int] = 4096,
-    presence_penalty: Optional[float] = None,
-    frequency_penalty: Optional[float] = None,
-    logit_bias: Optional[Dict] = None,
-    user: Optional[str] = None,
-    response_format: Optional[Dict] = None,
-    seed: Optional[int] = None,
-    tools: Optional[List] = None,
-    tool_choice: Optional[str] = None,
-    parallel_tool_calls: Optional[bool] = None,
-    logprobs: Optional[bool] = None,
-    top_logprobs: Optional[int] = None,
-    deployment_id=None,
-    functions: Optional[List] = None,
-    function_call: Optional[str] = None,
-    base_url: Optional[str] = None,
-    api_version: Optional[str] = None,
-    api_key: Optional[str] = None,
-    model_list: Optional[List] = None,
-    **kwargs,
-    ):
+    printing: bool = False, 
+    **kwargs
+) -> str:
+    """
+    The main function to interact with the litellm interface and generate responses based on the configuration.
 
-    response = completion(
-        model=model,
-        messages=messages,
-        temperature=temperature,
-        max_tokens=max_tokens,
-        n=n,
-        stream=stream,
-        timeout=timeout,
-        top_p=top_p,
-        stream_options=stream_options,
-        stop=stop,
-        presence_penalty=presence_penalty,
-        frequency_penalty=frequency_penalty,
-        logit_bias=logit_bias,
-        user=user,
-        response_format=response_format,
-        seed=seed,
-        tools=tools,
-        tool_choice=tool_choice,
-        parallel_tool_calls=parallel_tool_calls,
-        logprobs=logprobs,
-        top_logprobs=top_logprobs,
-        deployment_id=deployment_id,
-        functions=functions,
-        function_call=function_call,
-        base_url=base_url,
-        api_version=api_version,
-        api_key=api_key,
-        model_list=model_list,
-        **kwargs
-        )
+    Args:
+        printing (bool): Whether to print the response.
+        **kwargs: The keyword arguments for the ChatConfig.
 
-    if printing is True:
+    Returns:
+        str: The response content.
+    """
 
-        if stream is False:
-            print(response.choices[0].message.content)
-            print("\n")
-            return response.choices[0].message.content
+    # Retrieve the names of valid fields from ChatConfig
+    valid_fields = {field.name for field in fields(ChatConfig)}
 
-        elif stream is True:
-            finalResponse=""
-            for chunk in response:
-                if chunk.choices[0].delta.content is not None:
-                    print(chunk.choices[0].delta.content, end="")
-                    finalResponse += chunk.choices[0].delta.content
+    # Filter kwargs to include only valid fields for ChatConfig
+    valid_kwargs = {k: v for k, v in kwargs.items() if k in valid_fields}
 
-            print("\n")
-            return finalResponse
+    # Raise an exception if the filtered kwargs dictionary is empty
+    if not valid_kwargs:
+        raise ValueError("No valid fields provided for ChatConfig")
 
-    else:
-        if stream is False:
-            return response.choices[0].message.content
+    # Create a ChatConfig instance with the valid keyword arguments
+    config = ChatConfig(**valid_kwargs)
 
-        elif stream is True:
-            finalResponse = ""
-            for chunk in response:
-                if chunk.choices[0].delta.content is not None:
+    # Initialize the ChatService with the configured settings
+    chat_service = ChatService(config)
 
-                    finalResponse += chunk.choices[0].delta.content
+    # Call the chat method and print the results if printing is set to True
+    result = chat_service.chat(printing=printing)
 
-            return finalResponse
+    # Return the result from the chat service
+    return result
+            
+
+if __name__ == "__main__":
+    import sys
+    from dotenv import load_dotenv
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+    load_dotenv()
+    result = chat(
+        messages=[{"role": "user", "content": "Hello, world!"}],
+        stream=True,
+        temperature=0.7,
+        printing=True
+    )
+    print(result)

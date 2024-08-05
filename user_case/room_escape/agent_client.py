@@ -12,13 +12,19 @@ from escaping import escaping
 
 
 class ServerConnection:
-    def __init__(self, host: str = "localhost", port: int = 5555):
+    def __init__(
+        self, 
+        host: str = "localhost", 
+        port: int = 5555
+    ):
         self.host = host
         self.port = port
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((host, port))
 
-    def fetch_state(self) -> dict:
+    def fetch_state(
+        self
+    ) -> dict:
         try:
             self.socket.sendall(b"GET_STATE")
             response = self.socket.recv(4096)
@@ -27,7 +33,10 @@ class ServerConnection:
             print("The server has closed!!!")
             return {}
 
-    def update_state(self, data: dict) -> None:
+    def update_state(
+        self, 
+        data: dict
+    ) -> None:
         serialized_data = json.dumps(data).encode("utf-8")
         self.socket.sendall(serialized_data)
         response = self.socket.recv(1024)
@@ -37,7 +46,11 @@ class ServerConnection:
         self.socket.close()
 
 
-def move_agent(connection: ServerConnection, direction: str, step: int) -> None:
+def move_agent(
+    connection: ServerConnection, 
+    direction: str, 
+    step: int
+) -> None:
     """
 `move_agent` moves the agent on the game grid based on the specified direction and number of steps. It updates the agent"s position. If the agent encounters a key during the move, the key is added to the agent"s list of available keys.
 
@@ -95,18 +108,33 @@ move_agent(direction="up", step=1) # Now, the agent has reach the door.
         return
 
     if isinstance(grid[new_y][new_x], dict):
-        available_keys.append(grid[new_y][new_x])
-        key_name = grid[new_y][new_x].get("name")
-        current_action_string += f"\nTaking key `{key_name}`."
+        name = grid[new_y][new_x].get("name")
+        in_box = grid[new_y][new_x].get("in_box")
+        if not in_box and name:
+            available_keys.append(grid[new_y][new_x])
+            key_name = grid[new_y][new_x].get("name")
+            current_action_string += f"\nTaking key `{key_name}`."
+
+    # Update the game map grid
+    if grid[new_y][new_x] == "Door":
+        grid[new_y][new_x] = "D&A"
+    elif isinstance(grid[new_y][new_x], dict):
+        in_box = grid[new_y][new_x].get("in_box")
+        if in_box:
+            grid[new_y][new_x]["with_agent"] = True
+        else:
+            grid[new_y][new_x] = "Agent"
+    else:
+        grid[new_y][new_x] = "Agent"
+    
+    if grid[agent_y][agent_x] == "D&A":
+        grid[agent_y][agent_x] = "Door"
+    elif isinstance(grid[agent_y][agent_x], dict):
+        grid[agent_y][agent_x]["with_agent"] = False
+    else:
+        grid[agent_y][agent_x] = " "
 
     # Update the game state
-    if grid[new_y][new_x] == "Door":
-        grid[agent_y][agent_x], grid[new_y][new_x] = " ", "D&A"
-    elif grid[agent_y][agent_x] == "D&A":
-        grid[agent_y][agent_x], grid[new_y][new_x] = "Door", "Agent"
-    else:
-        grid[agent_y][agent_x], grid[new_y][new_x] = " ", "Agent"
-
     game_state["grid"] = grid
     game_state["agent_x"] = new_x
     game_state["agent_y"] = new_y
@@ -115,7 +143,10 @@ move_agent(direction="up", step=1) # Now, the agent has reach the door.
 
     connection.update_state(game_state)
 
-def use_key(connection: ServerConnection, key_name: str) -> None:
+def use_key(
+    connection: ServerConnection, 
+    key_name: str
+) -> None:
     """
 `use_key` controls the agent to use a given key by adding the key_name to the used_keys list. If the used_keys list exactly matches the target_keys list, the door status is updated to open in the game state, and wins the game.
 
@@ -159,7 +190,9 @@ use_key(key_name="blue")
 
     connection.update_state(game_state)
 
-def get_all_available_keys(connection: ServerConnection) -> list:
+def get_all_available_keys(
+    connection: ServerConnection
+) -> list:
     """
     Retrieves the names of all keys currently available on the game grid. 
     It scans the entire grid and collects the names of all key objects.
@@ -178,7 +211,10 @@ def get_all_available_keys(connection: ServerConnection) -> list:
 
     return [key.get("name") for key in available_keys if key.get("name")]
 
-def give_up_key(connection: ServerConnection, key_name: str) -> None:
+def give_up_key(
+    connection: ServerConnection, 
+    key_name: str
+) -> None:
     """
     Give up using a key by removing the key from the used_keys list. If the key is not in the list of used keys, nothing happens.
 
@@ -197,6 +233,55 @@ def give_up_key(connection: ServerConnection, key_name: str) -> None:
     game_state["current_action_string"] = f"Giving up key `{key_name}`."
 
     connection.update_state(game_state)
+
+def open_box(
+    connection: ServerConnection
+) -> None:
+    """
+    Open the box at the agent's current position. If the box is already opened or the agent's current position is not a box, nothing happens.
+
+    Parameters: None.
+
+    Return Value: None.
+
+    Example Usages:
+    open_box()
+    """
+
+    game_state = connection.fetch_state()
+    grid = game_state["grid"]
+    agent_x = game_state.get("agent_x")
+    agent_y = game_state.get("agent_y")
+    cell = grid[agent_y][agent_x]
+    if cell.get("in_box") and not cell.get("opened"):
+        cell["opened"] = True
+        game_state["current_action_string"] = f"Opened box at ({agent_y}, {agent_x})."
+        connection.update_state(game_state)
+
+def take_key_from_box(
+    connection: ServerConnection
+) -> None:
+    """
+    Take the key from the box at the agent's current position. If the box is already opened or the agent's current position is not a box or there is no key in the box, nothing happens.
+
+    Parameters: None.
+
+    Return Value: None.
+
+    Example Usages:
+    take_key_from_box()
+    """
+
+    game_state = connection.fetch_state()
+    grid = game_state["grid"]
+    agent_x = game_state.get("agent_x")
+    agent_y = game_state.get("agent_y")
+    cell = grid[agent_y][agent_x]
+    key_name = cell.get("name")
+    if key_name and cell.get("in_box") and cell.get("opened"):
+        game_state["available_keys"].append(cell)
+        game_state["current_action_string"] = f"\nTaking key {key_name}."
+        connection.update_state(game_state)
 
 
 class Escaper(Puppy):
@@ -241,12 +326,27 @@ class Escaper(Puppy):
             free_params=["key_name"]
         )
 
+        self.open_box = FuncEnv(
+            value=open_box,
+            name=open_box.__name__,
+            description=open_box.__doc__,
+            fixed_params={"connection": self.connection},
+        )
+
+        self.take_key_from_box = FuncEnv(
+            value=take_key_from_box,
+            name=take_key_from_box.__name__,
+            description=take_key_from_box.__doc__,
+            fixed_params={"connection": self.connection},
+        )
+
     def get_game_env(self) -> Env:
         game_state = self.connection.fetch_state()
 
         agent_x = game_state.get("agent_x")
         agent_y = game_state.get("agent_y")
         available_keys = game_state.get("available_keys")
+        available_keys = [key.get("name") for key in available_keys] if available_keys else []
         door_dict = game_state.get("door_dict")
         grid_string = game_state.get("grid_string")
         used_keys = game_state.get("used_keys")
@@ -265,11 +365,11 @@ class Escaper(Puppy):
             description=door_dict
         )
         game_map.available_keys = Env(
-            name="The keys you've taken", 
+            name="The keys you've already taken", 
             description=available_keys
         )
         game_map.used_keys = Env(
-            name="The current keys", 
+            name="The used keys", 
             description=used_keys
         )
         game_map.target_keys = Env(
@@ -279,21 +379,31 @@ class Escaper(Puppy):
 
         return game_map
 
-    def escaping(self, *args, **kwargs):
+    def escaping(
+        self, 
+        *args, 
+        **kwargs
+    ) -> str:
         return escaping(self, *args, **kwargs)
 
 
 def decision_tree(self, target_keys):
     import time
+    # Convert the target keys to lowercase to avoid case-sensitive issues
     self.target_keys = [keys.lower() for keys in target_keys]
+    # Pre-update the target keys to the server
     self.connection.update_state({"target_keys": target_keys})
     while True:
+        # Check if the door is open or the game is over, if so, close the connection
         self.game_state = self.connection.fetch_state()
         if self.game_state.get("door_dict", {}).get("open") or not self.game_state:
             self.connection.close()
             break
+        # Using the LLM to generate the next action's code and execute it
         self.escaping(show_response=True)
+        # Update the game map environment after each action
         self.game_map = self.get_game_env()
+        # Sleep for 2 seconds to wait for the agent's action to be completely executed
         time.sleep(2)
 
 escaper = Escaper(decision_tree)
