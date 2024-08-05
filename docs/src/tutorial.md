@@ -1,12 +1,12 @@
 
-# What is an LLM agent? 
+# What Is an LLM Agent? 
 A Large Language Model (LLM) or artificial intelligence (AI) agent is a specialized software entity that utilizes an LLM to perform various tasks autonomously.
 For example, you may want your AI copilot to automatically write and execute a piece of code for you directly instead of telling you how to write it and letting you copy the code and run it yourself.
 That simple step from *talking* to *doing* makes a huge difference between a chatbot and an agent.
 Imagine you are the manager of a company. You may need consultants who advise you on what to do, but you will definitely need a hardworking team that can get the job done, and that is what LLM agents will be doing in the future.
 This small step will make LLMs, or more generally, AIs, indispensable parts of human production and eventually change the way people work.
 
-## Elements of an intelligent agent
+## Elements of an Intelligent Agent
 What is the most basic difference between an LLM and an agent? Our answer to this question is:
 
 - An LLM predicts the next token.
@@ -78,15 +78,15 @@ Instead of allowing the LLM to make arbitrary decisions and act completely by it
 
 This hybrid decision-making for agents is implemented in the `Puppys` framework, allowing users to customize the logic level they would like to delegate to LLM when designing an agent.
 
-# A Simple Example
+# Getting Started
 Here is a simple example that shows how the users can set a series of milestones to regulate the behavior of an agent.
 
 First, we import a minimal agent template `Mei` from `Puppys`, which contains basic functionalities including LLMs request, web search, and Python script execution.
 ```python
 from puppy.pp.mei import Mei
 ```
-Next, we define the *decision tree* for the `Mei`, which sets the goal or tasks for it to achieve. Here, a series of milestones are set in the decision tree using the `do_check` method. The `do_check` method will instruct the agent to take actions for a milestone and regularly check whether the milestone is accomplished upon the completion of each action taken.
-In this simple example, the agent is required to fetch some news from the "hacker news" webpage. 
+Next, we define the *action flow* for the `Mei`, which sets the goal or tasks for it to achieve. Here, a series of milestones are set in the action flow using the `do_check` method. The `do_check` method will instruct the agent to take actions for a milestone and regularly check whether the milestone is accomplished upon the completion of each action taken.
+In this simple example, the agent is required to fetch some news from the "hacker news" webpage.
 
 ```python
 def hacker_news_decisiontree(self, url):
@@ -97,10 +97,10 @@ def hacker_news_decisiontree(self, url):
 
     self.do_check("pick the news that related to Large Language Models, summarize all the news, and send it to me")
 ```
-While we call the method a "decision tree," its structure is actually a linear array instead of a tree with many different branches. Hence, the logic and behavior of the agent will be straightforward. It will try to accomplish these milestones one by one by taking a flow of actions. More complicated decision trees are possible to define using a combination of `do` and `check` (together as `do_check`) methods and the integrated compound statements (e.g. `if`, `while`) in Python.
+While we call the method a "action flow", it can actually be a tree with many different branches. Hence, the logic and behavior of the agent will be straightforward. It will try to accomplish these milestones one by one by taking a flow of actions. More complicated action flows are possible to define using a combination of `do` and `check` (together as `do_check`) methods and the integrated compound statements (e.g. `if`, `while`) in Python.
 
 ```python
 hacker_news = Mei(hacker_news_decisiontree)
 hacker_news.run(url="https://news.ycombinator.com/")
 ```
-Finally, we can pass the decision tree as an argument to instantiate an agent called `hacker_news`. The agent will start working once the `run` method is invoked. 
+Finally, we can pass the action flow as an argument to instantiate an agent called `hacker_news`. The agent will start working once the `run` method is invoked. 

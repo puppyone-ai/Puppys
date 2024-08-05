@@ -1,7 +1,7 @@
 """
-.. include:: ../docs/index.md
-.. include:: ../docs/tutorial.md
-.. include:: ../docs/mannual.md
+.. include:: ../docs/src/index.md
+.. include:: ../docs/src/tutorial.md
+.. include:: ../docs/src/mannual.md
 """
 
 from dotenv import load_dotenv
