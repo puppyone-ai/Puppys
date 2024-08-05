@@ -1,106 +1,414 @@
+# Tutorial
+## Builing a Gaming Agent
+The escape room game showcases the capabilities of the `Puppys` framework in building applications that require agents to solve puzzles, navigate environments, and interact with various game elements dynamically. It highlights the framework's utility in handling real-time decision-making and interaction with customized environments via tools in a code-driven concept. This documentation is designed to guide developers through the process of creating an agent application using the Puppys framework.
 
-# What Is an LLM Agent? 
-A Large Language Model (LLM) or artificial intelligence (AI) agent is a specialized software entity that utilizes an LLM to perform various tasks autonomously.
-For example, you may want your AI copilot to automatically write and execute a piece of code for you directly instead of telling you how to write it and letting you copy the code and run it yourself.
-That simple step from *talking* to *doing* makes a huge difference between a chatbot and an agent.
-Imagine you are the manager of a company. You may need consultants who advise you on what to do, but you will definitely need a hardworking team that can get the job done, and that is what LLM agents will be doing in the future.
-This small step will make LLMs, or more generally, AIs, indispensable parts of human production and eventually change the way people work.
+## Game Overview and Rules
 
-## Elements of an Intelligent Agent
-What is the most basic difference between an LLM and an agent? Our answer to this question is:
+### Game Description
 
-- An LLM predicts the next token.
-- An agent predicts the next action.
+The game is set in a grid-based map where each cell contains one object such as a key, box, wall, or an exit door. The agent is self-controlled with the goal to find the correct keys specified in the client (some hidden in boxes) and use them to unlock the door and escape the room.
 
-When you give your agent a task, the agent must be able to autonomously or interactively understand what needs to be done first, check what knowledge, data, or instruments are available or need to be used, and then decide how to solve the problem step by step; and finally, perform these actions one by one. If problems are encountered, the agent should also be able to adjust its strategy according to feedback or at least report these issues.
-One can summarise these elements as follows: 
-- Sensing
-- Planning
-- Executing
-- Reacting
+#### Core Mechanics
 
-This is a highly simplified version of what an autonomous agent is expected to do. While this process seems relatively straightforward, in reality, it can be highly non-linear and involves a lot of uncertainties and iterations.
+- **Grid**: The room is represented as a grid where each square might contain a key (box), a door, a wall, or be empty.
+- **Agent**: Move around the grid to interact with objects.
+- **Keys and Boxes**: Keys can be freely lying around or contained within boxes. Boxes need to be opened to reveal contents.
+- **Door**: The escape objective. It requires certain keys to be opened.
 
-Predicting the next action is called *decision making* in cognitive science, which, as we know, is not only difficult for artificial intelligence but also challenging even for humans ourselves.
+#### Rules
 
-## Challenges for Decision Making
+- The agent must navigate to collect keys.
+- All required keys must be collected to unlock and open the door.
+- Movement is constrained by walls and the edges of the grid.
+- The game wins when the agent opens the door.
 
-According to OpenAI, the ability of artificial intelligence can be ranked into five levels:
-1. Chatbots
-2. Reasoners
-3. Agents
-4. Innovators
-5. Organizers
+## Building a gaming agent using `Puppys` 
 
-In 2024, state-of-the-art LLMs like GPT-4o are somewhere between level 2 and level 3. While LLMs have been successful at chatting, searching, and consulting, they still lack the ability to help people do tasks or jobs directly.
+### Setting Up the Game (Server-side)
 
-The reason is that predicting an action is much more complicated than predicting a token. More specifically, two major challenges exist in the decision-making process of LLMs. 
+- **`GameSettings`**: Configures basic game settings like grid size and display properties.
+- **`Grid`**: Manages the game space where walls, keys, and the door are placed. Responsible for the logical state of the game environment.
+- `Game`: The server manages the game state and handles requests from the client, ensuring that the game logic is processed correctly based on the agent's actions.
 
-1. Enormous space for possible actions
- In general cases, users will only provide descriptions of what they want to achieve but will not give specific instructions on how to achieve the goal.
- The agents will then have to figure out how to achieve these goals. 
- For example, if we want the agent to design a poster for us and already provide enough information about what we want, there are still many possible ways for the agent to do the task. It could generate an HTML (webpage) file and convert it to a PDF. It may also write some XML (a general marking language) in the format of Microsoft Word and send us a poster in .docx format, or more directly, output some .svg (vector graph) source code so we have a vector graph poster right there. In this case, the simple task of "poster designing" can be accomplished in many different ways, and each of these options has its pros and cons. In more complicated tasks, the agent may take several steps to solve a problem and need to make a decision in each step. The space for possible combinations of actions will be huge, and it is hard for the agent to decide which approach to take.
+### Setting Up the Game (Client-side)
 
-2. Incomplete information on environments
- Sensing and adapting to the environment is another essential feature of intelligence. Sufficient information is a preliminary request for making good decisions.
- However, in practice, agents may need more interfaces to retrieve the information from their environment. For example, when running a piece of script or compiling a binary for users, necessary dependencies and runtime for the code must be available. Yet, due to the ignorance of the local runtime, agents may unconsciously write some code that can't be executed and thus fail the task.
- In more complicated situations, the agents must interact with a constantly varying environment. 
- For example, the user may want the agent to perform trading in the stock market for profit. In this case, the agent can't predict the market and has to face risks directly.
+#### ServerConnection Class
 
-Due to the two challenges listed above, LLMs-based agents are still a state-of-the-art concept instead of a ready-for-production technology. 
-At the current moment, despite many exploratory works from various teams worldwide, there has yet to be a consensus in academics and industry about how a good agent should be designed or how it should behave. 
+- Handles data transfer between the game server and the client.
+- Sends commands to the server and processes the game state updates received.
+- Manages connection integrity and re-establishes connection if needed.
 
+#### Agent Tools Setup
 
-# Philosophy  of `Puppys` 
-The `Puppys` is a framework for developing LLM-based agents. 
-We hope the framework could make it easier for engineers and scientists to develop agentic systems and applications.
+Tools are crucial for the agentic system to perform real-world tasks, going beyond mere text generation to executing meaningful actions. Large Language Models (LLMs) cannot act by default; therefore, they rely on tools to perform specific actions when given appropriate instructions. Each tool encapsulates a particular action the agent can execute within the game, aligning closely with the game mechanics and rules, such as moving the agent or using a key.
 
-## Code Native Agent
-Let us consider a fundamental question: How should an LLM agent actually *do* things or perform actions?
-Our answer to this question is that **LLM agents do things via code**.
-The ideal design for LLM-based agents should be that humans give verbal instructions, and LLM agents generate scripts or source code to solve these requests. The agent should be a translator between the nonexecutable natural language and the executable programming language. 
-Unlike previous agent frameworks that make agents generate **natural language** and then convert to codes,  the`Puppys` framework is designed to *be code native*. When having the agent predict the next action, `Puppys` generates not only natural language to describe the action but also **code** that performs the actions.
+In the Puppys framework, tools are defined as regular Python functions. It is essential to provide comprehensive documentation for each function to guide the LLM on how to utilize these tools correctly. This documentation should contextualize the tool within the application's rules and objectives, ensuring that the agent can perform actions effectively and appropriately.
 
-<div align="center">
-<img src="../assets/PuppyVsOthers.png" alt="Image" width="800">
-</div>
-The programming language also provided a natural way to extend the ability of LLMs. Via a set of application programming interfaces (APIs), LLM-based agents can seamlessly interact with the existing software systems and use the available external instruments to perform many tasks beyond their original capability. 
+It is worth mentioning that, the LLM does not interpret the underlying logic of these tools; it simply utilizes them. Thus, it's critical for developers to ensure these tools are error-free and perfectly aligned with intended functionalities since the LLM treats them as reliable actions to be executed.
 
-## Hybrid Decision Making
+**Recommended Documentation Template:**
 
-Another fundamental question for LLM-based agents is how to make decisions or predict the next actions. As we discussed before -- delegating the decision-making process completely to the LLM behind an agent is not a *good* solution.
-Our answer to this question is that considering the current capability of LLMs, we should leave the macro or strategic decision-making and planning to humans but delegate the micro or tactical decision-making and problem-solving to LLMs.
-<div align="center">
-<img src="../assets/AgentRPA_1.png" alt="Image" width="800">
-</div>
+- **Function Description:** Briefly describe what the function does, ideally linking it to the application's context, like the escape room rules and game elements in this use case.
+- **Parameters:** List all free parameters the function accepts (DO NOT include any fixed parameters), clearly stating their types and the role they play.
+- **Returns:** Describe what the function returns after execution.
+- **Notes:** Emphasis some points that the agent might got confused and point out that the positional arguments have to be written while writing code to call the function.
+- **Examples:** Provide examples demonstrating various ways the function can be used, covering as many scenarios as possible to guide the LLM's interaction with the tool.
 
-Instead of allowing the LLM to make arbitrary decisions and act completely by itself, like in the case of autonomous system, the human user is required to set a series of *fixed milestones* in the path to the final goal, while the agent is allowed to make decisions and take actions between one milestone and the next. By reducing the size of possible action space and regulating the behaviors of agents, these milestones can effectively improve the robustness and efficiency of LLM-based agents. 
-
-This hybrid decision-making for agents is implemented in the `Puppys` framework, allowing users to customize the logic level they would like to delegate to LLM when designing an agent.
-
-# Getting Started
-Here is a simple example that shows how the users can set a series of milestones to regulate the behavior of an agent.
-
-First, we import a minimal agent template `Mei` from `Puppys`, which contains basic functionalities including LLMs request, web search, and Python script execution.
-```python
-from puppy.pp.mei import Mei
-```
-Next, we define the *action flow* for the `Mei`, which sets the goal or tasks for it to achieve. Here, a series of milestones are set in the action flow using the `do_check` method. The `do_check` method will instruct the agent to take actions for a milestone and regularly check whether the milestone is accomplished upon the completion of each action taken.
-In this simple example, the agent is required to fetch some news from the "hacker news" webpage.
+**Sample Function Definitions:**
 
 ```python
-def hacker_news_decisiontree(self, url):
-
-    self.do_check("go to the given url, show the HTML", show_response=True)
-
-    self.do_check("show the top 10 news @llm, and send it to me", show_response=True, show_prompt=True)
-
-    self.do_check("pick the news that related to Large Language Models, summarize all the news, and send it to me")
+def move_agent(connection: ServerConnection, direction: str, step: int) -> None:
+    """
+    Moves the agent on the game grid based on the specified direction and number of steps.
+    Parameters:
+    - direction (str): The direction to move (up, down, left, right).
+    - step (int): The number of grid spaces to move.
+    Returns:
+    - None
+    Note: 
+    You HAVE TO write the positional arguments when writing code to call the function.
+    Example Usage:
+    move_agent(direction="down", step=3)  # Moves the agent three steps down.
+    """
+    # [Implementation details]
 ```
-While we call the method a "action flow", it can actually be a tree with many different branches. Hence, the logic and behavior of the agent will be straightforward. It will try to accomplish these milestones one by one by taking a flow of actions. More complicated action flows are possible to define using a combination of `do` and `check` (together as `do_check`) methods and the integrated compound statements (e.g. `if`, `while`) in Python.
+
+### Customizing the Agent
+
+The agent class in the Puppys framework is a crucial component that encapsulates all the features and attributes needed for your custom agent. Here's a detailed walkthrough of building the agent class, specifically the `Escaper` class for our room escape game.
+
+#### Inheritance from Puppy Class
+
+The `Escaper` class inherits from the `Puppy` parent class.  `Puppy`  includes all necessary features and attributes needed for building a customized agent.
+
+In the `__init__` method, you initialize the `Puppy` class, set the agent's name, description, and version, and establish a connection to the server.
 
 ```python
-hacker_news = Mei(hacker_news_decisiontree)
-hacker_news.run(url="https://news.ycombinator.com/")
+class Escaper(Puppy):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.name = "Escaper"
+				self.description = "A puppy that can play the game room escape."
+				self.version = "0.0.1"
 ```
-Finally, we can pass the action flow as an argument to instantiate an agent called `hacker_news`. The agent will start working once the `run` method is invoked. 
+
+#### `FuncEnv`: The Functional Environment
+
+The `FuncEnv` is a subclass of the `Env` class, designed specifically for functions. It includes the concept of fixed parameters and free parameters to provide more flexibility while interpreting functions as an environment:
+
+- **Fixed Parameters**: Predefined by the developers and won’t be known and altered by the agent.
+- **Free Parameters**: Decided and adjusted by the agent during execution.
+
+This design ensures that the agent only performs authorized actions, enhancing security and preventing incorrect actions.
+
+```python
+self.move_agent = FuncEnv(
+    value=move_agent,
+    name=move_agent.__name__,
+    description=move_agent.__doc__,
+    fixed_params={"connection": self.connection},
+    free_params=["direction", "step"]
+)
+```
+
+#### Creating the Game Environment
+
+**Using the `Env` Class to Represent the Game Environment:**
+
+The `get_game_env` method in the Escaper class is designed to create a nested `Env` instance representing the game map. While this method is not strictly necessary for building a custom agent, it is crucial in the room escape scenario. It allows the agent to understand the current game environment, make informed decisions, and act accordingly.
+
+Unlike the `FuncEnv` class, which is tailored for functions, the `Env` class can encapsulate any type of object, providing a flexible way to represent the entire game environment. You can specify the value, name, and description for each environment, making it highly adaptable.
+
+**Nested Environments:**
+
+A key feature of the `Env` class is its ability to define nested environments. This means you can have multiple sub-environments within a main environment. In the room escape game, the main environment `game_map` represents the entire game map. Within this, there are several sub-environments, such as:
+
+- **agent_location**: Represents the agent's current position.
+- **door_status**: Indicates whether the door is open or closed.
+- **available_keys**: Lists the keys the agent has collected.
+- **used_keys**: Tracks the keys the agent has used.
+- **target_keys**: Shows the keys needed to win the game.
+
+**Visibility and Exploration:**
+
+Environments can be either visible or invisible. All self-defined environments are visible by default and can be explored to fetch their values, names, and descriptions. However, certain environments within the `Puppys` framework, such as `Actionflow` and `PuppyVars`, are invisible and cannot be explored.
+
+This feature allows some parts of the environment to remain hidden initially and be revealed when necessary. Information can only be explored one layer deep. For example, under the main environment, only the `game_map` and other `Env` instances will be explored initially. All other sub-environments (like `agent_location`, `door_status`, etc.) can only be explored under the `game_map` environment. This hierarchical structure allows for a more organized exploration of the environment.
+
+**Utilizing Explored Results:**
+
+The explored results can be used in prompts to help the LLM understand the current state. They can also be utilized in function tools to control what is needed and what is not, and to easily switch between different environments for various actions. This structured approach ensures that the agent has a clear and comprehensive understanding of the game environment, enabling it to make effective decisions and actions.
+
+**Example of Nested Environments:**
+
+```python
+game_map = Env(
+    name="The current game map",
+    description=grid_string
+)
+game_map.agent_location = Env(
+    name="The agent's current location",
+    description=f"({agent_y}, {agent_x})."
+)
+game_map.door_status = Env(
+    name="The door status",
+    description=door_dict
+)
+game_map.available_keys = Env(
+    name="The keys you've already taken",
+    description=available_keys
+)
+game_map.used_keys = Env(
+    name="The used keys",
+    description=used_keys
+)
+game_map.target_keys = Env(
+    name="The target keys",
+    description=target_keys
+)
+```
+
+### The Escaping Action
+
+The final necessary step in customizing an agent is to equip it with actions. Unlike the function tools of the `FuncEnv` type, actions are common Python functions built for calling the Large Language Model (LLM) and processing its responses. While the previous steps involve setting up the environment and defining tools, actions are the real tasks the agent performs using the LLM as a base to complete specific goals.
+
+Actions serve as the entry points for understanding human instructions and performing the corresponding tasks. The `Puppys` framework includes several predefined actions, such as:
+
+- **do**: Performs a specified task.
+- **check**: Checks whether a task has been finished.
+- **do_check**: Combines the `do` and `check` steps.
+
+Additional actions include:
+
+- **rewrite**: Rewrites the human query, prompt, or instructions to better align with the equipped function tools, enhancing the LLM's ability to identify the most appropriate tool for the current step.
+- **go_to**: Switches to another `Env` instance.
+
+#### **Designing Custom Actions**
+
+Although the action concept is designed for using the LLM as the base, actions can also be LLM-excluded. They can be performed independently, included in other LLM-included actions, or used directly in the custom action flow function. All LLM-based actions are defined using the `Action` class, which includes general functionalities, making it easier to customize new actions.
+
+#### Example of exploring the game map `Env`
+
+```python
+# Get the game state
+envs = explore(
+	environment=puppy_instance.env_node, 
+	target=Env, 
+	output_content_mode="attribute", 
+	attributes=["name", "description"]
+)
+
+sub_game_map = explore(
+	environment=puppy_instance.env_node.game_map, 
+	target=Env, 
+	output_content_mode="attribute", 
+	attributes=["name", "description"]
+)
+
+game_map_dict = {"game_map": envs.get("game_map")}
+game_map_dict.update(sub_game_map)
+
+# Convert into formatted string to be inserted in the prompt
+game_map_string = ""
+for value in game_map_dict.values():
+    game_map_string += f"{value['name']}: {value['description']}\n"
+```
+
+#### LLM prompt template for the customized action
+
+```python
+prompt = [
+        {"role": "system",
+         "content": """
+Objective: As an AI code agent, your goal is to help the agent escape the room by collecting keys with specific key_name s and using them to open the exit door. You need to write Python codes to achieve these.
+
+1. You always write Python code! You are really good at it. Your natural language output should be written as comment in python code.
+you can show your thinking and reason in the comment.
+ For example: # Hello, I am an agent. 
+
+2. Your code will be run immediately after you write it. If you assume any hypothetical function, the the system will crash. 
+
+3. Your response cannot only be comment. You HAVE to write codes
+
+4. Make sure that the parameter in your respond code follow the type of the parameter in the function instruction. 
+
+5. About the Game: [Game Descriptions]
+
+6. About the movement: [Movement Rules]
+
+7. Rules for Escaping (win/end the game): [Winning Strategies]
+
+8. Game Mechanics: [Game Rules]
+
+9. Additional Notes: [Some notes on the points that the LLM might get confused]
+
+Ensure each part of your response contains Python code actions for the next step, following the example provided, with concise and clear logic comments embedded in the code.
+Your response should be similar with the following example(ONLY CODE) and NOTHING ELSE.
+"""},
+        # 2. Provide the current var and usable keys
+        {"role": "user",
+         "content": f"""
+Your formally-defined parameters and their previewing are as follows: 
+{puppy_instance.puppy_vars.preview()}
+
+Check if the undefined or unspecific variables are in the above preview, if so, use them when needed in your code.
+
+Your default function is writing python dictionaries.
+You are also allowed to use the customized functions below, use them by just writing code as the example. the description shows how to use them. You are not allowed to call functions that out of the given range and python popular package:
+{explore(environment=puppy_instance.env_node, target=FuncEnv, output_content_mode="attribute", attributes=["name", "description"])}
+
+You are only allowed to generate code that replace self.escaping(...) part, write code to control the agent to escape the room for the next step ONLY.
+
+The current game map and all the relevant information about the current game status are included below, read them carefully to understand the current game environment and plan your next actions accordingly.
+{game_map_string}
+
+[Additional Notes]
+
+# Example codes for using all the keys available:
+[Few-Shot Examples]
+
+Now, write your code to control the agent to escape the room:
+"""}]
+```
+
+#### Example: Using the `Action` Class
+
+The code in `escaping.py` demonstrates how to use the `Action` class to build a new action. You can use this as a template for creating your own actions. Each LLM-based action allows the LLM to write code to perform tasks, adhering to the framework's code-driven approach. The `Action` class's methods handle various aspects of code processing during execution, such as:
+
+- **Highlighting the action**: Highlighting the current action being performed.
+- **Cleaning the code**: Filter out the markdown symbols for the code section to only keep the codes.
+- **Running with or without error handling**: Executing the code with appropriate error management.
+- **Replacing code**: Optionally replacing the action codes from the original action flow with the current code written by the LLM.
+
+If the code is replaced, it is stored as the current code in the `puppy_instance` (the instance of the `Puppys` class defined for your custom agent). In the room escape case, this is the `Escaper` class. This allows the prompts for the LLM to include the current replaced code, informing the LLM of the actions already performed and what needs to be done next, thus avoiding redundant actions. The detailed guide on how to do this can be found in the `prompts` in the `do.py`.
+
+#### Action Parameters
+
+All LLM-included actions have to have `show_prompt` and `show_response` as part of the parameters:
+
+- **show_prompt**: Displays the complete prompt for the current action without any formatted string parts.
+- **show_response**: Prints the response produced by the LLM in the terminal to keep users informed about the ongoing process.
+
+```python
+action = Action(
+        puppy_instance,
+        action_name="",
+        show_prompt=show_prompt,
+        show_response=show_response,
+        retries=0,
+        replace_code=True
+    )
+
+    action.highlighting(
+        action_type="escaping",
+        prompt=prompt,
+        prompt_action="escaping"
+    )
+
+    new_code = open_ai_chat(
+        prompt=prompt, 
+        model=model, 
+        printing=show_response, 
+        stream=True
+    )
+
+    new_code = action.clean_llm_code(new_code, add_code=True)
+
+    # Run the code
+    try:
+        return action.run_without_errors(new_code)
+    # Handle errors
+    except Exception as e:
+        error_details = action.run_with_errors(e)
+        print(error_details)
+```
+
+### Building the Action Flow
+
+The action flow is a function that serves as the entry point for directing the agent's actions. Although it is a method in the `Escaper` class, its code body is defined outside the class. The default parameter for this function is `self`, which refers to the instance of the class, but additional parameters can be added as needed, just like any standard Python class method.
+
+In the action flow, you can call the `escaping` action using `self.escaping` to instruct the agent to perform tasks necessary for escaping the room. The action flow defines the action flow by combining typical Python code with calls to the actions. This integration ensures that the agent's code merges seamlessly with the developer's code, ultimately creating a temporary action flow that can be reused.
+
+This aspect of the framework highlights the benefits of a code-driven agent framework, which positions the agent as an assistant that helps developers code, build applications, and execute tasks without any gap. The action flow function in `agent_client.py` exemplifies this by defining the action flow in native Python code, supporting features like package imports, variable assignments, if statements, loops, inner functions, and inner classes. Developers can insert actions wherever needed to fit the overall action flow.
+
+In the room escape scenario, a loop keeps calling the `escaping` action, prompting the LLM to write code using the function tools to perform the next step until the agent successfully escapes the room or the server-side connection is closed. A sleep function is used to avoid incomplete updates to the server side.
+
+The overall code in the action flow is divided into various blocks based on Python's Abstract Syntax Tree (AST), ensuring that necessary code segments (like loops or if statements) remain intact and not separated line by line. During execution, the code runs block by block in sequence, with previous runtime values updated to the next ones to prevent data loss.
+
+The LLM is only called within the action (e.g., `escaping`), not within the action_flow itself. Therefore, the LLM is unaware of the variables defined or values changed in the action flow. The framework stores all action flow codes during execution and splits them into `history_codes`, `current_code`, and `future_codes`. These can be inserted into the prompt using formatted strings, allowing access to variable values under the `actionflow` attribute of the `puppy_instance` (i.e., `self` in the action flow):
+
+- `puppy_instance.actionflow.history_codes`
+- `puppy_instance.actionflow.current_code`
+- `puppy_instance.actionflow.future_codes`
+
+You can then specify these and explain how the LLM can use the previous variables when generating the next part of the code. Alternatively, defining and storing values as class attributes rather than common variables is more intuitive. For example, in the action flow function, `self.target_keys` is defined rather than `target_keys`. As such, `self.target_keys` is treated as an `Env` and explored during execution, allowing the agent to automatically know the variable and its value, with values updated after modifications.
+
+The action flow function does not need to be named `action_flow`. You can name it whatever you prefer, as long as it includes `self` as the default parameter.
+
+#### Example Code
+
+Here's how you can structure the action flow:
+
+```python
+def action_flow(self, target_keys):
+    import time
+    # Convert the target keys to lowercase to avoid case-sensitive issues
+    self.target_keys = [keys.lower() for keys in target_keys]
+    # Pre-update the target keys to the server
+    self.connection.update_state({"target_keys": target_keys})
+    while True:
+        # Check if the door is open or the game is over, if so, close the connection
+        self.game_state = self.connection.fetch_state()
+        if self.game_state.get("door_dict", {}).get("open") or not self.game_state:
+            self.connection.close()
+            break
+        # Using the LLM to generate the next action's code and execute it
+        self.escaping(show_response=True)
+        # Update the game map environment after each action
+        self.game_map = self.get_game_env()
+        # Sleep for 2 seconds to wait for the agent's action to be completely executed
+        time.sleep(2)
+```
+
+#### Running the action flow
+
+- **Initialization**: An instance of the Escaper class is created, initialized with the action flow function that defines the agent's behavior.
+
+```python
+escaper = Escaper(action_flow)
+```
+
+- **Execution**: The action flow method is invoked to start the game loop, which continues until the game is won or terminated.
+
+```python
+escaper.run(target_keys=["yellow", "blue"])
+```
+
+# What’s Next
+
+## Saving and Reusing the Action Flow
+
+After running the action flow, the real action flow will be saved in `user_case_history/temp_actionflow_code.py`. You can easily copy this entire action flow function to other codebases, allowing you to reuse the agent-generated code. This integration avoids the need for repeated calls to the LLM, saving both time and costs while providing a more stable and robust codebase.
+
+## Debugging with the Saved `puppy_instance`
+
+The `puppy_instance` is saved in `user_case_history/puppy_instance.pkl`. For debugging purposes, you can call the `test_run` method, which enables you to tweak and test the agent's behavior.
+
+```python
+escaper.test_run(
+	node_num=-1, # Run all the code after value changes
+	num_of_action=2, # Execute the same code twice
+	handle_exceptions=False, # Does not handle exceptions
+	max_length=1000, # Maximum output length in the terminal is 1000
+	use_command_line=True # Use commond line to debug interactively
+)
+
+```
+
+In the `test_run` method, you can modify any attribute values within `puppy_instance` to observe changes in the execution results. This iterative process helps you determine the optimal set of attribute values for executing the current action flow. For more instructions on test and debugging, please check the documentation on `puppys.pp.default_env.actionflow.debug_actionflow`.
+
+By using these saved resources, you can streamline development and debugging processes, ensuring your agent performs efficiently and effectively. 
+
+<!-- ## Conclusion
+
+This guide provides a structured approach to developing an interactive room escape game using the `Puppys` framework, by following the described steps, developers can leverage the framework's capabilities to build complex code-based agent-driven games and applications. -->
