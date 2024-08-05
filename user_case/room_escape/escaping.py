@@ -1,7 +1,7 @@
 from puppys.env.env import Env
 from puppys.env.func_env import FuncEnv
 from puppys.pp.actions.action import Action
-from puppys.llm.open_ai import open_ai_chat
+from puppys.llm.models import lite_llm_chat
 from puppys.pp.actions.explore import explore
 
 
@@ -128,8 +128,8 @@ Now, write your code to control the agent to escape the room:
         prompt_action="escaping"
     )
 
-    new_code = open_ai_chat(
-        prompt=prompt, 
+    new_code = lite_llm_chat(
+        messages=prompt, 
         model=model, 
         printing=show_response, 
         stream=True

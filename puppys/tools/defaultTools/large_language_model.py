@@ -1,6 +1,8 @@
 import os
-from litellm import completion
+# import sys
+# sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
 from puppys.env.func_env import FuncEnv
+from puppys.llm.models import lite_llm_chat
 
 
 def llm(
@@ -24,9 +26,9 @@ def llm(
 
     model = model if model else os.environ.get("OPENAI_MODEL", "")
 
-    url = url if url else os.getenv("OPENAI_BASE_URL", "")
+    url = url if url else os.getenv("OPENAI_BASE_URL", None)
 
-    result = completion(
+    result = lite_llm_chat(
         messages=[
             {
                 "role": "user",
@@ -39,7 +41,7 @@ def llm(
         max_tokens=max_tokens
     )
 
-    return result.choices[0].message.content
+    return result
 
 
 if __name__ == "__main__":

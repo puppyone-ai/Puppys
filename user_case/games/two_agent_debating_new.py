@@ -28,14 +28,14 @@ You can:
 2. Simplifying a complex issue into two opposite choices, ignoring other possible alternatives.
 """
 
-# Define the decisiontree for both pp
-def chatting_decisiontree(
+# Define the action flow for both pp
+def chatting_action_flow(
     self,
     system_prompt: str, 
     max_loop_num: int = 5
 ):
     from user_case.games.four_agent_gotcha_game.chatting import ChattingHistory
-    from puppys.llm.open_ai import open_ai_chat
+    from puppys.llm.models import lite_llm_chat
 
     self.chat_history = ChattingHistory()
 
@@ -47,8 +47,8 @@ def chatting_decisiontree(
     while loop_num < max_loop_num:
         self.trigger.wait()    # Wait for the trigger signal
         print(f"[{self.name}]")
-        response = open_ai_chat(
-            prompt=self.chat_history.value, 
+        response = lite_llm_chat(
+            messages=self.chat_history.value, 
             printing=True, 
             stream=True, 
             temperature=0.9
@@ -68,12 +68,12 @@ def chatting_decisiontree(
 # Define two threads
 debater_1 = Puppy(
     name="debater_1", 
-    decisiontree=chatting_decisiontree, 
+    value=chatting_action_flow, 
     system_prompt=debater_1_setting
 )
 debater_2 = Puppy(
     name="debater_2", 
-    decisiontree=chatting_decisiontree, 
+    value=chatting_action_flow, 
     system_prompt=debater_2_setting
 )
 

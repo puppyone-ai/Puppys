@@ -1,7 +1,5 @@
-import os
 import re
 import traceback
-from puppys.llm.open_ai import open_ai_chat
 
 
 class Action:

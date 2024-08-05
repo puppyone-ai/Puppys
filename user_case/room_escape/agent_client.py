@@ -284,6 +284,67 @@ def take_key_from_box(
         connection.update_state(game_state)
 
 
+class GameEnv(Env):
+    """
+    A custom environment class for the room escape game map.
+    """
+
+    def __init__(
+        self,
+        connection: ServerConnection,
+        *args,
+        **kwargs
+    ):
+        self.connection = connection
+        self._get_game_states()
+        super().__init__(name=self.name, description=self.description, *args, **kwargs)
+        self._setup_game_map_env()
+
+    def _get_game_states(self):
+        game_state = self.connection.fetch_state()
+        self.agent_x = game_state.get("agent_x")
+        self.agent_y = game_state.get("agent_y")
+        available_keys = game_state.get("available_keys")
+        self.available_keys = [key.get("name") for key in available_keys] if available_keys else []
+        self.door_dict = game_state.get("door_dict")
+        self.grid_string = game_state.get("grid_string")
+        self.used_keys = game_state.get("used_keys")
+        self.target_keys = game_state.get("target_keys")
+        self.name = "The current game map"
+        self.description = self.grid_string
+
+    def _setup_game_map_env(self):
+        self.game_map = Env(
+            name=self.name, 
+            description=self.description
+        )
+        self.game_map.agent_location = Env(
+            name="The agent's current location", 
+            description=f"({self.agent_y}, {self.agent_x})."
+        )
+        self.game_map.door_status = Env(
+            name="The door status", 
+            description=self.door_dict
+        )
+        self.game_map.available_keys = Env(
+            name="The keys you've already taken", 
+            description=self.available_keys
+        )
+        self.game_map.used_keys = Env(
+            name="The used keys", 
+            description=self.used_keys
+        )
+        self.game_map.target_keys = Env(
+            name="The target keys", 
+            description=self.target_keys
+        )
+
+    def update_game_map_env(self):
+        self._get_game_states()
+        self._setup_game_map_env()
+        return self.game_map
+
+
 class Escaper(Puppy):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -293,7 +354,8 @@ class Escaper(Puppy):
         self.version = "0.0.1"
 
         self.connection = ServerConnection()
-        self.game_map = self.get_game_env()
+        self.game_env = GameEnv(self.connection)
+        self.game_map = self.game_env.game_map
 
         self.move_agent = FuncEnv(
             value=move_agent,
@@ -340,44 +402,44 @@ class Escaper(Puppy):
             fixed_params={"connection": self.connection},
         )
 
-    def get_game_env(self) -> Env:
-        game_state = self.connection.fetch_state()
+    # def get_game_env(self) -> Env:
+    #     game_state = self.connection.fetch_state()
 
-        agent_x = game_state.get("agent_x")
-        agent_y = game_state.get("agent_y")
-        available_keys = game_state.get("available_keys")
-        available_keys = [key.get("name") for key in available_keys] if available_keys else []
-        door_dict = game_state.get("door_dict")
-        grid_string = game_state.get("grid_string")
-        used_keys = game_state.get("used_keys")
-        target_keys = game_state.get("target_keys")
+    #     agent_x = game_state.get("agent_x")
+    #     agent_y = game_state.get("agent_y")
+    #     available_keys = game_state.get("available_keys")
+    #     available_keys = [key.get("name") for key in available_keys] if available_keys else []
+    #     door_dict = game_state.get("door_dict")
+    #     grid_string = game_state.get("grid_string")
+    #     used_keys = game_state.get("used_keys")
+    #     target_keys = game_state.get("target_keys")
 
-        game_map = Env(
-            name="The current game map", 
-            description=grid_string
-        )
-        game_map.agent_location = Env(
-            name="The agent's current location", 
-            description=f"({agent_y}, {agent_x})."
-        )
-        game_map.door_status = Env(
-            name="The door status", 
-            description=door_dict
-        )
-        game_map.available_keys = Env(
-            name="The keys you've already taken", 
-            description=available_keys
-        )
-        game_map.used_keys = Env(
-            name="The used keys", 
-            description=used_keys
-        )
-        game_map.target_keys = Env(
-            name="The target keys", 
-            description=target_keys
-        )
+    #     game_map = Env(
+    #         name="The current game map", 
+    #         description=grid_string
+    #     )
+    #     game_map.agent_location = Env(
+    #         name="The agent's current location", 
+    #         description=f"({agent_y}, {agent_x})."
+    #     )
+    #     game_map.door_status = Env(
+    #         name="The door status", 
+    #         description=door_dict
+    #     )
+    #     game_map.available_keys = Env(
+    #         name="The keys you've already taken", 
+    #         description=available_keys
+    #     )
+    #     game_map.used_keys = Env(
+    #         name="The used keys", 
+    #         description=used_keys
+    #     )
+    #     game_map.target_keys = Env(
+    #         name="The target keys", 
+    #         description=target_keys
+    #     )
 
-        return game_map
+    #     return game_map
 
     def escaping(
         self, 
@@ -387,7 +449,7 @@ class Escaper(Puppy):
         return escaping(self, *args, **kwargs)
 
 
-def decision_tree(self, target_keys):
+def action_flow(self, target_keys):
     import time
     # Convert the target keys to lowercase to avoid case-sensitive issues
     self.target_keys = [keys.lower() for keys in target_keys]
@@ -402,10 +464,11 @@ def decision_tree(self, target_keys):
         # Using the LLM to generate the next action's code and execute it
         self.escaping(show_response=True)
         # Update the game map environment after each action
-        self.game_map = self.get_game_env()
+        # self.game_map = self.get_game_env()
+        self.game_map = self.game_env.update_game_map_env()
         # Sleep for 2 seconds to wait for the agent's action to be completely executed
         time.sleep(2)
 
-escaper = Escaper(decision_tree)
+escaper = Escaper(action_flow)
 # Note: The target keys must include yellow or blue, cause other colors are not guaranteed to be in the game.
 escaper.run(target_keys=["yellow", "blue"])
