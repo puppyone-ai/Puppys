@@ -1,6 +1,6 @@
-# A complex case - build a game agent
-
-The escape room game showcases the capabilities of the Puppys framework in building applications that require agents to solve puzzles, navigate environments, and interact with various game elements dynamically. It highlights the framework's utility in handling real-time decision-making and interaction with customized environments via tools in a code-driven concept. This documentation is designed to guide developers through the process of creating an agent application using the Puppys framework.
+# Tutorial
+## Builing a Gaming Agent
+The escape room game showcases the capabilities of the `Puppys` framework in building applications that require agents to solve puzzles, navigate environments, and interact with various game elements dynamically. It highlights the framework's utility in handling real-time decision-making and interaction with customized environments via tools in a code-driven concept. This documentation is designed to guide developers through the process of creating an agent application using the Puppys framework.
 
 ## Game Overview and Rules
 
@@ -92,7 +92,7 @@ class Escaper(Puppy):
 				self.version = "0.0.1"
 ```
 
-#### FuncEnv: The Functional Environment
+#### `FuncEnv`: The Functional Environment
 
 The `FuncEnv` is a subclass of the `Env` class, designed specifically for functions. It includes the concept of fixed parameters and free parameters to provide more flexibility while interpreting functions as an environment:
 
