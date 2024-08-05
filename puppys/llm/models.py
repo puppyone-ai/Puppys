@@ -47,6 +47,27 @@ class ChatService:
         api_key = self.config.api_key
         self.config.api_key = api_key if api_key else os.environ.get("OPENAI_API_KEY", api_key)
 
+    """
+    Wrapper function to interact with LiteLLM's completion API with optional parameters.
+
+    Parameters:
+    - model (str, optional, defaulted to gpt-4-turbo): ID of the model to use.
+    - messages (list): List of messages comprising the conversation so far.
+    - max_tokens (int, optional, defaulted to 4096): Maximum number of tokens to generate.
+    - temperature (float, optional, defaulted to 0.1): Sampling temperature.
+    - top_p (float, optional): Nucleus sampling probability.
+    - n (int, optional, defaulted to 1): Number of chat completion choices to generate.
+    - stream (bool, optional): Whether to stream responses.
+    - printing (bool, optional): Whether to print responses.
+    - stop (str or list, optional): Sequences where the API will stop generating further tokens.
+    - presence_penalty (float, optional): Penalty for new tokens based on their presence.
+    - frequency_penalty (float, optional): Penalty for new tokens based on their frequency.
+    - kwargs (dict, optional): Additional parameters for any LLMs API require.
+
+    Returns:
+    - response: Response from the LiteLLM API.
+    """
+
     def chat(
         self, 
         printing: bool = False
@@ -178,7 +199,6 @@ if __name__ == "__main__":
     from dotenv import load_dotenv
     sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
     load_dotenv()
-
     result = chat(
         messages=[{"role": "user", "content": "Hello, world!"}],
         stream=True,

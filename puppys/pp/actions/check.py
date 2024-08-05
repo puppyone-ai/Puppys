@@ -1,5 +1,6 @@
 from puppys.pp.actions.action import Action
 from puppys.llm.open_ai import open_ai_chat
+from puppys.llm.models import chat
 
 
 def check(
