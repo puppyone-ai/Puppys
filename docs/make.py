@@ -1,5 +1,22 @@
-## please help write this make,py to automate the documentation build process
+
+from pathlib import Path
+import pdoc
 import puppys
 import os
 
-os.system("pdoc puppys -t docs/ -o docs/ --logo '../../assets/PuppyAgentHorizon.png'")
+here = Path(__file__).parent
+
+if __name__ == "__main__":
+    pdoc.render.configure(
+        edit_url_map={
+            "puppys": "https://github.com/PuppyAgent/Puppys/tree/main/puppys/",
+        },
+        logo= here / "logo.png",
+        logo_link="https://github.com/PuppyAgent/Puppys",
+        # footer_text=f"puppys {puppys.__version__}",
+    )
+
+    pdoc.pdoc(
+       here/ ".." / "puppys",
+        output_directory= here / "build",
+    )
