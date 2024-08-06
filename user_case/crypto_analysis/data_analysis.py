@@ -10,7 +10,7 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 from puppys.pp.mei import Mei
 
 
-def data_analysis_decisiontree(self):
+def data_analysis_action_flow(self):
     import pandas as pd
 
     btc_data = pd.read_csv("data/btc_data.csv")
@@ -22,6 +22,6 @@ def data_analysis_decisiontree(self):
 
     self.do_check("Plot the probability density distribution of BTC and ETH prices in two subplots. Save the figure and send the result to me", show_prompt=True, show_response=True)
 
-data_analyzer = Mei(value=data_analysis_decisiontree)
+data_analyzer = Mei(value=data_analysis_action_flow)
 
 data_analyzer.run()

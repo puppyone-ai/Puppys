@@ -6,10 +6,10 @@
 from .chatting import ChattingHistory
 from puppys.pp.main import Puppy
 from puppys.pp.main import puppy_run
-from puppys.llm.open_ai import open_ai_chat
+from puppys.llm.models import lite_llm_chat
 
 
-def holder_decisiontree(self):
+def holder_action_flow(self):
     self.player_list = [player_1, player_2, player_3, player_4]
 
     gotcha = False
@@ -43,7 +43,12 @@ def holder_decisiontree(self):
             player_4"""}]
 
         print("经过讨论，鬼是：")
-        the_ghost = open_ai_chat(prompt=find_ghost_prompt, printing=True, stream=True, temperature=0.9)
+        the_ghost = lite_llm_chat(
+            messages=find_ghost_prompt,
+            printing=True,
+            stream=True,
+            temperature=0.9
+        )
 
         # Remove the ghost from the list
         self.player_list.remove(eval(the_ghost))
@@ -67,7 +72,7 @@ def holder_decisiontree(self):
                 print("游戏结束，鬼胜利")
 
 
-def chatting_decisiontree(
+def chatting_action_flow(
     self, 
     the_word: str, 
     is_ghost: bool
@@ -102,8 +107,8 @@ def chatting_decisiontree(
         print(f"[{self.name}]",f"[{self.the_word}]")
 
         # Response corresponding to the chatting history
-        response = open_ai_chat(
-            prompt=system_prompt + self.chat_history.value, 
+        response = lite_llm_chat(
+            messages=system_prompt + self.chat_history.value, 
             printing=True, 
             stream=True, 
             temperature=0.9
@@ -135,8 +140,8 @@ def chatting_decisiontree(
         下面是其他的玩家的描述记录
         """}]
 
-        response = open_ai_chat(
-            prompt=discuss_prompt + self.chat_history.value, 
+        response = lite_llm_chat(
+            messages=discuss_prompt + self.chat_history.value, 
             printing=True, 
             stream=True,
             temperature=0.9
@@ -148,29 +153,29 @@ def chatting_decisiontree(
 
 holder = Puppy(
     name="game_holder", 
-    decisiontree=holder_decisiontree
+    value=holder_action_flow
 )
 player_1 = Puppy(
     name="player_1", 
-    decisiontree=chatting_decisiontree, 
+    value=chatting_action_flow, 
     the_word="跳伞", 
     is_ghost=False
 )
 player_2 = Puppy(
     name="player_2", 
-    decisiontree=chatting_decisiontree, 
+    value=chatting_action_flow, 
     the_word="跳伞", 
     is_ghost=False
 )
 player_3 = Puppy(
     name="player_3", 
-    decisiontree=chatting_decisiontree, 
+    value=chatting_action_flow, 
     the_word="蹦极", 
     is_ghost=True
 )
 player_4 = Puppy(
     name="player_4", 
-    decisiontree=chatting_decisiontree, 
+    value=chatting_action_flow, 
     the_word="跳伞", 
     is_ghost=False
 )

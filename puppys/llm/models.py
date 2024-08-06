@@ -1,76 +1,70 @@
 import os
+from typing import Any
 from litellm import completion
-from dataclasses import dataclass, field, fields
-from typing import Any, Dict, List, Optional, Union
-
-
-@dataclass
-class ChatConfig:
-    """
-    Configuration for the chat service using the litellm interface.
-    """
-
-    model: str = 'gpt-4-turbo'
-    messages: List[Dict[str, Any]] = field(default_factory=list)
-    temperature: float = 0.1
-    top_p: Optional[float] = None
-    max_tokens: int = 4096
-    n: int = 1
-    stream: bool = True
-    stop: Optional[str] = None
-    presence_penalty: Optional[float] = None
-    frequency_penalty: Optional[float] = None
-    logit_bias: Optional[Dict[int, float]] = None
-    seed: Optional[int] = None
-    logprobs: Optional[bool] = None
-    top_logprobs: Optional[int] = None
-    deployment_id: Optional[str] = None
-    api_key: Optional[str] = None
-    base_url: Optional[str] = None
-    api_version: Optional[str] = None
-    functions: Optional[List[Dict[str, Any]]] = None
-    function_call: Optional[str] = None
-    timeout: Optional[Union[float, int]] = None
-    user: Optional[str] = None
-    response_format: Optional[Dict[str, Any]] = None
-    tools: Optional[List[str]] = None
-    tool_choice: Optional[str] = None
-    parallel_tool_calls: Optional[bool] = None
 
 
 class ChatService:
-    def __init__(
-        self, 
-        config: ChatConfig
-    ):
-        self.config = config
-        api_key = self.config.api_key
-        self.config.api_key = api_key if api_key else os.environ.get("OPENAI_API_KEY", api_key)
-
     """
-    Wrapper function to interact with LiteLLM's completion API with optional parameters.
+    Chat configurations to interact with LiteLLM's completion API with optional parameters.
 
-    Parameters:
-    - model (str, optional, defaulted to gpt-4-turbo): ID of the model to use.
-    - messages (list): List of messages comprising the conversation so far.
-    - max_tokens (int, optional, defaulted to 4096): Maximum number of tokens to generate.
-    - temperature (float, optional, defaulted to 0.1): Sampling temperature.
-    - top_p (float, optional): Nucleus sampling probability.
-    - n (int, optional, defaulted to 1): Number of chat completion choices to generate.
-    - stream (bool, optional): Whether to stream responses.
-    - printing (bool, optional): Whether to print responses.
-    - stop (str or list, optional): Sequences where the API will stop generating further tokens.
-    - presence_penalty (float, optional): Penalty for new tokens based on their presence.
-    - frequency_penalty (float, optional): Penalty for new tokens based on their frequency.
-    - kwargs (dict, optional): Additional parameters for any LLMs API require.
+    Init Args:
+        api_key (str): The API key to use for the OpenAI API. Use the environment variable OPENAI_API_KEY if not provided.
+        model (str): The model to use for the LLM. Use the environment variable OPENAI_MODEL if not provided.
+        messages (list): List of messages comprising the conversation so far.
+        temperature (float, optional): The temperature of the LLM. The higher the temperature, the more random the output. The default is 0.1 for stable responses.
+        max_tokens (int, optional): The maximum number of tokens to generate. The default is 4096.
+        printing (bool, optional): Whether to print the response. The default is False.
+        stream (bool, optional): Whether to stream the response. The default is True.
+        top_p (float, optional): Nucleus sampling probability.
+        n (int, optional: Number of chat completion choices to generate. The default is 1.
+        stop (str or list, optional): Sequences where the API will stop generating further tokens.
+        presence_penalty (float, optional): Penalty for new tokens based on their presence.
+        frequency_penalty (float, optional): Penalty for new tokens based on their frequency.
+        kwargs (dict, optional): Additional parameters for any LLMs API require.
 
     Returns:
-    - response: Response from the LiteLLM API.
+        str: The response from the LiteLLM API.
     """
 
-    def chat(
+    def __init__(
+        self,
+        api_key: str = None,
+        model: str = "gpt-4-turbo",
+        messages: list = None,
+        temperature: float = 0.1, 
+        max_tokens: int = 4096,
+        printing: bool = False, 
+        stream: bool = True,
+        top_p: float = None,
+        n: int = 1,
+        stop: str = None,
+        presence_penalty: float = None,
+        frequency_penalty: float = None,
+        **kwargs
+    ):  
+        self.api_key = api_key if api_key else os.environ.get("OPENAI_API_KEY", api_key)
+        self.model = model if model else os.environ.get("OPENAI_MODEL", model)
+
+        if not messages:
+            raise ValueError("The messages field is required for the chat completion tasks with the specific LLM.")
+
+        self.messages = messages
+        self.temperature = temperature
+        self.max_tokens = max_tokens
+        self.printing = printing
+        self.stream = stream
+        self.top_p = top_p
+        self.n = n
+        self.stop = stop
+        self.presence_penalty = presence_penalty
+        self.frequency_penalty = frequency_penalty
+
+        # Set any additional attributes from kwargs
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+    def chat_completion(
         self, 
-        printing: bool = False
     ) -> Any:
         """
         Sending prompts to the specified model and returning the response based on the configuration.
@@ -82,63 +76,41 @@ class ChatService:
             Any: The response from the model.
         """
 
-        data = {k: v for k, v in self.config.__dict__.items() if v is not None}
+        data = {k: v for k, v in self.__dict__.items() if v is not None and k != "printing"}
         response = completion(**data)
-        return self._handle_response(response, printing)
-
-    def _handle_response(
-        self, 
-        response: any, 
-        printing: bool
-    ) -> str:
-        """
-        Handle the response from the model based on the configuration.
-
-        Args:
-            response (any): The response from the model.
-            printing (bool): Whether to print the response.
-
-        Returns:
-            str: The response content.
-        """
-
-        if self.config.stream:
-            return self._handle_stream_response(response, printing)
+        if self.stream:
+            return self._handle_stream_response(response)
         else:
-            return self._handle_non_stream_response(response, printing)
+            return self._handle_non_stream_response(response)
 
     def _handle_non_stream_response(
         self, 
         response: Any, 
-        printing: bool
     ) -> str:
         """
         Handle the non-stream response from the model.
 
         Args:
             response (Any): The response from the model.
-            printing (bool): Whether to print the response.
 
         Returns:
             str: The response content.
         """
 
         response_content = response.choices[0].message.content
-        if printing:
+        if self.printing:
             print(response_content + "\n")
         return response_content
 
     def _handle_stream_response(
         self, 
-        response: Any, 
-        printing: bool
+        response: Any
     ) -> str:
         """
         Handle the stream response from the model.
 
         Args:
             response (Any): The response from the model.
-            printing (bool): Whether to print the response.
 
         Returns:
             str: The response content.
@@ -148,47 +120,48 @@ class ChatService:
         for chunk in response:
             chunk_content = chunk.choices[0].delta.content
             if chunk_content:
-                if printing:
+                if self.printing:
                     print(chunk_content, end="")
                 final_response += chunk_content
-        if printing:
+        if self.printing:
             print("\n")
         return final_response
 
 
-def chat(
-    printing: bool = False, 
+def lite_llm_chat(
     **kwargs
 ) -> str:
     """
     The main function to interact with the litellm interface and generate responses based on the configuration.
 
     Args:
-        printing (bool): Whether to print the response.
-        **kwargs: The keyword arguments for the ChatConfig.
+        **kwargs: The keyword arguments for the chat configurations, including:
+        - api_key
+        - model
+        - messages
+        - temperature
+        - max_tokens
+        - printing
+        - stream
+        - top_p
+        - n
+        - stop
+        - presence_penalty
+        - frequency_penalty
+        - kwargs
 
     Returns:
         str: The response content.
     """
 
-    # Retrieve the names of valid fields from ChatConfig
-    valid_fields = {field.name for field in fields(ChatConfig)}
-
-    # Filter kwargs to include only valid fields for ChatConfig
-    valid_kwargs = {k: v for k, v in kwargs.items() if k in valid_fields}
-
-    # Raise an exception if the filtered kwargs dictionary is empty
-    if not valid_kwargs:
-        raise ValueError("No valid fields provided for ChatConfig")
-
-    # Create a ChatConfig instance with the valid keyword arguments
-    config = ChatConfig(**valid_kwargs)
-
     # Initialize the ChatService with the configured settings
-    chat_service = ChatService(config)
+    chat_service = ChatService(**kwargs)
 
-    # Call the chat method and print the results if printing is set to True
-    result = chat_service.chat(printing=printing)
+    try:
+        # Call the chat method and print the results if printing is set to True
+        result = chat_service.chat_completion()
+    except Exception as e:
+        raise ValueError(f"Error in Lite LLM chat completion: {e}")
 
     # Return the result from the chat service
     return result
@@ -199,7 +172,7 @@ if __name__ == "__main__":
     from dotenv import load_dotenv
     sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
     load_dotenv()
-    result = chat(
+    result = lite_llm_chat(
         messages=[{"role": "user", "content": "Hello, world!"}],
         stream=True,
         temperature=0.7,

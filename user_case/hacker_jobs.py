@@ -10,7 +10,7 @@ from puppys.pp.mei import Mei
 # os.environ["OPENAI_API_KEY"] = ""
 
 
-def hacker_jobs_decisiontree(self, url):
+def hacker_jobs_action_flow(self, url):
 
     self.do_check("go to the given url, show the HTML", show_response=True)
 
@@ -21,6 +21,6 @@ def hacker_jobs_decisiontree(self, url):
     self.do_check("from the text of each chunk, show jobs located at UK @llm, gather all summary and send it to me", show_response=True, show_prompt=False)
 
 
-hacker_news = Mei(hacker_jobs_decisiontree)
+hacker_news = Mei(hacker_jobs_action_flow)
 
 hacker_news.run(url="https://news.ycombinator.com/item?id=40846428")

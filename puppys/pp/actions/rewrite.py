@@ -1,7 +1,6 @@
 from puppys.env.func_env import FuncEnv
 from puppys.pp.actions.action import Action
-from puppys.llm.models import chat
-from puppys.llm.open_ai import open_ai_chat
+from puppys.llm.models import lite_llm_chat
 from puppys.pp.actions.explore import explore
 
 
@@ -77,8 +76,8 @@ def rewrite(
 
     action.highlighting("rewriting_prompt", prompt_messages)
 
-    result = open_ai_chat(
-        prompt=prompt_messages,
+    result = lite_llm_chat(
+        messages=prompt_messages,
         model=model,
         temperature=temperature,
         max_tokens=max_tokens,
@@ -86,6 +85,5 @@ def rewrite(
 
     rewrite_replace = "rewrote_action = \"" + result.replace("\n", "\\n") + "\""
     action.replace_action_code(rewrite_replace)
-    result = chat(messages=prompt_messages, printing=True, stream=True)
 
     return result
