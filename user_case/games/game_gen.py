@@ -4,7 +4,7 @@
 # sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from puppys.pp.main import Puppy
-from puppys.llm.open_ai import open_ai_chat
+from puppys.llm.models import lite_llm_chat
 
 
 background = """
@@ -41,8 +41,8 @@ def game_gen(
             ]
         )
 
-        response = open_ai_chat(
-            prompt=system_prompt, 
+        response = lite_llm_chat(
+            messages=system_prompt, 
             printing=True, 
             stream=True, 
             temperature=0.9
@@ -52,7 +52,7 @@ def game_gen(
         num += 1
 
 # Define two threads
-holder = Puppy(decisiontree=game_gen)
+holder = Puppy(value=game_gen)
 holder.resource = {"wood": 20, "food": 70, "stone": 50, "gold": 20, "magic":10}
 holder.task_history = []
 
