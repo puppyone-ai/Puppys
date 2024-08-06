@@ -23,11 +23,11 @@ class TestAgent(Puppy):
         return do(self, *args, **kwargs)
 
 
-def test_sub_tool_decisiontree(self):
+def test_sub_tool(self):
     self.do("create a block of a database that contains the number of 12345678", show_response=True)
 
 
-Test_Agent = TestAgent(value=test_sub_tool_decisiontree)
+Test_Agent = TestAgent(value=test_sub_tool)
 
 def create_block(puppy_instance, query):
 

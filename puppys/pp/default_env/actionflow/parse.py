@@ -1,9 +1,5 @@
-import os
 import re
-
-#from puppys.llm.models import chat
 import ast
-from puppys.llm.open_ai import open_ai_chat
 
 
 def replace_formatted_strings(

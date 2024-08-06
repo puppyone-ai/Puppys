@@ -26,7 +26,6 @@ def talk_with_human(
         user_input = input(f"{BLUE}{puppy.name}: {message}\nYour response: {RESET}")
 
     chat_history = "\n" + "# your message:" + str(message) + "\n" + "# User's response: " + user_input + "\n"
-
     puppy.actionflow.current_action_code += chat_history
 
 
