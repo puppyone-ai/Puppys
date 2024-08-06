@@ -16,7 +16,7 @@ class Actionflow(Env):
     """
     Actionflow is a default essential env for agent.
     It shows the agent's action over time.
-    It inherits from the Env class as an invisible env.
+    It inherits from the `Env` class as an invisible env.
 
     Init Args:
         puppy_instance (any): The puppy instance that runs all the actions.
