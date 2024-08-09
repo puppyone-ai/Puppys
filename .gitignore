@@ -9,5 +9,5 @@
 *.egg-info/
 *.whl
 *.tar.gz
-build/*
+*/build/*
 dist/*

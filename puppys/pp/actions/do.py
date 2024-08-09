@@ -1,9 +1,9 @@
 from loguru import logger
 from puppys.env.func_env import FuncEnv
 from puppys.pp.actions.action import Action
-from puppys.llm.open_ai import open_ai_chat
+from puppys.llm.models import lite_llm_chat
 from puppys.pp.actions.explore import explore
-from puppys.llm.models import chat
+
 
 
 def do(
@@ -109,8 +109,8 @@ Now generate your answer as code:
         prompt_action="doing"
     )
 
-    new_code = open_ai_chat(
-        prompt=prompt,
+    new_code = lite_llm_chat(
+        messages=prompt,
         model=model,
         printing=show_response, 
         stream=True

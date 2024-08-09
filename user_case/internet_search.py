@@ -12,7 +12,7 @@ from puppys.tools.search import search
 # os.environ["OPENAI_API_KEY"] = ""
 
 
-def decisiontree(self):
+def internet_search_action_flow(self):
 
     self.do_check("Today is 2024-5-26, search internet to find the top 10 meme coins ranked by their real-time current market capitalization.",show_prompt=True, show_response=True)
 
@@ -21,7 +21,7 @@ def decisiontree(self):
     self.do_check("Make a list using the information of the top 10 meme crypto coins, and show it to me. ")
 
 
-search_bot = Mei(value=decisiontree)
+search_bot = Mei(value=internet_search_action_flow)
 
 search_bot.search = search
 
