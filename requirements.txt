@@ -1,3 +1,4 @@
+
 openai>=1.0.0
 google-generativeai
 
@@ -5,11 +6,11 @@ litellm
 firecrawl-py
 
 pandas
-pdoc
 python-dotenv
 
 requests
 google-api-python-client
 
 loguru
+
 dill
