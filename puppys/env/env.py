@@ -38,22 +38,33 @@ class Env:
                 setattr(self, env.name, env)
 
     @property
-    def env_dict(self) -> dict:
+    def env_dict(
+        self
+    ) -> dict:
         return {k: v for k, v in self.__dict__.items() if k not in self.private_keys}
 
     @property
-    def env_list(self) -> list:
+    def env_list(
+        self
+    ) -> list:
         return [v for v in self.env_dict.values()]
 
     @property
-    def env_read(self) -> str:
+    def env_read(
+        self
+    ) -> str:
         return str(self.env_list) if self.as_list else str(self.env_dict)
 
     @property
-    def intro(self) -> dict:
+    def intro(
+        self
+    ) -> dict:
         return {"name": self.name, "description": self.description}
 
-    def add(self, *args: Env) -> None:
+    def add(
+        self,
+        *args: Env
+    ) -> None:
         """
         Add the environment instance to the current environment instance.
 
@@ -67,7 +78,10 @@ class Env:
             else:
                 raise TypeError("Method: add() currently could only dynamically load Env instances.")
 
-    def remove(self, *args: Union[str, Env]) -> None:
+    def remove(
+        self,
+        *args: Union[str, Env]
+    ) -> None:
         """
         Remove the environment instance from the current environment instance.
 
@@ -89,7 +103,9 @@ class Env:
             except AttributeError:
                 continue
 
-    def isolated(self):
+    def isolated(
+        self
+    ):
         """
         Isolate the environment instance.
         """
@@ -97,7 +113,10 @@ class Env:
         self.__dict__.clear()
 
 
-def create(*args, **kwargs):
+def create(
+    *args,
+    **kwargs
+):
     new_env = Env(*args, **kwargs)
 
     return new_env

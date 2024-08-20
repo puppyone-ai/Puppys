@@ -6,20 +6,36 @@ from puppys.pp.actions import do_check, check, do
 
 
 class TestAgent(Puppy):
-    def __init__(self, *args, **kwargs):
+    def __init__(
+        self,
+        *args,
+        **kwargs
+    ):
         super().__init__(*args, **kwargs)
 
         self.name = "Mei"
         self.description = "A puppys that could help to intelligent your code"
         self.version = "0.0.1"
 
-    def do_check(self, *args, **kwargs):
+    def do_check(
+        self,
+        *args,
+        **kwargs
+    ):
         return do_check(self, *args, **kwargs)
 
-    def check(self, *args, **kwargs):
+    def check(
+        self,
+        *args,
+        **kwargs
+    ):
         return check(self, *args, **kwargs)
 
-    def do(self, *args, **kwargs):
+    def do(
+        self,
+        *args,
+        **kwargs
+    ):
         return do(self, *args, **kwargs)
 
 
@@ -29,22 +45,34 @@ def test_sub_tool(self):
 
 Test_Agent = TestAgent(value=test_sub_tool)
 
-def create_block(puppy_instance, query):
+def create_block(
+    puppy_instance,
+    query
+):
 
     go_to(puppy_instance,puppy_instance.tool_create)
 
     load_env(puppy_instance=puppy_instance, env_node=puppy_instance.tool_create)
     puppy_instance.do(query, show_response=True, show_prompt=True)
 
-def create_block_todo(puppy_instance, query):
+def create_block_todo(
+    puppy_instance,
+    query
+):
     puppy_instance.env_node = puppy_instance.tool_create.create_type_todo
     print("create_block_todo completed for", query)
 
-def create_block_table(puppy_instance, query):
+def create_block_table(
+    puppy_instance,
+    query
+):
     puppy_instance.env_node = puppy_instance.tool_create.create_type_table
     print("create_block_table completed for", query)
 
-def delete_block(puppy_instance, query):
+def delete_block(
+    puppy_instance,
+    query
+):
     puppy_instance.env_node = puppy_instance.delete_block
     print("delete_block completed for", query)
 

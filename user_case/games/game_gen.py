@@ -1,7 +1,7 @@
 # If you are a VS Code users:
-# import sys
-# import os
-# sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from puppys.pp.main import Puppy
 from puppys.llm.models import lite_llm_chat

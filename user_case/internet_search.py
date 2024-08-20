@@ -1,15 +1,10 @@
-import os
-
 # If you are a VS Code users:
+import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from puppys.pp.mei import Mei
 from puppys.tools.search import search
-
-# Change the API key to your own
-# os.environ["PERPLEXITY_API_KEY"] = ""
-# os.environ["OPENAI_API_KEY"] = ""
 
 
 def internet_search_action_flow(self):

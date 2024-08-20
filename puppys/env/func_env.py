@@ -26,7 +26,11 @@ class FuncEnv(Env):
 
         self.fixed_params = fixed_params if fixed_params is not None else {}
 
-    def __call__(self, *args, **kwargs):
+    def __call__(
+        self,
+        *args,
+        **kwargs
+    ):
         if args:  # Check if args is empty
             raise ValueError("No positional arguments are allowed for Func_Env")
 
@@ -53,7 +57,10 @@ if __name__ == "__main__":
     answer = ok(intro="my name is Lin")
     """
 
-    def send_message_to_human(intro, max_num):
+    def send_message_to_human(
+        intro,
+        max_num
+    ):
         num = 0
         while num < max_num:
             print(f"hello, everyone, I am {intro}")

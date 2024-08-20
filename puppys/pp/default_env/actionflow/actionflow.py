@@ -16,7 +16,7 @@ class Actionflow(Env):
     """
     Actionflow is a default essential env for agent.
     It shows the agent's action over time.
-    It inherits from the `Env` class as an invisible env.
+    It inherits from the Env class as an invisible env.
 
     Init Args:
         puppy_instance (any): The puppy instance that runs all the actions.
@@ -27,6 +27,7 @@ class Actionflow(Env):
         save_instance (bool): Whether to save the instance. The default is True.
         **kwargs: The keyword arguments.
     """
+
     visible = False
 
     def __init__(
@@ -189,7 +190,10 @@ class Actionflow(Env):
             except Exception as e:
                 print(f"{self.RED}Fail saving instance: {e}{self.RESET}")
 
-    def _filter_non_serializable(self, obj):
+    def _filter_non_serializable(
+      self,
+      obj: any
+    ) -> dict:
         serializable_obj = {}
         for key, value in obj.__dict__.items():
             try:
