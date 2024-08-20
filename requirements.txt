@@ -8,6 +8,7 @@ anyio==3.7.1
 packaging<24.0,>=23.1
 httpx<0.25.0,>=0.24.1
 importlib-metadata<7.0,>=6.0
+firecrawl-py
 
 
 pandas
