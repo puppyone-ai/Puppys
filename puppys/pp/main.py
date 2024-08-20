@@ -44,21 +44,32 @@ class Puppy(Env):
 
         self.env_node = self
 
-    def explore(self, *args, **kwargs) -> None:
+    def explore(
+        self,
+        *args,
+        **kwargs
+    ) -> None:
         """
         Explore the environment.
         """
 
         return explore(self, *args, **kwargs)
 
-    def load_env(self, *args, **kwargs) -> None:
+    def load_env(
+        self,
+        *args,
+        **kwargs
+    ) -> None:
         """
         Load the available environment.
         """
 
         return load_env(self, *args, **kwargs)
 
-    def test_run(self, **kwargs) -> None:
+    def test_run(
+        self,
+        **kwargs
+    ) -> None:
         """
         Debug the agent.
         """
@@ -66,7 +77,10 @@ class Puppy(Env):
         # Run the actionflow in test mode
         return self.actionflow.test_run(**kwargs)
 
-    def run(self, **kwargs) -> None:
+    def run(
+        self,
+        **kwargs
+    ) -> None:
         """
         Run the agent.
         """
@@ -84,6 +98,7 @@ def puppy_run(
     Args:
         puppy_list (list): The list of agents.
     """
+
     threads = []
 
     # Create and start threads

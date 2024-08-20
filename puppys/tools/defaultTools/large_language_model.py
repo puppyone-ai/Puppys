@@ -1,6 +1,4 @@
 import os
-# import sys
-# sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
 from puppys.env.func_env import FuncEnv
 from puppys.llm.models import lite_llm_chat
 

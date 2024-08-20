@@ -38,26 +38,27 @@ def rewrite(
     descriptions_str = "\n".join(
         [f"{tool_name}: {details['description']}" for tool_name, details in descriptions.items()]
     )
+
     sys_prompt = f"""
-    Your job is to rewrite user instructions to be more specific and aligned with available tools. Each user instruction should be transformed into one or more tool actions.
+Your job is to rewrite user instructions to be more specific and aligned with available tools. Each user instruction should be transformed into one or more tool actions.
 
-    Here are the available tools:
-    {descriptions_str}
+Here are the available tools:
+{descriptions_str}
 
-    When rewriting the user instructions, ensure each action is clear and corresponds to one of the tools provided. Separate each tool action into its own line.
+When rewriting the user instructions, ensure each action is clear and corresponds to one of the tools provided. Separate each tool action into its own line.
 
-    Note: You only need to rewrite the instruction as sentences, DO NOT write any code or output any other contents!
-    
-    Examples:
-    User instruction: "Search for the latest news about AI."
-    Rewritten instructions:
-    1. Use the `news_search` tool to find the latest news about AI.
+Note: You only need to rewrite the instruction as sentences, DO NOT write any code or output any other contents!
 
-    User instruction: "Get the weather forecast for tomorrow in San Francisco."
-    Rewritten instructions:
-    1. Use the `weather_forecast` tool to get the weather forecast, the time is tomorrow and the location is San Francisco.
+Examples:
+User instruction: "Search for the latest news about AI."
+Rewritten instructions:
+1. Use the `news_search` tool to find the latest news about AI.
 
-    Now, rewrite the following user instruction:
+User instruction: "Get the weather forecast for tomorrow in San Francisco."
+Rewritten instructions:
+1. Use the `weather_forecast` tool to get the weather forecast, the time is tomorrow and the location is San Francisco.
+
+Now, rewrite the following user instruction:
     """
 
     prompt_messages = [

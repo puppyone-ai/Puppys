@@ -2,7 +2,6 @@
 **/__pycache__
 .idea
 **/.llm_cache
-/useCases/user_case_history/
 .env
 .venv
 **/user_case_history/
@@ -11,3 +10,4 @@
 *.tar.gz
 build/*
 dist/*
+venv/

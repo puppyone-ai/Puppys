@@ -27,6 +27,7 @@ class Actionflow(Env):
         save_instance (bool): Whether to save the instance. The default is True.
         **kwargs: The keyword arguments.
     """
+
     visible = False
 
     def __init__(

@@ -14,6 +14,7 @@ class TestActionflow():
     Init Args:
         puppy_instance (any): The instance of the puppy to test.
     """
+
     def __init__(
         self, 
         puppy_instance: any
@@ -71,9 +72,21 @@ class TestActionflow():
         # Update attributes
         if not use_command_line:
             self.inline_mode(updates)
-            results = self.execute_code_multiple_times(num_of_action, node_num, results, handle_exceptions, max_length)
+            results = self.execute_code_multiple_times(
+                num_of_action,
+                node_num,
+                results,
+                handle_exceptions,
+                max_length
+            )
         else:
-            results = self.command_line_mode(num_of_action, node_num, results, handle_exceptions, max_length)
+            results = self.command_line_mode(
+                num_of_action,
+                node_num,
+                results,
+                handle_exceptions,
+                max_length
+            )
 
         return results
 
@@ -289,7 +302,10 @@ class TestActionflow():
         except Exception as e:
             print(f"{self.RED}Fail saving instance: {e}{self.RESET}")
 
-    def _filter_non_serializable(self, obj):
+    def _filter_non_serializable(
+        self, 
+        obj: any
+    ) -> dict:
         serializable_obj = {}
         for key, value in obj.__dict__.items():
             try:
