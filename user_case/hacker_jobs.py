@@ -1,13 +1,9 @@
-import os
-
 # If you are a VS Code users:
-# import sys
-# sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from puppys.pp.mei import Mei
-
-# Change the API key to your own
-# os.environ["OPENAI_API_KEY"] = ""
 
 
 def hacker_jobs_action_flow(self, url):

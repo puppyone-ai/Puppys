@@ -1,5 +1,4 @@
 import re
-
 import ast
 
 
@@ -203,14 +202,19 @@ def parse_code2list2(
     ]
 
 
-    medium = chat(prompt=prompt, temperature=0.3, printing=True, stream=True)
+    from puppys.llm.models import lite_llm_chat
+    medium = lite_llm_chat(
+        messages=prompt,
+        temperature=0.3,
+        printing=True,
+        stream=True
+    )
 
     medium = eval(medium)  # [{"name":action1.name,"code":action1.code},{"name":action2.name,"code":action2.code},...]
 
     action_list = []
 
     for action in medium:
-        # action_list.append(Action())
         action_list[-1].name = action["name"]
         action_list[-1].code = action["code"]
 
@@ -253,7 +257,6 @@ def parse_code2list(
             # Calculate the current line's indentation
             current_indent = len(line) - len(line.lstrip())
 
-            # action_list.append(Action())
             action_list[-1].name = line.split("##", 1)[1].strip()
             action_list[-1].code += f"{line.lstrip()}\n"
         else:
