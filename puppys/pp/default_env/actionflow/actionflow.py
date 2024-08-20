@@ -190,7 +190,10 @@ class Actionflow(Env):
             except Exception as e:
                 print(f"{self.RED}Fail saving instance: {e}{self.RESET}")
 
-    def _filter_non_serializable(self, obj):
+    def _filter_non_serializable(
+      self,
+      obj: any
+    ) -> dict:
         serializable_obj = {}
         for key, value in obj.__dict__.items():
             try:
