@@ -4,7 +4,7 @@
       <img src="./assets/PuppyAgentLOGOBig.png" alt="Image" height="120">
     <h1 align="center">Puppys</h1>
 
-**Framework for Developing an Agentic System**
+**Environment-Oriented Programing Framework for AI Agents**
 
 **🏠 [PuppyAgentTech](https://www.puppyagent.com/)**
 &ensp;&ensp;
@@ -24,23 +24,56 @@
 <div align="center">
 
 
+-**Environment-Oriented**-
+
+*Build an LLM-friendly environment before building your agents.*
+
+-**Code-Driven**-
+
+*Environment, action and reasoning of agents are all based on codes.*
+
 -**Plug and Play**-
 
-*Insert agentic ability into anywhere your existing enterprise code.*
-
--**Make Agent Robust**-
-
-*Instruct agents via code, leading configurable and robust.*
-
--**Lite**-
-
-*Less dependency, more scalability.*
+*Insert agent’s ability into anywhere your existing code.*
 </div>
 
 <div align="center">
 <img src="./assets/intro_diagram.png" alt="Image" width="800">
 </div>
 
+
+
+
+
+
+
+<div align="center">
+
+## **Environment-Oriented Programming**
+
+</div>
+The most important thing for an agent to work is an agent-friendly environment. 
+
+**Puppys** provides a framework that describe environment as agent can understand.
+
+
+<div align="center">
+<img src="./assets/environment_oriented.png" alt="Image" width="800">
+</div>
+
+<div align="center">
+
+## Code-Driven
+
+</div>
+
+Code is the universal language for defining the behavior of LLM-based agents. 
+
+**Puppys** provides a code-driven programming framework that allows agents to generate code based on the current environment to modify the environment accordingly.
+
+<div align="center">
+<img src="./assets/PuppyVsOthers.png" alt="Image" width="800">
+</div>
 
 
 <div align="center">
@@ -57,41 +90,6 @@ No DSL. No Workflow. Only Python (We understand that you don't like DSL or Workf
 <img src="./assets/plug&play.png" alt="Image" width="800">
 
 </div>
-
-
-
-
-<div align="center">
-
-## Make Agent Robust
-
-</div>
-
-**Autonomous Agents** can do tasks by themselves and work in many situations, but only be able to solve very simple problems.
-
-**RPA** (Robotic Process Automation), can handle complex tasks but isn't very flexible. 
-
-We provide a hybrid solution of Agents and RPA.
-
-<div align="center">
-<img src="./assets/AgentRPA.png" alt="Image" width="800">
-</div>
-
-<div align="center">
-
-## Code-Driven
-
-</div>
-
- **An LLM predicts the next token**
-
- **An agent predicts the next action**. 
-
-We believe that an LLM-based agent needs to predict the next action; in reality, it predicts the **next code**. This is the philosophy of being code-driven.
-<div align="center">
-<img src="./assets/PuppyVsOthers.png" alt="Image" width="800">
-</div>
-
 
 
 ## Install
@@ -133,8 +131,8 @@ hacker_news.run()
 ## Contact Us
 For collaboration, inquiries, career opportunities, and more, please contact:
 
-**Our Team:** puppyteam@puppyagent.com
-
 **Founder:** guantum@puppyagent.com
 
-**[Book a meeting with founders via Calendly](https://calendly.com/guantum/30min)**~~~~
+**[Book a meeting with founders via Calendly](https://calendly.com/guantum/30min)**
+
+**Our Team:** puppyteam@puppyagent.com
