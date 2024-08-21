@@ -14,7 +14,7 @@ def hacker_news_action_flow(self, url):
     self.do_check("pick the news that related to Large Language Models, summarize all the news, and send it to me", show_response=True)
 
 
-hacker_news = Mei(hacker_news_action_flow)
+hacker_news = Mei(value=hacker_news_action_flow)
 hacker_news.run(url="https://news.ycombinator.com/")
 
 # Debugging mode

@@ -1,10 +1,12 @@
+# If you are a VS Code users:
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
 import os
 import requests
-from openai import OpenAI
-from puppys.pp.main import Puppy
-from puppys.env.func_env import FuncEnv
 from puppys.decorator import new_func
-from puppys.pp.actions.explore import explore
+from puppys.llm.models import lite_llm_chat
 
 
 def perplexity_search(
@@ -24,17 +26,16 @@ def perplexity_search(
         },
     ]
 
-    client = OpenAI(
-        api_key=os.environ["PERPLEXITY_API_KEY"], 
-        base_url="https://api.perplexity.ai"
-    )
-
-    # Chat completion without streaming
-    response = client.chat.completions.create(
-        model="mistral-7b-instruct",
+    response = lite_llm_chat(
         messages=messages,
+        api_key=os.environ["PERPLEXITY_API_KEY"],
+        base_url="https://api.perplexity.ai",
+        model="mistral-7b-instruct",
+        printing=True,
+        stream=True,
+        temperature=0.9
     )
-    return response.choices[0].message.content
+    return response
 
 
 def google_search(
@@ -74,30 +75,6 @@ def search(
 
 
 if __name__ == "__main__":
-    messages = [
-        {
-            "role": "system",
-            "content": (
-                "You are an artificial intelligence assistant and you need to "
-                "engage in a helpful, detailed, polite conversation with a user."
-            ),
-        },
-        {
-            "role": "user",
-            "content": "what's the weather today in Beijing?",
-        },
-    ]
-
-    client = OpenAI(
-        api_key=os.environ["PERPLEXITY_API_KEY"],
-        base_url="https://api.perplexity.ai"
-    )
-
-    # Chat completion without streaming
-    response = client.chat.completions.create(
-        model="llama-3.1-sonar-small-128k-online",
-        messages=messages,
-    )
-
+    query = "what is the weather today in Amsterdam?"
+    response = search(query=query)
     print(response)
-

@@ -22,7 +22,6 @@ class Actionflow(Env):
         puppy_instance (any): The puppy instance that runs all the actions.
         *args: The arguments.
         function (any): The function to run.
-        printing_mode (str): The printing mode, can either be `buffer` or `terminal`. The default is `terminal`.
         save_actionflow (bool): Whether to save the actionflow. The default is True.
         save_instance (bool): Whether to save the instance. The default is True.
         **kwargs: The keyword arguments.
@@ -35,7 +34,6 @@ class Actionflow(Env):
         puppy_instance: any, 
         *args, 
         function: any, 
-        printing_mode: str = None, 
         save_actionflow: bool = True, 
         save_instance: bool = True, 
         **kwargs
@@ -47,15 +45,8 @@ class Actionflow(Env):
         self.save_actionflow = save_actionflow
         self.save_instance = save_instance
 
-        # If the output mode is buffer, redirect the output to the buffer
-        if printing_mode == "buffer":
-            self.output_buffer = io.StringIO()
-            self.error_buffer = io.StringIO()
-            self.buffer_outputs = True
-        else:
-            self.output_buffer = sys.__stdout__
-            self.error_buffer = sys.__stderr__
-            self.buffer_outputs = False
+        self.output_buffer = sys.__stdout__
+        self.error_buffer = sys.__stderr__
 
         # Set the trigger
         self.trigger = threading.Event()
@@ -234,33 +225,6 @@ class Actionflow(Env):
             print(f"{self.RED}Fail loading instance: {e}{self.RESET}")
             return None
 
-    def handle_buffer_outputs(
-        self, 
-        combined_output: list, 
-        combined_errors: list
-    ) -> None:
-        """
-        Redirect the output and error buffer values to the combined output and error lists.
-
-        Args:
-            combined_output (list): The combined output list.
-            combined_errors (list): The combined error list.
-        """
-
-        # Get and store the output and error buffer values
-        output_buffer_value = self.output_buffer.getvalue()
-        error_buffer_value = self.error_buffer.getvalue()
-        if output_buffer_value.strip():
-            combined_output.append(output_buffer_value)
-        if error_buffer_value.strip():
-            combined_errors.append(error_buffer_value)
-
-        # Reset the buffer
-        self.output_buffer.truncate(0)
-        self.output_buffer.seek(0)
-        self.error_buffer.truncate(0)
-        self.error_buffer.seek(0)
-
     def test_run(
         self, 
         node_num: int, 
@@ -367,33 +331,18 @@ class Actionflow(Env):
     def run(
         self, 
         **kwargs
-    ) -> tuple:
+    ) -> None:
         """
         Run the agent's actionflow by 'value'.
 
         Args:
             **kwargs: The keyword arguments.
-
-        Returns:
-            tuple: The combined output and error strings. Empty if the buffer_outputs is False, as the results are shown immediately in the terminal after each code execution.
         """
 
         self.check_required_args(kwargs)
         self.load_and_update_env(kwargs)
 
-        combined_output = []
-        combined_errors = []
-
         while self.future_codes:
             self.current_code = self.future_codes.pop(0)
             self.execute_current_code()
-            if self.buffer_outputs:
-                self.handle_buffer_outputs(combined_output, combined_errors)
-
-        if self.buffer_outputs:
-            output_str = "\n".join(combined_output)
-            error_str = "\n".join(combined_errors)
-            return output_str, error_str
-        else:
-            return None, None
 
