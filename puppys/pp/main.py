@@ -14,16 +14,14 @@ class Puppy(Env):
 
     Init Args:
         value (any, optional): The value of the environment. Defaults to `None`.
-        printing_mode (str, optional): The printing mode of the agent, either `terminal` or `buffer`. Defaults to `terminal`.
         save_actionflow (bool, optional): Whether to save the actionflow. Defaults to `True`.
         save_instance (bool, optional): Whether to save the instance. Defaults to `True`.
     """
 
     def __init__(
         self,
-        value: any = None,
+        value: any,
         *args,
-        printing_mode: str = "terminal",
         save_actionflow: bool = True,
         save_instance: bool = True,
         **kwargs,
@@ -35,7 +33,6 @@ class Puppy(Env):
         self.actionflow = Actionflow(
             self,
             function=value,
-            printing_mode=printing_mode,
             save_actionflow=save_actionflow,
             save_instance=save_instance,
         )

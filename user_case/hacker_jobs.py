@@ -17,6 +17,6 @@ def hacker_jobs_action_flow(self, url):
     self.do_check("from the text of each chunk, show jobs located at UK @llm, gather all summary and send it to me", show_response=True, show_prompt=False)
 
 
-hacker_news = Mei(hacker_jobs_action_flow)
+hacker_news = Mei(value=hacker_jobs_action_flow)
 
 hacker_news.run(url="https://news.ycombinator.com/item?id=40846428")
