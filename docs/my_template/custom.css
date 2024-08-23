@@ -1,0 +1,140 @@
+/* custom.css */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #FFFFFF;
+    color: #302F2A;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    color: #4599DF;
+}
+
+h1 {
+    color: #302F2A;
+    margin-top: 20px !important;
+    margin-bottom: 10px !important;
+}
+
+h2 {
+    color: #302F2A;
+    margin-top: 50px !important;
+    margin-bottom: 10px !important;
+    font-weight: 600 !important;
+}
+
+h3 {
+    color: #302F2A;
+    margin-top: 30px !important;
+    margin-bottom: 20px !important;
+}
+
+h4 {
+    color: #302F2A;
+    margin-top: 20px !important;
+    margin-bottom: 10px !important;
+}
+
+h5 {
+    color: #302F2A;
+    margin-top: 20px !important;
+    margin-bottom: 10px !important;
+}
+
+h6 {
+    color: #302F2A;
+    margin-top: 20px !important;
+    margin-bottom: 10px !important;
+}
+
+nav h2 {
+    font-weight: bold;
+    font-size: 20px;
+    display: inline; 
+
+}
+
+nav {
+    float: center;
+
+    background-color: #F6F6F4 !important;
+    gap: 16px;
+    color: #545351 !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    box-sizing: border-box;
+    height: 100vh; 
+}
+
+/* 自定义搜索框的样式 */
+nav input[type="search"] {
+    width: 100%; 
+    padding: 8px; 
+    border: 1px solid #ccc; 
+    border-radius: 10px;
+    font-size: 14px; 
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); 
+    margin-top: 8px;
+    margin-bottom: 25px;
+}
+
+/* 聚焦时的样式 */
+nav input[type="search"]:focus {
+    border-color: #4599DF; 
+    outline: none;
+    box-shadow: 0 0 5px #4599DF; 
+}
+
+/* 占位符文字样式 */
+nav input[type="search"]::placeholder {
+    color: #999; 
+    opacity: 1; 
+}
+
+
+
+pre {
+    background-color: #F6F5F1 !important; 
+    color: #302F2A;  
+    padding: 20px !important; 
+    margin: 20px 0 !important;
+    border-radius: 0;  
+    overflow-x: auto;  
+    border: none !important;
+    box-shadow: none !important; 
+}
+
+
+
+body {
+    display: flex;
+    float: center;
+    margin: 0;
+    padding: 0;
+}
+
+
+nav.pdoc {
+    width: 250px; 
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    overflow-y: auto;
+    background-color: #f8f9fa; 
+}
+
+main.pdoc {
+    margin-left: 260px; 
+    max-width: 800px; 
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+nav + .footer {
+    display: none;
+}
