@@ -1,44 +1,44 @@
-# Tutorial
-## Builing a Gaming Agent
+## Tutorial
+### Builing a Gaming Agent
 The escape room game showcases the capabilities of the `Puppys` framework in building applications that require agents to solve puzzles, navigate environments, and interact with various game elements dynamically. It highlights the framework's utility in handling real-time decision-making and interaction with customized environments via tools in a code-driven concept. This documentation is designed to guide developers through the process of creating an agent application using the Puppys framework.
 
-## Game Overview and Rules
+### Game Overview and Rules
 
-### Game Description
+#### Game Description
 
 The game is set in a grid-based map where each cell contains one object such as a key, box, wall, or an exit door. The agent is self-controlled with the goal to find the correct keys specified in the client (some hidden in boxes) and use them to unlock the door and escape the room.
 
-#### Core Mechanics
+##### Core Mechanics
 
 - **Grid**: The room is represented as a grid where each square might contain a key (box), a door, a wall, or be empty.
 - **Agent**: Move around the grid to interact with objects.
 - **Keys and Boxes**: Keys can be freely lying around or contained within boxes. Boxes need to be opened to reveal contents.
 - **Door**: The escape objective. It requires certain keys to be opened.
 
-#### Rules
+##### Rules
 
 - The agent must navigate to collect keys.
 - All required keys must be collected to unlock and open the door.
 - Movement is constrained by walls and the edges of the grid.
 - The game wins when the agent opens the door.
 
-## Building a gaming agent using `Puppys` 
+### Building a gaming agent using `Puppys` 
 
-### Setting Up the Game (Server-side)
+#### Setting Up the Game (Server-side)
 
 - **`GameSettings`**: Configures basic game settings like grid size and display properties.
 - **`Grid`**: Manages the game space where walls, keys, and the door are placed. Responsible for the logical state of the game environment.
 - `Game`: The server manages the game state and handles requests from the client, ensuring that the game logic is processed correctly based on the agent's actions.
 
-### Setting Up the Game (Client-side)
+#### Setting Up the Game (Client-side)
 
-#### ServerConnection Class
+##### ServerConnection Class
 
 - Handles data transfer between the game server and the client.
 - Sends commands to the server and processes the game state updates received.
 - Manages connection integrity and re-establishes connection if needed.
 
-#### Agent Tools Setup
+##### Agent Tools Setup
 
 Tools are crucial for the agentic system to perform real-world tasks, going beyond mere text generation to executing meaningful actions. Large Language Models (LLMs) cannot act by default; therefore, they rely on tools to perform specific actions when given appropriate instructions. Each tool encapsulates a particular action the agent can execute within the game, aligning closely with the game mechanics and rules, such as moving the agent or using a key.
 
@@ -73,11 +73,11 @@ def move_agent(connection: ServerConnection, direction: str, step: int) -> None:
     # [Implementation details]
 ```
 
-### Customizing the Agent
+#### Customizing the Agent
 
 The agent class in the Puppys framework is a crucial component that encapsulates all the features and attributes needed for your custom agent. Here's a detailed walkthrough of building the agent class, specifically the `Escaper` class for our room escape game.
 
-#### Inheritance from Puppy Class
+##### Inheritance from Puppy Class
 
 The `Escaper` class inherits from the `Puppy` parent class.  `Puppy`  includes all necessary features and attributes needed for building a customized agent.
 
@@ -92,7 +92,7 @@ class Escaper(Puppy):
 				self.version = "0.0.1"
 ```
 
-#### `FuncEnv`: The Functional Environment
+##### `FuncEnv`: The Functional Environment
 
 The `FuncEnv` is a subclass of the `Env` class, designed specifically for functions. It includes the concept of fixed parameters and free parameters to provide more flexibility while interpreting functions as an environment:
 
@@ -111,7 +111,7 @@ self.move_agent = FuncEnv(
 )
 ```
 
-#### Creating the Game Environment
+##### Creating the Game Environment
 
 **Using the `Env` Class to Represent the Game Environment:**
 
@@ -168,7 +168,7 @@ game_map.target_keys = Env(
 )
 ```
 
-### The Escaping Action
+#### The Escaping Action
 
 The final necessary step in customizing an agent is to equip it with actions. Unlike the function tools of the `FuncEnv` type, actions are common Python functions built for calling the Large Language Model (LLM) and processing its responses. While the previous steps involve setting up the environment and defining tools, actions are the real tasks the agent performs using the LLM as a base to complete specific goals.
 
@@ -183,11 +183,11 @@ Additional actions include:
 - **rewrite**: Rewrites the human query, prompt, or instructions to better align with the equipped function tools, enhancing the LLM's ability to identify the most appropriate tool for the current step.
 - **go_to**: Switches to another `Env` instance.
 
-#### **Designing Custom Actions**
+##### **Designing Custom Actions**
 
 Although the action concept is designed for using the LLM as the base, actions can also be LLM-excluded. They can be performed independently, included in other LLM-included actions, or used directly in the custom action flow function. All LLM-based actions are defined using the `Action` class, which includes general functionalities, making it easier to customize new actions.
 
-#### Example of exploring the game map `Env`
+##### Example of exploring the game map `Env`
 
 ```python
 # Get the game state
@@ -214,7 +214,7 @@ for value in game_map_dict.values():
     game_map_string += f"{value['name']}: {value['description']}\n"
 ```
 
-#### LLM prompt template for the customized action
+##### LLM prompt template for the customized action
 
 ```python
 prompt = [
@@ -271,7 +271,7 @@ Now, write your code to control the agent to escape the room:
 """}]
 ```
 
-#### Example: Using the `Action` Class
+##### Example: Using the `Action` Class
 
 The code in `escaping.py` demonstrates how to use the `Action` class to build a new action. You can use this as a template for creating your own actions. Each LLM-based action allows the LLM to write code to perform tasks, adhering to the framework's code-driven approach. The `Action` class's methods handle various aspects of code processing during execution, such as:
 
@@ -282,7 +282,7 @@ The code in `escaping.py` demonstrates how to use the `Action` class to build a 
 
 If the code is replaced, it is stored as the current code in the `puppy_instance` (the instance of the `Puppys` class defined for your custom agent). In the room escape case, this is the `Escaper` class. This allows the prompts for the LLM to include the current replaced code, informing the LLM of the actions already performed and what needs to be done next, thus avoiding redundant actions. The detailed guide on how to do this can be found in the `prompts` in the `do.py`.
 
-#### Action Parameters
+##### Action Parameters
 
 All LLM-included actions have to have `show_prompt` and `show_response` as part of the parameters:
 
@@ -323,7 +323,7 @@ action = Action(
         print(error_details)
 ```
 
-### Building the Action Flow
+#### Building the Action Flow
 
 The action flow is a function that serves as the entry point for directing the agent's actions. Although it is a method in the `Escaper` class, its code body is defined outside the class. The default parameter for this function is `self`, which refers to the instance of the class, but additional parameters can be added as needed, just like any standard Python class method.
 
@@ -345,7 +345,7 @@ You can then specify these and explain how the LLM can use the previous variable
 
 The action flow function does not need to be named `action_flow`. You can name it whatever you prefer, as long as it includes `self` as the default parameter.
 
-#### Example Code
+##### Example Code
 
 Here's how you can structure the action flow:
 
@@ -370,7 +370,7 @@ def action_flow(self, target_keys):
         time.sleep(2)
 ```
 
-#### Running the action flow
+##### Running the action flow
 
 - **Initialization**: An instance of the Escaper class is created, initialized with the action flow function that defines the agent's behavior.
 
@@ -384,13 +384,13 @@ escaper = Escaper(action_flow)
 escaper.run(target_keys=["yellow", "blue"])
 ```
 
-# What’s Next
+## What’s Next
 
-## Saving and Reusing the Action Flow
+### Saving and Reusing the Action Flow
 
 After running the action flow, the real action flow will be saved in `user_case_history/temp_actionflow_code.py`. You can easily copy this entire action flow function to other codebases, allowing you to reuse the agent-generated code. This integration avoids the need for repeated calls to the LLM, saving both time and costs while providing a more stable and robust codebase.
 
-## Debugging with the Saved `puppy_instance`
+### Debugging with the Saved `puppy_instance`
 
 The `puppy_instance` is saved in `user_case_history/puppy_instance.pkl`. For debugging purposes, you can call the `test_run` method, which enables you to tweak and test the agent's behavior.
 
