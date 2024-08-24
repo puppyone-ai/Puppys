@@ -11,7 +11,7 @@
     <style>/*! theme.css */:root{--pdoc-background:#fff;}.pdoc{--text:#212529;--muted:#6c757d;--link:#3660a5;--link-hover:#1659c5;--code:#f8f8f8;--active:#fff598;--accent:#eee;--accent2:#c1c1c1;--nav-hover:rgba(255, 255, 255, 0.5);--name:#0066BB;--def:#008800;--annotation:#007020;}</style>
     <style>/*! layout.css */html, body{width:100%;height:100%;}html, main{scroll-behavior:smooth;}body{background-color:var(--pdoc-background);}@media (max-width:769px){#navtoggle{cursor:pointer;position:absolute;width:50px;height:40px;top:1rem;right:1rem;border-color:var(--text);color:var(--text);display:flex;opacity:0.8;z-index:999;}#navtoggle:hover{opacity:1;}#togglestate + div{display:none;}#togglestate:checked + div{display:inherit;}main, header{padding:2rem 3vw;}header + main{margin-top:-3rem;}.git-button{display:none !important;}nav input[type="search"]{max-width:77%;}nav input[type="search"]:first-child{margin-top:-6px;}nav input[type="search"]:valid ~ *{display:none !important;}}@media (min-width:770px){:root{--sidebar-width:clamp(12.5rem, 28vw, 22rem);}nav{position:fixed;overflow:auto;height:100vh;width:var(--sidebar-width);}main, header{padding:3rem 2rem 3rem calc(var(--sidebar-width) + 3rem);width:calc(54rem + var(--sidebar-width));max-width:100%;}header + main{margin-top:-4rem;}#navtoggle{display:none;}}#togglestate{position:absolute;height:0;opacity:0;}nav.pdoc{--pad:clamp(0.5rem, 2vw, 1.75rem);--indent:1.5rem;background-color:var(--accent);border-right:1px solid var(--accent2);box-shadow:0 0 20px rgba(50, 50, 50, .2) inset;padding:0 0 0 var(--pad);overflow-wrap:anywhere;scrollbar-width:thin; scrollbar-color:var(--accent2) transparent; z-index:1}nav.pdoc::-webkit-scrollbar{width:.4rem; }nav.pdoc::-webkit-scrollbar-thumb{background-color:var(--accent2); }nav.pdoc > div{padding:var(--pad) 0;}nav.pdoc .module-list-button{display:inline-flex;align-items:center;color:var(--text);border-color:var(--muted);margin-bottom:1rem;}nav.pdoc .module-list-button:hover{border-color:var(--text);}nav.pdoc input[type=search]{display:block;outline-offset:0;width:calc(100% - var(--pad));}nav.pdoc .logo{max-width:calc(100% - var(--pad));max-height:35vh;display:block;margin:0 auto 1rem;transform:translate(calc(-.5 * var(--pad)), 0);}nav.pdoc ul{list-style:none;padding-left:0;}nav.pdoc > div > ul{margin-left:calc(0px - var(--pad));}nav.pdoc li a{padding:.2rem 0 .2rem calc(var(--pad) + var(--indent));}nav.pdoc > div > ul > li > a{padding-left:var(--pad);}nav.pdoc li{transition:all 100ms;}nav.pdoc li:hover{background-color:var(--nav-hover);}nav.pdoc a, nav.pdoc a:hover{color:var(--text);}nav.pdoc a{display:block;}nav.pdoc > h2:first-of-type{margin-top:1.5rem;}nav.pdoc .class:before{content:"class ";color:var(--muted);}nav.pdoc .function:after{content:"()";color:var(--muted);}nav.pdoc footer:before{content:"";display:block;width:calc(100% - var(--pad));border-top:solid var(--accent2) 1px;margin-top:1.5rem;padding-top:.5rem;}nav.pdoc footer{font-size:small;}</style>
     <style>/*! content.css */.pdoc{color:var(--text);box-sizing:border-box;line-height:1.5;background:none;}.pdoc .pdoc-button{cursor:pointer;display:inline-block;border:solid black 1px;border-radius:2px;font-size:.75rem;padding:calc(0.5em - 1px) 1em;transition:100ms all;}.pdoc .alert{padding:1rem 1rem 1rem calc(1.5rem + 24px);border:1px solid transparent;border-radius:.25rem;background-repeat:no-repeat;background-position:.75rem center;margin-bottom:1rem;}.pdoc .alert > em{display:none;}.pdoc .alert > *:last-child{margin-bottom:0;}.pdoc .alert.note {color:#084298;background-color:#cfe2ff;border-color:#b6d4fe;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%23084298%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M8%2016A8%208%200%201%200%208%200a8%208%200%200%200%200%2016zm.93-9.412-1%204.705c-.07.34.029.533.304.533.194%200%20.487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703%200-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381%202.29-.287zM8%205.5a1%201%200%201%201%200-2%201%201%200%200%201%200%202z%22/%3E%3C/svg%3E");}.pdoc .alert.warning{color:#664d03;background-color:#fff3cd;border-color:#ffecb5;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%23664d03%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M8.982%201.566a1.13%201.13%200%200%200-1.96%200L.165%2013.233c-.457.778.091%201.767.98%201.767h13.713c.889%200%201.438-.99.98-1.767L8.982%201.566zM8%205c.535%200%20.954.462.9.995l-.35%203.507a.552.552%200%200%201-1.1%200L7.1%205.995A.905.905%200%200%201%208%205zm.002%206a1%201%200%201%201%200%202%201%201%200%200%201%200-2z%22/%3E%3C/svg%3E");}.pdoc .alert.danger{color:#842029;background-color:#f8d7da;border-color:#f5c2c7;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%23842029%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M5.52.359A.5.5%200%200%201%206%200h4a.5.5%200%200%201%20.474.658L8.694%206H12.5a.5.5%200%200%201%20.395.807l-7%209a.5.5%200%200%201-.873-.454L6.823%209.5H3.5a.5.5%200%200%201-.48-.641l2.5-8.5z%22/%3E%3C/svg%3E");}.pdoc .visually-hidden{position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;clip:rect(0, 0, 0, 0) !important;white-space:nowrap !important;border:0 !important;}.pdoc h1, .pdoc h2, .pdoc h3{font-weight:300;margin:.3em 0;padding:.2em 0;}.pdoc > section:not(.module-info) h1{font-size:1.5rem;font-weight:500;}.pdoc > section:not(.module-info) h2{font-size:1.4rem;font-weight:500;}.pdoc > section:not(.module-info) h3{font-size:1.3rem;font-weight:500;}.pdoc > section:not(.module-info) h4{font-size:1.2rem;}.pdoc > section:not(.module-info) h5{font-size:1.1rem;}.pdoc a{text-decoration:none;color:var(--link);}.pdoc a:hover{color:var(--link-hover);}.pdoc blockquote{margin-left:2rem;}.pdoc pre{border-top:1px solid var(--accent2);border-bottom:1px solid var(--accent2);margin-top:0;margin-bottom:1em;padding:.5rem 0 .5rem .5rem;overflow-x:auto;background-color:var(--code);}.pdoc code{color:var(--text);padding:.2em .4em;margin:0;font-size:85%;background-color:var(--accent);border-radius:6px;}.pdoc a > code{color:inherit;}.pdoc pre > code{display:inline-block;font-size:inherit;background:none;border:none;padding:0;}.pdoc > section:not(.module-info){margin-bottom:1.5rem;}.pdoc .modulename{margin-top:0;font-weight:bold;}.pdoc .modulename a{color:var(--link);transition:100ms all;}.pdoc .git-button{float:right;border:solid var(--link) 1px;}.pdoc .git-button:hover{background-color:var(--link);color:var(--pdoc-background);}.view-source-toggle-state,.view-source-toggle-state ~ .pdoc-code{display:none;}.view-source-toggle-state:checked ~ .pdoc-code{display:block;}.view-source-button{display:inline-block;float:right;font-size:.75rem;line-height:1.5rem;color:var(--muted);padding:0 .4rem 0 1.3rem;cursor:pointer;text-indent:-2px;}.view-source-button > span{visibility:hidden;}.module-info .view-source-button{float:none;display:flex;justify-content:flex-end;margin:-1.2rem .4rem -.2rem 0;}.view-source-button::before{position:absolute;content:"View Source";display:list-item;list-style-type:disclosure-closed;}.view-source-toggle-state:checked ~ .attr .view-source-button::before,.view-source-toggle-state:checked ~ .view-source-button::before{list-style-type:disclosure-open;}.pdoc .docstring{margin-bottom:1.5rem;}.pdoc section:not(.module-info) .docstring{margin-left:clamp(0rem, 5vw - 2rem, 1rem);}.pdoc .docstring .pdoc-code{margin-left:1em;margin-right:1em;}.pdoc h1:target,.pdoc h2:target,.pdoc h3:target,.pdoc h4:target,.pdoc h5:target,.pdoc h6:target,.pdoc .pdoc-code > pre > span:target{background-color:var(--active);box-shadow:-1rem 0 0 0 var(--active);}.pdoc .pdoc-code > pre > span:target{display:block;}.pdoc div:target > .attr,.pdoc section:target > .attr,.pdoc dd:target > a{background-color:var(--active);}.pdoc *{scroll-margin:2rem;}.pdoc .pdoc-code .linenos{user-select:none;}.pdoc .attr:hover{filter:contrast(0.95);}.pdoc section, .pdoc .classattr{position:relative;}.pdoc .headerlink{--width:clamp(1rem, 3vw, 2rem);position:absolute;top:0;left:calc(0rem - var(--width));transition:all 100ms ease-in-out;opacity:0;}.pdoc .headerlink::before{content:"#";display:block;text-align:center;width:var(--width);height:2.3rem;line-height:2.3rem;font-size:1.5rem;}.pdoc .attr:hover ~ .headerlink,.pdoc *:target > .headerlink,.pdoc .headerlink:hover{opacity:1;}.pdoc .attr{display:block;margin:.5rem 0 .5rem;padding:.4rem .4rem .4rem 1rem;background-color:var(--accent);overflow-x:auto;}.pdoc .classattr{margin-left:2rem;}.pdoc .name{color:var(--name);font-weight:bold;}.pdoc .def{color:var(--def);font-weight:bold;}.pdoc .signature{background-color:transparent;}.pdoc .param, .pdoc .return-annotation{white-space:pre;}.pdoc .signature.multiline .param{display:block;}.pdoc .signature.condensed .param{display:inline-block;}.pdoc .annotation{color:var(--annotation);}.pdoc .view-value-toggle-state,.pdoc .view-value-toggle-state ~ .default_value{display:none;}.pdoc .view-value-toggle-state:checked ~ .default_value{display:inherit;}.pdoc .view-value-button{font-size:.5rem;vertical-align:middle;border-style:dashed;margin-top:-0.1rem;}.pdoc .view-value-button:hover{background:white;}.pdoc .view-value-button::before{content:"show";text-align:center;width:2.2em;display:inline-block;}.pdoc .view-value-toggle-state:checked ~ .view-value-button::before{content:"hide";}.pdoc .inherited{margin-left:2rem;}.pdoc .inherited dt{font-weight:700;}.pdoc .inherited dt, .pdoc .inherited dd{display:inline;margin-left:0;margin-bottom:.5rem;}.pdoc .inherited dd:not(:last-child):after{content:", ";}.pdoc .inherited .class:before{content:"class ";}.pdoc .inherited .function a:after{content:"()";}.pdoc .search-result .docstring{overflow:auto;max-height:25vh;}.pdoc .search-result.focused > .attr{background-color:var(--active);}.pdoc .attribution{margin-top:2rem;display:block;opacity:0.5;transition:all 200ms;filter:grayscale(100%);}.pdoc .attribution:hover{opacity:1;filter:grayscale(0%);}.pdoc .attribution img{margin-left:5px;height:35px;vertical-align:middle;width:70px;transition:all 200ms;}.pdoc table{display:block;width:max-content;max-width:100%;overflow:auto;margin-bottom:1rem;}.pdoc table th{font-weight:600;}.pdoc table th, .pdoc table td{padding:6px 13px;border:1px solid var(--accent2);}</style>
-    <style>/*! custom.css */body{font-family:'Arial', sans-serif;background-color:#FFFFFF;color:#302F2A;display:flex;justify-content:center;margin:0;padding:0;}a{color:#4599DF;}h1{color:#302F2A;margin-top:20px !important;margin-bottom:10px !important;}h2{color:#302F2A;margin-top:50px !important;margin-bottom:10px !important;font-weight:600 !important;}h3{color:#302F2A;margin-top:30px !important;margin-bottom:20px !important;}h4{color:#302F2A;margin-top:20px !important;margin-bottom:10px !important;}h5{color:#302F2A;margin-top:20px !important;margin-bottom:10px !important;}h6{color:#302F2A;margin-top:20px !important;margin-bottom:10px !important;}nav h2{font-weight:bold;font-size:20px;display:inline; }nav{float:center;background-color:#F6F6F4 !important;gap:16px;color:#545351 !important;border:none !important;box-shadow:none !important;box-sizing:border-box;height:100vh; }nav input[type="search"]{width:100%; padding:8px; border:1px solid #ccc; border-radius:10px;font-size:14px; box-shadow:inset 0 1px 2px rgba(0,0,0,0.1); margin-top:8px;margin-bottom:25px;}nav input[type="search"]:focus{border-color:#4599DF; outline:none;box-shadow:0 0 5px #4599DF; }nav input[type="search"]::placeholder{color:#999; opacity:1; }pre{background-color:#F6F5F1 !important; color:#302F2A;  padding:20px !important; margin:20px 0 !important;border-radius:0;  overflow-x:auto;  border:none !important;box-shadow:none !important; }body{display:flex;float:center;margin:0;padding:0;}nav.pdoc{width:250px; position:fixed;left:0;top:0;height:100%;overflow-y:auto;background-color:#f8f9fa; }main.pdoc{margin-left:260px; max-width:800px; padding:20px;box-sizing:border-box;}nav + .footer{display:none;}</style></head>
+    <style>/*! custom.css */body{font-family:'Arial', sans-serif;background-color:#FFFFFF ;display:flex;justify-content:center;margin:0;padding:0;}a{color:#4599DF;}body a.attribution{display:block; visibility:hidden; position:relative; }.pdoc{--active:#D7F3FF; }h1{margin-top:20px !important;margin-bottom:10px !important;}h2{margin-top:50px !important;margin-bottom:10px !important;font-weight:600 !important;}h3{margin-top:30px !important;margin-bottom:20px !important;}h4{margin-top:20px !important;margin-bottom:10px !important;}h5{margin-top:20px !important;margin-bottom:10px !important;}h6{margin-top:20px !important;margin-bottom:10px !important;}nav h2{font-weight:bold;font-size:20px;display:block; }nav{float:center;background-color:#F6F6F4 !important;gap:16px;color:#545351 !important;border:none !important;box-shadow:none !important;box-sizing:border-box;height:100vh; }nav label.class-name{display:none;}nav input[type="search"]{width:100%; padding:8px; border:1px solid #ccc; border-radius:10px;font-size:14px; box-shadow:inset 0 1px 2px rgba(0,0,0,0.1); margin-top:8px;margin-bottom:25px;}nav input[type="search"]:focus{border-color:#4599DF; outline:none;box-shadow:0 0 5px #4599DF; }nav input[type="search"]::placeholder{color:#999; opacity:1; }.pdoc-button.git-button{display:none;}a.attribution{display:none;}nav.pdoc .pdoc-button.module-list-button{background-color:#FFFFFF; color:#4599DF; border-radius:30px; border-color:#4599DF;border-width:2px;padding:8px 8px; text-decoration:none; display:inline-flex;align-items:center;font-size:0; font-weight:500; margin-bottom:15px;}nav.pdoc .pdoc-button.module-list-button:hover{background-color:#4599DF; color:#FFFFFF; }nav.pdoc .pdoc-button.module-list-button svg{width:0;height:0;visibility:hidden;}nav.pdoc .pdoc-button.module-list-button::before{content:url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTE3IDEwTDYgMTAiIHN0cm9rZT0iIzQ1OTlERiIgc3Ryb2tlLXdpZHRoPSIzIi8+CjxwYXRoIGQ9Ik0xMSAxNy41TDQuMDAwMDEgMTBMMTEgMyIgc3Ryb2tlPSIjNDU5OURGIiBzdHJva2Utd2lkdGg9IjMiLz4KPC9zdmc+Cg=='); display:inline-block;width:20px;height:20px;vertical-align:middle;}pre{background-color:#F6F5F1 !important; color:#302F2A;  padding:20px !important; margin:20px 0 !important;border-radius:0;  overflow-x:auto;  border:none !important;box-shadow:none !important; }body{display:flex;float:center;margin:0;padding:0;}nav.pdoc{width:250px; position:fixed;left:0;top:0;height:100%;overflow-y:auto;background-color:#f8f9fa; }main.pdoc{margin-left:260px; max-width:800px; padding:20px;box-sizing:border-box;}nav + .footer{display:none;}</style></head>
 <body>
     <nav class="pdoc">
         <label id="navtoggle" for="togglestate" class="pdoc-button"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'><path stroke-linecap='round' stroke="currentColor" stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg></label>
@@ -22,7 +22,7 @@
   <path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
 </svg>                &nbsp;puppys.pp</a>
 
-<a href="https://github.com/PuppyAgent/Puppys">            <img src="logo.png" class="logo" alt="project logo"/>
+<a href="https://github.com/PuppyAgent/Puppys">            <img src="/docs/logo.png" class="logo" alt="project logo"/>
 </a>
             <input type="search" placeholder="Search..." role="searchbox" aria-label="search"
                    pattern=".+" required>
@@ -105,103 +105,100 @@
 </span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a>
 </span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a><span class="sd">    Init Args:</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="sd">        value (any, optional): The value of the environment. Defaults to `None`.</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a><span class="sd">        printing_mode (str, optional): The printing mode of the agent, either `terminal` or `buffer`. Defaults to `terminal`.</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a><span class="sd">        save_actionflow (bool, optional): Whether to save the actionflow. Defaults to `True`.</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a><span class="sd">        save_instance (bool, optional): Whether to save the instance. Defaults to `True`.</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a>
-</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a>        <span class="n">value</span><span class="p">:</span> <span class="nb">any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a>        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a>        <span class="n">printing_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;terminal&quot;</span><span class="p">,</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a>        <span class="n">save_actionflow</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a>        <span class="n">save_instance</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a>        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a>    <span class="p">):</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a><span class="sd">        save_actionflow (bool, optional): Whether to save the actionflow. Defaults to `True`.</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a><span class="sd">        save_instance (bool, optional): Whether to save the instance. Defaults to `True`.</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a>
+</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a>        <span class="n">value</span><span class="p">:</span> <span class="nb">any</span><span class="p">,</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a>        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a>        <span class="n">save_actionflow</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a>        <span class="n">save_instance</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a>        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a>    <span class="p">):</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a>
+</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;default_puppy&quot;</span>
 </span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a>
-</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;default_puppy&quot;</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>
-</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">actionflow</span> <span class="o">=</span> <span class="n">Actionflow</span><span class="p">(</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>            <span class="bp">self</span><span class="p">,</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>            <span class="n">function</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>            <span class="n">printing_mode</span><span class="o">=</span><span class="n">printing_mode</span><span class="p">,</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>            <span class="n">save_actionflow</span><span class="o">=</span><span class="n">save_actionflow</span><span class="p">,</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>            <span class="n">save_instance</span><span class="o">=</span><span class="n">save_instance</span><span class="p">,</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>        <span class="p">)</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>
-</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">puppy_vars</span> <span class="o">=</span> <span class="n">PuppyVars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">global_dict</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>
-</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">env_node</span> <span class="o">=</span> <span class="bp">self</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a>
-</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>    <span class="k">def</span> <span class="nf">explore</span><span class="p">(</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>        <span class="o">**</span><span class="n">kwargs</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a><span class="sd">        Explore the environment.</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>
-</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>        <span class="k">return</span> <span class="n">explore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a>
-</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>    <span class="k">def</span> <span class="nf">load_env</span><span class="p">(</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>        <span class="o">**</span><span class="n">kwargs</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="sd">        Load the available environment.</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>
-</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>        <span class="k">return</span> <span class="n">load_env</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>
-</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>    <span class="k">def</span> <span class="nf">test_run</span><span class="p">(</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>        <span class="o">**</span><span class="n">kwargs</span>
-</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="sd">        Debug the agent.</span>
-</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">actionflow</span> <span class="o">=</span> <span class="n">Actionflow</span><span class="p">(</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>            <span class="bp">self</span><span class="p">,</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>            <span class="n">function</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>            <span class="n">save_actionflow</span><span class="o">=</span><span class="n">save_actionflow</span><span class="p">,</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>            <span class="n">save_instance</span><span class="o">=</span><span class="n">save_instance</span><span class="p">,</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>        <span class="p">)</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>
+</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">puppy_vars</span> <span class="o">=</span> <span class="n">PuppyVars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">global_dict</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>
+</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">env_node</span> <span class="o">=</span> <span class="bp">self</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>
+</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>    <span class="k">def</span> <span class="nf">explore</span><span class="p">(</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a>        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>        <span class="o">**</span><span class="n">kwargs</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a><span class="sd">        Explore the environment.</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a>
+</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a>        <span class="k">return</span> <span class="n">explore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>
+</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>    <span class="k">def</span> <span class="nf">load_env</span><span class="p">(</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a>        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>        <span class="o">**</span><span class="n">kwargs</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="sd">        Load the available environment.</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>        <span class="k">return</span> <span class="n">load_env</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>    <span class="k">def</span> <span class="nf">test_run</span><span class="p">(</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>        <span class="o">**</span><span class="n">kwargs</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a><span class="sd">        Debug the agent.</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a>        <span class="c1"># Run the actionflow in test mode</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">actionflow</span><span class="o">.</span><span class="n">test_run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>
-</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>        <span class="c1"># Run the actionflow in test mode</span>
-</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">actionflow</span><span class="o">.</span><span class="n">test_run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>
-</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>        <span class="o">**</span><span class="n">kwargs</span>
-</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a><span class="sd">        Run the agent.</span>
-</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>        <span class="o">**</span><span class="n">kwargs</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a><span class="sd">        Run the agent.</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>        <span class="c1"># Run the actionflow</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">actionflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>
-</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>        <span class="c1"># Run the actionflow</span>
-</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">actionflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>
-</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>
-</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a><span class="k">def</span> <span class="nf">puppy_run</span><span class="p">(</span>
-</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>    <span class="n">puppy_list</span><span class="p">:</span> <span class="nb">list</span>
-</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a><span class="sd">    Run all the agents in the list at the same time.</span>
-</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>
-</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a><span class="sd">    Args:</span>
-</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="sd">        puppy_list (list): The list of agents.</span>
-</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>    <span class="n">threads</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>
-</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>    <span class="c1"># Create and start threads</span>
-</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>    <span class="k">for</span> <span class="n">puppy</span> <span class="ow">in</span> <span class="n">puppy_list</span><span class="p">:</span>
-</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>        <span class="n">thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">puppy</span><span class="o">.</span><span class="n">run</span><span class="p">)</span>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>        <span class="n">thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>        <span class="n">threads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">thread</span><span class="p">)</span>
-</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>        <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>
-</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>    <span class="c1"># Wait for threads to finish</span>
-</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>    <span class="k">for</span> <span class="n">thread</span> <span class="ow">in</span> <span class="n">threads</span><span class="p">:</span>
-</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>        <span class="n">thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a><span class="k">def</span> <span class="nf">puppy_run</span><span class="p">(</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>    <span class="n">puppy_list</span><span class="p">:</span> <span class="nb">list</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a><span class="sd">    Run all the agents in the list at the same time.</span>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a><span class="sd">    Args:</span>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a><span class="sd">        puppy_list (list): The list of agents.</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>    <span class="n">threads</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>    <span class="c1"># Create and start threads</span>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>    <span class="k">for</span> <span class="n">puppy</span> <span class="ow">in</span> <span class="n">puppy_list</span><span class="p">:</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>        <span class="n">thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">puppy</span><span class="o">.</span><span class="n">run</span><span class="p">)</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>        <span class="n">thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>        <span class="n">threads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">thread</span><span class="p">)</span>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>        <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>    <span class="c1"># Wait for threads to finish</span>
+</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>    <span class="k">for</span> <span class="n">thread</span> <span class="ow">in</span> <span class="n">threads</span><span class="p">:</span>
+</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>        <span class="n">thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -225,79 +222,76 @@
 </span><span id="Puppy-15"><a href="#Puppy-15"><span class="linenos">15</span></a>
 </span><span id="Puppy-16"><a href="#Puppy-16"><span class="linenos">16</span></a><span class="sd">    Init Args:</span>
 </span><span id="Puppy-17"><a href="#Puppy-17"><span class="linenos">17</span></a><span class="sd">        value (any, optional): The value of the environment. Defaults to `None`.</span>
-</span><span id="Puppy-18"><a href="#Puppy-18"><span class="linenos">18</span></a><span class="sd">        printing_mode (str, optional): The printing mode of the agent, either `terminal` or `buffer`. Defaults to `terminal`.</span>
-</span><span id="Puppy-19"><a href="#Puppy-19"><span class="linenos">19</span></a><span class="sd">        save_actionflow (bool, optional): Whether to save the actionflow. Defaults to `True`.</span>
-</span><span id="Puppy-20"><a href="#Puppy-20"><span class="linenos">20</span></a><span class="sd">        save_instance (bool, optional): Whether to save the instance. Defaults to `True`.</span>
-</span><span id="Puppy-21"><a href="#Puppy-21"><span class="linenos">21</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="Puppy-22"><a href="#Puppy-22"><span class="linenos">22</span></a>
-</span><span id="Puppy-23"><a href="#Puppy-23"><span class="linenos">23</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-</span><span id="Puppy-24"><a href="#Puppy-24"><span class="linenos">24</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="Puppy-25"><a href="#Puppy-25"><span class="linenos">25</span></a>        <span class="n">value</span><span class="p">:</span> <span class="nb">any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="Puppy-26"><a href="#Puppy-26"><span class="linenos">26</span></a>        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-</span><span id="Puppy-27"><a href="#Puppy-27"><span class="linenos">27</span></a>        <span class="n">printing_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;terminal&quot;</span><span class="p">,</span>
-</span><span id="Puppy-28"><a href="#Puppy-28"><span class="linenos">28</span></a>        <span class="n">save_actionflow</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="Puppy-29"><a href="#Puppy-29"><span class="linenos">29</span></a>        <span class="n">save_instance</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="Puppy-30"><a href="#Puppy-30"><span class="linenos">30</span></a>        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-</span><span id="Puppy-31"><a href="#Puppy-31"><span class="linenos">31</span></a>    <span class="p">):</span>
-</span><span id="Puppy-32"><a href="#Puppy-32"><span class="linenos">32</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="Puppy-18"><a href="#Puppy-18"><span class="linenos">18</span></a><span class="sd">        save_actionflow (bool, optional): Whether to save the actionflow. Defaults to `True`.</span>
+</span><span id="Puppy-19"><a href="#Puppy-19"><span class="linenos">19</span></a><span class="sd">        save_instance (bool, optional): Whether to save the instance. Defaults to `True`.</span>
+</span><span id="Puppy-20"><a href="#Puppy-20"><span class="linenos">20</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="Puppy-21"><a href="#Puppy-21"><span class="linenos">21</span></a>
+</span><span id="Puppy-22"><a href="#Puppy-22"><span class="linenos">22</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span id="Puppy-23"><a href="#Puppy-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="Puppy-24"><a href="#Puppy-24"><span class="linenos">24</span></a>        <span class="n">value</span><span class="p">:</span> <span class="nb">any</span><span class="p">,</span>
+</span><span id="Puppy-25"><a href="#Puppy-25"><span class="linenos">25</span></a>        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+</span><span id="Puppy-26"><a href="#Puppy-26"><span class="linenos">26</span></a>        <span class="n">save_actionflow</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="Puppy-27"><a href="#Puppy-27"><span class="linenos">27</span></a>        <span class="n">save_instance</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="Puppy-28"><a href="#Puppy-28"><span class="linenos">28</span></a>        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+</span><span id="Puppy-29"><a href="#Puppy-29"><span class="linenos">29</span></a>    <span class="p">):</span>
+</span><span id="Puppy-30"><a href="#Puppy-30"><span class="linenos">30</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="Puppy-31"><a href="#Puppy-31"><span class="linenos">31</span></a>
+</span><span id="Puppy-32"><a href="#Puppy-32"><span class="linenos">32</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;default_puppy&quot;</span>
 </span><span id="Puppy-33"><a href="#Puppy-33"><span class="linenos">33</span></a>
-</span><span id="Puppy-34"><a href="#Puppy-34"><span class="linenos">34</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;default_puppy&quot;</span>
-</span><span id="Puppy-35"><a href="#Puppy-35"><span class="linenos">35</span></a>
-</span><span id="Puppy-36"><a href="#Puppy-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">actionflow</span> <span class="o">=</span> <span class="n">Actionflow</span><span class="p">(</span>
-</span><span id="Puppy-37"><a href="#Puppy-37"><span class="linenos">37</span></a>            <span class="bp">self</span><span class="p">,</span>
-</span><span id="Puppy-38"><a href="#Puppy-38"><span class="linenos">38</span></a>            <span class="n">function</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
-</span><span id="Puppy-39"><a href="#Puppy-39"><span class="linenos">39</span></a>            <span class="n">printing_mode</span><span class="o">=</span><span class="n">printing_mode</span><span class="p">,</span>
-</span><span id="Puppy-40"><a href="#Puppy-40"><span class="linenos">40</span></a>            <span class="n">save_actionflow</span><span class="o">=</span><span class="n">save_actionflow</span><span class="p">,</span>
-</span><span id="Puppy-41"><a href="#Puppy-41"><span class="linenos">41</span></a>            <span class="n">save_instance</span><span class="o">=</span><span class="n">save_instance</span><span class="p">,</span>
-</span><span id="Puppy-42"><a href="#Puppy-42"><span class="linenos">42</span></a>        <span class="p">)</span>
-</span><span id="Puppy-43"><a href="#Puppy-43"><span class="linenos">43</span></a>
-</span><span id="Puppy-44"><a href="#Puppy-44"><span class="linenos">44</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">puppy_vars</span> <span class="o">=</span> <span class="n">PuppyVars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">global_dict</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
-</span><span id="Puppy-45"><a href="#Puppy-45"><span class="linenos">45</span></a>
-</span><span id="Puppy-46"><a href="#Puppy-46"><span class="linenos">46</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">env_node</span> <span class="o">=</span> <span class="bp">self</span>
-</span><span id="Puppy-47"><a href="#Puppy-47"><span class="linenos">47</span></a>
-</span><span id="Puppy-48"><a href="#Puppy-48"><span class="linenos">48</span></a>    <span class="k">def</span> <span class="nf">explore</span><span class="p">(</span>
-</span><span id="Puppy-49"><a href="#Puppy-49"><span class="linenos">49</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="Puppy-50"><a href="#Puppy-50"><span class="linenos">50</span></a>        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-</span><span id="Puppy-51"><a href="#Puppy-51"><span class="linenos">51</span></a>        <span class="o">**</span><span class="n">kwargs</span>
-</span><span id="Puppy-52"><a href="#Puppy-52"><span class="linenos">52</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Puppy-53"><a href="#Puppy-53"><span class="linenos">53</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Puppy-54"><a href="#Puppy-54"><span class="linenos">54</span></a><span class="sd">        Explore the environment.</span>
-</span><span id="Puppy-55"><a href="#Puppy-55"><span class="linenos">55</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Puppy-56"><a href="#Puppy-56"><span class="linenos">56</span></a>
-</span><span id="Puppy-57"><a href="#Puppy-57"><span class="linenos">57</span></a>        <span class="k">return</span> <span class="n">explore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="Puppy-58"><a href="#Puppy-58"><span class="linenos">58</span></a>
-</span><span id="Puppy-59"><a href="#Puppy-59"><span class="linenos">59</span></a>    <span class="k">def</span> <span class="nf">load_env</span><span class="p">(</span>
-</span><span id="Puppy-60"><a href="#Puppy-60"><span class="linenos">60</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="Puppy-61"><a href="#Puppy-61"><span class="linenos">61</span></a>        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-</span><span id="Puppy-62"><a href="#Puppy-62"><span class="linenos">62</span></a>        <span class="o">**</span><span class="n">kwargs</span>
-</span><span id="Puppy-63"><a href="#Puppy-63"><span class="linenos">63</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Puppy-64"><a href="#Puppy-64"><span class="linenos">64</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Puppy-65"><a href="#Puppy-65"><span class="linenos">65</span></a><span class="sd">        Load the available environment.</span>
-</span><span id="Puppy-66"><a href="#Puppy-66"><span class="linenos">66</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Puppy-67"><a href="#Puppy-67"><span class="linenos">67</span></a>
-</span><span id="Puppy-68"><a href="#Puppy-68"><span class="linenos">68</span></a>        <span class="k">return</span> <span class="n">load_env</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="Puppy-69"><a href="#Puppy-69"><span class="linenos">69</span></a>
-</span><span id="Puppy-70"><a href="#Puppy-70"><span class="linenos">70</span></a>    <span class="k">def</span> <span class="nf">test_run</span><span class="p">(</span>
-</span><span id="Puppy-71"><a href="#Puppy-71"><span class="linenos">71</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="Puppy-72"><a href="#Puppy-72"><span class="linenos">72</span></a>        <span class="o">**</span><span class="n">kwargs</span>
-</span><span id="Puppy-73"><a href="#Puppy-73"><span class="linenos">73</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Puppy-74"><a href="#Puppy-74"><span class="linenos">74</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Puppy-75"><a href="#Puppy-75"><span class="linenos">75</span></a><span class="sd">        Debug the agent.</span>
-</span><span id="Puppy-76"><a href="#Puppy-76"><span class="linenos">76</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Puppy-34"><a href="#Puppy-34"><span class="linenos">34</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">actionflow</span> <span class="o">=</span> <span class="n">Actionflow</span><span class="p">(</span>
+</span><span id="Puppy-35"><a href="#Puppy-35"><span class="linenos">35</span></a>            <span class="bp">self</span><span class="p">,</span>
+</span><span id="Puppy-36"><a href="#Puppy-36"><span class="linenos">36</span></a>            <span class="n">function</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+</span><span id="Puppy-37"><a href="#Puppy-37"><span class="linenos">37</span></a>            <span class="n">save_actionflow</span><span class="o">=</span><span class="n">save_actionflow</span><span class="p">,</span>
+</span><span id="Puppy-38"><a href="#Puppy-38"><span class="linenos">38</span></a>            <span class="n">save_instance</span><span class="o">=</span><span class="n">save_instance</span><span class="p">,</span>
+</span><span id="Puppy-39"><a href="#Puppy-39"><span class="linenos">39</span></a>        <span class="p">)</span>
+</span><span id="Puppy-40"><a href="#Puppy-40"><span class="linenos">40</span></a>
+</span><span id="Puppy-41"><a href="#Puppy-41"><span class="linenos">41</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">puppy_vars</span> <span class="o">=</span> <span class="n">PuppyVars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">global_dict</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
+</span><span id="Puppy-42"><a href="#Puppy-42"><span class="linenos">42</span></a>
+</span><span id="Puppy-43"><a href="#Puppy-43"><span class="linenos">43</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">env_node</span> <span class="o">=</span> <span class="bp">self</span>
+</span><span id="Puppy-44"><a href="#Puppy-44"><span class="linenos">44</span></a>
+</span><span id="Puppy-45"><a href="#Puppy-45"><span class="linenos">45</span></a>    <span class="k">def</span> <span class="nf">explore</span><span class="p">(</span>
+</span><span id="Puppy-46"><a href="#Puppy-46"><span class="linenos">46</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="Puppy-47"><a href="#Puppy-47"><span class="linenos">47</span></a>        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+</span><span id="Puppy-48"><a href="#Puppy-48"><span class="linenos">48</span></a>        <span class="o">**</span><span class="n">kwargs</span>
+</span><span id="Puppy-49"><a href="#Puppy-49"><span class="linenos">49</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Puppy-50"><a href="#Puppy-50"><span class="linenos">50</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Puppy-51"><a href="#Puppy-51"><span class="linenos">51</span></a><span class="sd">        Explore the environment.</span>
+</span><span id="Puppy-52"><a href="#Puppy-52"><span class="linenos">52</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Puppy-53"><a href="#Puppy-53"><span class="linenos">53</span></a>
+</span><span id="Puppy-54"><a href="#Puppy-54"><span class="linenos">54</span></a>        <span class="k">return</span> <span class="n">explore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="Puppy-55"><a href="#Puppy-55"><span class="linenos">55</span></a>
+</span><span id="Puppy-56"><a href="#Puppy-56"><span class="linenos">56</span></a>    <span class="k">def</span> <span class="nf">load_env</span><span class="p">(</span>
+</span><span id="Puppy-57"><a href="#Puppy-57"><span class="linenos">57</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="Puppy-58"><a href="#Puppy-58"><span class="linenos">58</span></a>        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+</span><span id="Puppy-59"><a href="#Puppy-59"><span class="linenos">59</span></a>        <span class="o">**</span><span class="n">kwargs</span>
+</span><span id="Puppy-60"><a href="#Puppy-60"><span class="linenos">60</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Puppy-61"><a href="#Puppy-61"><span class="linenos">61</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Puppy-62"><a href="#Puppy-62"><span class="linenos">62</span></a><span class="sd">        Load the available environment.</span>
+</span><span id="Puppy-63"><a href="#Puppy-63"><span class="linenos">63</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Puppy-64"><a href="#Puppy-64"><span class="linenos">64</span></a>
+</span><span id="Puppy-65"><a href="#Puppy-65"><span class="linenos">65</span></a>        <span class="k">return</span> <span class="n">load_env</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="Puppy-66"><a href="#Puppy-66"><span class="linenos">66</span></a>
+</span><span id="Puppy-67"><a href="#Puppy-67"><span class="linenos">67</span></a>    <span class="k">def</span> <span class="nf">test_run</span><span class="p">(</span>
+</span><span id="Puppy-68"><a href="#Puppy-68"><span class="linenos">68</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="Puppy-69"><a href="#Puppy-69"><span class="linenos">69</span></a>        <span class="o">**</span><span class="n">kwargs</span>
+</span><span id="Puppy-70"><a href="#Puppy-70"><span class="linenos">70</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Puppy-71"><a href="#Puppy-71"><span class="linenos">71</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Puppy-72"><a href="#Puppy-72"><span class="linenos">72</span></a><span class="sd">        Debug the agent.</span>
+</span><span id="Puppy-73"><a href="#Puppy-73"><span class="linenos">73</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Puppy-74"><a href="#Puppy-74"><span class="linenos">74</span></a>
+</span><span id="Puppy-75"><a href="#Puppy-75"><span class="linenos">75</span></a>        <span class="c1"># Run the actionflow in test mode</span>
+</span><span id="Puppy-76"><a href="#Puppy-76"><span class="linenos">76</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">actionflow</span><span class="o">.</span><span class="n">test_run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </span><span id="Puppy-77"><a href="#Puppy-77"><span class="linenos">77</span></a>
-</span><span id="Puppy-78"><a href="#Puppy-78"><span class="linenos">78</span></a>        <span class="c1"># Run the actionflow in test mode</span>
-</span><span id="Puppy-79"><a href="#Puppy-79"><span class="linenos">79</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">actionflow</span><span class="o">.</span><span class="n">test_run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="Puppy-80"><a href="#Puppy-80"><span class="linenos">80</span></a>
-</span><span id="Puppy-81"><a href="#Puppy-81"><span class="linenos">81</span></a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-</span><span id="Puppy-82"><a href="#Puppy-82"><span class="linenos">82</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="Puppy-83"><a href="#Puppy-83"><span class="linenos">83</span></a>        <span class="o">**</span><span class="n">kwargs</span>
-</span><span id="Puppy-84"><a href="#Puppy-84"><span class="linenos">84</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Puppy-85"><a href="#Puppy-85"><span class="linenos">85</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Puppy-86"><a href="#Puppy-86"><span class="linenos">86</span></a><span class="sd">        Run the agent.</span>
-</span><span id="Puppy-87"><a href="#Puppy-87"><span class="linenos">87</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Puppy-88"><a href="#Puppy-88"><span class="linenos">88</span></a>
-</span><span id="Puppy-89"><a href="#Puppy-89"><span class="linenos">89</span></a>        <span class="c1"># Run the actionflow</span>
-</span><span id="Puppy-90"><a href="#Puppy-90"><span class="linenos">90</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">actionflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="Puppy-78"><a href="#Puppy-78"><span class="linenos">78</span></a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
+</span><span id="Puppy-79"><a href="#Puppy-79"><span class="linenos">79</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="Puppy-80"><a href="#Puppy-80"><span class="linenos">80</span></a>        <span class="o">**</span><span class="n">kwargs</span>
+</span><span id="Puppy-81"><a href="#Puppy-81"><span class="linenos">81</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Puppy-82"><a href="#Puppy-82"><span class="linenos">82</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Puppy-83"><a href="#Puppy-83"><span class="linenos">83</span></a><span class="sd">        Run the agent.</span>
+</span><span id="Puppy-84"><a href="#Puppy-84"><span class="linenos">84</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Puppy-85"><a href="#Puppy-85"><span class="linenos">85</span></a>
+</span><span id="Puppy-86"><a href="#Puppy-86"><span class="linenos">86</span></a>        <span class="c1"># Run the actionflow</span>
+</span><span id="Puppy-87"><a href="#Puppy-87"><span class="linenos">87</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">actionflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -307,7 +301,6 @@ It inherits from the Env class to be an visible environment.</p>
 
 <p>Init Args:
     value (any, optional): The value of the environment. Defaults to <code>None</code>.
-    printing_mode (str, optional): The printing mode of the agent, either <code>terminal</code> or <code>buffer</code>. Defaults to <code>terminal</code>.
     save_actionflow (bool, optional): Whether to save the actionflow. Defaults to <code>True</code>.
     save_instance (bool, optional): Whether to save the instance. Defaults to <code>True</code>.</p>
 </div>
@@ -317,36 +310,34 @@ It inherits from the Env class to be an visible environment.</p>
                                         <input id="Puppy.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">Puppy</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">value</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">built</span><span class="o">-</span><span class="ow">in</span> <span class="n">function</span> <span class="nb">any</span><span class="o">&gt;</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="o">*</span><span class="n">args</span>,</span><span class="param">	<span class="n">printing_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;terminal&#39;</span>,</span><span class="param">	<span class="n">save_actionflow</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>,</span><span class="param">	<span class="n">save_instance</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>,</span><span class="param">	<span class="o">**</span><span class="n">kwargs</span></span>)</span>
+        <span class="name">Puppy</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">value</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">built</span><span class="o">-</span><span class="ow">in</span> <span class="n">function</span> <span class="nb">any</span><span class="o">&gt;</span>,</span><span class="param">	<span class="o">*</span><span class="n">args</span>,</span><span class="param">	<span class="n">save_actionflow</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>,</span><span class="param">	<span class="n">save_instance</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>,</span><span class="param">	<span class="o">**</span><span class="n">kwargs</span></span>)</span>
 
                 <label class="view-source-button" for="Puppy.__init__-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#Puppy.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Puppy.__init__-23"><a href="#Puppy.__init__-23"><span class="linenos">23</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-</span><span id="Puppy.__init__-24"><a href="#Puppy.__init__-24"><span class="linenos">24</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="Puppy.__init__-25"><a href="#Puppy.__init__-25"><span class="linenos">25</span></a>        <span class="n">value</span><span class="p">:</span> <span class="nb">any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="Puppy.__init__-26"><a href="#Puppy.__init__-26"><span class="linenos">26</span></a>        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-</span><span id="Puppy.__init__-27"><a href="#Puppy.__init__-27"><span class="linenos">27</span></a>        <span class="n">printing_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;terminal&quot;</span><span class="p">,</span>
-</span><span id="Puppy.__init__-28"><a href="#Puppy.__init__-28"><span class="linenos">28</span></a>        <span class="n">save_actionflow</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="Puppy.__init__-29"><a href="#Puppy.__init__-29"><span class="linenos">29</span></a>        <span class="n">save_instance</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="Puppy.__init__-30"><a href="#Puppy.__init__-30"><span class="linenos">30</span></a>        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-</span><span id="Puppy.__init__-31"><a href="#Puppy.__init__-31"><span class="linenos">31</span></a>    <span class="p">):</span>
-</span><span id="Puppy.__init__-32"><a href="#Puppy.__init__-32"><span class="linenos">32</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Puppy.__init__-22"><a href="#Puppy.__init__-22"><span class="linenos">22</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span id="Puppy.__init__-23"><a href="#Puppy.__init__-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="Puppy.__init__-24"><a href="#Puppy.__init__-24"><span class="linenos">24</span></a>        <span class="n">value</span><span class="p">:</span> <span class="nb">any</span><span class="p">,</span>
+</span><span id="Puppy.__init__-25"><a href="#Puppy.__init__-25"><span class="linenos">25</span></a>        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+</span><span id="Puppy.__init__-26"><a href="#Puppy.__init__-26"><span class="linenos">26</span></a>        <span class="n">save_actionflow</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="Puppy.__init__-27"><a href="#Puppy.__init__-27"><span class="linenos">27</span></a>        <span class="n">save_instance</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="Puppy.__init__-28"><a href="#Puppy.__init__-28"><span class="linenos">28</span></a>        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+</span><span id="Puppy.__init__-29"><a href="#Puppy.__init__-29"><span class="linenos">29</span></a>    <span class="p">):</span>
+</span><span id="Puppy.__init__-30"><a href="#Puppy.__init__-30"><span class="linenos">30</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="Puppy.__init__-31"><a href="#Puppy.__init__-31"><span class="linenos">31</span></a>
+</span><span id="Puppy.__init__-32"><a href="#Puppy.__init__-32"><span class="linenos">32</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;default_puppy&quot;</span>
 </span><span id="Puppy.__init__-33"><a href="#Puppy.__init__-33"><span class="linenos">33</span></a>
-</span><span id="Puppy.__init__-34"><a href="#Puppy.__init__-34"><span class="linenos">34</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;default_puppy&quot;</span>
-</span><span id="Puppy.__init__-35"><a href="#Puppy.__init__-35"><span class="linenos">35</span></a>
-</span><span id="Puppy.__init__-36"><a href="#Puppy.__init__-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">actionflow</span> <span class="o">=</span> <span class="n">Actionflow</span><span class="p">(</span>
-</span><span id="Puppy.__init__-37"><a href="#Puppy.__init__-37"><span class="linenos">37</span></a>            <span class="bp">self</span><span class="p">,</span>
-</span><span id="Puppy.__init__-38"><a href="#Puppy.__init__-38"><span class="linenos">38</span></a>            <span class="n">function</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
-</span><span id="Puppy.__init__-39"><a href="#Puppy.__init__-39"><span class="linenos">39</span></a>            <span class="n">printing_mode</span><span class="o">=</span><span class="n">printing_mode</span><span class="p">,</span>
-</span><span id="Puppy.__init__-40"><a href="#Puppy.__init__-40"><span class="linenos">40</span></a>            <span class="n">save_actionflow</span><span class="o">=</span><span class="n">save_actionflow</span><span class="p">,</span>
-</span><span id="Puppy.__init__-41"><a href="#Puppy.__init__-41"><span class="linenos">41</span></a>            <span class="n">save_instance</span><span class="o">=</span><span class="n">save_instance</span><span class="p">,</span>
-</span><span id="Puppy.__init__-42"><a href="#Puppy.__init__-42"><span class="linenos">42</span></a>        <span class="p">)</span>
-</span><span id="Puppy.__init__-43"><a href="#Puppy.__init__-43"><span class="linenos">43</span></a>
-</span><span id="Puppy.__init__-44"><a href="#Puppy.__init__-44"><span class="linenos">44</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">puppy_vars</span> <span class="o">=</span> <span class="n">PuppyVars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">global_dict</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
-</span><span id="Puppy.__init__-45"><a href="#Puppy.__init__-45"><span class="linenos">45</span></a>
-</span><span id="Puppy.__init__-46"><a href="#Puppy.__init__-46"><span class="linenos">46</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">env_node</span> <span class="o">=</span> <span class="bp">self</span>
+</span><span id="Puppy.__init__-34"><a href="#Puppy.__init__-34"><span class="linenos">34</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">actionflow</span> <span class="o">=</span> <span class="n">Actionflow</span><span class="p">(</span>
+</span><span id="Puppy.__init__-35"><a href="#Puppy.__init__-35"><span class="linenos">35</span></a>            <span class="bp">self</span><span class="p">,</span>
+</span><span id="Puppy.__init__-36"><a href="#Puppy.__init__-36"><span class="linenos">36</span></a>            <span class="n">function</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+</span><span id="Puppy.__init__-37"><a href="#Puppy.__init__-37"><span class="linenos">37</span></a>            <span class="n">save_actionflow</span><span class="o">=</span><span class="n">save_actionflow</span><span class="p">,</span>
+</span><span id="Puppy.__init__-38"><a href="#Puppy.__init__-38"><span class="linenos">38</span></a>            <span class="n">save_instance</span><span class="o">=</span><span class="n">save_instance</span><span class="p">,</span>
+</span><span id="Puppy.__init__-39"><a href="#Puppy.__init__-39"><span class="linenos">39</span></a>        <span class="p">)</span>
+</span><span id="Puppy.__init__-40"><a href="#Puppy.__init__-40"><span class="linenos">40</span></a>
+</span><span id="Puppy.__init__-41"><a href="#Puppy.__init__-41"><span class="linenos">41</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">puppy_vars</span> <span class="o">=</span> <span class="n">PuppyVars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">global_dict</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
+</span><span id="Puppy.__init__-42"><a href="#Puppy.__init__-42"><span class="linenos">42</span></a>
+</span><span id="Puppy.__init__-43"><a href="#Puppy.__init__-43"><span class="linenos">43</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">env_node</span> <span class="o">=</span> <span class="bp">self</span>
 </span></pre></div>
 
 
@@ -408,16 +399,16 @@ It inherits from the Env class to be an visible environment.</p>
 
     </div>
     <a class="headerlink" href="#Puppy.explore"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Puppy.explore-48"><a href="#Puppy.explore-48"><span class="linenos">48</span></a>    <span class="k">def</span> <span class="nf">explore</span><span class="p">(</span>
-</span><span id="Puppy.explore-49"><a href="#Puppy.explore-49"><span class="linenos">49</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="Puppy.explore-50"><a href="#Puppy.explore-50"><span class="linenos">50</span></a>        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-</span><span id="Puppy.explore-51"><a href="#Puppy.explore-51"><span class="linenos">51</span></a>        <span class="o">**</span><span class="n">kwargs</span>
-</span><span id="Puppy.explore-52"><a href="#Puppy.explore-52"><span class="linenos">52</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Puppy.explore-53"><a href="#Puppy.explore-53"><span class="linenos">53</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Puppy.explore-54"><a href="#Puppy.explore-54"><span class="linenos">54</span></a><span class="sd">        Explore the environment.</span>
-</span><span id="Puppy.explore-55"><a href="#Puppy.explore-55"><span class="linenos">55</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Puppy.explore-56"><a href="#Puppy.explore-56"><span class="linenos">56</span></a>
-</span><span id="Puppy.explore-57"><a href="#Puppy.explore-57"><span class="linenos">57</span></a>        <span class="k">return</span> <span class="n">explore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Puppy.explore-45"><a href="#Puppy.explore-45"><span class="linenos">45</span></a>    <span class="k">def</span> <span class="nf">explore</span><span class="p">(</span>
+</span><span id="Puppy.explore-46"><a href="#Puppy.explore-46"><span class="linenos">46</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="Puppy.explore-47"><a href="#Puppy.explore-47"><span class="linenos">47</span></a>        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+</span><span id="Puppy.explore-48"><a href="#Puppy.explore-48"><span class="linenos">48</span></a>        <span class="o">**</span><span class="n">kwargs</span>
+</span><span id="Puppy.explore-49"><a href="#Puppy.explore-49"><span class="linenos">49</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Puppy.explore-50"><a href="#Puppy.explore-50"><span class="linenos">50</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Puppy.explore-51"><a href="#Puppy.explore-51"><span class="linenos">51</span></a><span class="sd">        Explore the environment.</span>
+</span><span id="Puppy.explore-52"><a href="#Puppy.explore-52"><span class="linenos">52</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Puppy.explore-53"><a href="#Puppy.explore-53"><span class="linenos">53</span></a>
+</span><span id="Puppy.explore-54"><a href="#Puppy.explore-54"><span class="linenos">54</span></a>        <span class="k">return</span> <span class="n">explore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -437,16 +428,16 @@ It inherits from the Env class to be an visible environment.</p>
 
     </div>
     <a class="headerlink" href="#Puppy.load_env"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Puppy.load_env-59"><a href="#Puppy.load_env-59"><span class="linenos">59</span></a>    <span class="k">def</span> <span class="nf">load_env</span><span class="p">(</span>
-</span><span id="Puppy.load_env-60"><a href="#Puppy.load_env-60"><span class="linenos">60</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="Puppy.load_env-61"><a href="#Puppy.load_env-61"><span class="linenos">61</span></a>        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-</span><span id="Puppy.load_env-62"><a href="#Puppy.load_env-62"><span class="linenos">62</span></a>        <span class="o">**</span><span class="n">kwargs</span>
-</span><span id="Puppy.load_env-63"><a href="#Puppy.load_env-63"><span class="linenos">63</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Puppy.load_env-64"><a href="#Puppy.load_env-64"><span class="linenos">64</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Puppy.load_env-65"><a href="#Puppy.load_env-65"><span class="linenos">65</span></a><span class="sd">        Load the available environment.</span>
-</span><span id="Puppy.load_env-66"><a href="#Puppy.load_env-66"><span class="linenos">66</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Puppy.load_env-67"><a href="#Puppy.load_env-67"><span class="linenos">67</span></a>
-</span><span id="Puppy.load_env-68"><a href="#Puppy.load_env-68"><span class="linenos">68</span></a>        <span class="k">return</span> <span class="n">load_env</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Puppy.load_env-56"><a href="#Puppy.load_env-56"><span class="linenos">56</span></a>    <span class="k">def</span> <span class="nf">load_env</span><span class="p">(</span>
+</span><span id="Puppy.load_env-57"><a href="#Puppy.load_env-57"><span class="linenos">57</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="Puppy.load_env-58"><a href="#Puppy.load_env-58"><span class="linenos">58</span></a>        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+</span><span id="Puppy.load_env-59"><a href="#Puppy.load_env-59"><span class="linenos">59</span></a>        <span class="o">**</span><span class="n">kwargs</span>
+</span><span id="Puppy.load_env-60"><a href="#Puppy.load_env-60"><span class="linenos">60</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Puppy.load_env-61"><a href="#Puppy.load_env-61"><span class="linenos">61</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Puppy.load_env-62"><a href="#Puppy.load_env-62"><span class="linenos">62</span></a><span class="sd">        Load the available environment.</span>
+</span><span id="Puppy.load_env-63"><a href="#Puppy.load_env-63"><span class="linenos">63</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Puppy.load_env-64"><a href="#Puppy.load_env-64"><span class="linenos">64</span></a>
+</span><span id="Puppy.load_env-65"><a href="#Puppy.load_env-65"><span class="linenos">65</span></a>        <span class="k">return</span> <span class="n">load_env</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -466,16 +457,16 @@ It inherits from the Env class to be an visible environment.</p>
 
     </div>
     <a class="headerlink" href="#Puppy.test_run"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Puppy.test_run-70"><a href="#Puppy.test_run-70"><span class="linenos">70</span></a>    <span class="k">def</span> <span class="nf">test_run</span><span class="p">(</span>
-</span><span id="Puppy.test_run-71"><a href="#Puppy.test_run-71"><span class="linenos">71</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="Puppy.test_run-72"><a href="#Puppy.test_run-72"><span class="linenos">72</span></a>        <span class="o">**</span><span class="n">kwargs</span>
-</span><span id="Puppy.test_run-73"><a href="#Puppy.test_run-73"><span class="linenos">73</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Puppy.test_run-74"><a href="#Puppy.test_run-74"><span class="linenos">74</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Puppy.test_run-75"><a href="#Puppy.test_run-75"><span class="linenos">75</span></a><span class="sd">        Debug the agent.</span>
-</span><span id="Puppy.test_run-76"><a href="#Puppy.test_run-76"><span class="linenos">76</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Puppy.test_run-77"><a href="#Puppy.test_run-77"><span class="linenos">77</span></a>
-</span><span id="Puppy.test_run-78"><a href="#Puppy.test_run-78"><span class="linenos">78</span></a>        <span class="c1"># Run the actionflow in test mode</span>
-</span><span id="Puppy.test_run-79"><a href="#Puppy.test_run-79"><span class="linenos">79</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">actionflow</span><span class="o">.</span><span class="n">test_run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Puppy.test_run-67"><a href="#Puppy.test_run-67"><span class="linenos">67</span></a>    <span class="k">def</span> <span class="nf">test_run</span><span class="p">(</span>
+</span><span id="Puppy.test_run-68"><a href="#Puppy.test_run-68"><span class="linenos">68</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="Puppy.test_run-69"><a href="#Puppy.test_run-69"><span class="linenos">69</span></a>        <span class="o">**</span><span class="n">kwargs</span>
+</span><span id="Puppy.test_run-70"><a href="#Puppy.test_run-70"><span class="linenos">70</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Puppy.test_run-71"><a href="#Puppy.test_run-71"><span class="linenos">71</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Puppy.test_run-72"><a href="#Puppy.test_run-72"><span class="linenos">72</span></a><span class="sd">        Debug the agent.</span>
+</span><span id="Puppy.test_run-73"><a href="#Puppy.test_run-73"><span class="linenos">73</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Puppy.test_run-74"><a href="#Puppy.test_run-74"><span class="linenos">74</span></a>
+</span><span id="Puppy.test_run-75"><a href="#Puppy.test_run-75"><span class="linenos">75</span></a>        <span class="c1"># Run the actionflow in test mode</span>
+</span><span id="Puppy.test_run-76"><a href="#Puppy.test_run-76"><span class="linenos">76</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">actionflow</span><span class="o">.</span><span class="n">test_run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -495,16 +486,16 @@ It inherits from the Env class to be an visible environment.</p>
 
     </div>
     <a class="headerlink" href="#Puppy.run"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Puppy.run-81"><a href="#Puppy.run-81"><span class="linenos">81</span></a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-</span><span id="Puppy.run-82"><a href="#Puppy.run-82"><span class="linenos">82</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="Puppy.run-83"><a href="#Puppy.run-83"><span class="linenos">83</span></a>        <span class="o">**</span><span class="n">kwargs</span>
-</span><span id="Puppy.run-84"><a href="#Puppy.run-84"><span class="linenos">84</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Puppy.run-85"><a href="#Puppy.run-85"><span class="linenos">85</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Puppy.run-86"><a href="#Puppy.run-86"><span class="linenos">86</span></a><span class="sd">        Run the agent.</span>
-</span><span id="Puppy.run-87"><a href="#Puppy.run-87"><span class="linenos">87</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Puppy.run-88"><a href="#Puppy.run-88"><span class="linenos">88</span></a>
-</span><span id="Puppy.run-89"><a href="#Puppy.run-89"><span class="linenos">89</span></a>        <span class="c1"># Run the actionflow</span>
-</span><span id="Puppy.run-90"><a href="#Puppy.run-90"><span class="linenos">90</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">actionflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Puppy.run-78"><a href="#Puppy.run-78"><span class="linenos">78</span></a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
+</span><span id="Puppy.run-79"><a href="#Puppy.run-79"><span class="linenos">79</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="Puppy.run-80"><a href="#Puppy.run-80"><span class="linenos">80</span></a>        <span class="o">**</span><span class="n">kwargs</span>
+</span><span id="Puppy.run-81"><a href="#Puppy.run-81"><span class="linenos">81</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Puppy.run-82"><a href="#Puppy.run-82"><span class="linenos">82</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Puppy.run-83"><a href="#Puppy.run-83"><span class="linenos">83</span></a><span class="sd">        Run the agent.</span>
+</span><span id="Puppy.run-84"><a href="#Puppy.run-84"><span class="linenos">84</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Puppy.run-85"><a href="#Puppy.run-85"><span class="linenos">85</span></a>
+</span><span id="Puppy.run-86"><a href="#Puppy.run-86"><span class="linenos">86</span></a>        <span class="c1"># Run the actionflow</span>
+</span><span id="Puppy.run-87"><a href="#Puppy.run-87"><span class="linenos">87</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">actionflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -545,28 +536,28 @@ It inherits from the Env class to be an visible environment.</p>
 
     </div>
     <a class="headerlink" href="#puppy_run"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="puppy_run-93"><a href="#puppy_run-93"><span class="linenos"> 93</span></a><span class="k">def</span> <span class="nf">puppy_run</span><span class="p">(</span>
-</span><span id="puppy_run-94"><a href="#puppy_run-94"><span class="linenos"> 94</span></a>    <span class="n">puppy_list</span><span class="p">:</span> <span class="nb">list</span>
-</span><span id="puppy_run-95"><a href="#puppy_run-95"><span class="linenos"> 95</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="puppy_run-96"><a href="#puppy_run-96"><span class="linenos"> 96</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="puppy_run-97"><a href="#puppy_run-97"><span class="linenos"> 97</span></a><span class="sd">    Run all the agents in the list at the same time.</span>
-</span><span id="puppy_run-98"><a href="#puppy_run-98"><span class="linenos"> 98</span></a>
-</span><span id="puppy_run-99"><a href="#puppy_run-99"><span class="linenos"> 99</span></a><span class="sd">    Args:</span>
-</span><span id="puppy_run-100"><a href="#puppy_run-100"><span class="linenos">100</span></a><span class="sd">        puppy_list (list): The list of agents.</span>
-</span><span id="puppy_run-101"><a href="#puppy_run-101"><span class="linenos">101</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="puppy_run-102"><a href="#puppy_run-102"><span class="linenos">102</span></a>
-</span><span id="puppy_run-103"><a href="#puppy_run-103"><span class="linenos">103</span></a>    <span class="n">threads</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="puppy_run-104"><a href="#puppy_run-104"><span class="linenos">104</span></a>
-</span><span id="puppy_run-105"><a href="#puppy_run-105"><span class="linenos">105</span></a>    <span class="c1"># Create and start threads</span>
-</span><span id="puppy_run-106"><a href="#puppy_run-106"><span class="linenos">106</span></a>    <span class="k">for</span> <span class="n">puppy</span> <span class="ow">in</span> <span class="n">puppy_list</span><span class="p">:</span>
-</span><span id="puppy_run-107"><a href="#puppy_run-107"><span class="linenos">107</span></a>        <span class="n">thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">puppy</span><span class="o">.</span><span class="n">run</span><span class="p">)</span>
-</span><span id="puppy_run-108"><a href="#puppy_run-108"><span class="linenos">108</span></a>        <span class="n">thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="puppy_run-109"><a href="#puppy_run-109"><span class="linenos">109</span></a>        <span class="n">threads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">thread</span><span class="p">)</span>
-</span><span id="puppy_run-110"><a href="#puppy_run-110"><span class="linenos">110</span></a>        <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-</span><span id="puppy_run-111"><a href="#puppy_run-111"><span class="linenos">111</span></a>
-</span><span id="puppy_run-112"><a href="#puppy_run-112"><span class="linenos">112</span></a>    <span class="c1"># Wait for threads to finish</span>
-</span><span id="puppy_run-113"><a href="#puppy_run-113"><span class="linenos">113</span></a>    <span class="k">for</span> <span class="n">thread</span> <span class="ow">in</span> <span class="n">threads</span><span class="p">:</span>
-</span><span id="puppy_run-114"><a href="#puppy_run-114"><span class="linenos">114</span></a>        <span class="n">thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="puppy_run-90"><a href="#puppy_run-90"><span class="linenos"> 90</span></a><span class="k">def</span> <span class="nf">puppy_run</span><span class="p">(</span>
+</span><span id="puppy_run-91"><a href="#puppy_run-91"><span class="linenos"> 91</span></a>    <span class="n">puppy_list</span><span class="p">:</span> <span class="nb">list</span>
+</span><span id="puppy_run-92"><a href="#puppy_run-92"><span class="linenos"> 92</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="puppy_run-93"><a href="#puppy_run-93"><span class="linenos"> 93</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="puppy_run-94"><a href="#puppy_run-94"><span class="linenos"> 94</span></a><span class="sd">    Run all the agents in the list at the same time.</span>
+</span><span id="puppy_run-95"><a href="#puppy_run-95"><span class="linenos"> 95</span></a>
+</span><span id="puppy_run-96"><a href="#puppy_run-96"><span class="linenos"> 96</span></a><span class="sd">    Args:</span>
+</span><span id="puppy_run-97"><a href="#puppy_run-97"><span class="linenos"> 97</span></a><span class="sd">        puppy_list (list): The list of agents.</span>
+</span><span id="puppy_run-98"><a href="#puppy_run-98"><span class="linenos"> 98</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="puppy_run-99"><a href="#puppy_run-99"><span class="linenos"> 99</span></a>
+</span><span id="puppy_run-100"><a href="#puppy_run-100"><span class="linenos">100</span></a>    <span class="n">threads</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="puppy_run-101"><a href="#puppy_run-101"><span class="linenos">101</span></a>
+</span><span id="puppy_run-102"><a href="#puppy_run-102"><span class="linenos">102</span></a>    <span class="c1"># Create and start threads</span>
+</span><span id="puppy_run-103"><a href="#puppy_run-103"><span class="linenos">103</span></a>    <span class="k">for</span> <span class="n">puppy</span> <span class="ow">in</span> <span class="n">puppy_list</span><span class="p">:</span>
+</span><span id="puppy_run-104"><a href="#puppy_run-104"><span class="linenos">104</span></a>        <span class="n">thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">puppy</span><span class="o">.</span><span class="n">run</span><span class="p">)</span>
+</span><span id="puppy_run-105"><a href="#puppy_run-105"><span class="linenos">105</span></a>        <span class="n">thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="puppy_run-106"><a href="#puppy_run-106"><span class="linenos">106</span></a>        <span class="n">threads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">thread</span><span class="p">)</span>
+</span><span id="puppy_run-107"><a href="#puppy_run-107"><span class="linenos">107</span></a>        <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span><span id="puppy_run-108"><a href="#puppy_run-108"><span class="linenos">108</span></a>
+</span><span id="puppy_run-109"><a href="#puppy_run-109"><span class="linenos">109</span></a>    <span class="c1"># Wait for threads to finish</span>
+</span><span id="puppy_run-110"><a href="#puppy_run-110"><span class="linenos">110</span></a>    <span class="k">for</span> <span class="n">thread</span> <span class="ow">in</span> <span class="n">threads</span><span class="p">:</span>
+</span><span id="puppy_run-111"><a href="#puppy_run-111"><span class="linenos">111</span></a>        <span class="n">thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 </span></pre></div>
 
 
