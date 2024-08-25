@@ -1,7 +1,6 @@
-Framework for Plug-and-Play Agentic System
+Framework for Developing an Agentic System
 
 *Hi puppy, fetch that ball for me!*
-
 
 # Install
 
@@ -26,14 +25,15 @@ Framework for Plug-and-Play Agentic System
     ```
 
 # Getting Started
+
 ## Configure your API key
 
 First, you need an API key to access at least one large language model. For the capability of agent applications, we recommend GPT4o or GPT4 Turbo from [OpenAI](https://help.openai.com/en/articles/4936850-where-do-i-find-my-openai-api-key).
 The API keys should be configured in environment variables,
 
-1. In your project directory, create a file named ".env". This file will contain your environment variables.
+1. In your project directory, create a file `your_working_dir/.env`. This file will contain your environment variables.
 
-2. Open the ".env" file and add your environment variables in the format KEY=VALUE. For example:
+2. Open the `your_working_dir/.env` file and add your environment variables in the format KEY=VALUE. For example:
 ```
 OPEN_API_KEY=your_api_key_here
 DATABASE_URL=your_database_url_here
@@ -85,6 +85,15 @@ Imagine you are the manager of a company. You may need consultants who advise yo
 This small step will make LLMs, or more generally, AIs, indispensable parts of human production and eventually change the way people work.
 
 ## Elements of an Intelligent Agent
+According to OpenAI, the ability of artificial intelligence can be ranked into five levels:
+1. Chatbots
+2. Reasoners
+3. Agents
+4. Innovators
+5. Organizers
+
+In 2024, state-of-the-art LLMs like GPT-4o are somewhere between level 2 and level 3. While LLMs have been successful at chatting, searching, and consulting, they still lack the ability to help people do tasks or jobs directly.
+
 What is the most basic difference between an LLM and an agent? Our answer to this question is:
 
 - An LLM predicts the next token.
@@ -99,32 +108,21 @@ One can summarise these elements as follows:
 
 This is a highly simplified version of what an autonomous agent is expected to do. While this process seems relatively straightforward, in reality, it can be highly non-linear and involves a lot of uncertainties and iterations.
 
-Predicting the next action is called *decision making* in cognitive science, which, as we know, is not only difficult for artificial intelligence but also challenging even for humans ourselves.
-
-## Challenges for Decision Making
-
-According to OpenAI, the ability of artificial intelligence can be ranked into five levels:
-1. Chatbots
-2. Reasoners
-3. Agents
-4. Innovators
-5. Organizers
-
-In 2024, state-of-the-art LLMs like GPT-4o are somewhere between level 2 and level 3. While LLMs have been successful at chatting, searching, and consulting, they still lack the ability to help people do tasks or jobs directly.
-
-The reason is that predicting an action is much more complicated than predicting a token. More specifically, two major challenges exist in the decision-making process of LLMs.
+Predicting the next action is called *decision making* in cognitive science, which, as we know, is not only difficult for artificial intelligence but also challenging even for humans ourselves. Two major challenges exist in the decision-making process of LLMs.
 
 1. Enormous space for possible actions
 2. Incomplete information on environments
 
-Due to the two challenges listed above, LLMs-based agents are still a state-of-the-art concept instead of a ready-for-production technology. 
+Due to the two challenges listed above, LLMs-based agents are still a state-of-the-art concept instead of a ready-for-production technology.
 At the current moment, despite many exploratory works from various teams worldwide, there has yet to be a consensus in academics and industry about how a good agent should be designed or how it should behave.
 
-# Philosophy  of `Puppys` 
+# Philosophy  of `Puppys`
+
 The `Puppys` is a framework for developing LLM-based agents. 
 We hope the framework could make it easier for engineers and scientists to develop agentic systems and applications.
 
 ## Code Native Agent
+
 Let us consider a fundamental question: How should an LLM agent actually *do* things or perform actions?
 Our answer to this question is that **LLM agents do things via code**.
 The ideal design for LLM-based agents should be that humans give verbal instructions, and LLM agents generate scripts or source code to solve these requests. The agent should be a translator between the nonexecutable natural language and the executable programming language. 
