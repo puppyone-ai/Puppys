@@ -1,5 +1,7 @@
+
 ## Tutorial
-### Builing a Gaming Agent
+### Building a Gaming Agent
+
 The escape room game showcases the capabilities of the `Puppys` framework in building applications that require agents to solve puzzles, navigate environments, and interact with various game elements dynamically. It highlights the framework's utility in handling real-time decision-making and interaction with customized environments via tools in a code-driven concept. This documentation is designed to guide developers through the process of creating an agent application using the Puppys framework.
 
 ### Game Overview and Rules
@@ -402,12 +404,11 @@ escaper.test_run(
 	max_length=1000, # Maximum output length in the terminal is 1000
 	use_command_line=True # Use commond line to debug interactively
 )
-
 ```
 
 In the `test_run` method, you can modify any attribute values within `puppy_instance` to observe changes in the execution results. This iterative process helps you determine the optimal set of attribute values for executing the current action flow. For more instructions on test and debugging, please check the documentation on `puppys.pp.default_env.actionflow.debug_actionflow`.
 
-By using these saved resources, you can streamline development and debugging processes, ensuring your agent performs efficiently and effectively. 
+By using these saved resources, you can streamline development and debugging processes, ensuring your agent performs efficiently and effectively.
 
 <!-- ## Conclusion
 

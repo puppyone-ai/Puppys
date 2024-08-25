@@ -11,6 +11,7 @@ if __name__ == "__main__":
         edit_url_map={
             "puppys": "https://github.com/PuppyAgent/Puppys/tree/main/puppys/",
         },
+        # logo= "https://github.com/PuppyAgent/Puppys/blob/a24cb13c2331a5b44436ddb235515b225aa09da0/assets/PuppysHorizon.png",
         logo=  "/docs/logo.png",
         logo_link="https://github.com/PuppyAgent/Puppys",
         template_directory=here / "my_template", 
