@@ -9,7 +9,11 @@ class Mei(Puppy):
     A default puppy that contains llm and talk_with_human tools, and do, check, do_check and rewrite actions.
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(
+        self,
+        *args,
+        **kwargs
+    ):
         super().__init__(*args, **kwargs)
 
         self.name = "Mei"
@@ -31,28 +35,44 @@ class Mei(Puppy):
             fixed_params={"puppy": self}
         )
 
-    def do_check(self, *args, **kwargs):
+    def do_check(
+        self,
+        *args,
+        **kwargs
+    ):
         """
         Do and Check the current action.
         """
 
         return do_check(self, *args, **kwargs)
 
-    def check(self, *args, **kwargs):
+    def check(
+        self,
+        *args,
+        **kwargs
+    ):
         """
         Check the current action.
         """
 
         return check(self, *args, **kwargs)
 
-    def do(self, *args, **kwargs):
+    def do(
+        self,
+        *args,
+        **kwargs
+    ):
         """
         Do the current action.
         """
 
         return do(self, *args, **kwargs)
 
-    def rewrite(self, *args, **kwargs):
+    def rewrite(
+        self,
+        *args,
+        **kwargs
+    ):
         """
         Rewrite the current action prompt.
         """

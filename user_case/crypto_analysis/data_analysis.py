@@ -1,11 +1,7 @@
-import os
-
 # If you are a VS Code users:
+import os
 import sys
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
-
-# Change the API key to your own
-# os.environ["OPENAI_API_KEY"] = ""
 
 from puppys.pp.mei import Mei
 

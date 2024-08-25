@@ -1,10 +1,10 @@
-# Test and Debug in production
+## Test and Debug in production
 
-## Concept
+### Concept
 
 The `TestActionflow` class is designed to test a specific action flow in debug mode. It allows developers to modify attributes of a stored `puppy_instance` and execute the modified instance multiple times to test the stability and success rate. The class provides both an inline mode and an interactive command-line mode for modifying attributes, making it versatile for different testing scenarios.
 
-## Code Design
+### Code Design
 
 The `TestActionflow` class is structured to:
 
@@ -13,14 +13,14 @@ The `TestActionflow` class is structured to:
 - Execute the action flow from specified nodes.
 - Save the modified instance in a pickle file and its modifiable attributes in a JSON file.
 
-## Parameters and Attributes
+### Parameters and Attributes
 
-### Attributes
+#### Attributes
 
 - `puppy_instance`: The instance of the class being tested.
 - `GREEN`, `GREY`, `RED`, `RESET`: Color codes for terminal output.
 
-### Public Methods
+#### Public Methods
 
 - `__init__`: Initializes the `TestActionflow` instance.
 - `test_run`: Executes the code in debug mode.
@@ -30,7 +30,7 @@ The `TestActionflow` class is structured to:
 - `save_updated_puppy_instance`: Saves the updated instance to a pickle file.
 - `save_instance_to_json`: Saves the instance attributes to a JSON file.
 
-### Private Methods
+#### Private Methods
 
 - `_parse_inner_json`: Parses an object into inner JSON objects.
 - `_advanced_print`: Advanced print function for both standard and self-defined types.
@@ -44,7 +44,7 @@ The `TestActionflow` class is structured to:
 - `_get_nested_attr`: Gets the value of a nested attribute.
 - `_set_nested_attr`: Sets the value of a nested attribute.
 
-## Detailed Code Logic of `test_run` Method
+### Detailed Code Logic of `test_run` Method
 
 ```python
 def test_run(
@@ -58,7 +58,7 @@ def test_run(
 
 ```
 
-### Parameters
+#### Parameters
 
 - `node_num`: Specifies the node to start execution from.
     - `0`: The current code.
@@ -71,7 +71,7 @@ def test_run(
 - `use_command_line`: If `False`, applies inline updates. If `True`, provides a command-line interface for updates.
 - `updates`: Dictionary of attribute updates for inline mode.
 
-### Logic
+#### Logic
 
 1. Updates attributes either inline or via command line.
 2. Executes the specified code nodes `num_of_action` times.
@@ -82,11 +82,11 @@ def test_run(
     
 5. Saves the updated instance and execution results.
 
-### Inline Mode
+#### Inline Mode
 
 The `inline_mode` function allows developers to update the attribute values of a `puppy_instance` using a provided dictionary. This method is straightforward, where each key-value pair in the dictionary is used to set the corresponding attribute in the `puppy_instance`. If an attribute does not exist, an error is raised.
 
-### Command-line Mode
+#### Command-line Mode
 
 The `command_line_mode` function provides an interactive interface for developers to modify the attribute values of a `puppy_instance` and execute code nodes multiple times for testing purposes. This mode is highly useful for fine-tuning and debugging the `puppy_instance` attributes on the fly.
 
@@ -106,11 +106,11 @@ The `command_line_mode` function provides an interactive interface for developer
     - For other types, the new value is input and set.
     - Developers can choose to modify another attribute or return to the initial prompt.
 
-### Benefits
+#### Benefits
 
 The `command_line_mode` is recommended as it provides a robust and interactive way to fine-tune and debug `puppy_instance` attributes, making it easier for developers to iteratively test and refine their code. This method ensures a streamlined workflow for testing and debugging, improving development efficiency.
 
-### Example Usage
+#### Example Usage
 
 ```python
 # Initialize with an instance of the class
@@ -135,9 +135,9 @@ results = tester.test_run(
 
 ```
 
-## Detailed Code Logic of Other Public Methods
+### Detailed Code Logic of Other Public Methods
 
-### `inline_mode`
+#### `inline_mode`
 
 Modifies attributes inline based on the provided `updates` dictionary.
 
@@ -145,7 +145,7 @@ Modifies attributes inline based on the provided `updates` dictionary.
 def inline_mode(self, updates: dict) -> None:
 ```
 
-### `command_line_mode`
+#### `command_line_mode`
 
 Provides an interactive command-line interface for modifying attributes.
 
@@ -173,7 +173,7 @@ def execute_code_multiple_times(
     ) -> list:
 ```
 
-### `execute_code`
+#### `execute_code`
 
 Executes code from the specified node number.
 
@@ -181,7 +181,7 @@ Executes code from the specified node number.
 def execute_code(self, node_num: int) -> dict:
 ```
 
-### `save_updated_puppy_instance`
+#### `save_updated_puppy_instance`
 
 Saves the updated instance to a pickle file.
 
@@ -193,7 +193,7 @@ def save_updated_puppy_instance(
 ) -> None
 ```
 
-### `save_instance_to_json`
+#### `save_instance_to_json`
 
 Saves all key-value pairs of an instance to a JSON file.
 
@@ -206,11 +206,11 @@ def save_instance_to_json(
 ) -> None:
 ```
 
-## Customizing `test_run` Method
+### Customizing `test_run` Method
 
 To customize the `test_run` method, you can call other public methods for specific purposes.
 
-### Example: Inline Mode Customization
+#### Example: Inline Mode Customization
 
 ```python
 # Initialize with an instance of the class
@@ -227,7 +227,7 @@ tester.save_updated_puppy_instance()
 
 ```
 
-### Example: Command-Line Mode Customization
+#### Example: Command-Line Mode Customization
 
 ```python
 # Initialize with an instance of the class
@@ -247,11 +247,11 @@ tester.save_updated_puppy_instance(
 
 ```
 
-## Summary
+### Summary
 
 The `TestActionflow` class provides a robust framework for testing and debugging action flows. It allows for detailed modification of instance attributes and repeated execution to test stability. The class supports both inline and command-line modes for attribute updates, making it flexible for various testing needs.
 
-### Possible Future Works
+#### Possible Future Works
 
 - **Enhance attribute modification**: Provide more intuitive ways to modify deeply nested attributes.
 - **Improve error handling**: Enhance exception handling to provide more detailed error messages.

@@ -14,16 +14,14 @@ class Puppy(Env):
 
     Init Args:
         value (any, optional): The value of the environment. Defaults to `None`.
-        printing_mode (str, optional): The printing mode of the agent, either `terminal` or `buffer`. Defaults to `terminal`.
         save_actionflow (bool, optional): Whether to save the actionflow. Defaults to `True`.
         save_instance (bool, optional): Whether to save the instance. Defaults to `True`.
     """
 
     def __init__(
         self,
-        value: any = None,
+        value: any,
         *args,
-        printing_mode: str = "terminal",
         save_actionflow: bool = True,
         save_instance: bool = True,
         **kwargs,
@@ -35,7 +33,6 @@ class Puppy(Env):
         self.actionflow = Actionflow(
             self,
             function=value,
-            printing_mode=printing_mode,
             save_actionflow=save_actionflow,
             save_instance=save_instance,
         )
@@ -44,21 +41,32 @@ class Puppy(Env):
 
         self.env_node = self
 
-    def explore(self, *args, **kwargs) -> None:
+    def explore(
+        self,
+        *args,
+        **kwargs
+    ) -> None:
         """
         Explore the environment.
         """
 
         return explore(self, *args, **kwargs)
 
-    def load_env(self, *args, **kwargs) -> None:
+    def load_env(
+        self,
+        *args,
+        **kwargs
+    ) -> None:
         """
         Load the available environment.
         """
 
         return load_env(self, *args, **kwargs)
 
-    def test_run(self, **kwargs) -> None:
+    def test_run(
+        self,
+        **kwargs
+    ) -> None:
         """
         Debug the agent.
         """
@@ -66,7 +74,10 @@ class Puppy(Env):
         # Run the actionflow in test mode
         return self.actionflow.test_run(**kwargs)
 
-    def run(self, **kwargs) -> None:
+    def run(
+        self,
+        **kwargs
+    ) -> None:
         """
         Run the agent.
         """
@@ -84,6 +95,7 @@ def puppy_run(
     Args:
         puppy_list (list): The list of agents.
     """
+
     threads = []
 
     # Create and start threads

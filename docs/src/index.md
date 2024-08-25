@@ -1,8 +1,9 @@
-Framework for Developing an Agentic System
+*Environment-Oriented Programing Framework for AI Agents*
 
-*Hi puppy, fetch that ball for me!*
+[![Twitter](https://img.shields.io/badge/-PuppyAgent-1DA1F2?style=flat&logo=X&logoColor=ffffff&color=%23000000&)](https://twitter.com/PuppyAgentTech) &ensp;
+[![Discord](https://img.shields.io/badge/-PuppyAgent-7289DA.svg?logo=discord&labelColor=%235462eb&logoColor=%23ffffff&color=%235462eb&label=&style=flat)](https://discord.com/channels/1249674961199829053/1249674961644163164)
 
-# Install
+## Install
 
 1. set up the local virtual environment (you can skip this if you want a global install).
     ```bash
@@ -24,9 +25,9 @@ Framework for Developing an Agentic System
     pip install Puppys
     ```
 
-# Getting Started
+## Getting Started
 
-## Configure your API key
+### Configure your API key
 
 First, you need an API key to access at least one large language model. For the capability of agent applications, we recommend GPT4o or GPT4 Turbo from [OpenAI](https://help.openai.com/en/articles/4936850-where-do-i-find-my-openai-api-key).
 The API keys should be configured in environment variables,
@@ -43,7 +44,7 @@ Other LLM models are also supported via the [`litellm`](https://github.com/Berri
 
 If you want to enable more tools for your agent, e.g. search engine, you need to further configure their API keys. We use [perplexity search](https://www.perplexity.ai/) as the default search engine.
 
-## A simple example
+### A simple example
 Here is a [simple example](https://github.com/PuppyAgent/Puppys/blob/main/user_case/hacker_news.py) that shows how to make an agent that can fetch news from internet, with only a few instructions.
 
 First, we import a minimal agent template `Mei` from `Puppys`, which contains basic functionalities including LLMs request, web search, and Python script execution.
@@ -72,19 +73,17 @@ hacker_news.run(url="https://news.ycombinator.com/")
 
 Finally, we can pass the action flow as an argument to instantiate an agent called `hacker_news`. The agent will start working once the `run` method is invoked. Now you get a hacker news agent that could fetch hacker news for you!
 
-
-
-## Example Gallery
+### Example Gallery
 For more examples, you can check the [user cases](https://github.com/PuppyAgent/Puppys/blob/main/user_case/) folder on Github. These cases demonstrate how `puppys` can be used to automate various simple tasks, including text games, internet searching or data analysis.
 
-# What Is an LLM Agent?
+## What Is an LLM Agent?
 A Large Language Model (LLM) or Artificial Intelligence (AI) agent is a specialized software entity that utilizes an LLM to perform various tasks autonomously.
+
 For example, you may want your AI copilot to automatically write and execute a piece of code for you directly instead of telling you how to write it and letting you copy the code and run it yourself.
 That simple step from *talking* to *doing* makes a huge difference between a chatbot and an agent.
 Imagine you are the manager of a company. You may need consultants who advise you on what to do, but you will definitely need a hardworking team that can get the job done, and that is what LLM agents will be doing in the future.
 This small step will make LLMs, or more generally, AIs, indispensable parts of human production and eventually change the way people work.
 
-## Elements of an Intelligent Agent
 According to OpenAI, the ability of artificial intelligence can be ranked into five levels:
 1. Chatbots
 2. Reasoners
@@ -94,6 +93,7 @@ According to OpenAI, the ability of artificial intelligence can be ranked into f
 
 In 2024, state-of-the-art LLMs like GPT-4o are somewhere between level 2 and level 3. While LLMs have been successful at chatting, searching, and consulting, they still lack the ability to help people do tasks or jobs directly.
 
+### Basic Elements
 What is the most basic difference between an LLM and an agent? Our answer to this question is:
 
 - An LLM predicts the next token.
@@ -108,6 +108,7 @@ One can summarise these elements as follows:
 
 This is a highly simplified version of what an autonomous agent is expected to do. While this process seems relatively straightforward, in reality, it can be highly non-linear and involves a lot of uncertainties and iterations.
 
+### Challenges
 Predicting the next action is called *decision making* in cognitive science, which, as we know, is not only difficult for artificial intelligence but also challenging even for humans ourselves. Two major challenges exist in the decision-making process of LLMs.
 
 1. Enormous space for possible actions
@@ -116,12 +117,11 @@ Predicting the next action is called *decision making* in cognitive science, whi
 Due to the two challenges listed above, LLMs-based agents are still a state-of-the-art concept instead of a ready-for-production technology.
 At the current moment, despite many exploratory works from various teams worldwide, there has yet to be a consensus in academics and industry about how a good agent should be designed or how it should behave.
 
-# Philosophy  of `Puppys`
-
+## Philosophy  of `Puppys` 
 The `Puppys` is a framework for developing LLM-based agents. 
 We hope the framework could make it easier for engineers and scientists to develop agentic systems and applications.
 
-## Code Native Agent
+### Code Native Agent
 
 Let us consider a fundamental question: How should an LLM agent actually *do* things or perform actions?
 Our answer to this question is that **LLM agents do things via code**.
@@ -133,7 +133,7 @@ Unlike previous agent frameworks that make agents generate **natural language** 
 </div>
 The programming language also provided a natural way to extend the ability of LLMs. Via a set of application programming interfaces (APIs), LLM-based agents can seamlessly interact with the existing software systems and use the available external instruments to perform many tasks beyond their original capability. 
 
-## Hybrid Decision Making
+### Hybrid Decision Making
 
 Another fundamental question for LLM-based agents is how to make decisions or predict the next actions. As we discussed before -- delegating the decision-making process completely to the LLM behind an agent is not a *good* solution.
 Our answer to this question is that considering the current capability of LLMs, we should leave the macro or strategic decision-making and planning to humans but delegate the micro or tactical decision-making and problem-solving to LLMs.
@@ -144,3 +144,4 @@ Our answer to this question is that considering the current capability of LLMs, 
 Instead of allowing the LLM to make arbitrary decisions and act completely by itself, like in the case of autonomous system, the human user is required to set a series of *fixed milestones* in the path to the final goal, while the agent is allowed to make decisions and take actions between one milestone and the next. By reducing the size of possible action space and regulating the behaviors of agents, these milestones can effectively improve the robustness and efficiency of LLM-based agents. 
 
 This hybrid decision-making for agents is implemented in the `Puppys` framework, allowing users to customize the logic level they would like to delegate to LLM when designing an agent.
+
