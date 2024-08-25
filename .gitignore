@@ -3,7 +3,7 @@
 .idea
 **/.llm_cache
 .env
-.venv
+.venv*
 **/user_case_history/
 *.egg-info/
 *.whl
