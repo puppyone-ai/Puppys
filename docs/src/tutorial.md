@@ -1,14 +1,45 @@
 
 ## Tutorial
+
 ### Building a Gaming Agent
 
-The escape room game showcases the capabilities of the `Puppys` framework in building applications that require agents to solve puzzles, navigate environments, and interact with various game elements dynamically. It highlights the framework's utility in handling real-time decision-making and interaction with customized environments via tools in a code-driven concept. This documentation is designed to guide developers through the process of creating an agent application using the Puppys framework.
+Let's start buidling a more complicated and a more useful agents using `Puppys`!
+
+In the *escape room* game, the agent will play as a cute puppy locked in a room. The puppy must collect keys to open the door, so it can get back its freedom and delious food!
+
+<div align="center">
+<img src="../../assets/room_escaping.png" alt="Image" width="800">
+</div>
+
+
+The simple game require agents to solve puzzles, navigate environments, and interact with various game elements dynamically.
+
+This showcase is given in the `user_case/room_escape/` directory, which contains three files:
+
+- agent_client.py: game environment definition for the gaming agent
+- escaping.py: prompts and other configuration of the gaming agent
+- game_server.py: game server on local host
+
+
+To run the example, you need to install the `pygame` dependency first.
+```shell
+pip install pygame
+```
+Then you can start the gaming server in a local host.
+```shell
+python user_case/room_escape/game_server.py
+```
+Keep the server process running, and then run the gaming agent in another terminal.
+```shell
+python user_case/room_escape/agent_client.py
+```
+Now your little puppy starts working on the puzzle, let's see whether it can reach the door!
 
 ### Game Overview and Rules
 
 #### Game Description
 
-The game is set in a grid-based map where each cell contains one object such as a key, box, wall, or an exit door. The agent is self-controlled with the goal to find the correct keys specified in the client (some hidden in boxes) and use them to unlock the door and escape the room.
+The *escape room* game is set in a grid-based map where each cell contains one object such as a key, box, wall, or an exit door. The agent is self-controlled with the goal to find the correct keys specified in the client (some hidden in boxes) and use them to unlock the door and escape the room.
 
 ##### Core Mechanics
 

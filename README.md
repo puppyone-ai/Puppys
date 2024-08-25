@@ -8,9 +8,8 @@
 
 **🏠 [PuppyAgentTech](https://www.puppyagent.com/)**
 &ensp;&ensp;
-**📜 [Document](https://mulberry-magician-e0a.notion.site/Puppys-document-83e2e55cfd27449589a6a721402ff4bc?pvs=4)**
+**📜 [Documentation](https://mulberry-magician-e0a.notion.site/Puppys-document-83e2e55cfd27449589a6a721402ff4bc?pvs=4)**
 &ensp;&ensp;
-**⚽ [QuickStart](https://mulberry-magician-e0a.notion.site/Quick-Start-f4f383324012448180049f78035ccfa2?pvs=74)**
 
 [![Twitter](https://img.shields.io/badge/-PuppyAgent-1DA1F2?style=flat&logo=X&logoColor=ffffff&color=%23000000&)](https://twitter.com/PuppyAgentTech) &ensp;
 [![Discord](https://img.shields.io/badge/-PuppyAgent-7289DA.svg?logo=discord&labelColor=%235462eb&logoColor=%23ffffff&color=%235462eb&label=&style=flat)](https://discord.com/channels/1249674961199829053/1249674961644163164)
@@ -40,11 +39,6 @@
 <div align="center">
 <img src="./assets/intro_diagram.png" alt="Image" width="800">
 </div>
-
-
-
-
-
 
 
 <div align="center">

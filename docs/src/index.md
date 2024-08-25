@@ -30,7 +30,6 @@
 ### Configure your API key
 
 First, you need an API key to access at least one large language model. For the capability of agent applications, we recommend GPT4o or GPT4 Turbo from [OpenAI](https://help.openai.com/en/articles/4936850-where-do-i-find-my-openai-api-key).
-The API keys should be configured in environment variables,
 
 1. In your project directory, create a file `your_working_dir/.env`. This file will contain your environment variables.
 
@@ -48,6 +47,7 @@ If you want to enable more tools for your agent, e.g. search engine, you need to
 Here is a [simple example](https://github.com/PuppyAgent/Puppys/blob/main/user_case/hacker_news.py) that shows how to make an agent that can fetch news from internet, with only a few instructions.
 
 First, we import a minimal agent template `Mei` from `Puppys`, which contains basic functionalities including LLMs request, web search, and Python script execution.
+
 ```python
 from puppys.pp.mei import Mei
 ```
@@ -85,6 +85,7 @@ Imagine you are the manager of a company. You may need consultants who advise yo
 This small step will make LLMs, or more generally, AIs, indispensable parts of human production and eventually change the way people work.
 
 According to OpenAI, the ability of artificial intelligence can be ranked into five levels:
+
 1. Chatbots
 2. Reasoners
 3. Agents
@@ -94,6 +95,7 @@ According to OpenAI, the ability of artificial intelligence can be ranked into f
 In 2024, state-of-the-art LLMs like GPT-4o are somewhere between level 2 and level 3. While LLMs have been successful at chatting, searching, and consulting, they still lack the ability to help people do tasks or jobs directly.
 
 ### Basic Elements
+
 What is the most basic difference between an LLM and an agent? Our answer to this question is:
 
 - An LLM predicts the next token.
@@ -101,6 +103,7 @@ What is the most basic difference between an LLM and an agent? Our answer to thi
 
 When you give your agent a task, the agent must be able to autonomously or interactively understand what needs to be done first, check what knowledge, data, or instruments are available or need to be used, and then decide how to solve the problem step by step; and finally, perform these actions one by one. If problems are encountered, the agent should also be able to adjust its strategy according to feedback or at least report these issues.
 One can summarise these elements as follows:
+
 - Sensing
 - Planning
 - Executing
@@ -109,7 +112,10 @@ One can summarise these elements as follows:
 This is a highly simplified version of what an autonomous agent is expected to do. While this process seems relatively straightforward, in reality, it can be highly non-linear and involves a lot of uncertainties and iterations.
 
 ### Challenges
-Predicting the next action is called *decision making* in cognitive science, which, as we know, is not only difficult for artificial intelligence but also challenging even for humans ourselves. Two major challenges exist in the decision-making process of LLMs.
+
+Predicting the next action is called *decision making* in cognitive science, which, as we know, is not only difficult for artificial intelligence but also challenging even for humans ourselves. 
+Today, state-of-the-art LLMs already have a decent ability of reasonsing and a broader knowledge base than average individuals. Yet, they still can't deal with some tasks that can be easily handled by human.
+Two major challenges exist in the decision-making process of LLMs.
 
 1. Enormous space for possible actions
 2. Incomplete information on environments
@@ -117,21 +123,42 @@ Predicting the next action is called *decision making* in cognitive science, whi
 Due to the two challenges listed above, LLMs-based agents are still a state-of-the-art concept instead of a ready-for-production technology.
 At the current moment, despite many exploratory works from various teams worldwide, there has yet to be a consensus in academics and industry about how a good agent should be designed or how it should behave.
 
-## Philosophy  of `Puppys` 
-The `Puppys` is a framework for developing LLM-based agents. 
+## Philosophy  of `Puppys`
+
+The `Puppys` is a framework for developing LLM-based agents.
 We hope the framework could make it easier for engineers and scientists to develop agentic systems and applications.
 
-### Code Native Agent
+### Environment-Oriented
 
-Let us consider a fundamental question: How should an LLM agent actually *do* things or perform actions?
+Natural histroy tells us it is intelligence that distinguish human from other spieces and makes us succeed in the natural selection. Yet, while intelligence is mostly attried to the development of human brain, few realized a homo-sapine must use his eyes and ears first to gather sufficient information before he can use his brain to make a good decision.
+We believe that *sensing environment* is as important as making decisions.
+
+Let us consider two fundamental questions: What is the *environment* of an LLM agent? How should an LLM agent *detect* and *perceive* its environment?
+
+Our answer to the first question is that the *environment* of an agent is specified by its mission. For an agent designed for stock trading, the share prices of NASDAQ and available (financial) instruments will be its environment. For an agent designed for data analysis, the database and available visualizing tools will be its environment. By detect the environment, the agent should be able to answer the two questions:
+Which situtation is faced by the agent? Which tools or resources are available?
+
+Our answer to the second questions is limited by the nature of LLMs, that LLM agents can only sense its environment through *structured texts*.
+The *structured texts* contains any information encoded in text format, including but not limited to text, data, and code in various non-binary formats (.txt, .json, .csv, .md, .html, .xml, .py, .cpp).
+`Puppys` is designed to be an *environment-oriented* agentic framework. It provides an general interface (encapsulated as `Env`) for a LLM agent to sense its environment, as well as a mechanism to dynamically update its knowledge on environment after taking actions.
+
+By properly defining and customizing the `Env` corresponding to specific tasks, developers can easily create a robust, adaptive, agent that can adjust its behaviors from varying environments and feedbacks, that is capable in highly complicated tasks. 
+
+<div align="center">
+<img src="../../assets/environment_oriented.png" alt="Image" width="800">
+</div>
+
+### Code-Driven
+
+Let us consider another fundamental question: How should an LLM agent actually *do* things or perform actions?
 Our answer to this question is that **LLM agents do things via code**.
-The ideal design for LLM-based agents should be that humans give verbal instructions, and LLM agents generate scripts or source code to solve these requests. The agent should be a translator between the nonexecutable natural language and the executable programming language. 
-Unlike previous agent frameworks that make agents generate **natural language** and then convert to codes,  the`Puppys` framework is designed to *be code native*. When having the agent predict the next action, `Puppys` generates not only natural language to describe the action but also **code** that performs the actions.
+We believe that LLM agent should play a role as the translator between the nonexecutable natural language and the executable programming language. In the future workflow, human will be giving orders and instructions, while LLM agents generate scripts and codes to make the ideas realized.
+The`Puppys` framework is designed to *be code-driven*. When having the agent predict the next action, `Puppys` generates not only natural language to describe the action but also **code** that performs the actions.
 
 <div align="center">
 <img src="../../assets/PuppyVsOthers.png" alt="Image" width="800">
 </div>
-The programming language also provided a natural way to extend the ability of LLMs. Via a set of application programming interfaces (APIs), LLM-based agents can seamlessly interact with the existing software systems and use the available external instruments to perform many tasks beyond their original capability. 
+The programming language also provided a natural way to extend the ability of LLMs. Via a set of application programming interfaces (APIs), LLM-based agents can seamlessly interact with the existing software systems and use the available external instruments to perform many tasks beyond their original capability.
 
 ### Hybrid Decision Making
 
@@ -144,4 +171,3 @@ Our answer to this question is that considering the current capability of LLMs, 
 Instead of allowing the LLM to make arbitrary decisions and act completely by itself, like in the case of autonomous system, the human user is required to set a series of *fixed milestones* in the path to the final goal, while the agent is allowed to make decisions and take actions between one milestone and the next. By reducing the size of possible action space and regulating the behaviors of agents, these milestones can effectively improve the robustness and efficiency of LLM-based agents. 
 
 This hybrid decision-making for agents is implemented in the `Puppys` framework, allowing users to customize the logic level they would like to delegate to LLM when designing an agent.
-
