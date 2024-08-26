@@ -5,22 +5,22 @@
 
 ## Install
 
-1. set up the local virtual environment (you can skip this if you want a global install).
+1. Set up the local virtual environment (you can skip this if you want a global install).
     ```bash
     python3 -m venv my_env
     source my_env/bin/activate
     ```
-2. clone the repository for a latest version
+2. Clone the repository for a latest version
     ```bash
     git clone https://github.com/PuppyAgent/Puppys.git
     ```
-3.  install from the local project directory
+3.  Install from the local project directory
     ```bash
     cd Puppys
-    pip install -r requirements.txt
+    pip install requirements.txt
     pip install -e .
     ```
-4. or you can install the stable version directly from `pip`
+4. You can also install the stable version directly from `pip`.
     ```bash
     pip install Puppys
     ```
@@ -44,6 +44,7 @@ Other LLM models are also supported via the [`litellm`](https://github.com/Berri
 If you want to enable more tools for your agent, e.g. search engine, you need to further configure their API keys. We use [perplexity search](https://www.perplexity.ai/) as the default search engine.
 
 ### A simple example
+
 Here is a [simple example](https://github.com/PuppyAgent/Puppys/blob/main/user_case/hacker_news.py) that shows how to make an agent that can fetch news from internet, with only a few instructions.
 
 First, we import a minimal agent template `Mei` from `Puppys`, which contains basic functionalities including LLMs request, web search, and Python script execution.
@@ -67,16 +68,18 @@ def hacker_news_action_flow(self, url):
 While we call the method a "action flow", it can actually be a tree with many different branches. Hence, the logic and behavior of the agent will be straightforward. It will try to accomplish these milestones one by one by taking a flow of actions. More complicated action flows are possible to define using a combination of `do` and `check` (together as `do_check`) methods and the integrated compound statements (e.g. `if`, `while`) in Python.
 
 ```python
-hacker_news = Mei(hacker_news_decisiontree)
+hacker_news = Mei(value=hacker_news_action_flow)
 hacker_news.run(url="https://news.ycombinator.com/")
 ```
 
 Finally, we can pass the action flow as an argument to instantiate an agent called `hacker_news`. The agent will start working once the `run` method is invoked. Now you get a hacker news agent that could fetch hacker news for you!
 
 ### Example Gallery
+
 For more examples, you can check the [user cases](https://github.com/PuppyAgent/Puppys/blob/main/user_case/) folder on Github. These cases demonstrate how `puppys` can be used to automate various simple tasks, including text games, internet searching or data analysis.
 
 ## What Is an LLM Agent?
+
 A Large Language Model (LLM) or Artificial Intelligence (AI) agent is a specialized software entity that utilizes an LLM to perform various tasks autonomously.
 
 For example, you may want your AI copilot to automatically write and execute a piece of code for you directly instead of telling you how to write it and letting you copy the code and run it yourself.
@@ -113,7 +116,7 @@ This is a highly simplified version of what an autonomous agent is expected to d
 
 ### Challenges
 
-Predicting the next action is called *decision making* in cognitive science, which, as we know, is not only difficult for artificial intelligence but also challenging even for humans ourselves. 
+Predicting the next action is called *decision making* in cognitive science, which, as we know, is not only difficult for artificial intelligence but also challenging even for humans ourselves.
 Today, state-of-the-art LLMs already have a decent ability of reasonsing and a broader knowledge base than average individuals. Yet, they still can't deal with some tasks that can be easily handled by human.
 Two major challenges exist in the decision-making process of LLMs.
 

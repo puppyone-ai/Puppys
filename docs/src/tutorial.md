@@ -7,10 +7,6 @@ Let's start buidling a more complicated and a more useful agents using `Puppys`!
 
 In the *escape room* game, the agent will play as a cute puppy locked in a room. The puppy must collect keys to open the door, so it can get back its freedom and delious food!
 
-<div align="center">
-<img src="../../assets/room_escaping.png" alt="Image" width="800">
-</div>
-
 
 The simple game require agents to solve puzzles, navigate environments, and interact with various game elements dynamically.
 
