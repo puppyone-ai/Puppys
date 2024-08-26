@@ -6,24 +6,24 @@
 ## Install
 
 1. Set up the local virtual environment (you can skip this if you want a global install).
-    ```bash
+ ```bash
     python3 -m venv my_env
     source my_env/bin/activate
-    ```
-2. Clone the repository for a latest version
-    ```bash
+ ```
+2. Clone the repository from Github
+ ```bash
     git clone https://github.com/PuppyAgent/Puppys.git
-    ```
-3.  Install from the local project directory
-    ```bash
+ ```
+3. Install from the local project directory
+ ```bash
     cd Puppys
     pip install requirements.txt
     pip install -e .
-    ```
+ ```
 4. You can also install the stable version directly from `pip`.
-    ```bash
+ ```bash
     pip install Puppys
-    ```
+ ```
 
 ## Getting Started
 
@@ -39,13 +39,13 @@ OPEN_API_KEY=your_api_key_here
 DATABASE_URL=your_database_url_here
 ```
 
-Other LLM models are also supported via the [`litellm`](https://github.com/BerriAI/litellm) proxy. You can configure the default LLM chat used by agent by creating an instance of `FunEnv`.
+Other LLM models are also supported via the [`litellm`](https://github.com/BerriAI/litellm) proxy. You can configure the default LLM chat used by agents by creating an instance of `FunEnv`.
 
-If you want to enable more tools for your agent, e.g. search engine, you need to further configure their API keys. We use [perplexity search](https://www.perplexity.ai/) as the default search engine.
+If you want to enable more tools for your agent, e.g., a search engine, you must further configure their API keys. We use [perplexity search](https://www.perplexity.ai/) as the default search engine.
 
 ### A simple example
 
-Here is a [simple example](https://github.com/PuppyAgent/Puppys/blob/main/user_case/hacker_news.py) that shows how to make an agent that can fetch news from internet, with only a few instructions.
+Here is a [simple example](https://github.com/PuppyAgent/Puppys/blob/main/user_case/hacker_news.py) that shows how to make an agent that can fetch news from the internet with only a few instructions.
 
 First, we import a minimal agent template `Mei` from `Puppys`, which contains basic functionalities including LLMs request, web search, and Python script execution.
 
@@ -65,18 +65,18 @@ def hacker_news_action_flow(self, url):
     self.do_check("pick the news that related to Large Language Models, summarize all the news, and send it to me", show_response=True)
 ```
 
-While we call the method a "action flow", it can actually be a tree with many different branches. Hence, the logic and behavior of the agent will be straightforward. It will try to accomplish these milestones one by one by taking a flow of actions. More complicated action flows are possible to define using a combination of `do` and `check` (together as `do_check`) methods and the integrated compound statements (e.g. `if`, `while`) in Python.
+While we call the method an "action flow", it can actually be a tree with many different branches. Hence, the logic and behavior of the agent will be straightforward. It will try to accomplish these milestones one by one by taking a flow of actions. More complicated action flows are possible to define using a combination of `do` and `check` (together as `do_check`) methods and the integrated compound statements (e.g. `if`, `while`) in Python.
 
 ```python
 hacker_news = Mei(value=hacker_news_action_flow)
 hacker_news.run(url="https://news.ycombinator.com/")
 ```
 
-Finally, we can pass the action flow as an argument to instantiate an agent called `hacker_news`. The agent will start working once the `run` method is invoked. Now you get a hacker news agent that could fetch hacker news for you!
+Finally, we can pass the action flow as an argument to instantiate an agent called `hacker_news`. The agent will start working once the `run` method is invoked. Now, you get a hacker newsagent that can fetch hacker news for you!
 
 ### Example Gallery
 
-For more examples, you can check the [user cases](https://github.com/PuppyAgent/Puppys/blob/main/user_case/) folder on Github. These cases demonstrate how `puppys` can be used to automate various simple tasks, including text games, internet searching or data analysis.
+For more examples, you can check the [user cases](https://github.com/PuppyAgent/Puppys/blob/main/user_case/) folder on Github. These cases demonstrate how `puppies` can be used to automate various simple tasks, including text games, internet searching, or data analysis.
 
 ## What Is an LLM Agent?
 
@@ -99,7 +99,7 @@ In 2024, state-of-the-art LLMs like GPT-4o are somewhere between level 2 and lev
 
 ### Basic Elements
 
-What is the most basic difference between an LLM and an agent? Our answer to this question is:
+What is the most fundamental difference between an LLM and an agent? Our answer to this question is:
 
 - An LLM predicts the next token.
 - An agent predicts the next action.
@@ -117,7 +117,7 @@ This is a highly simplified version of what an autonomous agent is expected to d
 ### Challenges
 
 Predicting the next action is called *decision making* in cognitive science, which, as we know, is not only difficult for artificial intelligence but also challenging even for humans ourselves.
-Today, state-of-the-art LLMs already have a decent ability of reasonsing and a broader knowledge base than average individuals. Yet, they still can't deal with some tasks that can be easily handled by human.
+Today, state-of-the-art LLMs already have a decent ability to reasoning and a broader knowledge base than average individuals. Yet, they still can't deal with some tasks that can be easily handled by humans.
 Two major challenges exist in the decision-making process of LLMs.
 
 1. Enormous space for possible actions
@@ -133,19 +133,19 @@ We hope the framework could make it easier for engineers and scientists to devel
 
 ### Environment-Oriented
 
-Natural histroy tells us it is intelligence that distinguish human from other spieces and makes us succeed in the natural selection. Yet, while intelligence is mostly attried to the development of human brain, few realized a homo-sapine must use his eyes and ears first to gather sufficient information before he can use his brain to make a good decision.
+Natural history tells us it is intelligence that distinguishes humans from other species and makes us succeed in natural selection. Yet, while intelligence is mostly attributed to the human brain, few realize a homo-sapine must use his eyes and ears first to gather sufficient information before he can use his brain to make a good decision.
 We believe that *sensing environment* is as important as making decisions.
 
 Let us consider two fundamental questions: What is the *environment* of an LLM agent? How should an LLM agent *detect* and *perceive* its environment?
 
-Our answer to the first question is that the *environment* of an agent is specified by its mission. For an agent designed for stock trading, the share prices of NASDAQ and available (financial) instruments will be its environment. For an agent designed for data analysis, the database and available visualizing tools will be its environment. By detect the environment, the agent should be able to answer the two questions:
-Which situtation is faced by the agent? Which tools or resources are available?
+Our answer to the first question is that the *environment* of an agent is specified by its mission. For an agent designed for stock trading, the share prices of NASDAQ and available (financial) instruments will be its environment. For an agent designed for data analysis, the database and available visualizing tools will be its environment. By detecting the environment, the agent should be able to answer the two questions:
+Which situation is faced by the agent? Which tools or resources are available?
 
-Our answer to the second questions is limited by the nature of LLMs, that LLM agents can only sense its environment through *structured texts*.
-The *structured texts* contains any information encoded in text format, including but not limited to text, data, and code in various non-binary formats (.txt, .json, .csv, .md, .html, .xml, .py, .cpp).
-`Puppys` is designed to be an *environment-oriented* agentic framework. It provides an general interface (encapsulated as `Env`) for a LLM agent to sense its environment, as well as a mechanism to dynamically update its knowledge on environment after taking actions.
+Our answer to the second question is limited by the nature of LLMs, that LLM agents can only sense their environment through *structured texts*.
+The *structured texts* contain any information encoded in text format, including but not limited to text, data, and code in various non-binary formats (.txt, .json, .csv, .md, .html, .xml, .py, .cpp).
+`Puppys` is designed to be an *environment-oriented* agentic framework. It provides a general interface (encapsulated as `Env`) for an LLM agent to sense its environment, as well as a mechanism to dynamically update its knowledge of the environment after taking action.
 
-By properly defining and customizing the `Env` corresponding to specific tasks, developers can easily create a robust, adaptive, agent that can adjust its behaviors from varying environments and feedbacks, that is capable in highly complicated tasks. 
+By properly defining and customizing the `Env` corresponding to specific tasks, developers can easily create a robust, adaptive agent that can adjust its behaviors from varying environments and feedback that is capable of highly complicated tasks. 
 
 <div align="center">
 <img src="../../assets/environment_oriented.png" alt="Image" width="800">
@@ -155,7 +155,7 @@ By properly defining and customizing the `Env` corresponding to specific tasks, 
 
 Let us consider another fundamental question: How should an LLM agent actually *do* things or perform actions?
 Our answer to this question is that **LLM agents do things via code**.
-We believe that LLM agent should play a role as the translator between the nonexecutable natural language and the executable programming language. In the future workflow, human will be giving orders and instructions, while LLM agents generate scripts and codes to make the ideas realized.
+We believe that the LLM agent should play a role as the translator between the nonexecutable natural language and the executable programming language. In future workflows, humans will give orders and instructions while LLM agents generate scripts and codes to make ideas come to life.
 The`Puppys` framework is designed to *be code-driven*. When having the agent predict the next action, `Puppys` generates not only natural language to describe the action but also **code** that performs the actions.
 
 <div align="center">
@@ -171,6 +171,6 @@ Our answer to this question is that considering the current capability of LLMs, 
 <img src="../../assets/AgentRPA_1.png" alt="Image" width="800">
 </div>
 
-Instead of allowing the LLM to make arbitrary decisions and act completely by itself, like in the case of autonomous system, the human user is required to set a series of *fixed milestones* in the path to the final goal, while the agent is allowed to make decisions and take actions between one milestone and the next. By reducing the size of possible action space and regulating the behaviors of agents, these milestones can effectively improve the robustness and efficiency of LLM-based agents. 
+Instead of allowing the LLM to make arbitrary decisions and act completely by itself, like in the case of an autonomous system, the human user is required to set a series of *fixed milestones* in the path to the final goal, while the agent is allowed to make decisions and take actions between one milestone and the next. By reducing the size of possible action space and regulating the behaviors of agents, these milestones can effectively improve the robustness and efficiency of LLM-based agents. 
 
 This hybrid decision-making for agents is implemented in the `Puppys` framework, allowing users to customize the logic level they would like to delegate to LLM when designing an agent.
