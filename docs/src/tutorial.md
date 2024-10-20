@@ -240,7 +240,7 @@ game_map_dict.update(sub_game_map)
 # Convert into formatted string to be inserted in the prompt
 game_map_string =""
 for value in game_map_dict.values():
- game_map_string += f"{value['name']}: {value['description']}\n"
+    game_map_string += f"{value['name']}: {value['description']}\n"
 ```
 
 ##### LLM prompt template for the customized action
@@ -320,36 +320,36 @@ All LLM-included actions have to have `show_prompt` and `show_response` as part 
 
 ```python
 action = Action(
- puppy_instance,
-        action_name="",
-        show_prompt=show_prompt,
-        show_response=show_response,
-        retries=0,
-        replace_code=True
- )
+    puppy_instance,
+    action_name="",
+    show_prompt=show_prompt,
+    show_response=show_response,
+    retries=0,
+    replace_code=True
+)
 
- action.highlighting(
-        action_type= "escaping",
-        prompt=prompt,
-        prompt_action= "escaping"
- )
+action.highlighting(
+    action_type= "escaping",
+    prompt=prompt,
+    prompt_action= "escaping"
+)
 
- new_code = open_ai_chat(
-        prompt=prompt, 
-        model=model, 
-        printing=show_response, 
-        stream=True
- )
+new_code = open_ai_chat(
+    prompt=prompt, 
+    model=model, 
+    printing=show_response, 
+    stream=True
+)
 
- new_code = action.clean_llm_code(new_code, add_code=True)
+new_code = action.clean_llm_code(new_code, add_code=True)
 
-    # Run the code
-    try:
-        return action.run_without_errors(new_code)
-    # Handle errors
-    except Exception as e:
- error_details = action.run_with_errors(e)
-        print(error_details)
+# Run the code
+try:
+    return action.run_without_errors(new_code)
+# Handle errors
+except Exception as e:
+error_details = action.run_with_errors(e)
+    print(error_details)
 ```
 
 #### Building the Action Flow

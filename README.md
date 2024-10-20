@@ -122,6 +122,9 @@ hacker_news.run()
 ## Dependency
 **[LiteLLM](https://github.com/BerriAI/litellm)**
 
+## How to Contribute
+We warmly invite you to contribute to the `Puppys` framework and are excited to see how the community will accelerate its growth as an open-source agent framework! We believe your involvement will enhance its development and shape its future. For a detailed contribution guide, please refer to the following: [CONTRIBUTING.md](./CONTRIBUTING.md)
+
 ## Contact Us
 For collaboration, inquiries, career opportunities, and more, please contact:
 

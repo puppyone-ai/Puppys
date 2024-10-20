@@ -17,8 +17,7 @@
 3. Install from the local project directory
  ```bash
     cd Puppys
-    pip install requirements.txt
-    pip install -e .
+    pip install -r requirements.txt
  ```
 4. You can also install the stable version directly from `pip`.
  ```bash
@@ -27,21 +26,36 @@
 
 ## Getting Started
 
-### Configure your API key
+### Configure Your API Key
 
-First, you need an API key to access at least one large language model. For the capability of agent applications, we recommend GPT4o or GPT4 Turbo from [OpenAI](https://help.openai.com/en/articles/4936850-where-do-i-find-my-openai-api-key).
+To use the full capabilities of the **Puppys** framework, including large language models and online search APIs, you will need to configure your API keys.
 
-1. In your project directory, create a file `your_working_dir/.env`. This file will contain your environment variables.
+1. In your project directory, copy the `.env.template` file and rename it to `.env`:
+    ```bash
+    cp .env.template .env
+    ```
 
-2. Open the `your_working_dir/.env` file and add your environment variables in the format KEY=VALUE. For example:
-```
-OPEN_API_KEY=your_api_key_here
-DATABASE_URL=your_database_url_here
-```
+2. Open the `.env` file and enter your keys in the following format:
+    ```bash
+    OPENAI_API_KEY="<your-api-key-here>"
+    OPENAI_MODEL="<your-model-here>"
+    OPENAI_BASE_URL="<your-model-base-url-here>"
 
-Other LLM models are also supported via the [`litellm`](https://github.com/BerriAI/litellm) proxy. You can configure the default LLM chat used by agents by creating an instance of `FunEnv`.
+    PERPLEXITY_API_KEY="<your-api-key-here>"
+    FIRECRAWL_API_KEY="<your-api-key-here>"
 
-If you want to enable more tools for your agent, e.g., a search engine, you must further configure their API keys. We use [perplexity search](https://www.perplexity.ai/) as the default search engine.
+    GCP_API_KEY="<your-google-search-api-key-here>"
+    CSE_ID="<your-google-custom-search-engine-id-here>"
+    ```
+   
+   - First, you need an API key to access at least one large language model. For the capability of agent applications, we recommend GPT4o or GPT4 Turbo from [OpenAI](https://help.openai.com/en/articles/4936850-where-do-i-find-my-openai-api-key).
+   
+   - Other LLM models are also supported via the [`litellm`](https://github.com/BerriAI/litellm) proxy. You can configure the default LLM chat used by agents by creating an instance of `FunEnv`.
+
+   - If you want to enable more tools for your agent, e.g., a search engine, you must further configure their API keys. We use [perplexity search](https://www.perplexity.ai/) as the default search engine. However, if you prefer to use Google's Custom Search API, you can set it up and obtain your credentials from [Google Custom Search API](https://developers.google.com/custom-search/v1/overview).
+
+3. Once you have entered all the required API keys, save the file. This will allow you to access the required services seamlessly.
+
 
 ### A simple example
 
