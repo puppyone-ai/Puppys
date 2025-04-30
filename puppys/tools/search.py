@@ -1,14 +1,17 @@
-from openai import OpenAI
+# If you are a VS Code users:
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
 import os
 import requests
 from puppys.decorator import new_func
-from puppys.pp.main import Puppy
-from puppys.env.func_env import FuncEnv
-from puppys.pp.actions.explore import explore
+from puppys.llm.models import lite_llm_chat
 
 
-def perplexity_search(query):
-
+def perplexity_search(
+    query: str
+) -> str:
     messages = [
         {
             "role": "system",
@@ -19,60 +22,59 @@ def perplexity_search(query):
         },
         {
             "role": "user",
-            "content": (
-                f"{query}"
-            ),
+            "content": f"{query}",
         },
     ]
 
-    client = OpenAI(api_key=os.environ['PERPLEXITY_API_KEY'], base_url="https://api.perplexity.ai")
-
-    # chat completion without streaming
-    response = client.chat.completions.create(
-        model="mistral-7b-instruct",
+    response = lite_llm_chat(
         messages=messages,
+        api_key=os.environ["PERPLEXITY_API_KEY"],
+        base_url="https://api.perplexity.ai",
+        model="mistral-7b-instruct",
+        printing=True,
+        stream=True,
+        temperature=0.9
     )
-    return response.choices[0].message.content
+    return response
 
 
-def google_search(query):
-
+def google_search(
+    query: str
+) -> dict:
     url = "https://www.googleapis.com/customsearch/v1"
-    params = {"q": query,
-              "key": os.environ['GCP_API_KEY'],
-              "cx": os.environ['CSE_ID'],
-              }
-    print(params)
+    params = {
+        "q": query,
+        "key": os.environ["GCP_API_KEY"],
+        "cx": os.environ["CSE_ID"],
+    }
+
     response = requests.get(url, params=params)
-    print(response.status_code)
     if response.status_code != 200:
-        raise Exception(f"Failed to get the search result from google, status code: {response.status_code}")
+        raise ValueError(f"Failed to get the search result from google, status code: {response.status_code}")
     return response.json()
 
 
 @new_func(free_params=["query"])
-def search(query):
+def search(
+    query: str
+) -> dict:
     """
     Search Engine, use it when the user request to find some real-time information online.
     For example, when user want to know the weather, asset price or economy indicators.
 
-    for example:
+    For example:
     ## search the weather in Amsterdam
     query = "what is the weather today in Amsterdam?"
-    searchResults = search(query)"""
+    searchResults = search(query)
+    """
 
-    return perplexity_search(query)
-
+    try:
+        return perplexity_search(query)
+    except Exception:
+        return google_search(query)
 
 
 if __name__ == "__main__":
-
-    # define an agent
-    puppy=Puppy(name="Puppy")
-
-    # define the tool in the agent
-    puppy.tools_search = search
-    # run the tool
-    print(explore(puppy, target=FuncEnv))
-
-
+    query = "what is the weather today in Amsterdam?"
+    response = search(query=query)
+    print(response)

@@ -1,11 +1,6 @@
-openai>=1.0.0
-litellm
-
-pandas
-pdoc
-python-dotenv
-
-requests
-google-api-python-client
-
+dill
 loguru
+requests
+python-dotenv
+litellm
+firecrawl-py

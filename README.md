@@ -4,16 +4,15 @@
       <img src="./assets/PuppyAgentLOGOBig.png" alt="Image" height="120">
     <h1 align="center">Puppys</h1>
 
-**Framework for Developing an Agentic System**
+**Environment-Oriented Programing Framework for AI Agents**
 
-**📜 [Document](https://mulberry-magician-e0a.notion.site/Puppys-document-83e2e55cfd27449589a6a721402ff4bc?pvs=4)**
+**🏠 [PuppyAgentTech](https://www.puppyagent.com/)**
 &ensp;&ensp;
-**🔌 [Install](https://mulberry-magician-e0a.notion.site/Install-453ccfa356a04eda865c68e489d0e6bf?pvs=4)**
+**📜 [Documentation](https://mulberry-magician-e0a.notion.site/Puppys-document-83e2e55cfd27449589a6a721402ff4bc?pvs=4)**
 &ensp;&ensp;
-**⚽ [QuickStart](https://mulberry-magician-e0a.notion.site/Quick-Start-f4f383324012448180049f78035ccfa2?pvs=74)**
 
 [![Twitter](https://img.shields.io/badge/-PuppyAgent-1DA1F2?style=flat&logo=X&logoColor=ffffff&color=%23000000&)](https://twitter.com/PuppyAgentTech) &ensp;
-[![Discord](https://img.shields.io/badge/-PuppyAgent-7289DA.svg?logo=discord&labelColor=%235462eb&logoColor=%23ffffff&color=%235462eb&label=&style=flat)](https://discord.com/channels/1249674961199829053/1249674961644163164)
+[![Discord](https://img.shields.io/badge/-PuppyAgent-7289DA.svg?logo=discord&labelColor=%235462eb&logoColor=%23ffffff&color=%235462eb&label=&style=flat)](https://discord.gg/9qNH4UDGay)
 
 ## 
 </div>
@@ -24,23 +23,51 @@
 <div align="center">
 
 
+-**Environment-Oriented**-
+
+*Build an LLM-friendly environment before building your agents.*
+
+-**Code-Driven**-
+
+*Environment, action and reasoning of agents are all based on codes.*
+
 -**Plug and Play**-
 
-*Insert agentic ability into anywhere your existing enterprise code.*
-
--**Make Agent Robust**-
-
-*Instruct agents via code, leading configurable and robust.*
-
--**Lite**-
-
-*Less dependency, more scalability.*
+*Insert agent’s ability into anywhere your existing code.*
 </div>
 
 <div align="center">
 <img src="./assets/intro_diagram.png" alt="Image" width="800">
 </div>
 
+
+<div align="center">
+
+## **Environment-Oriented Programming**
+
+</div>
+The most important thing for an agent to work is an agent-friendly environment. 
+
+**Puppys** provides a framework that describe environment as agent can understand.
+
+
+<div align="center">
+<img src="./assets/environment_oriented.png" alt="Image" width="800">
+</div>
+
+<div align="center">
+
+## Code-Driven
+
+</div>
+
+Code is the universal language for defining the behavior of LLM-based agents. 
+
+**Puppys** provides a code-driven programming framework that allows agents to generate code based on the current environment to modify the environment accordingly.
+
+<div align="center">
+<img src="./assets/PuppyVsOthers.png" alt="Image" width="800">
+</div>
 
 
 <div align="center">
@@ -59,42 +86,6 @@ No DSL. No Workflow. Only Python (We understand that you don't like DSL or Workf
 </div>
 
 
-
-
-<div align="center">
-
-## Make Agent Robust
-
-</div>
-
-**Autonomous Agents** can do tasks by themselves and work in many situations, but only be able to solve very simple problems.
-
-**RPA** (Robotic Process Automation), can handle complex tasks but isn't very flexible. 
-
-We provide a hybrid solution of Agents and RPA.
-
-<div align="center">
-<img src="./assets/AgentRPA.png" alt="Image" width="800">
-</div>
-
-
-<div align="center">
-
-## Code-Driven
-
-</div>
-
- **An LLM predicts the next token**
-
- **An agent predicts the next action**. 
-
-We believe that an LLM-based agent needs to predict the next action; in reality, it predicts the **next code**. This is the philosophy of being code-driven.
-<div align="center">
-<img src="./assets/PuppyVsOthers.png" alt="Image" width="800">
-</div>
-
-
-
 ## Install
 
 ```
@@ -106,7 +97,7 @@ pip install git+https://github.com/PuppyAgent/Puppys.git
 
 1. 📢 *Hacker News Reporter*
 
-```
+```python
 from puppy.pp.mei import Mei
 
 # change the API key to your own
@@ -127,3 +118,18 @@ hacker_news = Mei(hacker_news_decisiontree)
 hacker_news.run()
 
 ```
+
+## Dependency
+**[LiteLLM](https://github.com/BerriAI/litellm)**
+
+## How to Contribute
+We warmly invite you to contribute to the `Puppys` framework and are excited to see how the community will accelerate its growth as an open-source agent framework! We believe your involvement will enhance its development and shape its future. For a detailed contribution guide, please refer to the following: [CONTRIBUTING.md](./CONTRIBUTING.md)
+
+## Contact Us
+For collaboration, inquiries, career opportunities, and more, please contact:
+
+**Founder:** guantum@puppyagent.com
+
+**[Book a meeting with founders via Calendly](https://calendly.com/guantum/30min)**
+
+**Our Team:** puppyteam@puppyagent.com
